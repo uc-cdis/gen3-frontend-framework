@@ -5,6 +5,8 @@ import type { GatewayConnectionState } from '../../hooks/useGatewayConnection';
 import { useKernelsAndSpecsQuery } from '../../core/hooks';
 import { InfoRolloverButton } from '@gen3/frontend';
 import { formatUptimeInMinutes } from '@gen3/core';
+import ActiveKernelsPanel from './ActiveKernelsPanel';
+import { useLaunchKernelMutation } from '../../core/jegGatewayApi';
 
 // const JEGGatewayMessage = (gateway) => {
 //   if (!jegEnabled) return null;
@@ -66,8 +68,13 @@ const KernelLifecyclePanel = ({
 }: KernelLifecyclePanelProps) => {
   const notice = undefined;
 
+  // get the possible kernels
   const { kernels, kernelSpecs, isLoading, isError, error } =
-    useKernelsAndSpecsQuery();
+    useKernelsAndSpecsQuery(5000);
+  const [
+    launchKernel,
+    { isLoading: isLaunchingLoading, isError: isLaunchingError },
+  ] = useLaunchKernelMutation();
 
   const displayRows = kernels.map((k) => ({
     kernelId: k.id,
@@ -78,6 +85,16 @@ const KernelLifecyclePanel = ({
   const [selectedKernelName, setSelectedKernelName] = useState<string>(
     kernelSpecs?.[0]?.name || 'python3',
   );
+
+  const handleLaunchKernel = async (kernelName: string) => {
+    try {
+      // .unwrap() forces the promise to reject on HTTP failure
+      await launchKernel(kernelName).unwrap();
+    } catch (error) {
+      console.error('Launch kernel failed!', error);
+      // The user can now manually hit "Submit" again to retry safely
+    }
+  };
 
   // When specs arrive after first render (async load), reset selectedKernelName
   // if the current value is no longer a valid spec name.
@@ -131,7 +148,7 @@ const KernelLifecyclePanel = ({
 
   return (
     <div className="flex flex-col overflow-hidden p-2">
-      <Group>
+      <Group gap={4}>
         <Text c="text-base-contrast" size="md" fw={500} className="font-bold">
           Kernel Lifecycle
         </Text>
@@ -152,6 +169,8 @@ const KernelLifecyclePanel = ({
           Run Stale Reap
         </Button>
       </div>
+
+      <ActiveKernelsPanel />
 
       {/* Reconnect strip — non-disruptive yellow banner; lifecycle panel stays usable */}
       {connectionState === 'reconnecting' && (
@@ -191,7 +210,7 @@ const KernelLifecyclePanel = ({
       )}
 
       <div className="mt-5 rounded-xl border border-base-lighter bg-base-max p-5">
-        <Group>
+        <Group gap="xs">
           <p className="text-xs font-bold uppercase tracking-wider text-base-darker">
             Launch Kernel
           </p>
@@ -255,12 +274,8 @@ const KernelLifecyclePanel = ({
           )}
 
           <Button
-            onClick={() =>
-              onLaunchKernel?.({
-                kernelName: selectedKernelName || 'python3',
-              })
-            }
-            disabled={launching || !canLaunch}
+            onClick={() => handleLaunchKernel(selectedKernelName || 'python3')}
+            loading={isLaunchingLoading}
             className="w-full"
           >
             {launching ? 'Working...' : 'Launch Kernel'}
@@ -385,7 +400,7 @@ const KernelLifecyclePanel = ({
                     disabled={!onOpenNotebook}
                     color="accent"
                     variant="light"
-                    className="flex-1 border-accent-light/60"
+                    className="flex-1 border-accent-light"
                   >
                     Open Notebook
                   </Button>
@@ -394,7 +409,7 @@ const KernelLifecyclePanel = ({
                     onClick={() => onTerminateKernel?.(row.kernelId)}
                     disabled={!onTerminateKernel}
                     variant="light"
-                    className="flex-1 border-primary-light/70"
+                    className="flex-1 border-primary-light"
                   >
                     {forceTerminate ? 'Force Terminate' : 'Terminate'}
                   </Button>

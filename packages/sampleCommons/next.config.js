@@ -35,6 +35,13 @@ const nextConfig = {
   productionBrowserSourceMaps: true,
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   basePath: basePath,
+  images: {
+    localPatterns: [
+      {
+        pathname: '/icons/**',
+      },
+    ],
+  },
   webpack: (config, { dev }) => {
     config.infrastructureLogging = {
       level: 'error',

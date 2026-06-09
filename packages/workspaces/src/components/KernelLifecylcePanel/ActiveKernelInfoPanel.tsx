@@ -2,30 +2,32 @@ import React from 'react';
 import { formatUptimeInMinutes } from '@gen3/core';
 import { Button } from '@mantine/core';
 import { KernelRow, KernelSpecEntry } from '../../core/types';
+import { useLaunchKernelMutation } from '../../core/jegGatewayApi';
 
 interface RunningKernelPanelProps extends KernelRow {
   onOpenNotebook?: (kernelId: string) => void;
-  onTerminateKernel?: (kernelId: string) => void;
   forceTerminate?: boolean;
   containerUptimeMinutes?: number;
-  rowSpec: KernelSpecEntry;
+  rowSpec?: KernelSpecEntry;
 }
 
-const RunningKernelPanel = ({
+const ActiveKernelInfoPanel = ({
   kernelId,
   executionState,
   kernelName,
   onOpenNotebook,
-  onTerminateKernel,
   forceTerminate = false,
   containerUptimeMinutes,
   rowSpec,
 }: RunningKernelPanelProps) => {
   const state = (executionState || '').toLowerCase();
+  const [
+    terminateKernel,
+    { isLoading: isTerminatingLoading, isError: isTerminatingError },
+  ] = useLaunchKernelMutation();
   const isStaleOrIdle = state === 'idle';
   return (
     <div
-      role="listitem"
       key={kernelId}
       className={`min-w-0 rounded-xl border border-base-lighter bg-white p-6 shadow-sm transition hover:shadow-md ${
         isStaleOrIdle
@@ -114,8 +116,8 @@ const RunningKernelPanel = ({
         </Button>
         <Button
           aria-label={`${forceTerminate ? 'Force terminate' : 'Terminate'} ${kernelName || 'python3'} kernel`}
-          onClick={() => onTerminateKernel?.(kernelId)}
-          disabled={!onTerminateKernel}
+          onClick={() => terminateKernel(kernelId)}
+          loading={isTerminatingLoading}
           variant="light"
           className="flex-1 border-primary-light/70"
         >
@@ -125,3 +127,5 @@ const RunningKernelPanel = ({
     </div>
   );
 };
+
+export default ActiveKernelInfoPanel;

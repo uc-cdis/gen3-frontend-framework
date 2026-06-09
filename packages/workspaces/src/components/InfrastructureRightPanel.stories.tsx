@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
-
 import InfrastructureRightPanel from './InfrastructureRightPanel';
-import { KERNEL_DEFAULT_ARGS } from './KernelLifecyclePanel.stories';
+import { KERNEL_DEFAULT_ARGS } from './KernelLifecylcePanel/KernelLifecyclePanel.stories';
 
 const meta = {
-  title: "Workspace Components/InfrastructureRightPanel",
+  title: 'Workspace Components/InfrastructureRightPanel',
   component: InfrastructureRightPanel,
 } satisfies Meta<typeof InfrastructureRightPanel>;
 
@@ -17,7 +16,7 @@ export const Default: Story = {
   args: {
     kernelPanel: KERNEL_DEFAULT_ARGS,
     upgradePanel: {
-      currentTier: "free",
-    }
-  }
+      currentTier: 'free',
+    },
+  },
 };

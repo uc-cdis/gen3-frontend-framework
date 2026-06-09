@@ -17,9 +17,15 @@ export interface KernelsAndSpecsQueryResult {
   error: FetchBaseQueryError | SerializedError | undefined;
 }
 
-export const useKernelsAndSpecsQuery = (): KernelsAndSpecsQueryResult => {
-  const kernelsResult = useKernelsQuery();
-  const kernalSpecsResult = useKernalSpecsQuery();
+export const useKernelsAndSpecsQuery = (
+  polling: number = 5000,
+): KernelsAndSpecsQueryResult => {
+  const kernelsResult = useKernelsQuery(undefined, {
+    pollingInterval: polling,
+  });
+  const kernalSpecsResult = useKernalSpecsQuery(undefined, {
+    pollingInterval: polling,
+  });
 
   return {
     kernels: kernelsResult.data ?? [],

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
-import KernelLifecyclePanel from './KernelLifecylcePanel/KernelLifecyclePanel';
-import { KernelLifecyclePanelProps } from '../workspace/HostedWorkspace';
+import KernelLifecyclePanel from './KernelLifecyclePanel';
+import { KernelLifecyclePanelProps } from '../../workspace/HostedWorkspace';
 
 const meta = {
   title: 'Workspace Components/KernelLifecyclePanel',
