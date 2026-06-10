@@ -27,8 +27,7 @@ const AccessDescriptor: FieldRendererFunction = (resource: JSONValue) => {
   ) {
     return (
       <Alert color="green">
-        {' '}
-        <UnlockedIcon className="text-utility-warning" />
+        <UnlockedIcon className="text-utility-warning inline-block mr-2 -mt-[4px]" />
         You have access to this study.
       </Alert>
     );
