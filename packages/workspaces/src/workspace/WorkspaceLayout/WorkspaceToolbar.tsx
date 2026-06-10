@@ -2,17 +2,30 @@ import React from 'react';
 import { ActionIcon, Badge, Group, Stack, Text } from '@mantine/core';
 import { Icon } from '@iconify-icon/react';
 import { TierToolbarConfiguration } from '../Tiers/types';
-import { useWorkspaceCenterContext } from '../WorkspaceCenterContext';
+import {
+  CoreState,
+  selectWorkspaceTier,
+  setWorkspaceTier,
+  useCoreDispatch,
+  useCoreSelector,
+} from '@gen3/core';
+import { WorkspaceTier } from '../../types';
+import { useDisclosure } from '@mantine/hooks';
 
 interface WorkspaceToolbarProps {
   toolbarConfiguration?: TierToolbarConfiguration;
 }
 
 const WorkspaceToolbar = ({ toolbarConfiguration }: WorkspaceToolbarProps) => {
-  const { workspaceTier, setWorkspaceTier } = useWorkspaceCenterContext();
+  const workspaceTier = useCoreSelector(
+    (state: CoreState) => selectWorkspaceTier(state) as WorkspaceTier | null,
+  );
+  const [toolsExpanded, { toggle: toggleTools }] = useDisclosure(true);
+
+  const coreDispatch = useCoreDispatch();
 
   const returnToWorkspaceSelection = () => {
-    setWorkspaceTier(null);
+    coreDispatch(setWorkspaceTier(null));
   };
 
   return (

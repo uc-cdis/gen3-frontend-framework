@@ -17,6 +17,12 @@ import { ExtractValueFromObject } from './extractvalues';
 export * from './conversions';
 
 export {
+  normalizeRtkError,
+  type NormalizedErrorType,
+  type NormalizedError,
+} from './normalizeRtkError';
+
+export {
   isObject,
   isString,
   isNotDefined,

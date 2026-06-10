@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Group, Select, Text } from '@mantine/core';
-import ConnectionStatusBadge from '../ConnectionStatusBadge';
+import React from 'react';
+import { Button, Group, Text } from '@mantine/core';
+import ConnectionStatusBadge from './ConnectionStatusBadge';
 import type { GatewayConnectionState } from '../../hooks/useGatewayConnection';
-import { useKernelsAndSpecsQuery } from '../../core/hooks';
 import { InfoRolloverButton } from '@gen3/frontend';
 import ActiveKernelsPanel from './ActiveKernelsPanel';
 import { useLaunchKernelMutation } from '../../core/jegGatewayApi';
+import GatewayConnectionPanel from './GatewayConnectionPanel';
+import KernelSelector from './KernelSelector';
+import { KernelSelection } from './types';
+import { useKernalSpecsQuery } from '../../core/kernelApi';
 
 // const JEGGatewayMessage = (gateway) => {
 //   if (!jegEnabled) return null;
@@ -19,11 +22,6 @@ import { useLaunchKernelMutation } from '../../core/jegGatewayApi';
 
 interface LaunchKernelInput {
   kernelName: string;
-}
-
-interface KernelSelection {
-  kernelName?: string;
-  kernelId?: string;
 }
 
 export interface KernelLifecyclePanelProps {
@@ -67,81 +65,39 @@ const KernelLifecyclePanel = ({
 }: KernelLifecyclePanelProps) => {
   const notice = undefined;
 
-  // get the possible kernels
-  const { kernels, kernelSpecs, isLoading, isError, error } =
-    useKernelsAndSpecsQuery(5000);
+  const {
+    data: kernelSpecs,
+    isLoading,
+    isError,
+    error,
+  } = useKernalSpecsQuery();
+
+  // get the function to launch kernels
   const [
     launchKernel,
-    { isLoading: isLaunchingLoading, isError: isLaunchingError },
+    {
+      isLoading: isLaunchingLoading,
+      isError: isLaunchingError,
+      isSuccess: isLaunchingSuccess,
+    },
   ] = useLaunchKernelMutation();
-
-  const displayRows = kernels.map((k) => ({
-    kernelId: k.id,
-    kernelName: k.name,
-    executionState: k.executionState,
-  }));
-
-  const [selectedKernelName, setSelectedKernelName] = useState<string>(
-    kernelSpecs?.[0]?.name || 'python3',
-  );
 
   const handleLaunchKernel = async (kernelName: string) => {
     try {
       // .unwrap() forces the promise to reject on HTTP failure
-      await launchKernel(kernelName).unwrap();
+      const results = await launchKernel(kernelName).unwrap();
+      console.log('Launch kernel results:', results);
     } catch (error) {
       console.error('Launch kernel failed!', error);
       // The user can now manually hit "Submit" again to retry safely
     }
   };
 
-  // When specs arrive after first render (async load), reset selectedKernelName
-  // if the current value is no longer a valid spec name.
-  useEffect(() => {
-    if (kernelSpecs?.length > 0) {
-      setSelectedKernelName((prev) => {
-        if (!kernelSpecs?.find((s) => s.name === prev)) {
-          return kernelSpecs?.[0]?.name || 'python3';
-        }
-        return prev;
-      });
-    }
-  }, [kernelSpecs]);
-
   // Billing banner: show when any active kernel has a cost > 0
-  const selectedSpec = kernelSpecs?.find((s) => s.name === selectedKernelName);
-  const selectedSpecCost = selectedSpec?.costPerHour ?? 0;
-  const resourceTags = selectedSpec
-    ? ((
-        [
-          selectedSpec.cpu && {
-            label: 'CPU',
-            value: selectedSpec.cpu,
-            gpu: false,
-          },
-          selectedSpec.memory && {
-            label: 'RAM',
-            value: selectedSpec.memory,
-            gpu: false,
-          },
-          selectedSpec.gpuType && {
-            label: 'GPU',
-            value: selectedSpec.gpuType,
-            gpu: true,
-          },
-        ] as const
-      ).filter(Boolean) as { label: string; value: string; gpu: boolean }[])
-    : [];
   const activeKernelSpec = activeKernelName
     ? kernelSpecs?.find((s) => s.name === activeKernelName)
     : null;
   const billingActive = (activeKernelSpec?.costPerHour ?? 0) > 0;
-
-  useEffect(() => {
-    onKernelSelectionChange?.({
-      kernelName: selectedKernelName || undefined,
-    });
-  }, [selectedKernelName, onKernelSelectionChange]);
 
   return (
     <div className="flex flex-col overflow-hidden gap-y-4 p-2">
@@ -154,6 +110,7 @@ const KernelLifecyclePanel = ({
           size="sm"
         />
       </Group>
+      <GatewayConnectionPanel />
       <div className="flex items-center gap-2">
         {connectionState && (
           <ConnectionStatusBadge
@@ -207,90 +164,10 @@ const KernelLifecyclePanel = ({
         </p>
       )}
 
-      <div className="mt-5 rounded-xl border border-base-lighter bg-base-max p-5">
-        <Group gap="xs">
-          <p className="text-xs font-bold uppercase tracking-wider text-base-darker">
-            Launch Kernel
-          </p>
-          <InfoRolloverButton label="Launch and manage compute kernels." />
-        </Group>
-        <div className="mt-4 space-y-4">
-          <div>
-            {/*<label htmlFor="klp-kernel-spec" className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-base-dark">Kernel Spec</label>*/}
-            <Select
-              id="klp-kernel-spec"
-              value={selectedKernelName}
-              onChange={(value) => setSelectedKernelName(value as string)}
-              data={
-                kernelSpecs?.length === 0
-                  ? [{ value: 'python3', label: 'python3' }]
-                  : kernelSpecs?.map((spec) => {
-                      const parts: string[] = [];
-                      if (spec.cpu) parts.push(`${spec.cpu} CPU`);
-                      if (spec.memory) parts.push(spec.memory);
-                      if (spec.gpuType) parts.push(spec.gpuType);
-                      const resources =
-                        parts.length > 0 ? ` · ${parts.join(' · ')}` : '';
-                      const cost =
-                        spec.costPerHour != null && spec.costPerHour > 0
-                          ? ` — $${spec.costPerHour.toFixed(2)}/hr`
-                          : spec.nodeType === 'micro'
-                            ? ' — included'
-                            : '';
-                      return {
-                        value: spec.name,
-                        label: `${spec.displayName}${resources}${cost}`,
-                      };
-                    })
-              }
-              label="Kernels"
-            />
-            {selectedSpecCost > 0 && (
-              <p className="mt-1 text-xs text-accentWarm-dark">
-                GPU kernels auto-terminate after 4h idle. Max 1 GPU kernel per
-                user.
-              </p>
-            )}
-          </div>
-
-          {/* Resource summary for the selected spec */}
-          {resourceTags.length > 0 && (
-            <div className="flex flex-wrap gap-2 text-xs">
-              {resourceTags.map(({ label, value, gpu }) => (
-                <span
-                  key={label}
-                  className={`rounded-full px-2.5 py-1 font-semibold ${
-                    gpu
-                      ? 'bg-accent-max text-accent-dark'
-                      : 'bg-base-lightest text-base-darkest'
-                  }`}
-                >
-                  {label}: {value}
-                </span>
-              ))}
-            </div>
-          )}
-
-          <Button
-            onClick={() => handleLaunchKernel(selectedKernelName || 'python3')}
-            loading={isLaunchingLoading}
-            className="w-full"
-          >
-            {launching ? 'Working...' : 'Launch Kernel'}
-          </Button>
-        </div>
-      </div>
-
-      {isLoading && (
-        <p role="status" className="mt-4 text-sm text-base-darker">
-          Loading kernels...
-        </p>
-      )}
-      {isError && (
-        <p role="alert" className="mt-4 text-sm text-primary">
-          {error ? "Couldn't load kernels." : 'Unknown error.'}
-        </p>
-      )}
+      <KernelSelector
+        handleLaunchKernel={handleLaunchKernel}
+        isLaunchingLoading={isLaunchingLoading}
+      />
       <ActiveKernelsPanel />
     </div>
   );

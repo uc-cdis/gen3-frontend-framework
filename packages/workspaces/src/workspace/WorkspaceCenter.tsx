@@ -1,12 +1,17 @@
-import React, { useMemo, useState } from 'react';
-import { WorkspaceTier } from '../types';
+import React, { useMemo } from 'react';
 import TierSelectorLanding from '../components/TierSelectorLanding';
 import FreeWorkspace from '../workspace/Tiers/FreeWorkspace';
 import RemoteWorkspace from '../workspace/Tiers/RemoteWorkspace';
 import { WorkspacesCenterConfiguration } from '../workspace/types';
 import WorkspaceLayout from '../workspace/WorkspaceLayout/WorkspaceLayout';
-import WorkspaceCenterContext from './WorkspaceCenterContext';
-import { useUserAuth } from '@gen3/core';
+import {
+  CoreState,
+  selectWorkspaceTier,
+  setWorkspaceTier,
+  useCoreDispatch,
+  useCoreSelector,
+  useUserAuth,
+} from '@gen3/core';
 import { MicroContainerProvider } from '../providers/MicroContainerProvider';
 
 export type WorkspaceAuthContext = {
@@ -21,9 +26,16 @@ const WorkspaceCenter = ({
   workspaces,
   landingPage,
 }: WorkspacesCenterConfiguration) => {
-  const [workspaceTier, setWorkspaceTier] = useState<WorkspaceTier | null>(
-    null,
+  // get the workspace tier from the core store allowing persistent state across page reloads and navigation changes
+  const workspaceTier = useCoreSelector((state: CoreState) =>
+    selectWorkspaceTier(state),
   );
+
+  const coreDispatch = useCoreDispatch();
+
+  const handleSelectTier = (tier: string) => {
+    coreDispatch(setWorkspaceTier(tier));
+  };
 
   const {
     data: userData,
@@ -61,7 +73,7 @@ const WorkspaceCenter = ({
     return (
       <TierSelectorLanding
         cards={workspaces}
-        onSelectTier={setWorkspaceTier}
+        onSelectTier={handleSelectTier}
         label={landingPage?.label}
         description={landingPage?.description}
         additionalDescriptions={landingPage?.additionalDescriptions}
@@ -70,27 +82,23 @@ const WorkspaceCenter = ({
     );
   }
   return (
-    <WorkspaceCenterContext.Provider
-      value={{ workspaceTier, setWorkspaceTier }}
-    >
-      <WorkspaceLayout>
+    <WorkspaceLayout>
+      {
         {
-          {
-            free: <FreeWorkspace />,
-            local: <div>Local Workspace</div>,
-            remote: (
-              <MicroContainerProvider enabled={true}>
-                <RemoteWorkspace
-                  tenantId={authContext?.tenantId || 'default'}
-                  workspaceId={authContext?.workspaceId || 'workspace-default'}
-                  userId={authContext?.username || 'anonymous'}
-                />
-              </MicroContainerProvider>
-            ),
-          }[workspaceTier as string]
-        }
-      </WorkspaceLayout>
-    </WorkspaceCenterContext.Provider>
+          free: <FreeWorkspace />,
+          local: <div>Local Workspace</div>,
+          remote: (
+            <MicroContainerProvider enabled={true}>
+              <RemoteWorkspace
+                tenantId={authContext?.tenantId || 'default'}
+                workspaceId={authContext?.workspaceId || 'workspace-default'}
+                userId={authContext?.username || 'anonymous'}
+              />
+            </MicroContainerProvider>
+          ),
+        }[workspaceTier as string]
+      }
+    </WorkspaceLayout>
   );
 };
 

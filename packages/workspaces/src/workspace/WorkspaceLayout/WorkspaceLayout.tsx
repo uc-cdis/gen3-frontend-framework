@@ -4,9 +4,10 @@ import ToolsPanel from './ToolsPanel';
 import SettingsPanel from '../../workspace/WorkspaceLayout/SettingsPanel';
 import WorkspaceToolbar from './WorkspaceToolbar';
 import { WORKSPACE_TIER_INFORMATION } from '../../config';
-import { useWorkspaceCenterContext } from '../../workspace/WorkspaceCenterContext';
 import { Collapse } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { CoreState, selectWorkspaceTier, useCoreSelector } from '@gen3/core';
+import { WorkspaceTier } from '../../types';
 
 interface WorkspaceLayoutProps {
   children: ReactNode;
@@ -17,11 +18,15 @@ interface WorkspaceLayoutProps {
 
 const WorkspaceLayout = ({
   children,
-  className,
+  className, // TODO: add support for className
   toolbarExtra,
 }: WorkspaceLayoutProps) => {
-  const { workspaceTier } = useWorkspaceCenterContext();
+  const workspaceTier = useCoreSelector(
+    (state: CoreState) => selectWorkspaceTier(state) as WorkspaceTier | null,
+  );
   const [toolsExpanded, { toggle: toggleTools }] = useDisclosure(true);
+
+  if (!workspaceTier) return null;
 
   return (
     <div className="flex flex-col w-full grow">

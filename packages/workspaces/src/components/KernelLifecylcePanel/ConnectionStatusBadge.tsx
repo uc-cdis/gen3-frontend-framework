@@ -1,26 +1,34 @@
 import React from 'react';
-import { Badge, Loader } from '@mantine/core';
-import type { GatewayConnectionState } from '../hooks/useGatewayConnection';
+import { Badge, Button, Loader } from '@mantine/core';
+import type { GatewayConnectionState } from '../../hooks/useGatewayConnection';
 
 export interface ConnectionStatusBadgeProps {
   state: GatewayConnectionState;
   /** Called when user clicks the "Retry" link in error state. */
   onRetry?: () => void;
-};
+}
 
 /**
  * Small inline indicator rendered inside KernelLifecyclePanel header.
  * In 'reconnecting' state the lifecycle panel and iframe remain visible —
  * this badge is the ONLY signal to the user, preserving their workflow.
  */
-const ConnectionStatusBadge = ({ state, onRetry }: ConnectionStatusBadgeProps) => {
+const ConnectionStatusBadge = ({
+  state,
+  onRetry,
+}: ConnectionStatusBadgeProps) => {
   if (state === 'idle') return null;
 
   if (state === 'connected') {
     return (
       <Badge
         variant="light"
-        leftSection={<span className="h-1.5 w-1.5 rounded-full bg-accent-dark" aria-hidden="true" />}
+        leftSection={
+          <span
+            className="h-1.5 w-1.5 rounded-full bg-accent-dark"
+            aria-hidden="true"
+          />
+        }
         color="accent"
         className="normal-case"
         role="status"
@@ -77,15 +85,13 @@ const ConnectionStatusBadge = ({ state, onRetry }: ConnectionStatusBadgeProps) =
       <Badge
         variant="light"
         leftSection={<span aria-hidden="true">✕</span>}
-        rightSection={onRetry ? (
-          <button
-            onClick={onRetry}
-            aria-label="Retry kernel connection"
-            className="rounded underline hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1"
-          >
-            Retry
-          </button>
-        ) : null}
+        rightSection={
+          onRetry ? (
+            <Button onClick={onRetry} aria-label="Retry kernel connection">
+              Retry
+            </Button>
+          ) : null
+        }
         className="normal-case"
         role="alert"
       >

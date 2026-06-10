@@ -106,3 +106,12 @@ export type GatewaySession = {
     connections: number;
   };
 };
+
+export type GatewayConnectionState =
+  | 'idle'
+  | 'launching'
+  | 'attaching'
+  | 'connected'
+  | 'reconnecting' // transient — iframe + lifecycle panel remain visible
+  | 'error'
+  | 'unavailable';  // JEG not configured for this deployment — no polling, no retry

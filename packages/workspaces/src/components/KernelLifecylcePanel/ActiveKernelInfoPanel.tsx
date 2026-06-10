@@ -1,6 +1,6 @@
 import React from 'react';
 import { formatUptimeInMinutes } from '@gen3/core';
-import { Button } from '@mantine/core';
+import { Badge, Button } from '@mantine/core';
 import { KernelRow, KernelSpecEntry } from '../../core/types';
 import { useTerminateKernelMutation } from '../../core/jegGatewayApi';
 
@@ -64,15 +64,9 @@ const ActiveKernelInfoPanel = ({
                       </p>
                     )*/}
         </div>
-        <span
-          className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide ${
-            isStaleOrIdle
-              ? 'bg-accentWarm-max text-accentWarm-dark'
-              : 'bg-accent-max text-accent-dark'
-          }`}
-        >
+        <Badge color={isStaleOrIdle ? 'accentWarm.4' : 'accent.4'}>
           {isStaleOrIdle ? 'Stale/Idle' : 'Active'}
-        </span>
+        </Badge>
       </div>
 
       <div className="rounded-lg bg-base-lightest bg-opacity-50 p-4 text-xs text-base-darkest m-2">
