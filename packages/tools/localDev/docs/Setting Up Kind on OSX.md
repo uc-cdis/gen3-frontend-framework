@@ -70,8 +70,8 @@ mkdir ~/ssl_certs
 mkcert -cert-file ~/ssl_certs/cert.pem -key-file ~/ssl_certs/key.pem gen3dev.local.io localhost 127.0.0.1
 
 # This creates:
-# - gen3dev.local.io+2.pem (certificate)
-# - gen3dev.local.io+2-key.pem (private key)
+# - ~/ssl_certs/cert.pem (certificate)
+# - ~/ssl_certs/key.pem (private key)
 ```
 
 ### Option 2: Use host.docker.internal (Simpler)
@@ -82,8 +82,8 @@ mkdir ~/ssl_certs
 mkcert -cert-file ~/ssl_certs/cert.pem -key-file ~/ssl_certs/key.pem host.docker.internal localhost 127.0.0.1
 
 # This creates:
-# - host.docker.internal+2.pem (certificate)
-# - host.docker.internal+2-key.pem (private key)
+# - ~/ssl_certs/cert.pem (certificate)
+# - ~/ssl_certs/key.pem (private key)
 ```
 
 ### Create Kubernetes TLS Secret
@@ -100,8 +100,8 @@ kubectl create secret tls gen3-local-tls --cert=$HOME/ssl_certs/cert.pem --key=$
 
 ```bash
 kubectl create secret tls gen3-local-tls \
-  --cert=host.docker.internal+2.pem \
-  --key=host.docker.internal+2-key.pem
+  --cert=$HOME/ssl_certs/cert.pem \
+  --key=$HOME/ssl_certs/key.pem
 ```
 
 ```bash
@@ -130,7 +130,7 @@ metadata:
 spec:
   tls:
     - hosts:
-        - localhost
+        - gen3dev.local.io
       secretName: gen3-local-tls
   rules:
     - host: "gen3dev.local.io"
@@ -163,7 +163,7 @@ kubectl create secret generic mkcert-ca --from-file=ca.crt="$CAROOT/rootCA.pem"
 
 # Verify the secret was created
 kubectl get secret mkcert-ca
-
+```
 Note that mkcert should add your CA to the system-wide trust store. If not you will need to add them to OSX
 keychain and trust them.
 
@@ -171,11 +171,13 @@ keychain and trust them.
 
 If you are running frontend development on https://localhost:3000 you will need to follow
 these instructions to update the Content-Security-Policy:
-```
+
+```bash
  kubectl edit configmap ingress-nginx-controller -n ingress-nginx
 ```
 add to the end of the file:
-```
+
+```bash
 data:
   allow-snippet-annotations: "true"
   annotations-risk-level: Critical
@@ -184,11 +186,11 @@ data:
 write the config and exit: It will reload and allow snippets used
 by running
 ```bash
- :qingress-local-dev.yaml
+ kubectl apply -f ingress-local-dev.yaml
 ```
 or use in the alternate config below:
 
-```
+```yaml
 #
 # Version to support development with iframes which add https://localhost:3010
 # to the Content-Security-Policy for iframes
@@ -206,7 +208,7 @@ or use in the alternate config below:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ngress-nginx-controller
+  name: ingress-nginx-controller
   namespace: default
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
