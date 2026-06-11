@@ -6,9 +6,9 @@ export interface RemoteSupportRequest {
 }
 
 export interface RemoteSupportConfiguration {
-  custom_fields: Record<string, string>[];
+  custom_fields?: Record<string, string>[];
   zendeskSubdomainName: string;
-  [key:string]: string | Record<string, string>[];
+  [key:string]: string | Record<string, string>[] | unknown;
 };
 
 export type RemoteSupportRequestAction = (

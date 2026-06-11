@@ -19,7 +19,7 @@ and example configuration:
         "custom_fields": [
           {
             "id": 32585806184851, // ID for Gen3 Platform
-            "value": "gen3_platform_mc2dp"
+            "value": "test" // must match zendesk value
           }
         ]
       }
@@ -73,6 +73,26 @@ and example configuration:
 }
 
 
+```
+
+### Request ticket service configuration
+The `remoteSupportService` configuration defines where the user's request for access is sent. Currently, we only support zendDesk
+so the only field to set is `zendeskSubdomainName` which should be the zendDesk subdomain for your commons.
+custom_fields passes any custom fields and their values this is currently used to define the platform
+
+```json
+  "remoteSupportService": {
+    "service": "zenDesk",
+    "configuration" : {
+      "zendeskSubdomainName": "gen3support",
+      "custom_fields": [
+        {
+          "id": 32585806184851, // ID for Gen3 Platform
+          "value": "test" // must match zendesk value
+        }
+      ]
+    }
+  },
 ```
 
 requestAccessForm is an instance of [Form](../../packages/frontend/docs/components/Form.md) component.
