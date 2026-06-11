@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Group, Text } from '@mantine/core';
 import ConnectionStatusBadge from './ConnectionStatusBadge';
 import type { GatewayConnectionState } from '../../hooks/useGatewayConnection';
@@ -52,7 +52,6 @@ export interface KernelLifecyclePanelProps {
 
 const KernelLifecyclePanel = ({
   launching = false,
-  connectionState,
   activeKernelName,
   containerUptimeMinutes,
   onRetryConnection,
@@ -64,6 +63,9 @@ const KernelLifecyclePanel = ({
   forceTerminate = false,
 }: KernelLifecyclePanelProps) => {
   const notice = undefined;
+
+  const [connectionState, setGatewayState] =
+    useState<GatewayConnectionState>('unavailable');
 
   const {
     data: kernelSpecs,
@@ -84,12 +86,15 @@ const KernelLifecyclePanel = ({
 
   const handleLaunchKernel = async (kernelName: string) => {
     try {
+      setGatewayState('launching');
       // .unwrap() forces the promise to reject on HTTP failure
       const results = await launchKernel(kernelName).unwrap();
       console.log('Launch kernel results:', results);
+      setGatewayState('connected');
     } catch (error) {
       console.error('Launch kernel failed!', error);
       // The user can now manually hit "Submit" again to retry safely
+      setGatewayState('error');
     }
   };
 
