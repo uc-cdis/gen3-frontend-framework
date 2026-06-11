@@ -5,7 +5,13 @@
     "remoteSupportService": {
       "service": "zenDesk",
       "configuration": {
-        "zendeskSubdomainName": "test-1234"
+        "zendeskSubdomainName": "gen3support",
+        "custom_fields": [
+          {
+            "id": 32585806184851,
+            "value": "test"
+          }
+        ]
       }
     },
     "label": "Workspace Request Access Form",

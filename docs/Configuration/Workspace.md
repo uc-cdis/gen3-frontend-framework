@@ -15,7 +15,13 @@ and example configuration:
     "remoteSupportService": {
       "service": "zenDesk",
       "configuration": {
-        "zendeskSubdomainName": "self-22514"
+        "zendeskSubdomainName": "gen3support",
+        "custom_fields": [
+          {
+            "id": 32585806184851, // ID for Gen3 Platform
+            "value": "gen3_platform_mc2dp"
+          }
+        ]
       }
     },
     "label": "Workspace Request Access Form",

@@ -5,7 +5,11 @@ export interface RemoteSupportRequest {
   contents: string;
 }
 
-export type RemoteSupportConfiguration = Record<string, string>;
+export interface RemoteSupportConfiguration {
+  custom_fields: Record<string, string>[];
+  zendeskSubdomainName: string;
+  [key:string]: string | Record<string, string>[];
+};
 
 export type RemoteSupportRequestAction = (
   requestData: RemoteSupportRequest,
