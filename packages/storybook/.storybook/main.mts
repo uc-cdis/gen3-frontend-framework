@@ -1,14 +1,6 @@
-// This file has been automatically migrated to valid ESM format by Storybook.
-import { fileURLToPath } from "node:url";
-import { createRequire } from "node:module";
-import { dirname } from "node:path";
 import path from 'path';
 import webpack from 'webpack';
 import type { StorybookConfig } from '@storybook/nextjs';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const require = createRequire(import.meta.url);
 
 const config: StorybookConfig = {
   stories: [
@@ -32,27 +24,27 @@ const config: StorybookConfig = {
     name: getAbsolutePath('@storybook/nextjs'),
     options: {
       builder: {
-        useSWC: true, // Enables SWC support
+        useSWC: true,
       },
       image: {
         loading: 'eager',
       },
-      nextConfigPath: path.resolve(__dirname, '../next.config.js'),
+      nextConfigPath: path.resolve(
+        path.dirname(import.meta.url.replace('file://', '')),
+        '../next.config.js',
+      ),
     },
   },
   staticDirs: ['../../sampleCommons/public'],
   webpackFinal: async (config) => {
     const imageRule = config.module?.rules?.find((rule) => {
       const test = (rule as { test: RegExp }).test;
-
-      if (!test) {
-        return false;
-      }
-
-      return test.test('.svg');
+      return test ? test.test('.svg') : false;
     }) as { [key: string]: any };
 
-    imageRule.exclude = /\.svg$/;
+    if (imageRule) {
+      imageRule.exclude = /\.svg$/;
+    }
 
     config.module?.rules?.push({
       test: /\.svg$/,
@@ -82,8 +74,14 @@ const config: StorybookConfig = {
     return config;
   },
 };
+
 export default config;
 
-function getAbsolutePath(value: string): any {
-  return path.dirname(require.resolve(path.join(value, 'package.json')));
+/**
+ * Modern ESM helper function that bypasses 'require' completely.
+ * Uses Node's native import.meta.resolve to map package paths cleanly.
+ */
+function getAbsolutePath(value: string): string {
+  const resolvedPath = import.meta.resolve(value);
+  return path.dirname(resolvedPath.replace('file://', ''));
 }
