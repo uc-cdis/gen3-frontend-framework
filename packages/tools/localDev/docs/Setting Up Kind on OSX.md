@@ -1,7 +1,50 @@
-# Setting up Kind
-To use kind instead of rancher-desktop.
+# Setting up Kind and Gen3 Helm Charts for development
+
+## Prerequisites
 
 - Install kind: https://kind.sigs.k8s.io/docs/user/quick-start
+- Install mkcert: https://github.com/FiloSottile/mkcert#installation
+-
+
+Read  [Local Development with Helm Charts.md](https://github.com/uc-cdis/gen3-frontend-framework/blob/b98ed9c54f6503ef47948cf1f7d3e611f6046060/docs/Local%20Development/Using%20Helm%20Charts/Local%20Development%20with%20Helm%20Charts.md)
+to setup helm charts
+
+If you are using gen3dev.lloca.io as your domain name:
+
+- gen3dev.local.io defined in /etc/hosts as:
+  - ```127.0.0.1 gen3dev.local.io```
+
+## Setup Kind
+
+You need to setup and configure a Kubernetes cluster to run gen3 helm charts. There are two options:
+
+1. Automatically with script
+2. Manual steps to set up kind
+
+The recommended option is to use the script.
+
+### Automatically with script:
+
+Recommended: `kind/setup-kind.sh` that will create a kind cluster and configure it for gen3 helm charts.
+
+1. Create a Kind cluster with proper networking
+2. Install the nginx ingress controller
+3. Generate mkcert SSL certificates and create K8s secrets
+4. Apply ingress configuration
+5. Configure CSP headers for workspace/iframe development
+6. Patch services with mkcert CA trust (appends CA, does not replace)
+
+The last two steps are optional, and are not always needed.
+
+If you run the script without any arguments it show the help.
+
+Runnign the script with the ```--all``` argument should create a cluster and configure it for gen3 helm charts.
+
+```bash
+./setup-kind-gen3.sh --all
+```
+
+### Manual steps to set up kind
 
 There are kind config files in ```packages/tools/localDev/kind``` or:
 
@@ -38,7 +81,7 @@ nodes:
   kind delete cluster --name=kind-multi-node
   ```
 
-## Set up ingress
+#### Set up ingress
   Notes from : https://dustinspecker.com/posts/test-ingress-in-kind/
 ```bash
   kubectl apply --filename https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/kind/deploy.yaml
@@ -48,7 +91,7 @@ nodes:
   --timeout=90s
 ```
 
-## Setting up a self-signed certificate
+#### Setting up a self-signed certificate
 
 You will need to create a self-signed certificate for the ingress. You can use mkcert to generate a certificate for
 localhost. You can install mkcert by following the instructions here: https://github.com/FiloSottile/mkcert#installation
@@ -62,7 +105,7 @@ add gen3dev.local.io to your hosts file `/etc/hosts`, by adding:
 
 You have two options for hostname configuration:
 
-### Option 1: Use gen3dev.local.io (Requires DNS Configuration)
+##### Option 1: Use gen3dev.local.io (Requires DNS Configuration)
 
 ```bash
 # Generate certificates for gen3dev.local.io and localhost
@@ -74,7 +117,7 @@ mkcert -cert-file ~/ssl_certs/cert.pem -key-file ~/ssl_certs/key.pem gen3dev.loc
 # - ~/ssl_certs/key.pem (private key)
 ```
 
-### Option 2: Use host.docker.internal (Simpler)
+##### Option 2: Use host.docker.internal (Simpler)
 
 ```bash
 mkdir ~/ssl_certs
@@ -86,17 +129,17 @@ mkcert -cert-file ~/ssl_certs/cert.pem -key-file ~/ssl_certs/key.pem host.docker
 # - ~/ssl_certs/key.pem (private key)
 ```
 
-### Create Kubernetes TLS Secret
+##### Create Kubernetes TLS Secret
 
 Create a Kubernetes secret with your SSL certificate:
 
-### If using gen3dev.local.io:
+##### If using gen3dev.local.io:
 
 ```bash
 kubectl create secret tls gen3-local-tls --cert=$HOME/ssl_certs/cert.pem --key=$HOME/ssl_certs/key.pem
 ```
 
-### If using host.docker.internal:
+##### If using host.docker.internal:
 
 ```bash
 kubectl create secret tls gen3-local-tls \
@@ -167,7 +210,7 @@ kubectl get secret mkcert-ca
 Note that mkcert should add your CA to the system-wide trust store. If not you will need to add them to OSX
 keychain and trust them.
 
-### Workspace support
+##### Workspace support
 
 If you are running frontend development on https://localhost:3000 you will need to follow
 these instructions to update the Content-Security-Policy:
