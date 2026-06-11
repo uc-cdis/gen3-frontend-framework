@@ -9,7 +9,7 @@ metadata:
 spec:
   tls:
   - hosts:
-    - localhost
+      - gen3dev.local.io
     secretName: gen3-local-tls
   rules:
     - host: "gen3dev.local.io"

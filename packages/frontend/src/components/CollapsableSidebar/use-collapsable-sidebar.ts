@@ -51,12 +51,12 @@ export function useCollapsableSidebar({
     opened ? {} : collapsedStyles,
   );
   const setStyles = (
-    newStyles: object | ((oldStyles: object) => object),
+    newStyles: CSSProperties | ((oldStyles: CSSProperties) => CSSProperties),
   ): void => {
     flushSync(() => setStylesRaw(newStyles));
   };
 
-  const mergeStyles = (newStyles: object): void => {
+  const mergeStyles = (newStyles: CSSProperties): void => {
     setStyles((oldStyles) => ({ ...oldStyles, ...newStyles }));
   };
 
