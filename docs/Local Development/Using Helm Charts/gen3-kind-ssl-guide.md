@@ -24,8 +24,8 @@ mkdir ~/ssl_certs
 mkcert -cert-file ~/ssl_certs/cert.pem -key-file ~/ssl_certs/key.pem gen3dev.local.io localhost 127.0.0.1
 
 # This creates:
-# - gen3dev.local.io+2.pem (certificate)
-# - gen3dev.local.io+2-key.pem (private key)
+# - ~/ssl_certs/cert.pem (certificate)
+# - ~/ssl_certs/key.pem (private key)
 ```
 
 
@@ -36,11 +36,11 @@ mkdir ~/ssl_certs
 mkcert -cert-file ~/ssl_certs/cert.pem -key-file ~/ssl_certs/key.pem host.docker.internal localhost 127.0.0.1
 
 # This creates:
-# - host.docker.internal+2.pem (certificate)
-# - host.docker.internal+2-key.pem (private key)
+# - ~/ssl_certs/cert.pem (certificate)
+# - ~/ssl_certs/key.pem (private key)
 ```
 
-Note: the ~/ssl_cert directory is read by the npm run setProxy command for 
+Note: the ~/ssl_cert directory is read by the npm run setProxy command for
 proxying to gen3 services for gen3 frontend development.
 
 ## Step 2: Create Kubernetes TLS Secret
@@ -49,14 +49,14 @@ Create a Kubernetes secret with your SSL certificate:
 
 ### If using gen3dev.local.io:
 ```bash
-kubectl create secret tls gen3-local-tls --cert=$HOME/ssl_certs/cert.pem --key=$HOME/ssl_certs/key.pem 
+kubectl create secret tls gen3-local-tls --cert=$HOME/ssl_certs/cert.pem --key=$HOME/ssl_certs/key.pem
 ```
 
 ### If using host.docker.internal:
 ```bash
 kubectl create secret tls gen3-local-tls \
-  --cert=host.docker.internal+2.pem \
-  --key=host.docker.internal+2-key.pem
+  --cert=$HOME/ssl_certs/cert.pem \
+  --key=$HOME/ssl_certs/key.pem
 ```
 
 ```bash
@@ -343,49 +343,36 @@ kubectl exec $POD_NAME -- env | grep -E "(SSL|CA|CERT)"
 
 ## Automation Script
 
-For future cluster recreations, you can combine all these steps into a script:
+All of these steps are automated in `packages/tools/localDev/kind/setup-kind-gen3.sh`:
 
 ```bash
-#!/bin/bash
+# Full setup from scratch (cluster + ingress + SSL)
+./setup-kind-gen3.sh --all
 
-echo "Setting up Gen3 SSL certificates..."
+# Full setup + patch services with CA trust
+./setup-kind-gen3.sh --all --patch-ca revproxy,requestor,fence,hatchery
 
-# Choose your hostname approach
-HOSTNAME="host.docker.internal"  # or "gen3dev.local.io"
+# Full setup + workspace/iframe CSP support
+./setup-kind-gen3.sh --all --setup-csp
 
-# Generate certificates if they don't exist
-if [ ! -f "${HOSTNAME}+2.pem" ]; then
-    mkcert $HOSTNAME localhost 127.0.0.1
-fi
+# Just regenerate SSL and patch services
+./setup-kind-gen3.sh --setup-ssl --patch-ca revproxy,fence
 
-# Create TLS secret
-kubectl create secret tls gen3-local-tls \
-  --cert=${HOSTNAME}+2.pem \
-  --key=${HOSTNAME}+2-key.pem
+# Use host.docker.internal instead
+./setup-kind-gen3.sh --all --hostname host.docker.internal
 
-# Create CA secret
-CAROOT=$(mkcert -CAROOT)
-kubectl create secret generic mkcert-ca --from-file=ca.crt="$CAROOT/rootCA.pem"
-
-# Patch ingress
-kubectl patch ingress gen3-revproxy --type='merge' -p="{
-  \"spec\": {
-    \"tls\": [{\"hosts\": [\"$HOSTNAME\"], \"secretName\": \"gen3-local-tls\"}],
-    \"rules\": [{\"host\": \"$HOSTNAME\", \"http\": {\"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\", \"backend\": {\"service\": {\"name\": \"revproxy-service\", \"port\": {\"number\": 80}}}}]}}]
-  }
-}"
-
-# Wait for services to be ready
-kubectl wait --for=condition=available deployment/revproxy-deployment --timeout=300s
-kubectl wait --for=condition=available deployment/requestor-deployment --timeout=300s
-
-# Apply CA patches
-kubectl patch deployment revproxy-deployment --patch-file simple-direct-ca-patch.yaml
-kubectl patch deployment requestor-deployment --patch-file requestor-ca-bundle-patch.yaml
-
-echo "SSL setup complete!"
-echo "Access your Gen3 cluster at: https://$HOSTNAME"
+# See all options
+./setup-kind-gen3.sh --help
 ```
+
+The script handles:
+
+- Kind cluster creation with the correct config for your platform
+- Nginx ingress controller installation
+- mkcert certificate generation and K8s secret creation
+- Ingress configuration for your chosen hostname
+- CSP headers for workspace/iframe development
+- CA trust patching that **appends** the mkcert CA to the system CA bundle (does not replace it)
 
 ## Summary
 
