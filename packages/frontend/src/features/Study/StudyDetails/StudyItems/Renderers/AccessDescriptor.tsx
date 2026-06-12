@@ -14,10 +14,8 @@ import { LuLockOpen as UnlockedIcon } from 'react-icons/lu';
 const AccessDescriptor: FieldRendererFunction = (resource: JSONValue) => {
   if (
     resource === null ||
-    typeof resource !== 'object' /*
-    COMMENTING THIS OUT WILL BE IMPLEMENTED UNTIL HP-2378
-    ||
-    !(accessibleFieldName in resource) */
+    typeof resource !== 'object' ||
+    !(accessibleFieldName in resource)
   ) {
     return <></>;
   }
