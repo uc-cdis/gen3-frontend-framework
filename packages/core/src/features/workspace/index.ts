@@ -25,6 +25,21 @@ import {
 
 import { selectWorkspaceTier, setWorkspaceTier } from './tieredWorkspaceSlice';
 
+import {
+  addJEGActiveKernel,
+  clearJEGActiveKernels,
+  removeJEGActiveKernel,
+  removeManyJEGActiveKernels,
+  updateJEGActionKernelStatus,
+  upsertManyJEGActiveKernels,
+} from './jegKernelSlice';
+
+import {
+  selectAllJEGKernels,
+  selectJEGKernelById,
+  selectJEGKernelIds,
+} from './jegKernelSelector';
+
 export * from './types';
 export * from './utils';
 
@@ -51,4 +66,13 @@ export {
   selectRequestedWorkspaceStatusTimestamp,
   selectPaymodelStatus,
   selectWorkspaceTier,
+  addJEGActiveKernel,
+  upsertManyJEGActiveKernels,
+  removeJEGActiveKernel,
+  removeManyJEGActiveKernels,
+  clearJEGActiveKernels,
+  updateJEGActionKernelStatus,
+  selectAllJEGKernels,
+  selectJEGKernelById,
+  selectJEGKernelIds,
 };

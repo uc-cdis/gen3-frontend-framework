@@ -21,14 +21,19 @@ interface UpdateKernelStatusParams {
 
 const initialState = workspaceKernelsAdapter.getInitialState([]);
 
+/**
+ *  Handles the state of the active kernels in the workspace.
+ */
 export const workspaceKernelsSlice = createSlice({
   name: 'workspaceKernels',
   initialState: initialState,
   reducers: {
-    addKernel: workspaceKernelsAdapter.addOne,
-    removeKernel: workspaceKernelsAdapter.removeOne,
-    clearKernels: workspaceKernelsAdapter.removeAll,
-    updateKernelStatus: (
+    addJEGActiveKernel: workspaceKernelsAdapter.addOne,
+    upsertManyJEGActiveKernels: workspaceKernelsAdapter.upsertMany,
+    removeJEGActiveKernel: workspaceKernelsAdapter.removeOne,
+    removeManyJEGActiveKernels: workspaceKernelsAdapter.removeMany,
+    clearJEGActiveKernels: workspaceKernelsAdapter.removeAll,
+    updateJEGActionKernelStatus: (
       state,
       action: PayloadAction<UpdateKernelStatusParams>,
     ) => {
@@ -36,7 +41,7 @@ export const workspaceKernelsSlice = createSlice({
       workspaceKernelsAdapter.updateOne(state, {
         id: id,
         changes: {
-          lastActivity: Date.now(),
+          lastActivity: new Date().toISOString(),
           executionState: status,
         },
       });
@@ -46,8 +51,11 @@ export const workspaceKernelsSlice = createSlice({
 
 export const workspaceKernelReducer = workspaceKernelsSlice.reducer;
 
-export const { addKernel, removeKernel, clearKernels, updateKernelStatus } =
-  workspaceKernelsSlice.actions;
-
-export const { selectAll: selectAllKernels, selectById: selectKernelById } =
-  workspaceKernelsAdapter.getSelectors();
+export const {
+  addJEGActiveKernel,
+  upsertManyJEGActiveKernels,
+  removeJEGActiveKernel,
+  removeManyJEGActiveKernels,
+  clearJEGActiveKernels,
+  updateJEGActionKernelStatus,
+} = workspaceKernelsSlice.actions;

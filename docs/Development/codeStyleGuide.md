@@ -262,7 +262,7 @@ local-only state into the Redux store.
 | Utility / helper     | camelCase `.ts`                      | `calculateLaunchSteps.ts`    |
 | Type definitions     | `types.ts` or colocated with feature | `types.ts`                   |
 | Constants            | `constants.ts`                       | `constants.ts`               |
-| Barrel export        | `index.ts` or `index.tsx`            | `index.ts`                   |
+| Barrel export        | `callback.ts` or `index.tsx`         | `callback.ts`                |
 | Unit test            | `.unit.test.ts` / `.unit.test.tsx`   | `cohortManager.unit.test.ts` |
 | Integration test     | `.test.ts` / `.test.tsx`             | `api.test.ts`                |
 
@@ -271,7 +271,7 @@ local-only state into the Redux store.
 ```
 features/
   MyFeature/
-    index.ts          # barrel export
+    callback.ts          # barrel export
     MyFeature.tsx     # main component
     MyFeatureSlice.ts # Redux slice
     MyFeatureApi.ts   # RTK Query endpoints
@@ -291,11 +291,12 @@ features/
 
 ### Barrel Exports
 
-Every feature and component directory exposes its public API through an `index.ts` file. Keep the barrel minimal — only
+Every feature and component directory exposes its public API through an `callback.ts` file. Keep the barrel minimal —
+only
 export what external consumers should use.
 
 ```typescript
-// packages/frontend/src/components/Buttons/index.ts
+// packages/frontend/src/components/Buttons/callback.ts
 export { default as ActionButton } from './ActionButton';
 export { Gen3Button, Gen3ButtonReverse } from './Gen3Button';
 export * from './DownloadButtons';

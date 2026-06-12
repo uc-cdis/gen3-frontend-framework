@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Button, Group, Text } from '@mantine/core';
 import ConnectionStatusBadge from './ConnectionStatusBadge';
 import type { GatewayConnectionState } from '../../hooks/useGatewayConnection';
@@ -9,6 +9,8 @@ import GatewayConnectionPanel from './GatewayConnectionPanel';
 import KernelSelector from './KernelSelector';
 import { KernelSelection } from './types';
 import { useKernalSpecsQuery } from '../../core/kernelApi';
+import { useGatewayConnectionStatus } from '../../providers/useGatewayConnectionStatus';
+import { addJEGActiveKernel, useCoreDispatch } from '@gen3/core';
 
 // const JEGGatewayMessage = (gateway) => {
 //   if (!jegEnabled) return null;
@@ -22,6 +24,11 @@ import { useKernalSpecsQuery } from '../../core/kernelApi';
 
 interface LaunchKernelInput {
   kernelName: string;
+}
+
+interface GatewayConnectionStatus {
+  status: string;
+  message?: string;
 }
 
 export interface KernelLifecyclePanelProps {
@@ -64,8 +71,19 @@ const KernelLifecyclePanel = ({
 }: KernelLifecyclePanelProps) => {
   const notice = undefined;
 
-  const [connectionState, setGatewayState] =
-    useState<GatewayConnectionState>('unavailable');
+  const coreDispatch = useCoreDispatch();
+
+  const {
+    gatewayServiceStatus,
+    gatewayStatus,
+    gatewayMessage,
+    setGatewayStatusAndMessage,
+  } = useGatewayConnectionStatus();
+
+  useEffect(() => {
+    setGatewayStatusAndMessage('reconnecting');
+    // check store to see if last known kernels are still running
+  }, []);
 
   const {
     data: kernelSpecs,
@@ -86,15 +104,26 @@ const KernelLifecyclePanel = ({
 
   const handleLaunchKernel = async (kernelName: string) => {
     try {
-      setGatewayState('launching');
+      setGatewayStatusAndMessage('launching');
       // .unwrap() forces the promise to reject on HTTP failure
       const results = await launchKernel(kernelName).unwrap();
-      console.log('Launch kernel results:', results);
-      setGatewayState('connected');
+      // add to active kernels
+      setGatewayStatusAndMessage('connected');
+
+      // add to active kernels so these will persist between page reloads
+      coreDispatch(
+        addJEGActiveKernel({
+          id: results.id,
+          name: results.name,
+          connections: results.connections,
+          lastActivity: results.last_activity,
+          executionState: results.execution_state,
+        }),
+      );
     } catch (error) {
       console.error('Launch kernel failed!', error);
       // The user can now manually hit "Submit" again to retry safely
-      setGatewayState('error');
+      setGatewayStatusAndMessage('error', 'Launch kernel failed!');
     }
   };
 
@@ -117,9 +146,9 @@ const KernelLifecyclePanel = ({
       </Group>
       <GatewayConnectionPanel />
       <div className="flex items-center gap-2">
-        {connectionState && (
+        {gatewayStatus && (
           <ConnectionStatusBadge
-            state={connectionState}
+            state={gatewayStatus as GatewayConnectionState}
             onRetry={onRetryConnection}
           />
         )}
@@ -133,7 +162,7 @@ const KernelLifecyclePanel = ({
       </div>
 
       {/* Reconnect strip — non-disruptive yellow banner; lifecycle panel stays usable */}
-      {connectionState === 'reconnecting' && (
+      {gatewayStatus === 'reconnecting' && (
         <div
           role="status"
           aria-live="polite"

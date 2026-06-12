@@ -30,7 +30,8 @@ const PanelStyle =
   'h-full w-full flex flex-col items-center justify-start gap-6 px-6 mt-20';
 
 const MicroContainerPanel = ({ compact = false }: MicroContainerPanelProps) => {
-  const { status, lastError, launch, terminate } = useMicroContainerContext();
+  const { status, lastError, launch, terminate, resetStatus } =
+    useMicroContainerContext();
 
   /* ── Elapsed timer for launching state ── */
   const [elapsedSec, setElapsedSec] = useState(0);
@@ -45,6 +46,13 @@ const MicroContainerPanel = ({ compact = false }: MicroContainerPanelProps) => {
     }, 1000);
     return () => clearInterval(t);
   }, [status]);
+
+  /* ── Auto-reset after 15 s in launch-error state ── */
+  useEffect(() => {
+    if (status !== 'launch-error') return;
+    const t = setTimeout(() => resetStatus(), 15_000);
+    return () => clearTimeout(t);
+  }, [status, resetStatus]);
 
   /* ── not-running ── */
   if (status === 'not-running' || status === 'unknown') {
@@ -120,6 +128,24 @@ const MicroContainerPanel = ({ compact = false }: MicroContainerPanelProps) => {
           </Button>
           <Button onClick={launch} variant="default">
             Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── error ── */
+  if (status === 'launch-error') {
+    return (
+      <div role="alert" className={PanelStyle}>
+        <div className="text-center">
+          <p className="text-base font-bold text-base-darkest">
+            Workspace failed to start
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Button onClick={resetStatus} variant="default">
+            Reset
           </Button>
         </div>
       </div>

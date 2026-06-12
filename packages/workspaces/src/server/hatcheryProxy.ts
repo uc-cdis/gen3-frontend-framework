@@ -1,3 +1,4 @@
+
 /**
  * createHatcheryProxyHandler — server-side Next.js API route handler for Hatchery
  * micro-container lifecycle (launch, terminate, status, options).
@@ -100,6 +101,8 @@ export function createHatcheryProxyHandler(config: HatcheryProxyConfig) {
       res.status(401).json({ error: 'Authentication required.' });
       return;
     }
+
+    console.log(`Hatchery proxy: JWT ${jwt}`);
 
     // Extract sub claim for REMOTE_USER — Ambassador already verified the signature.
     const claims = decodeJwtClaims(jwt);

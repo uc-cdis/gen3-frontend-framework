@@ -34,7 +34,7 @@ export const jegGatewayApi = GatewayWithTags.injectEndpoints({
         return data?.enabled ?? false;
       },
     }),
-    launchKernel: builder.mutation<void, string>({
+    launchKernel: builder.mutation<GatewayKernel, string>({
       query: (kernelName: string) => {
         return {
           url: `${GEN3_JEG_GATEWAY_API}/kernels`,

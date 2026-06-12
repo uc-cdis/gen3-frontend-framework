@@ -17,6 +17,7 @@ const POLL_INTERVALS = {
   running: 30_000,
   terminating: 5_000,
   error: 0,
+  'launch-error': 0,
   stopped: 0,
   unknown: 10_000,
 } as const;
@@ -42,7 +43,10 @@ export function useMicroContainer(
     pollingInterval: POLL_INTERVALS[status],
   });
 
-  const [launchTrigger] = useLaunchHatcheryWorkspaceMutation();
+  const [
+    launchTrigger,
+    { error: launchError, isError: isLaunchError, isSuccess: isLaunchSuccess },
+  ] = useLaunchHatcheryWorkspaceMutation();
 
   const [terminateWorkspace] = useTerminateHatcheryWorkspaceMutation();
 
@@ -71,11 +75,16 @@ export function useMicroContainer(
     )
       return;
 
-    setStatus('launching');
-    const query = containerHash ? encodeURIComponent(containerHash) : '';
-    const res = await launchTrigger(query);
-    if (!res.data || res?.error) {
-      setStatus('error');
+    try {
+      setStatus('launching');
+      const query = containerHash ? encodeURIComponent(containerHash) : '';
+      const launchResults = await launchTrigger(query).unwrap();
+      if (!launchResults) {
+        // launch error, will show error message and then reset
+        setStatus('launch-error');
+      }
+    } catch (_error: unknown) {
+      setStatus('launch-error');
     }
     // Status will resolve to 'running' on the next poll
   }, [enabled, hatcheryStatus, containerHash, launchTrigger]);
@@ -94,8 +103,19 @@ export function useMicroContainer(
     refetchStatus,
   ]);
 
+  const resetStatus = useCallback(() => {
+    setStatus('unknown');
+  }, []);
+
   return useMemo(
-    () => ({ status, containerHash, lastError, launch, terminate }),
-    [containerHash, lastError, launch, status, terminate],
+    () => ({
+      status,
+      containerHash,
+      lastError,
+      launch,
+      terminate,
+      resetStatus,
+    }),
+    [containerHash, lastError, launch, status, terminate, resetStatus],
   );
 }

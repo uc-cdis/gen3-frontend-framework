@@ -8,6 +8,7 @@ export type MicroContainerStatus =
   | 'running'
   | 'terminating'
   | 'error'
+  | 'launch-error'
   | 'stopped';
 
 export interface MicroContainerContextValue {
@@ -21,6 +22,8 @@ export interface MicroContainerContextValue {
   launch: () => Promise<void>;
   /** Terminate the micro container. */
   terminate: () => Promise<void>;
+  /** reset the lastError */
+  resetStatus: () => void;
 }
 
 const MicroContainerProviderContext = createContext<MicroContainerContextValue>(
@@ -30,6 +33,7 @@ const MicroContainerProviderContext = createContext<MicroContainerContextValue>(
     lastError: null,
     launch: () => Promise.resolve(),
     terminate: () => Promise.resolve(),
+    resetStatus: () => {},
   },
 );
 

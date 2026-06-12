@@ -1,22 +1,55 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useKernalSpecsQuery } from '../../core/kernelApi';
 import { LoadingOverlay, Stack, Text } from '@mantine/core';
 import ActiveKernelInfoPanel from './ActiveKernelInfoPanel';
 import { useActiveKernelsQuery } from '../../core/jegGatewayApi';
-import { normalizeRtkError } from '@gen3/core';
+import {
+  CoreState,
+  normalizeRtkError,
+  removeManyJEGActiveKernels,
+  selectJEGKernelIds,
+  upsertManyJEGActiveKernels,
+  useCoreDispatch,
+  useCoreSelector,
+} from '@gen3/core';
 
 export const ActiveKernelsPanel = () => {
-  // get the active kernels
-
   const {
     data: kernels,
     isFetching,
     isError,
     error,
-    isSuccess,
   } = useActiveKernelsQuery(undefined, { pollingInterval: 10000 });
 
-  console.log('kernels', isError, error);
+  const persistedActiveKernels = useCoreSelector((state: CoreState) =>
+    selectJEGKernelIds(state),
+  );
+  const coreDispatch = useCoreDispatch();
+
+  useEffect(() => {
+    if (!kernels) return;
+
+    const liveIds = new Set(kernels.map((k) => k.id));
+
+    const staleIds = (persistedActiveKernels as string[]).filter(
+      (id) => !liveIds.has(id),
+    );
+    if (staleIds.length > 0) {
+      coreDispatch(removeManyJEGActiveKernels(staleIds));
+    }
+
+    coreDispatch(
+      upsertManyJEGActiveKernels(
+        kernels.map((k) => ({
+          id: k.id,
+          name: k.name,
+          connections: k.connections,
+          executionState: k.execution_state,
+          lastActivity: k.last_activity,
+        })),
+      ),
+    );
+  }, [kernels]);
 
   const {
     data: kernelSpecs,

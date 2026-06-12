@@ -107,5 +107,5 @@ export interface KernelStatus {
   name: string;
   connections: number;
   executionState: string;
-  lastActivity: number;
+  lastActivity: string;
 }

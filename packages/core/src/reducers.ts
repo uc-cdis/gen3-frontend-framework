@@ -16,7 +16,7 @@ import {
 } from './features/user/userSliceRTK';
 import { cohortReducers } from './features/cohort/reducers';
 import { sowerReducer } from './features/sower/reducers';
-import { workspaceKernelReducer } from './features/workspace/kernelSlice';
+import { workspaceKernelReducer } from './features/workspace/jegKernelSlice.ts';
 import { tieredWorkspaceReducer } from './features/workspace/tieredWorkspaceSlice';
 
 export const rootReducer = combineReducers({
