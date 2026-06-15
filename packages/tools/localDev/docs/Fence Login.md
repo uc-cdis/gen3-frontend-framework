@@ -23,8 +23,8 @@ note the client key and secret.
 in `.env.development.local`
 
 ```bash
-FENCE_CLIENT_ID=<client-key> 
-FENCE_CLIENT_SECRET=<client-secret> 
+FENCE_CLIENT_ID=<client-key>
+FENCE_CLIENT_SECRET=<client-secret>
 FENCE_REDIRECT_URI=http://localhost:3000/api/auth/callback
 ```
 
