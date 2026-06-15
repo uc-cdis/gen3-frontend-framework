@@ -30,6 +30,7 @@
     "dev": "NODE_OPTIONS='--max_old_space_size=4096' lerna run dev",
     "dev:watch": "lerna watch -- lerna run dev --scope=\\$LERNA_PACKAGE_NAME --include-dependencies",
     "dev:app": "lerna run dev --scope=@gen3/samplecommons",
+    "dev:app:turbopack": "lerna run dev:turbopack --scope=@gen3/samplecommons",
     "dev:build": "lerna run build --scope=@gen3/core --scope=@gen3/frontend --stream",
     "dev:watch:pkgs": "lerna watch --scope=@gen3/core --scope=@gen3/frontend -- lerna run build --scope=\\$LERNA_PACKAGE_NAME",
     "dev:full": "npm run dev:build && npm run dev:app",

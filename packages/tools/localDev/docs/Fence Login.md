@@ -6,8 +6,16 @@ login into the fence pod.
 fence-create client-create \
   --client nextjs-local \
   --urls http://localhost:3000/api/auth/callback \
-  --scopes openid profile email credentials \
+  --scopes openid user credentials \
   --username <your-username>
+```
+
+or to update an existing client:
+
+```bash
+fence-create client-modify \
+  --client nextjs-local \
+  --allowed-scopes openid user data credentials
 ```
 
 note the client key and secret.
@@ -15,8 +23,8 @@ note the client key and secret.
 in `.env.development.local`
 
 ```bash
-FENCE_CLIENT_ID=<client-key>
-FENCE_CLIENT_SECRET=<client-secret>`
+FENCE_CLIENT_ID=<client-key> 
+FENCE_CLIENT_SECRET=<client-secret> 
 FENCE_REDIRECT_URI=http://localhost:3000/api/auth/callback
 ```
 
