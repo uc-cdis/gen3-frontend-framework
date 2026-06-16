@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Meta } from '@storybook/nextjs';
 import AccessDescriptor from './AccessDescriptor';
+import { AccessLevel } from '../../../../../utils';
 
 const meta = {
   component: AccessDescriptor,
@@ -26,6 +27,11 @@ export const Default: any = {
 export const UNACCESSIBLE: any = {
   args: {
     __accessible: 2,
+  },
+};
+export const MIXED: any = {
+  args: {
+    __accessible: 6,
   },
 };
 export const UNKNOWN: any = {
