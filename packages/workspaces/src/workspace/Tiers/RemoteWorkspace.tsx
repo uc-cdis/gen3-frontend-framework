@@ -10,7 +10,7 @@ import { generateScopedNotebookPath } from './utils';
 import { Button, Card, Loader, Text } from '@mantine/core';
 import { getCookie } from 'cookies-next';
 import { useMicroContainerContext } from '../../providers/MicroContainerProvider';
-import MicroContainerPanel from '../../components/MicroContainerPanel';
+import MicroContainerReduxPanel from '../../components/MicroContainerReduxPanel';
 
 export type RemoteComputeWorkspaceHandle = {
   /** Attach a running kernel to the notebook open in the iframe. */
@@ -214,7 +214,7 @@ const RemoteComputeWorkspace = React.forwardRef<
     if (status !== 'running') {
       return (
         <div className="w-full flex flex-col grow">
-          <MicroContainerPanel />
+          <MicroContainerReduxPanel />
         </div>
       );
     }

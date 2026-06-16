@@ -11,6 +11,7 @@ import { KernelSelection } from './types';
 import { useKernalSpecsQuery } from '../../core/kernelApi';
 import { useGatewayConnectionStatus } from '../../providers/useGatewayConnectionStatus';
 import { addJEGActiveKernel, useCoreDispatch } from '@gen3/core';
+import { useDeepCompareEffect } from 'use-deep-compare';
 
 // const JEGGatewayMessage = (gateway) => {
 //   if (!jegEnabled) return null;
@@ -84,6 +85,12 @@ const KernelLifecyclePanel = ({
     setGatewayStatusAndMessage('reconnecting');
     // check store to see if last known kernels are still running
   }, []);
+
+  useDeepCompareEffect(() => {
+    if (gatewayServiceStatus) {
+      setGatewayStatusAndMessage('connected');
+    }
+  }, [gatewayServiceStatus]);
 
   const {
     data: kernelSpecs,

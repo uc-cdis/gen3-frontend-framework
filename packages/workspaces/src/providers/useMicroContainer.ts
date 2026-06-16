@@ -33,13 +33,15 @@ export function useMicroContainer(
     useDoesHatcheryOptionExistsQuery(tag, { skip: containerHash !== null });
 
   const {
-    data: hatcheryStatus,
+    data,
     error: statusError,
     refetch: refetchStatus,
   } = useHatcheryStatusQuery(containerHash, {
     skip: containerHash === null,
     pollingInterval: POLL_INTERVALS[status],
   });
+
+  const hatcheryStatus = data?.status;
 
   const [
     launchTrigger,

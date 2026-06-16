@@ -12,7 +12,7 @@ import {
   useCoreSelector,
   useUserAuth,
 } from '@gen3/core';
-import WorkspaceStatusProvider from '../workspace/WorkspaceStatusProvider';
+import { MicroContainerReduxProvider } from '../providers/MicroContainerReduxProvider';
 
 export type WorkspaceAuthContext = {
   username?: string;
@@ -88,13 +88,13 @@ const WorkspaceCenter = ({
           free: <FreeWorkspace />,
           local: <div>Local Workspace</div>,
           remote: (
-            <WorkspaceStatusProvider>
+            <MicroContainerReduxProvider enabled={true}>
               <RemoteWorkspace
                 tenantId={authContext?.tenantId || 'default'}
                 workspaceId={authContext?.workspaceId || 'workspace-default'}
                 userId={authContext?.username || 'anonymous'}
               />
-            </WorkspaceStatusProvider>
+            </MicroContainerReduxProvider>
           ),
         }[workspaceTier as string]
       }

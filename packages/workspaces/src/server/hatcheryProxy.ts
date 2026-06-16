@@ -152,6 +152,8 @@ export function createHatcheryProxyHandler(config: HatcheryProxyConfig) {
     const hatcheryBase = `${parsedHatcheryUrl.origin}${parsedHatcheryUrl.pathname.replace(/\/$/, '')}`;
     const targetUrl = `${hatcheryBase}${route.path}${queryString}`;
 
+    console.log('Hatchery proxy:', req.method, route.path, targetUrl);
+
     await createProxyRequest({
       req,
       res,

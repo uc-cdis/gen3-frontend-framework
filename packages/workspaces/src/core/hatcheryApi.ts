@@ -6,7 +6,7 @@ import {
   WorkspaceOptionsResponse,
 } from '@gen3/core';
 import { GEN3_HATCHERY_API } from '../constants';
-import { HatcheryServiceStatus } from './types';
+import { HatcheryServiceState, HatcheryServiceStatus } from './types';
 
 const HatcheryWithTags = gen3Api.enhanceEndpoints({
   addTagTypes: ['Hatchery'],
@@ -15,13 +15,22 @@ const HatcheryWithTags = gen3Api.enhanceEndpoints({
 const StatusStringToHatcheryServiceStatus: Record<string, Array<string>> = {
   running: ['launching', 'pending', 'starting'],
   stopped: ['not-running', 'stopped', 'terminated'],
-  terminating: ['terminating', 'stopping'],
+  terminated: ['terminating', 'stopping'],
 };
 
 interface HatcheryItem {
   name?: string;
   hash?: string;
   id?: string;
+}
+
+interface HatcheryStatusResponse {
+  status: string;
+  conditions: unknown;
+  containerStates: unknown;
+  idleTimeLimit: number;
+  lastActivityTime: number;
+  workspaceType: string;
 }
 
 export const hatcheryApi = HatcheryWithTags.injectEndpoints({
@@ -55,28 +64,45 @@ export const hatcheryApi = HatcheryWithTags.injectEndpoints({
       },
       transformErrorResponse: (error) => {
         console.error('Hatchery status query error:', error);
-        return HatcheryServiceStatus.unknown;
+        return {
+          status: HatcheryServiceState.error,
+          idleTimeLimit: 0,
+          lastActivity: 0,
+          workspaceType: '',
+        };
       },
-      transformResponse: (response: { status?: string }) => {
+      transformResponse: (response: HatcheryStatusResponse) => {
         const results = (response.status || 'unknown').toLowerCase();
+        let hatcheryStatus = HatcheryServiceState.unknown;
+
+        console.log(
+          'StatusStringToHatcheryServiceStatus',
+          StatusStringToHatcheryServiceStatus,
+          results,
+        );
 
         if (results === 'not found' || results === 'unknown')
-          return HatcheryServiceStatus.unknown;
+          hatcheryStatus = HatcheryServiceState.unknown;
 
-        if (results in StatusStringToHatcheryServiceStatus.running) {
-          return HatcheryServiceStatus.running;
+        if (StatusStringToHatcheryServiceStatus.running.includes(results)) {
+          hatcheryStatus = HatcheryServiceState.running;
         }
 
-        if (results in StatusStringToHatcheryServiceStatus.stopped) {
-          return HatcheryServiceStatus.stopped;
+        if (StatusStringToHatcheryServiceStatus.stopped.includes(results)) {
+          hatcheryStatus = HatcheryServiceState.stopped;
         }
 
-        if (results in StatusStringToHatcheryServiceStatus.terminated) {
-          return HatcheryServiceStatus.terminating;
+        if (StatusStringToHatcheryServiceStatus.terminated.includes(results)) {
+          hatcheryStatus = HatcheryServiceState.terminating;
         }
 
         // return other status
-        return results as HatcheryServiceStatus;
+        return {
+          status: hatcheryStatus,
+          idleTimeLimit: response.idleTimeLimit,
+          lastActivityTime: response.lastActivityTime,
+          workspaceType: response.workspaceType,
+        };
       },
     }),
     launchHatcheryWorkspace: builder.mutation<boolean, string>({
