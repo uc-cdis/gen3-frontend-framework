@@ -3,12 +3,12 @@ import { CellRenderFunctionProps } from './types';
 import { AccessLevel } from '../../../../utils';
 import { Divider, Group, Text, Tooltip } from '@mantine/core';
 import {
-  LuCircleSlash as NotAvailableIcon,
   LuClock as PendingIcon,
   LuLock as LockedIcon,
   LuLockOpen as UnlockedIcon,
   LuFileLock as OtherIcon,
 } from 'react-icons/lu';
+import { AiOutlineDash as NotAvailableIcon } from 'react-icons/ai';
 import { getAccessLevelFromNumber } from '../../utils';
 import { isArray } from 'lodash';
 import { useDiscoveryContext } from '../../DiscoveryProvider';
