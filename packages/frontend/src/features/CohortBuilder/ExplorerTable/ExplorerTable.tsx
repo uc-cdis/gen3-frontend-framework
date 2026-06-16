@@ -23,7 +23,7 @@ import {
   type MRT_RowSelectionState,
   type MRT_SortingState,
   useMantineReactTable,
-} from 'mantine-react-table';
+} from 'mantine-react-table-open';
 import { TableIcons } from '../../../components/Tables/TableIcons';
 import {
   ExplorerTableProps,

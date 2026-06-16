@@ -12,12 +12,15 @@ nodes:
     kubeadmConfigPatches:
       - |
         kind: ClusterConfiguration
+        apiVersion: kubeadm.k8s.io/v1beta3
         dns:
           type: CoreDNS
           coreDNS:
             extraArgs:
               conf: /etc/coredns/custom/Corefile
+      - |
         kind: InitConfiguration
+        apiVersion: kubeadm.k8s.io/v1beta3
         nodeRegistration:
           kubeletExtraArgs:
             node-labels: "ingress-ready=true"
@@ -28,3 +31,16 @@ nodes:
       - containerPort: 443
         hostPort: 443
         protocol: TCP
+containerdConfigPatches:
+  - |-
+    [plugins."io.containerd.grpc.v1.cri"]
+      disable_apparmor = true
+    [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+        SystemdCgroup = true
+        DisableNewKeyring = true
+    [plugins."io.containerd.grpc.v1.cri".containerd.runtimes."runc-amd64"]
+      runtime_type = "io.containerd.runc.v2"
+      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes."runc-amd64".options]
+        SystemdCgroup = true
+        DisableNewKeyring = true

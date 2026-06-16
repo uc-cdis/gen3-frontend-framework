@@ -90,6 +90,7 @@ const external = [
   'tinycolor2',
   'tailwind-styled-components',
   '@graphiql/plugin-explorer',
+  'graphiql/setup-workers/webpack',
   'mantine-react-table',
   'victory',
   'echarts',
@@ -103,6 +104,8 @@ const external = [
   '@theothergothamdev/pluralize-ts',
   '@tanstack/react-table',
   'rehype-sanitize',
+  'react-icons/fa6',
+  'react-icons/md',
 ];
 
 const jsBundle = (input, baseName, additionalExternal) => ({
