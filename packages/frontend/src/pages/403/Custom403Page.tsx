@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { NavPageLayout } from '../../features/Navigation';
 import { Custom403PageProps, Config403Props } from './types';
@@ -14,6 +14,8 @@ import {
   getRemoteSupportServiceRegistry,
   type HttpError,
   isHttpStatusError,
+  useCreateRequestMutation,
+  useUserRequestQuery,
 } from '@gen3/core';
 
 const Custom403Page = ({
@@ -24,14 +26,26 @@ const Custom403Page = ({
 }: Custom403PageProps) => {
   // custom 403 page for workspace request access 
   const onWorkspace = usePathname() === '/Workspace';
-  const REQUESTEDACCESSTOWORKSPACEKEY = 'Requested-access-to-Workspace';
-  const requestedAccessToWorkspace = localStorage.getItem(REQUESTEDACCESSTOWORKSPACEKEY);
 
   const userInfo = useCoreSelector((state: CoreState) =>
     selectUserDetails(state),
   );
   const [formError, setFormError] = useState<string>();
-  const [formSuccess, setFormSuccess] = useState(requestedAccessToWorkspace === 'Success');
+  const [formSuccess, setFormSuccess] = useState(false);
+
+  // check requester to see if user has already submitted workspace request for access
+  const { data, isLoading, isError } = useUserRequestQuery({policy_ids: ["workspace_accessor"]});
+
+  useEffect(() => {
+    if (!isLoading && isError) {
+      setFormError('Unable to load data from Requester, form may not submit correctly. Try refreshing this page');
+    }
+    if (data && data.length > 0) {
+      setFormSuccess(true);
+    }
+  }, [isLoading, isError]);
+
+  const [requestQuery] = useCreateRequestMutation();
 
   const formOnSubmit = (formValues: FormOnSubmitReturnProps) => {
     if (!form403) {
@@ -40,7 +54,7 @@ const Custom403Page = ({
     }
     setFormError(undefined);
 
-    const printFormValuesArr = [];
+    const printFormValuesArr: string[] = [];
     for (const [key, value] of Object.entries(formValues)) {
       printFormValuesArr.push(`${key}: ${value}`);
     }
@@ -50,30 +64,43 @@ const Custom403Page = ({
         form403.remoteSupportService.service,
       );
 
-    return zendeskRequestAction(
-      {
-        subject: 'Request access to Workspace',
-        fullName: `${userInfo?.email}`,
-        email: `${userInfo?.email}`,
-        contents:
-          'Workspace Form Request:\n\n' +
-          printFormValuesArr.join('\n\n'),
-      },
-      form403.remoteSupportService.configuration,
-    ).then(() => {
-      localStorage.setItem(REQUESTEDACCESSTOWORKSPACEKEY, 'Success');
-      setFormSuccess(true);
-    })
-    .catch((error: unknown) => {
-      if (isHttpStatusError(error)) {
-        const httpError = error as HttpError;
-        setFormError(`[${httpError.status}]: Error while submitting resource request`);
-      } else if (error instanceof Error) {
-        setFormError(`Error while submitting resource request: ${error.message}`);
-      } else {
-        setFormError('Unknown error while submitting resource request');
-      }
-    });
+    return requestQuery({
+        resource_paths: ["/workspace"],
+      })
+      .unwrap()
+      .then((request) => {
+        return zendeskRequestAction(
+          {
+            subject: `Workspace Access Request for Workspace in ${window.location.href}`,
+            fullName: `${userInfo?.email}`,
+            email: `${userInfo?.email}`,
+            contents:
+              'Workspace Access Request for Workspace in:\n\n' +
+              `\n\nRequestor: ${userInfo?.display_name} (${userInfo?.email})` +
+              '\n\nResources: "/workspace"' +
+              `\n\nRequestor ID: ${userInfo?.username || 'unknown'}` +
+              `\n\nRequest ID: ${request.request_id}` +
+              `\n\nRequest URL: ${window.location.href}` +
+              `\n\nRequestor Email: ${userInfo?.email}` +
+              `\n\nRequestor Name: ${userInfo?.username}` +
+              '\n\nForm Values:\n\n' +
+              printFormValuesArr.join('\n\n'),
+          },
+          form403.remoteSupportService.configuration,
+        );
+      }).then(() => {
+        setFormSuccess(true);
+      })
+      .catch((error: unknown) => {
+        if (isHttpStatusError(error)) {
+          const httpError = error as HttpError;
+          setFormError(`[${httpError.status}]: Error while submitting resource request`);
+        } else if (error instanceof Error) {
+          setFormError(`Error while submitting resource request: ${error.message}`);
+        } else {
+          setFormError('Unknown error while submitting resource request');
+        }
+      });
   }
 
   const main403Template = (config: Config403Props) => {
@@ -117,7 +144,7 @@ const Custom403Page = ({
     return (
       <div className="mx-20 sm:mt-8 2xl:mt-10 w-full bg-base-max">
         <Title size="h2" className="mb-5 pb-2 text-primary m_8a5d1357 mantine-Title-root">{formConfig.label}</Title>
-        {userInfo?.email ? ( 
+        {userInfo?.email && !isLoading ? ( 
           <Form
             className="*:mt-5 mb-5"
             body={autoFillValuesStatic}
@@ -141,7 +168,7 @@ const Custom403Page = ({
         ...(config403?.headerMetadata ? config403.headerMetadata : {}),
       }}
     >
-      {form403?.enabled && userInfo?.email && onWorkspace ? 
+      {form403?.enabled && userInfo?.email && onWorkspace ?
         workspaceRequestForm(form403)
       : main403Template(config403)
       }
