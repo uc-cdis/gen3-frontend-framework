@@ -115,3 +115,14 @@ export type GatewayConnectionState =
   | 'reconnecting' // transient — iframe + lifecycle panel remain visible
   | 'error'
   | 'unavailable';  // JEG not configured for this deployment — no polling, no retry
+
+
+
+export enum HatcheryServiceStatus {
+  unknown = 'unknown',
+  running = 'running',
+  stopped = 'stopped',
+  terminating = 'terminating',
+  launching = 'launching',
+  error = 'error',
+}

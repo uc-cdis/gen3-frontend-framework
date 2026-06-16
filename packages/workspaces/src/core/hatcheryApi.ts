@@ -1,9 +1,22 @@
-import { gen3Api } from '@gen3/core';
+import {
+  gen3Api,
+  WorkspaceInfo,
+  WorkspaceInfoResponse,
+  WorkspaceOptions,
+  WorkspaceOptionsResponse,
+} from '@gen3/core';
 import { GEN3_HATCHERY_API } from '../constants';
+import { HatcheryServiceStatus } from './types';
 
 const HatcheryWithTags = gen3Api.enhanceEndpoints({
   addTagTypes: ['Hatchery'],
 });
+
+const StatusStringToHatcheryServiceStatus: Record<string, Array<string>> = {
+  running: ['launching', 'pending', 'starting'],
+  stopped: ['not-running', 'stopped', 'terminated'],
+  terminating: ['terminating', 'stopping'],
+};
 
 interface HatcheryItem {
   name?: string;
@@ -13,14 +26,28 @@ interface HatcheryItem {
 
 export const hatcheryApi = HatcheryWithTags.injectEndpoints({
   endpoints: (builder) => ({
-    hatcheryOptions: builder.query<string | null, string>({
+    doesHatcheryOptionExists: builder.query<string | null, string>({
       query: () => `${GEN3_HATCHERY_API}/options`,
       transformResponse: (response: Array<HatcheryItem>, _meta, tag) => {
         const match = response.find((o) => o.name?.includes(tag));
         return match?.hash ?? match?.id ?? null;
       },
     }),
-    hatcheryStatus: builder.query<string, string | null>({
+    hatcheryOptions: builder.query<WorkspaceOptions | null, void>({
+      query: () => `${GEN3_HATCHERY_API}/options`,
+      transformResponse: (response: WorkspaceOptionsResponse) => {
+        return response.map((workspace: WorkspaceInfoResponse) => {
+          return {
+            id: workspace.id,
+            name: workspace.name,
+            idleTimeLimit: workspace['idle-time-limit'],
+            memoryLimit: workspace['memory-limit'],
+            cpuLimit: workspace['cpu-limit'],
+          } as WorkspaceInfo;
+        });
+      },
+    }),
+    hatcheryStatus: builder.query<HatcheryServiceStatus, string | null>({
       query: (containerHash) => {
         const hash = containerHash;
         const query = hash ? `?id=${encodeURIComponent(hash)}` : '';
@@ -28,12 +55,28 @@ export const hatcheryApi = HatcheryWithTags.injectEndpoints({
       },
       transformErrorResponse: (error) => {
         console.error('Hatchery status query error:', error);
-        return 'error';
+        return HatcheryServiceStatus.unknown;
       },
       transformResponse: (response: { status?: string }) => {
         const results = (response.status || 'unknown').toLowerCase();
-        if (results === 'not found') return 'unknown';
-        return results;
+
+        if (results === 'not found' || results === 'unknown')
+          return HatcheryServiceStatus.unknown;
+
+        if (results in StatusStringToHatcheryServiceStatus.running) {
+          return HatcheryServiceStatus.running;
+        }
+
+        if (results in StatusStringToHatcheryServiceStatus.stopped) {
+          return HatcheryServiceStatus.stopped;
+        }
+
+        if (results in StatusStringToHatcheryServiceStatus.terminated) {
+          return HatcheryServiceStatus.terminating;
+        }
+
+        // return other status
+        return results as HatcheryServiceStatus;
       },
     }),
     launchHatcheryWorkspace: builder.mutation<boolean, string>({
@@ -62,6 +105,7 @@ export const hatcheryApi = HatcheryWithTags.injectEndpoints({
 });
 
 export const {
+  useDoesHatcheryOptionExistsQuery,
   useHatcheryOptionsQuery,
   useLazyHatcheryOptionsQuery,
   useHatcheryStatusQuery,

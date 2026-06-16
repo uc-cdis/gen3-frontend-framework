@@ -1,4 +1,3 @@
-
 /**
  * createHatcheryProxyHandler — server-side Next.js API route handler for Hatchery
  * micro-container lifecycle (launch, terminate, status, options).
@@ -102,8 +101,6 @@ export function createHatcheryProxyHandler(config: HatcheryProxyConfig) {
       return;
     }
 
-    console.log(`Hatchery proxy: JWT ${jwt}`);
-
     // Extract sub claim for REMOTE_USER — Ambassador already verified the signature.
     const claims = decodeJwtClaims(jwt);
     const rawUsername =
@@ -140,6 +137,7 @@ export function createHatcheryProxyHandler(config: HatcheryProxyConfig) {
         queryString = `?id=${encodeURIComponent(id)}`;
       }
     } else if (route.path === '/status' || route.path === '/options') {
+      console.log('Hatchery proxy: status/options id:', req.query.id);
       // Pass id through safely for status/options
       const id = (req.query.id as string) || '';
       if (id) {
@@ -153,10 +151,6 @@ export function createHatcheryProxyHandler(config: HatcheryProxyConfig) {
 
     const hatcheryBase = `${parsedHatcheryUrl.origin}${parsedHatcheryUrl.pathname.replace(/\/$/, '')}`;
     const targetUrl = `${hatcheryBase}${route.path}${queryString}`;
-
-    console.log(
-      `Hatchery proxy: ${req.method} ${route.path}${queryString} -> ${targetUrl}`,
-    );
 
     await createProxyRequest({
       req,

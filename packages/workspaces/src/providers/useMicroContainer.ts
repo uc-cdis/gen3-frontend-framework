@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  useHatcheryOptionsQuery,
+  useDoesHatcheryOptionExistsQuery,
   useHatcheryStatusQuery,
   useLaunchHatcheryWorkspaceMutation,
   useTerminateHatcheryWorkspaceMutation,
@@ -29,10 +29,8 @@ export function useMicroContainer(
   const [status, setStatus] = useState<MicroContainerStatus>('unknown');
   const [containerHash, setContainerHash] = useState<string | null>(null);
 
-  const { data: optionData, error: optionsError } = useHatcheryOptionsQuery(
-    tag,
-    { skip: containerHash !== null },
-  );
+  const { data: optionData, error: optionsError } =
+    useDoesHatcheryOptionExistsQuery(tag, { skip: containerHash !== null });
 
   const {
     data: hatcheryStatus,

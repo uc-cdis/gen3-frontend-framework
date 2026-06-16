@@ -53,6 +53,8 @@ export enum WorkspaceStatus {
   NotFound = 'Not Found',
   Errored = 'Errored',
   StatusError = 'Status Error',
+  LaunchError = 'Launching Error',
+  TerminateError = 'Terminating Error',
 }
 
 /**

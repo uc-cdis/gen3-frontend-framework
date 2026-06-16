@@ -25,21 +25,21 @@ const initialState: WorkspaceState = {
 };
 
 const slice = createSlice({
-  name: 'ActiveWorkspace',
+  name: 'JEGActiveWorkspace',
   initialState,
   reducers: {
-    setActiveWorkspaceId: (state, action: PayloadAction<WorkspaceId>) => {
+    setJEGActiveWorkspaceId: (state, action: PayloadAction<WorkspaceId>) => {
       state = { ...state, id: action.payload.id };
       return state;
     },
-    clearActiveWorkspaceId: (state) => {
+    clearJEGActiveWorkspaceId: (state) => {
       return {
         ...state,
         id: NO_WORKSPACE_ID,
         status: WorkspaceStatus.NotFound,
       };
     },
-    setActiveWorkspaceStatus: (
+    setJEGActiveWorkspaceStatus: (
       state,
       action: PayloadAction<WorkspaceStatus>,
     ) => {
@@ -48,7 +48,7 @@ const slice = createSlice({
         status: action.payload,
       };
     },
-    setRequestedWorkspaceStatus: (
+    setJEGRequestedWorkspaceStatus: (
       state,
       action: PayloadAction<RequestedWorkspaceStatus>,
     ) => {
@@ -58,32 +58,32 @@ const slice = createSlice({
         requestedStatusTimestamp: getCurrentTimestamp(),
       };
     },
-    setActiveWorkspace: (_state, action: PayloadAction<WorkspaceState>) => {
+    setJEGActiveWorkspace: (_state, action: PayloadAction<WorkspaceState>) => {
       return { ...action.payload };
     },
   },
 });
 
-export const activeWorkspaceReducer = slice.reducer;
+export const jegActiveWorkspaceReducer = slice.reducer;
 export const {
-  setActiveWorkspaceId,
-  clearActiveWorkspaceId,
-  setActiveWorkspaceStatus,
-  setRequestedWorkspaceStatus,
-  setActiveWorkspace,
+  setJEGActiveWorkspaceId,
+  clearJEGActiveWorkspaceId,
+  setJEGActiveWorkspaceStatus,
+  setJEGRequestedWorkspaceStatus,
+  setJEGActiveWorkspace,
 } = slice.actions;
 
-export const selectActiveWorkspaceId = (state: CoreState): string =>
-  state.activeWorkspace.id;
+export const selectJEGActiveWorkspaceId = (state: CoreState): string =>
+  state.jegActiveWorkspace.id;
 
-export const selectActiveWorkspaceStatus = (
+export const selectJEGActiveWorkspaceStatus = (
   state: CoreState,
-): WorkspaceStatus => state.activeWorkspace.status;
+): WorkspaceStatus => state.jegActiveWorkspace.status;
 
-export const selectRequestedWorkspaceStatus = (
+export const selectJEGRequestedWorkspaceStatus = (
   state: CoreState,
-): RequestedWorkspaceStatus => state.activeWorkspace.requestedStatus;
+): RequestedWorkspaceStatus => state.jegActiveWorkspace.requestedStatus;
 
-export const selectRequestedWorkspaceStatusTimestamp = (
+export const selectJEGRequestedWorkspaceStatusTimestamp = (
   state: CoreState,
-): number => state.activeWorkspace.requestedStatusTimestamp;
+): number => state.jegActiveWorkspace.requestedStatusTimestamp;

@@ -23,6 +23,18 @@ import {
   setRequestedWorkspaceStatus,
 } from './workspaceSlice';
 
+import {
+  clearJEGActiveWorkspaceId,
+  selectJEGActiveWorkspaceId,
+  selectJEGActiveWorkspaceStatus,
+  selectJEGRequestedWorkspaceStatus,
+  selectJEGRequestedWorkspaceStatusTimestamp,
+  setJEGActiveWorkspace,
+  setJEGActiveWorkspaceId,
+  setJEGActiveWorkspaceStatus,
+  setJEGRequestedWorkspaceStatus,
+} from './jegWorkspaceSlice';
+
 import { selectWorkspaceTier, setWorkspaceTier } from './tieredWorkspaceSlice';
 
 import {
@@ -75,4 +87,13 @@ export {
   selectAllJEGKernels,
   selectJEGKernelById,
   selectJEGKernelIds,
+  setJEGActiveWorkspaceId,
+  clearJEGActiveWorkspaceId,
+  setJEGActiveWorkspaceStatus,
+  setJEGRequestedWorkspaceStatus,
+  setJEGActiveWorkspace,
+  selectJEGRequestedWorkspaceStatus,
+  selectJEGActiveWorkspaceId,
+  selectJEGActiveWorkspaceStatus,
+  selectJEGRequestedWorkspaceStatusTimestamp,
 };

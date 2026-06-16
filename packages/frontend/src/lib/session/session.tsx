@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useRef, useState, } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useRouter } from 'next/router';
 import { getCookie, hasCookie } from 'cookies-next';
 import { useDeepCompareMemo } from 'use-deep-compare';
@@ -168,13 +174,14 @@ export const SessionProvider = ({
   workspaceInactivityTimeLimit = 0,
   logoutInactiveUsers = true,
   monitorWorkspace = true,
+  monitorPayment = true,
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
 
   const { isSuccess: isGetCSRFSuccess, isError: isGetCSRFError } =
     useGetCSRFQuery();
-  useWorkspaceResourceMonitor(monitorWorkspace); // monitor workspaces if any are running or configured
+  useWorkspaceResourceMonitor(monitorWorkspace, monitorPayment); // monitor workspaces if any are running or configured
 
   const [getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
   const userStatus = useCoreSelector((state: CoreState) =>
@@ -265,7 +272,7 @@ export const SessionProvider = ({
   }, [getUserDetails, router]);
 
   /**
-   * Checkes if user session has ended
+   * Check if the user session has ended
    */
   const isSessionActive = useThrottledCallback(() => {
     //Check session token, this call updates info

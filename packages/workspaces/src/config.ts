@@ -25,7 +25,8 @@ export const WORKSPACE_TIER_INFORMATION: Record<
     toolbar: {
       label: 'JupyterLite',
       description: 'Running via JupyterLite',
-      requiresStopping: false,
+      showStop: false,
+      showStatus: false,
     },
     settings: {
       showKernels: false,
@@ -36,7 +37,8 @@ export const WORKSPACE_TIER_INFORMATION: Record<
     toolbar: {
       label: 'Remote Compute Environment',
       description: 'Running with Remote Kernels',
-      requiresStopping: true,
+      showStop: true,
+      showStatus: true,
     },
     settings: {
       showKernels: true,

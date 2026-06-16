@@ -6,7 +6,8 @@ interface LabelAndDescription {
 }
 
 export interface TierToolbarConfiguration extends LabelAndDescription {
-  requiresStopping: boolean;
+  showStop: boolean;
+  showStatus: boolean;
 }
 
 export interface SettingsPanelConfiguration {
