@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Button, Loader } from '@mantine/core';
+import { Alert, Button, Loader } from '@mantine/core';
 import {
   selectJEGActiveWorkspaceStatus,
   selectJEGRequestedWorkspaceStatusTimestamp,
@@ -9,6 +9,9 @@ import {
   WorkspaceStatus,
 } from '@gen3/core';
 import { useMicroContainerReduxContext } from '../providers/MicroContainerReduxProvider';
+import { Icon } from '@iconify-icon/react';
+
+const icon = <Icon icon="gen3:error-outline" size={24} />;
 
 export interface MicroContainerPanelProps {
   /** Whether the panel should render in compact mode (status === 'running'). */
@@ -67,9 +70,24 @@ const MicroContainerReduxPanel = ({
   /* ── Auto-reset after 15 s in launch-error state ── */
   useEffect(() => {
     if (status !== WorkspaceStatus.LaunchError) return;
-    const t = setTimeout(() => resetStatus(), 15_000);
+    const t = setTimeout(() => resetStatus(), 6_000);
     return () => clearTimeout(t);
   }, [status, resetStatus]);
+
+  if (status === WorkspaceStatus.StatusError) {
+    return (
+      <div className={PanelStyle}>
+        <Alert
+          variant="light"
+          color="accentWarm.4"
+          title="Status Error"
+          icon={icon}
+        >
+          Unable to get the status of your workspace. Please try again later.
+        </Alert>
+      </div>
+    );
+  }
 
   /* ── not-running ── */
   if (status === WorkspaceStatus.NotFound) {
@@ -123,11 +141,14 @@ const MicroContainerReduxPanel = ({
   if (status === WorkspaceStatus.LaunchError) {
     return (
       <div role="alert" className={PanelStyle}>
-        <div className="text-center">
-          <p className="text-base font-bold text-base-darkest">
-            Workspace failed to start
-          </p>
-        </div>
+        <Alert
+          variant="light"
+          color="accentWarm.4"
+          title="Status Error"
+          icon={icon}
+        >
+          Workspace failed to start.
+        </Alert>
         <div className="flex items-center gap-3">
           <Button onClick={resetStatus} variant="default">
             Reset

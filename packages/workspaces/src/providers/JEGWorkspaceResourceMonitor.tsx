@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   isTimeGreaterThan,
   RequestedWorkspaceStatus,
+  selectJEGActiveWorkspaceStatus,
   selectJEGRequestedWorkspaceStatus,
   selectJEGRequestedWorkspaceStatusTimestamp,
   setJEGActiveWorkspaceStatus,
@@ -91,6 +92,7 @@ export const useJEGWorkspaceResourceMonitor = (
   );
 
   const [terminateWorkspace] = useTerminateHatcheryWorkspaceMutation();
+  const activeStatus = useCoreSelector(selectJEGActiveWorkspaceStatus);
   const requestedStatus = useCoreSelector(selectJEGRequestedWorkspaceStatus); // trigger to start/stop workspaces
   const requestedStatusTimestamp = useCoreSelector(
     selectJEGRequestedWorkspaceStatusTimestamp,
@@ -99,7 +101,9 @@ export const useJEGWorkspaceResourceMonitor = (
   const idleTimeLimit = workspaceStatusData?.idleTimeLimit;
   const lastActivityTime = workspaceStatusData?.lastActivityTime;
 
-  console.log('pollgint interval: ', pollingInterval);
+  console.log('polling interval: ', pollingInterval);
+  console.log('workspace status data: ', workspaceStatusData);
+
   useEffect(() => {
     if (isWorkspaceStatusError) {
       dispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.StatusError));
@@ -125,6 +129,10 @@ export const useJEGWorkspaceResourceMonitor = (
 
   useDeepCompareEffect(() => {
     if (!workspaceStatusData) return;
+    // LaunchError is set client-side by the launch() call and cleared by the
+    // auto-reset timer in the panel.  Polling data must not override it or the
+    // timer will be cancelled before it fires.
+    if (activeStatus === WorkspaceStatus.LaunchError) return;
     const workspaceQueryStatus = hatcheryStateToWorkspaceStatus(
       workspaceStatusData?.status,
     );
@@ -196,23 +204,21 @@ export const useJEGWorkspaceResourceMonitor = (
       }
 
       if (requestedStatus === RequestedWorkspaceStatus.Launch) {
+        // if we have a launch error then requested status has not been met
+        if (workspaceQueryStatus === WorkspaceStatus.LaunchError) {
+          console.log('launch error');
+          dispatch(
+            setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Unset),
+          );
+          dispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.NotFound));
+          return;
+        }
         // if the workspace is running then requested status has been met
         dispatch(
           setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Unset),
         );
       }
       if (requestedStatus === RequestedWorkspaceStatus.Terminate) {
-        return;
-      }
-
-      if (
-        requestedStatus === RequestedWorkspaceStatus.Launch &&
-        WorkspaceStatus.LaunchError === workspaceQueryStatus
-      ) {
-        dispatch(
-          setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Unset),
-        );
-        dispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.NotFound));
         return;
       }
 
@@ -246,7 +252,7 @@ export const useJEGWorkspaceResourceMonitor = (
     // if here, update active workspace status and polling interval
     dispatch(setJEGActiveWorkspaceStatus(workspaceQueryStatus));
     setPollingInterval(WorkspacePollingInterval[workspaceQueryStatus]);
-  }, [dispatch, workspaceStatusData, requestedStatus]);
+  }, [dispatch, workspaceStatusData, requestedStatus, activeStatus]);
 
   useEffect(() => {
     if (

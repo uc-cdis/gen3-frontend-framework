@@ -85,7 +85,6 @@ export async function createProxyRequest({
     headers['Content-Type'] ??= 'application/json';
   }
 
-
   let body: BodyInit | undefined;
   if (
     forwardBody &&

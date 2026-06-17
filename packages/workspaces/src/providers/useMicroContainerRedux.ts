@@ -19,13 +19,14 @@ import {
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { notifications } from '@mantine/notifications';
 import { MicroContainerReduxContextValue } from './types';
+import { getRTKQErrorMessage } from '../utils';
 
 const getWorkspaceErrorMessage = (
   error: unknown,
   defaultMessage: string,
 ): string => {
   if (isFetchBaseQueryError(error)) {
-    return error.data as string;
+    return getRTKQErrorMessage(error);
   }
   return defaultMessage;
 };
@@ -50,7 +51,6 @@ export function useMicroContainerRedux(
   );
   const [containerHash, setContainerHash] = useState<string | null>(null);
   const coreDispatch = useCoreDispatch();
-  const [lastError, setLastError] = useState<string | null>(null);
 
   // get the options for the workspace could move to parent since
   const { data: optionData, error: optionsError } =

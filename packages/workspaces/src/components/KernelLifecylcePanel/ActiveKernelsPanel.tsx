@@ -16,10 +16,18 @@ import {
 export const ActiveKernelsPanel = () => {
   const {
     data: kernels,
-    isFetching,
+    isLoading,
     isError,
     error,
-  } = useActiveKernelsQuery(undefined, { pollingInterval: 10000 });
+  } = useActiveKernelsQuery(undefined, {
+    pollingInterval: 10000,
+    selectFromResult: ({ data, isLoading, isError, error }) => ({
+      data,
+      isLoading,
+      isError,
+      error,
+    }),
+  });
 
   const persistedActiveKernels = useCoreSelector((state: CoreState) =>
     selectJEGKernelIds(state),
@@ -76,7 +84,7 @@ export const ActiveKernelsPanel = () => {
 
   return (
     <Stack gap={2} classNames={{ root: 'w-full h-full' }}>
-      <LoadingOverlay visible={isFetching} />
+      <LoadingOverlay visible={isLoading} />
       <Text>Active Kernels</Text>
       {kernels && kernels?.length > 0 ? (
         kernels.map((kernel) => (

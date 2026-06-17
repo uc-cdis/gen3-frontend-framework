@@ -13,7 +13,7 @@ const HatcheryWithTags = gen3Api.enhanceEndpoints({
 });
 
 const StatusStringToHatcheryServiceStatus: Record<string, Array<string>> = {
-  running: ['launching', 'pending', 'starting'],
+  running: ['launching', 'pending', 'starting', 'running', 'ready'],
   stopped: ['not-running', 'stopped', 'terminated'],
   terminated: ['terminating', 'stopping'],
 };
@@ -106,14 +106,19 @@ export const hatcheryApi = HatcheryWithTags.injectEndpoints({
       },
     }),
     launchHatcheryWorkspace: builder.mutation<boolean, string>({
-      query: (id) => {
-        return {
-          url: `${GEN3_HATCHERY_API}/launch?id=${id}`,
-          method: 'POST',
-          invalidatesTags: ['Hatchery'],
-          responseHandler: (response) => response.text(),
-        };
-      },
+      query: (id) => ({
+        url: `${GEN3_HATCHERY_API}/launch?id=${id}`,
+        method: 'POST',
+        responseHandler: async (response) => {
+          if (!response.ok) {
+            // If the server errored (4xx/5xx), parse the error body as JSON
+            return response.json();
+          }
+          // If the server succeeded (2xx), parse the body as plain text
+          return response.text();
+        },
+      }),
+      invalidatesTags: ['Hatchery'],
       transformResponse: async (response: string) => {
         return !!(response && response === 'Success');
       },
@@ -122,9 +127,9 @@ export const hatcheryApi = HatcheryWithTags.injectEndpoints({
       query: (id) => ({
         url: `${GEN3_HATCHERY_API}/terminate/?id=${id}`,
         method: 'POST',
-        invalidatesTags: ['Hatchery'],
         responseHandler: (response) => response.text(),
       }),
+      invalidatesTags: ['Hatchery'],
     }),
   }),
   overrideExisting: true,
