@@ -2,18 +2,21 @@
 
 * Show/Hide panels
 * Full screen toggle
-* Container Error Panel
-* Active Kernel
+  ~~* Container Error Panel~~
+* Active Kernel?
 * Correct Runtime
 * Persistence of Active Kernels
 * Billing Placeholder
 * Gateway/Kernel Status
-  * reconnection
+  * ~~reconnection~~
   * dropped connections
   * connection timeout
-* Stop Container
+  * ~~kernel state~~
+  * ~~kernel runtime in minutes~~
+* Stop Container Button
 * Select Kernel
 * Update Polling
+  * make polling configurable
 * Workspace Status in Navigation
 * ProtectedContent for Non-free Workspaces
 * Test deployment

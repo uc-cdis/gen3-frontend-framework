@@ -28,8 +28,27 @@ export const workspaceKernelsSlice = createSlice({
   name: 'workspaceKernels',
   initialState: initialState,
   reducers: {
-    addJEGActiveKernel: workspaceKernelsAdapter.addOne,
-    upsertManyJEGActiveKernels: workspaceKernelsAdapter.upsertMany,
+    addJEGActiveKernel: (
+      state,
+      action: PayloadAction<Omit<KernelStatus, 'lastUpdate'>>,
+    ) => {
+      workspaceKernelsAdapter.upsertOne(state, {
+        ...action.payload,
+        lastUpdate: Date.now(),
+      });
+    },
+    upsertManyJEGActiveKernels: (
+      state,
+      action: PayloadAction<Omit<KernelStatus, 'lastUpdate'>[]>,
+    ) => {
+      const now = Date.now();
+      for (const kernel of action.payload) {
+        workspaceKernelsAdapter.upsertOne(state, {
+          ...kernel,
+          lastUpdate: now,
+        });
+      }
+    },
     removeJEGActiveKernel: workspaceKernelsAdapter.removeOne,
     removeManyJEGActiveKernels: workspaceKernelsAdapter.removeMany,
     clearJEGActiveKernels: workspaceKernelsAdapter.removeAll,
@@ -41,7 +60,7 @@ export const workspaceKernelsSlice = createSlice({
       workspaceKernelsAdapter.updateOne(state, {
         id: id,
         changes: {
-          lastActivity: new Date().toISOString(),
+          lastUpdate: Date.now(),
           executionState: status,
         },
       });

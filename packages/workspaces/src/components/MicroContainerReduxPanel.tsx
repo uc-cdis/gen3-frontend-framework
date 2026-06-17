@@ -198,29 +198,7 @@ const MicroContainerReduxPanel = ({
     );
   }
 
-  /* ── running (compact badge) ── */
-  if (compact) {
-    return (
-      <div className="flex items-center justify-between gap-3 rounded-lg border border-accent-light/60 bg-accent-max px-3 py-2">
-        <span className="flex items-center gap-1.5 text-xs font-semibold text-accent-dark">
-          <span
-            className="h-1.5 w-1.5 rounded-full bg-accent-dark"
-            aria-hidden="true"
-          />
-          Workspace running
-        </span>
-        <Button
-          onClick={terminate}
-          aria-label="Stop workspace"
-          className="text-xs text-base-darker underline hover:text-primary hover:no-underline"
-        >
-          Stop
-        </Button>
-      </div>
-    );
-  }
-
-  // running non-compact — shouldn't normally render, parent shows this alongside iframe
+  // none of the above so render nothing
   return null;
 };
 

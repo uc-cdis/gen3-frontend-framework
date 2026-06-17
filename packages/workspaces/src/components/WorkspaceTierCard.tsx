@@ -33,6 +33,12 @@ const WorkspaceTierCard = ({
     () => onSelectTier(tier),
     [onSelectTier, tier],
   );
+
+  const icon = (
+    <span className="mb-[0.75em]">
+      <Icon icon="gen3:right-arrow" width="24" height="24" />
+    </span>
+  );
   return (
     <Card
       withBorder
@@ -83,7 +89,7 @@ const WorkspaceTierCard = ({
             <Button
               aria-label={`Select ${buttonLabel}`}
               variant="subtle"
-              rightSection={<Icon icon="gen3:right_arrow" size={12} />}
+              rightSection={icon}
               onClick={handleClick}
             >
               <Text tt="uppercase">{buttonLabel}</Text>

@@ -7,20 +7,18 @@ import { useTerminateKernelMutation } from '../../core/jegGatewayApi';
 interface RunningKernelPanelProps extends KernelRow {
   onOpenNotebook?: (kernelId: string) => void;
   forceTerminate?: boolean;
-  containerUptimeMinutes?: number;
   rowSpec?: KernelSpecEntry;
 }
 
 const ActiveKernelInfoPanel = ({
   kernelId,
-  executionState,
   kernelName,
+  executionState,
+  uptimeMinutes,
   onOpenNotebook,
   forceTerminate = false,
-  containerUptimeMinutes,
   rowSpec,
 }: RunningKernelPanelProps) => {
-  const state = (executionState || '').toLowerCase();
   const [
     terminateKernel,
     {
@@ -30,7 +28,7 @@ const ActiveKernelInfoPanel = ({
     },
   ] = useTerminateKernelMutation();
 
-  const isStaleOrIdle = state === 'idle';
+  const isStaleOrIdle = executionState === 'idle';
   return (
     <div
       key={kernelId}
@@ -71,11 +69,9 @@ const ActiveKernelInfoPanel = ({
 
       <div className="rounded-lg bg-base-lightest bg-opacity-50 p-4 text-xs text-base-darkest m-2">
         <div className="mb-2 flex items-center justify-between">
-          <span className="font-semibold text-base-darker">
-            Container Uptime:
-          </span>
+          <span className="font-semibold text-base-darker">Last Activity:</span>
           <span className="font-bold text-base-darkest">
-            {formatUptimeInMinutes(containerUptimeMinutes)}
+            {formatUptimeInMinutes(uptimeMinutes)}
           </span>
         </div>
         <div className="flex items-center justify-between border-t border-base-lighter pt-2">

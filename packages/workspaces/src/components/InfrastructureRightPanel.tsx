@@ -1,7 +1,7 @@
 import React from 'react';
 import KernelLifecyclePanel, {
   type KernelLifecyclePanelProps,
-} from './KernelLifecylcePanel/KernelLifecyclePanel';
+} from './KernelLifecyclePanel/KernelLifecyclePanel';
 import UpgradeActionsPanel, {
   type UpgradeActionsPanelProps,
 } from './UpgradeActionsPanel';

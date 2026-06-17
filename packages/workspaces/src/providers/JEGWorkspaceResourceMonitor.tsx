@@ -73,6 +73,7 @@ export const useJEGWorkspaceResourceMonitor = (
   monitorPayment: boolean = true, // Unused and vil go to a separate monitor
 ) => {
   const [pollingInterval, setPollingInterval] = useState<number>(0);
+  const [error, setError] = useState<string | null>(null);
 
   const {
     data: workspaceStatusData,
@@ -101,19 +102,12 @@ export const useJEGWorkspaceResourceMonitor = (
   const idleTimeLimit = workspaceStatusData?.idleTimeLimit;
   const lastActivityTime = workspaceStatusData?.lastActivityTime;
 
-  console.log('polling interval: ', pollingInterval);
-  console.log('workspace status data: ', workspaceStatusData);
-
   useEffect(() => {
     if (isWorkspaceStatusError) {
       dispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.StatusError));
       setPollingInterval(0); // stop polling
       const errorMessage = getRTKQErrorMessage(workspaceStatusError);
-      notifyUser(
-        'Workspace Staus Error',
-        `Failed to get workspace status: ${errorMessage}`,
-        NotificationStatus.Error,
-      );
+      setError(errorMessage);
     }
   }, [isWorkspaceStatusError, dispatch, workspaceStatusError]);
 
@@ -195,18 +189,13 @@ export const useJEGWorkspaceResourceMonitor = (
           return;
         }
         if (remainingWorkspaceKernelLife <= workspaceShutdownAlertLimit) {
-          notifyUser(
-            'Workspace Warning',
-            'Workspace has been idle for too long. Will shutdown soon',
-            NotificationStatus.Warn,
-          );
+          setError('Workspace has been idle for too long. Will shutdown soon');
         }
       }
 
       if (requestedStatus === RequestedWorkspaceStatus.Launch) {
         // if we have a launch error then requested status has not been met
         if (workspaceQueryStatus === WorkspaceStatus.LaunchError) {
-          console.log('launch error');
           dispatch(
             setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Unset),
           );
@@ -263,11 +252,7 @@ export const useJEGWorkspaceResourceMonitor = (
       dispatch(
         setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate),
       );
-      notifyUser(
-        'Workspace Startup',
-        'Workspace failed to start. Shutting down',
-        NotificationStatus.Error,
-      );
+      setError('Workspace failed to start. Shutting down');
     }
   }, [
     requestedStatus,
@@ -275,5 +260,6 @@ export const useJEGWorkspaceResourceMonitor = (
     terminateWorkspace,
     dispatch,
     workspaceStatusData,
+    workspaceId,
   ]);
 };

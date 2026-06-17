@@ -1,3 +1,4 @@
 import ProtectedContent from './ProtectedContent';
 import ProtectedContentUI from './ProtectedContentUI';
-export { ProtectedContent , ProtectedContentUI};
+import ProtectedComponentOverlay from './ProtectedComponentOverlay';
+export { ProtectedContent, ProtectedContentUI, ProtectedComponentOverlay };

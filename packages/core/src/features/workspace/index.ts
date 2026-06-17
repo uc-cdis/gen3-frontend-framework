@@ -35,7 +35,12 @@ import {
   setJEGRequestedWorkspaceStatus,
 } from './jegWorkspaceSlice';
 
-import { selectWorkspaceTier, setWorkspaceTier } from './tieredWorkspaceSlice';
+import {
+  selectWorkspaceFullscreen,
+  selectWorkspaceTier,
+  setWorkspaceFullscreen,
+  setWorkspaceTier,
+} from './tieredWorkspaceSlice';
 
 import {
   addJEGActiveKernel,
@@ -96,4 +101,6 @@ export {
   selectJEGActiveWorkspaceId,
   selectJEGActiveWorkspaceStatus,
   selectJEGRequestedWorkspaceStatusTimestamp,
+  setWorkspaceFullscreen,
+  selectWorkspaceFullscreen,
 };

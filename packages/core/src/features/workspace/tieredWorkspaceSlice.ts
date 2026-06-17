@@ -8,11 +8,13 @@ export const NO_WORKSPACE_ID = 'none';
 export interface TieredWorkspaceState {
   id: string;
   tier: string | null;
+  isFullscreen: boolean;
 }
 
 const initialState: TieredWorkspaceState = {
   id: NO_WORKSPACE_ID,
   tier: null,
+  isFullscreen: false,
 };
 
 const slice = createSlice({
@@ -29,6 +31,9 @@ const slice = createSlice({
     setWorkspaceTier: (state, action: PayloadAction<string | null>) => {
       return { ...state, tier: action.payload };
     },
+    setWorkspaceFullscreen: (state, action: PayloadAction<boolean>) => {
+      return { ...state, isFullscreen: action.payload };
+    },
   },
 });
 
@@ -37,6 +42,7 @@ export const {
   setTieredWorkspaceId,
   clearTieredWorkspaceId,
   setWorkspaceTier,
+  setWorkspaceFullscreen,
 } = slice.actions;
 
 export const selectTieredWorkspaceId = (state: CoreState): string =>
@@ -44,3 +50,6 @@ export const selectTieredWorkspaceId = (state: CoreState): string =>
 
 export const selectWorkspaceTier = (state: CoreState): string | null =>
   state.tieredWorkspace.tier;
+
+export const selectWorkspaceFullscreen = (state: CoreState): boolean =>
+  state.tieredWorkspace.isFullscreen;

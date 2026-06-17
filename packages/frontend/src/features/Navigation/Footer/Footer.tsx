@@ -5,7 +5,7 @@ import { FooterProps } from './types';
 import FooterSection from './FooterColumn';
 
 const Footer = React.forwardRef<HTMLElement, FooterProps>(
-  ({ rightSection, leftSection, classNames = {} }, ref) => {
+  ({ rightSection, leftSection, classNames = {}, hideFooter = false }, ref) => {
     const classNamesDefaults = {
       root: 'bg-primary-lighter text-primary-contrast p-4 shadow-sm',
       layout: 'flex items-center justify-between',
@@ -15,6 +15,10 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
       classNamesDefaults,
       classNames,
     );
+
+    if (hideFooter) {
+      return null;
+    }
 
     return (
       <footer ref={ref}>
