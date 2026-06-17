@@ -10,7 +10,6 @@ import {
   Group,
   Button,
   Text,
-  Title,
   Box,
   Stack,
 } from '@mantine/core';
@@ -66,19 +65,23 @@ const RequestAccessForm = ({
       }}
     >
       <div className="flex justify-items-center w-full">
-        <Box className="w-full max-w-5xl mx-auto px-4 py-8 bg-white font-sans text-neutral-800">
+        <Box className="w-full bg-white rounded-md m-8 p-8 ">
           {/* Top Header Section */}
-          <div className="w-full border-b border-neutral-200 pb-4 mb-6 relative text-center">
-            <div className="absolute inset-x-0 top-1/2 border-t border-neutral-200 -z-10" />
-            <span className="bg-white px-4 text-sm text-neutral-500 font-medium tracking-wide uppercase">
-              Study Registration Access Request
-            </span>
+          <div className="border-b font-medium text-sm text-gray-600 mb-6 mx-24">
+            <div
+              className="flex items-center justify-center my-4 before:flex-1
+            before:border-t before:border-gray-200 after:flex-1
+            after:border-t after:border-gray-200"
+            >
+              <span className="mx-4 tracking-wide">
+                Study Registration Access Request
+              </span>
+            </div>
+            <Text className="text-center mb-8 mx-auto">
+              Please fill out this form to request and be approved for access to
+              register your study with the HEAL Platform.
+            </Text>
           </div>
-
-          <Text className="text-center text-sm md:text-base text-neutral-700 mb-8 max-w-3xl mx-auto">
-            Please fill out this form to request and be approved for access to
-            register your study with the HEAL Platform.
-          </Text>
 
           {/* Form Area */}
           <form
