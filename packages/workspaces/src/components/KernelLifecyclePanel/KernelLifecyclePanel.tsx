@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Group, Text } from '@mantine/core';
-import ConnectionStatusBadge from './ConnectionStatusBadge';
+import { Group, Text } from '@mantine/core';
 import type { GatewayConnectionState } from '../../hooks/useGatewayConnection';
 import { InfoRolloverButton } from '@gen3/frontend';
 import ActiveKernelsPanel from './ActiveKernelsPanel';
@@ -12,6 +11,7 @@ import { useKernalSpecsQuery } from '../../core/kernelApi';
 import { useGatewayConnectionStatus } from '../../providers/useGatewayConnectionStatus';
 import { addJEGActiveKernel, useCoreDispatch } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
+import { TextStyle } from './styling';
 
 // const JEGGatewayMessage = (gateway) => {
 //   if (!jegEnabled) return null;
@@ -143,37 +143,24 @@ const KernelLifecyclePanel = ({
   return (
     <div className="flex flex-col overflow-hidden gap-y-4 p-2">
       <Group gap={4}>
-        <Text c="text-base-contrast" size="md" fw={500} className="font-bold">
-          Kernel Lifecycle
-        </Text>
+        <Text className={TextStyle}>Kernel Lifecycle</Text>
         <InfoRolloverButton
           label="Launch and manage compute kernels."
           size="sm"
         />
       </Group>
-      <GatewayConnectionPanel />
-      <div className="flex items-center gap-2">
-        {gatewayStatus && (
-          <ConnectionStatusBadge
-            state={gatewayStatus as GatewayConnectionState}
-            onRetry={onRetryConnection}
-          />
-        )}
-        <Button
-          onClick={onRunStaleReap}
-          disabled={!onRunStaleReap}
-          variant="default"
-        >
-          Run Stale Reap
-        </Button>
-      </div>
+      <GatewayConnectionPanel
+        gatewayStatus={gatewayStatus}
+        onRetryConnection={onRetryConnection}
+        onRunStaleReap={onRunStaleReap}
+      />
 
       {/* Reconnect strip — non-disruptive yellow banner; lifecycle panel stays usable */}
       {gatewayStatus === 'reconnecting' && (
         <div
           role="status"
           aria-live="polite"
-          className="mt-3 flex items-center gap-2 rounded-md border border-accentWarm-light bg-accentWarm-max px-3 py-2 text-xs text-accentWarm-dark"
+          className="flex items-center gap-2 rounded-md border border-accentWarm-light bg-accentWarm-max px-3 py-2 text-xs text-accentWarm-dark"
         >
           <span aria-hidden="true">⟳</span>
           Connection to kernel interrupted — reconnecting automatically. Your

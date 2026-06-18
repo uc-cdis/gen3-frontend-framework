@@ -12,6 +12,7 @@ import {
   useCoreDispatch,
   useCoreSelector,
 } from '@gen3/core';
+import { PanelStyle, TextStyle } from './styling';
 
 export const ActiveKernelsPanel = () => {
   const {
@@ -83,9 +84,14 @@ export const ActiveKernelsPanel = () => {
   }
 
   return (
-    <Stack gap={2} classNames={{ root: 'w-full h-full' }}>
+    <Stack
+      gap={2}
+      classNames={{
+        root: PanelStyle,
+      }}
+    >
       <LoadingOverlay visible={isLoading} />
-      <Text>Active Kernels</Text>
+      <Text className={TextStyle}>Active Kernels</Text>
       {kernels && kernels?.length > 0 ? (
         kernels.map((kernel) => {
           // convert last_activity from iso timestamp to minutes
@@ -98,6 +104,7 @@ export const ActiveKernelsPanel = () => {
               kernelName={kernel.name}
               executionState={kernel.execution_state.toLowerCase()}
               uptimeMinutes={Math.floor(kernelUptime / 60000)}
+              connections={kernel.connections}
               rowSpec={kernelSpecs?.find((spec) => spec.name === kernel.name)}
               key={kernel.id}
             />

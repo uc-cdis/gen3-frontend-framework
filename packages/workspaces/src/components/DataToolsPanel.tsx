@@ -59,12 +59,14 @@ const DataToolsPanel = ({
 }: DataToolsPanelProps) => {
   return (
     <Tabs
+      maw={800}
+      w="100%"
       defaultValue="dictionary"
       variant="outline"
       classNames={{ root: 'p-2' }}
     >
       {/* Tab bar */}
-      <Tabs.List>
+      <Tabs.List className="bg-base-max">
         {TABS.map((tab) => (
           <Tabs.Tab value={tab.id} leftSection={tab.icon} key={tab.id}>
             {tab.label}

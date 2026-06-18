@@ -63,10 +63,10 @@ const CompactDictionaryPanel = ({
   if (isError) {
     let message = 'Could not load dictionary';
     if (isFetchBaseQueryError(error)) {
-      message = `Error loading dictionary ${error.status}`;
+      message = `Error loading dictionary from server`;
     }
     return (
-      <div className="w-full rounded-lg border border-utility-error bg-utility-error bg-opacity-10 px-3 py-2 text-xs text-utility-error">
+      <div className="w-[400px] rounded-lg border border-utility-error bg-utility-error opacity-90 px-3 py-2 text-xs text-utility-contrast-error">
         {message}
       </div>
     );

@@ -1,9 +1,9 @@
 ## JEG Workspaces
 
-* Show/Hide panels
+* Show/Hide panels controls
 * Full screen toggle
   ~~* Container Error Panel~~
-* Active Kernel?
+* Active Kernel? Note sure is this needed
 * Correct Runtime
 * Persistence of Active Kernels
 * Billing Placeholder
@@ -11,14 +11,16 @@
   * ~~reconnection~~
   * dropped connections
   * connection timeout
+  * number of connections
   * ~~kernel state~~
   * ~~kernel runtime in minutes~~
 * Stop Container Button
+  * hide when not running
 * Select Kernel
 * Update Polling
   * make polling configurable
 * Workspace Status in Navigation
-* ProtectedContent for Non-free Workspaces
+* ProtectedContent Overlay for Non-free Workspaces
 * Test deployment
     * Kernels
     * Proxys

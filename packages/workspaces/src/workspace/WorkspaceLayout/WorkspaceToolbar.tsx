@@ -4,13 +4,14 @@ import { Icon } from '@iconify-icon/react';
 import { TierToolbarConfiguration } from '../Tiers/types';
 import {
   CoreState,
-  selectActiveWorkspaceStatus,
+  selectJEGActiveWorkspaceStatus,
   selectWorkspaceFullscreen,
   selectWorkspaceTier,
   setWorkspaceFullscreen,
   setWorkspaceTier,
   useCoreDispatch,
   useCoreSelector,
+  WorkspaceStatus,
 } from '@gen3/core';
 
 import { WorkspaceTier } from '../../types';
@@ -27,10 +28,10 @@ const WorkspaceToolbar = ({ toolbarConfiguration }: WorkspaceToolbarProps) => {
   );
 
   const workspaceStatus = useCoreSelector((state: CoreState) =>
-    selectActiveWorkspaceStatus(state),
+    selectJEGActiveWorkspaceStatus(state),
   );
 
-  const selectFullscreenStatus = useCoreSelector((state: CoreState) =>
+  const isFullScreen = useCoreSelector((state: CoreState) =>
     selectWorkspaceFullscreen(state),
   );
   const [toolsExpanded, { toggle: toggleTools }] = useDisclosure(true);
@@ -40,15 +41,15 @@ const WorkspaceToolbar = ({ toolbarConfiguration }: WorkspaceToolbarProps) => {
   const coreDispatch = useCoreDispatch();
 
   const toggleFullscreen = useCallback(() => {
-    coreDispatch(setWorkspaceFullscreen(!selectFullscreenStatus));
-  }, [coreDispatch, selectFullscreenStatus]);
+    coreDispatch(setWorkspaceFullscreen(!isFullScreen));
+  }, [coreDispatch, isFullScreen]);
 
   const returnToWorkspaceSelection = () => {
     coreDispatch(setWorkspaceTier(null));
   };
 
   return (
-    <div className="flex items-center justify-between px-4 border-b-2 border-base-lighter pb-4 mb-2">
+    <div className="flex items-center justify-between px-4 border-b-2 border-base-lighter pb-4">
       <div className="flex items-center gap-2">
         <ActionIcon
           variant="outline"
@@ -78,7 +79,9 @@ const WorkspaceToolbar = ({ toolbarConfiguration }: WorkspaceToolbarProps) => {
               Workspace Status:
             </Text>
             <Badge size="md" radius="md">
-              {workspaceStatus as string}
+              {workspaceStatus === WorkspaceStatus.NotFound
+                ? 'Not Running'
+                : (workspaceStatus as string)}
             </Badge>
           </Group>
         )}
@@ -89,6 +92,7 @@ const WorkspaceToolbar = ({ toolbarConfiguration }: WorkspaceToolbarProps) => {
             aria-label="Stop workspace"
             color="primary.5"
             onClick={() => {}}
+            disabled={workspaceStatus !== WorkspaceStatus.Running}
             rightSection={<Icon icon="gen3:stop" width="100%" height="100%" />}
           >
             Stop
@@ -102,7 +106,7 @@ const WorkspaceToolbar = ({ toolbarConfiguration }: WorkspaceToolbarProps) => {
           onClick={toggleFullscreen}
           rightSection={<Icon icon="gen3:stop" width="100%" height="100%" />}
         >
-          Make Fullscreen
+          {isFullScreen ? 'Exit' : 'Enter'} Fullscreen
         </Button>
       </div>
     </div>

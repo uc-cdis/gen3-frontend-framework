@@ -63,7 +63,6 @@ export const hatcheryApi = HatcheryWithTags.injectEndpoints({
         return `${GEN3_HATCHERY_API}/status/${query}`;
       },
       transformErrorResponse: (error) => {
-        console.error('Hatchery status query error:', error);
         return {
           status: HatcheryServiceState.error,
           idleTimeLimit: 0,
@@ -74,12 +73,6 @@ export const hatcheryApi = HatcheryWithTags.injectEndpoints({
       transformResponse: (response: HatcheryStatusResponse) => {
         const results = (response.status || 'unknown').toLowerCase();
         let hatcheryStatus = HatcheryServiceState.unknown;
-
-        console.log(
-          'StatusStringToHatcheryServiceStatus',
-          StatusStringToHatcheryServiceStatus,
-          results,
-        );
 
         if (results === 'not found' || results === 'unknown')
           hatcheryStatus = HatcheryServiceState.unknown;

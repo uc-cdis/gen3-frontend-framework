@@ -1,8 +1,16 @@
 import React from 'react';
+import { Transition } from '@mantine/core';
 import { extractClassName } from '../utils';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
 import { FooterProps } from './types';
 import FooterSection from './FooterColumn';
+
+const scaleY = {
+  in: { opacity: 1, transform: 'scaleY(1)' },
+  out: { opacity: 0, transform: 'scaleY(0)' },
+  common: { transformOrigin: 'bottom' },
+  transitionProperty: 'transform, opacity',
+};
 
 const Footer = React.forwardRef<HTMLElement, FooterProps>(
   ({ rightSection, leftSection, classNames = {}, hideFooter = false }, ref) => {
@@ -22,12 +30,24 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
 
     return (
       <footer ref={ref}>
-        <div className={extractClassName('root', mergedClassNames)}>
-          <div className={extractClassName('layout', mergedClassNames)}>
-            {leftSection && <FooterSection {...leftSection} />}
-            {rightSection && <FooterSection {...rightSection} />}
-          </div>
-        </div>
+        <Transition
+          mounted={!hideFooter}
+          transition={scaleY}
+          duration={1000}
+          timingFunction="ease"
+          keepMounted
+        >
+          {(transitionStyle) => (
+            <div style={transitionStyle}>
+              <div className={extractClassName('root', mergedClassNames)}>
+                <div className={extractClassName('layout', mergedClassNames)}>
+                  {leftSection && <FooterSection {...leftSection} />}
+                  {rightSection && <FooterSection {...rightSection} />}
+                </div>
+              </div>
+            </div>
+          )}
+        </Transition>
       </footer>
     );
   },

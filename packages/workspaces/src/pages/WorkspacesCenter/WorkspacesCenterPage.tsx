@@ -1,8 +1,12 @@
-import { WorkspacesCenterPageConfiguration, WorkspacesPageLayoutProps, } from './types';
+import {
+  WorkspacesCenterPageConfiguration,
+  WorkspacesPageLayoutProps,
+} from './types';
 import React, { JSX } from 'react';
 import { NavPageLayout } from '@gen3/frontend';
 import WorkspaceCenter from '../../workspace/WorkspaceCenter';
 import { WorkspaceCardConfig } from '../../components/types';
+import { selectWorkspaceFullscreen, useCoreSelector } from '@gen3/core';
 
 /**
  * Transforms a WorkspacesCenterConfiguration object into a Record mapping workspace names
@@ -31,14 +35,19 @@ const WorkspacesCenterPage = ({
   footerProps,
   configuration,
 }: WorkspacesPageLayoutProps): JSX.Element => {
-
   const config = {
     ...configuration,
     workspaces: processConfiguration(configuration),
   };
+
+  const isFullScreen = useCoreSelector((state) =>
+    selectWorkspaceFullscreen(state),
+  );
+
   return (
     <NavPageLayout
-      {...{ headerProps, footerProps }}
+      headerProps={headerProps}
+      footerProps={{ ...footerProps, hideFooter: isFullScreen }}
       headerMetadata={{
         title: 'Gen3 Workspace Page',
         content: 'Workspace page',

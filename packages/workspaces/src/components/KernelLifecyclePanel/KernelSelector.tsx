@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Group, LoadingOverlay, Select } from '@mantine/core';
+import { Button, Group, LoadingOverlay, Select, Text } from '@mantine/core';
 import { InfoRolloverButton } from '@gen3/frontend';
 import { useKernalSpecsQuery } from '../../core/kernelApi';
 import { KernelSelection } from './types';
+import { PanelStyle, TextStyle } from './styling';
 
 interface KernelSelectorProps {
   handleLaunchKernel: (kernelName: string) => void;
@@ -71,12 +72,13 @@ const KernelSelector = ({
     : [];
 
   return (
-    <div className="mt-5 rounded-xl border border-base-light bg-base-lighter p-5">
-      <Group gap="xs">
-        <p className="text-xs font-bold uppercase tracking-wider text-base-darker">
-          Launch Kernel
-        </p>
-        <InfoRolloverButton label="Launch and manage compute kernels." />
+    <div className={PanelStyle}>
+      <Group gap={4}>
+        <Text className={TextStyle}>Launch Kernel</Text>
+        <InfoRolloverButton
+          label="Launch and manage compute kernels."
+          size="sm"
+        />
       </Group>
       <div className="mt-4 space-y-4">
         <LoadingOverlay visible={isLoading} />
@@ -139,7 +141,7 @@ const KernelSelector = ({
         <Button
           onClick={() => handleLaunchKernel(selectedKernelName || 'python3')}
           loading={isLaunchingLoading}
-          className="w-full"
+          fullWidth
         >
           {isLaunchingLoading ? 'Working...' : 'Launch Kernel'}
         </Button>

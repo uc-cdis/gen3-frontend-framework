@@ -6,8 +6,15 @@ import WorkspaceToolbar from './WorkspaceToolbar';
 import { WORKSPACE_TIER_INFORMATION } from '../../config';
 import { Collapse } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { CoreState, selectWorkspaceTier, useCoreSelector } from '@gen3/core';
+import {
+  CoreState,
+  selectWorkspaceFullscreen,
+  selectWorkspaceTier,
+  useCoreSelector,
+} from '@gen3/core';
 import { WorkspaceTier } from '../../types';
+
+const TRANSITION_DURATION = 400;
 
 interface WorkspaceLayoutProps {
   children: ReactNode;
@@ -25,6 +32,11 @@ const WorkspaceLayout = ({
     (state: CoreState) => selectWorkspaceTier(state) as WorkspaceTier | null,
   );
   const [toolsExpanded, { toggle: toggleTools }] = useDisclosure(true);
+  const [settingsExpanded, { toggle: toggleSettings }] = useDisclosure(true);
+
+  const isFullScreen = useCoreSelector((state) =>
+    selectWorkspaceFullscreen(state),
+  );
 
   if (!workspaceTier) return null;
 
@@ -34,15 +46,24 @@ const WorkspaceLayout = ({
         toolbarConfiguration={WORKSPACE_TIER_INFORMATION[workspaceTier].toolbar}
       />
       <div className="flex w-full grow">
-        <Collapse expanded={toolsExpanded} onChange={toggleTools}>
+        <Collapse
+          expanded={toolsExpanded && !isFullScreen}
+          onChange={toggleTools}
+          transitionDuration={TRANSITION_DURATION}
+          orientation="horizontal"
+        >
           <ToolsPanel />
         </Collapse>
         {children}
-        <div className="w-1/5">
+        <Collapse
+          expanded={settingsExpanded && !isFullScreen}
+          transitionDuration={TRANSITION_DURATION}
+          orientation="horizontal"
+        >
           <SettingsPanel
             {...WORKSPACE_TIER_INFORMATION[workspaceTier].settings}
           />
-        </div>
+        </Collapse>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import React from 'react';
 import { formatUptimeInMinutes } from '@gen3/core';
-import { Badge, Button } from '@mantine/core';
+import { Badge, Button, Divider, Stack } from '@mantine/core';
 import { KernelRow, KernelSpecEntry } from '../../core/types';
 import { useTerminateKernelMutation } from '../../core/jegGatewayApi';
 
@@ -8,6 +8,7 @@ interface RunningKernelPanelProps extends KernelRow {
   onOpenNotebook?: (kernelId: string) => void;
   forceTerminate?: boolean;
   rowSpec?: KernelSpecEntry;
+  connections?: number;
 }
 
 const ActiveKernelInfoPanel = ({
@@ -18,6 +19,7 @@ const ActiveKernelInfoPanel = ({
   onOpenNotebook,
   forceTerminate = false,
   rowSpec,
+  connections = 0,
 }: RunningKernelPanelProps) => {
   const [
     terminateKernel,
@@ -32,11 +34,7 @@ const ActiveKernelInfoPanel = ({
   return (
     <div
       key={kernelId}
-      className={`min-w-0 rounded-xl border border-base-lighter bg-base-max p-6 transition hover:shadow-md ${
-        isStaleOrIdle
-          ? 'border-l-4 border-l-accentWarm'
-          : 'border-l-4 border-l-accentCool'
-      }`}
+      className="rounded-sm border-2 border-base-light bg-base-lighter p-2 transition hover:shadow-sm"
     >
       <div className="flex min-w-0 items-start justify-between gap-2 m-2">
         <div className="min-w-0">
@@ -67,21 +65,32 @@ const ActiveKernelInfoPanel = ({
         </Badge>
       </div>
 
-      <div className="rounded-lg bg-base-lightest bg-opacity-50 p-4 text-xs text-base-darkest m-2">
-        <div className="mb-2 flex items-center justify-between">
+      <Stack
+        className=" rounded-lg bg-accent-lightest bg-opacity-10 p-4 text-xs text-base-darkest m-2"
+        gap={4}
+      >
+        <div className="flex items-center justify-between">
           <span className="font-semibold text-base-darker">Last Activity:</span>
           <span className="font-bold text-base-darkest">
             {formatUptimeInMinutes(uptimeMinutes)}
           </span>
         </div>
-        <div className="flex items-center justify-between border-t border-base-lighter pt-2">
+        <Divider color="primary.4" />
+        <div className="flex items-center justify-between">
           <span className="font-semibold text-base-darker">GPU:</span>
           <span className="font-bold text-accent-dark">
             {rowSpec?.gpuType || 'none'}
           </span>
         </div>
+        <Divider color="primary.4" />
+        <div className="flex items-center justify-between">
+          <span className="font-semibold text-base-darker">Connections:</span>
+          <span className="font-bold text-accent-dark">
+            {connections.toLocaleString()}
+          </span>
+        </div>
         {(rowSpec?.cpu || rowSpec?.memory) && (
-          <div className="mt-2 flex gap-3 border-t border-base-lighter pt-2">
+          <div className="flex gap-3 border-t border-base-lighter pt-2">
             {rowSpec?.cpu && (
               <span className="text-base-darker">
                 CPU:{' '}
@@ -96,7 +105,7 @@ const ActiveKernelInfoPanel = ({
             )}
           </div>
         )}
-      </div>
+      </Stack>
 
       <div className="mt-5 flex gap-3 m-2">
         <Button

@@ -8,10 +8,9 @@ import {
   isFetchBaseQueryError,
   RequestedWorkspaceStatus,
   selectJEGActiveWorkspaceStatus,
-  setActiveWorkspaceStatus,
   setJEGActiveWorkspaceId,
   setJEGActiveWorkspaceStatus,
-  setRequestedWorkspaceStatus,
+  setJEGRequestedWorkspaceStatus,
   useCoreDispatch,
   useCoreSelector,
   WorkspaceStatus,
@@ -21,6 +20,18 @@ import { notifications } from '@mantine/notifications';
 import { MicroContainerReduxContextValue } from './types';
 import { getRTKQErrorMessage } from '../utils';
 
+/**
+ * Resolves an error message for a workspace-related operation.
+ *
+ * This function determines the error message to return based on the provided `error` object.
+ * If the `error` object matches the criteria for a Fetch Base Query Error, the appropriate
+ * RTK Query error message is returned. Otherwise, a default error message is used.
+ *
+ * @param {unknown} error - The error object encountered during the operation. Can be of any type.
+ * @param {string} defaultMessage - The default message to use if the error does not match
+ *                                  a Fetch Base Query Error.
+ * @returns {string} The resolved error message, either derived from the specific error or the default message.
+ */
 const getWorkspaceErrorMessage = (
   error: unknown,
   defaultMessage: string,
@@ -31,6 +42,15 @@ const getWorkspaceErrorMessage = (
   return defaultMessage;
 };
 
+/**
+ * Displays an error notification with the specified title and message.
+ *
+ * This function clears any existing notifications before showing a new
+ * one. Notifications are displayed at the top-center of the screen.
+ *
+ * @param {string} title - The title of the error notification.
+ * @param {string} message - The message content of the error notification.
+ */
 const showErrorNotification = (title: string, message: string) => {
   // Clear any existing notifications first
   notifications.clean(); // TODO debounce instead of clearing
@@ -42,6 +62,22 @@ const showErrorNotification = (title: string, message: string) => {
   });
 };
 
+/**
+ * Custom React hook that integrates with a micro-container system using Redux.
+ * Enables launching and terminating containerized workspaces while managing state and errors.
+ * Note must use the JEG versions of the redux actions.
+ *
+ * @param {string} tag - A unique identifier or tag for the container.
+ * @param {boolean} enabled - A flag indicating whether the functionality is enabled.
+ * @return {MicroContainerReduxContextValue} An object containing the workspace status, container hash,
+ *                                           and functions to launch or terminate the workspace.
+ *
+ * @typedef {Object} MicroContainerReduxContextValue
+ * @property {WorkspaceStatus} status - The current status of the workspace container (e.g., launching, running, terminating).
+ * @property {string | null} containerHash - The unique hash of the container, or null if not yet set.
+ * @property {Function} launch - Function to asynchronously launch the workspace container.
+ * @property {Function} terminate - Function to asynchronously terminate the workspace container.
+ */
 export function useMicroContainerRedux(
   tag: string,
   enabled: boolean,
@@ -80,8 +116,10 @@ export function useMicroContainerRedux(
       );
 
       showErrorNotification('Workspace Error', errorMessage);
-      coreDispatch(setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Unset));
-      coreDispatch(setActiveWorkspaceStatus(WorkspaceStatus.NotFound));
+      coreDispatch(
+        setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Unset),
+      );
+      coreDispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.NotFound));
     }
   }, [isWorkspaceLaunchError, isTerminateError]);
 
@@ -126,14 +164,14 @@ export function useMicroContainerRedux(
     try {
       const status = await terminateWorkspace(query).unwrap();
       coreDispatch(
-        setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate),
+        setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate),
       );
-      coreDispatch(setActiveWorkspaceStatus(WorkspaceStatus.Terminating));
+      coreDispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.Terminating));
     } catch (_error: unknown) {
       coreDispatch(
-        setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate),
+        setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate),
       );
-      coreDispatch(setActiveWorkspaceStatus(WorkspaceStatus.Terminating));
+      coreDispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.Terminating));
     }
   }, [containerHash, enabled, workspaceContainerStatus, terminateWorkspace]);
 

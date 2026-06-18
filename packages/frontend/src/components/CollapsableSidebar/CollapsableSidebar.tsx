@@ -12,10 +12,11 @@ import {
 import { useCollapsableSidebar } from './use-collapsable-sidebar';
 
 export interface CollapsableSidebarProps
-  extends BoxProps,
+  extends
+    BoxProps,
     Omit<React.ComponentPropsWithoutRef<'div'>, keyof BoxProps> {
   /** Opened state */
-  in: boolean;
+  expanded: boolean;
 
   /** Called each time transition ends */
   onTransitionEnd?: () => void;
@@ -41,54 +42,50 @@ const defaultProps: Partial<CollapsableSidebarProps> = {
   animateOpacity: true,
 };
 
-export const CollapsableSidebar = factory<CollapseSidebarFactory>(
-  (_props) => {
-    const {
-      children,
-      in: opened,
-      transitionDuration,
-      transitionTimingFunction,
-      style,
-      onTransitionEnd,
-      animateOpacity,
-      ...others
-    } = useProps('Collapse', defaultProps, _props);
+export const CollapsableSidebar = factory<CollapseSidebarFactory>((_props) => {
+  const {
+    children,
+    expanded: opened,
+    transitionDuration,
+    transitionTimingFunction,
+    style,
+    onTransitionEnd,
+    animateOpacity,
+    ...others
+  } = useProps('Collapse', defaultProps, _props);
 
-    const theme = useMantineTheme();
-    const shouldReduceMotion = useReducedMotion();
-    const reduceMotion = theme.respectReducedMotion
-      ? shouldReduceMotion
-      : false;
-    const duration = reduceMotion ? 0 : transitionDuration;
+  const theme = useMantineTheme();
+  const shouldReduceMotion = useReducedMotion();
+  const reduceMotion = theme.respectReducedMotion ? shouldReduceMotion : false;
+  const duration = reduceMotion ? 0 : transitionDuration;
 
-    const getCollapseProps = useCollapsableSidebar({
-      opened,
-      transitionDuration: duration,
-      transitionTimingFunction,
-      onTransitionEnd,
-    });
+  const getCollapseProps = useCollapsableSidebar({
+    opened,
+    transitionDuration: duration,
+    transitionTimingFunction,
+    onTransitionEnd,
+  });
 
-    if (duration === 0) {
-      return opened ? <Box {...others}>{children}</Box> : null;
-    }
+  if (duration === 0) {
+    return opened ? <Box {...others}>{children}</Box> : null;
+  }
 
-    return (
-      <Box
-        {...getCollapseProps({
-          style: {
-            opacity: opened || !animateOpacity ? 1 : 0,
-            transition: animateOpacity
-              ? `opacity ${duration}ms ${transitionTimingFunction}`
-              : 'none',
-            ...getStyleObject(style, theme),
-          },
-          ...others,
-        })}
-      >
-        {children}
-      </Box>
-    );
-  },
-);
+  return (
+    <Box
+      {...getCollapseProps({
+        style: {
+          opacity: opened || !animateOpacity ? 1 : 0,
+          transition: animateOpacity
+            ? `opacity ${duration}ms ${transitionTimingFunction}`
+            : 'none',
+          ...getStyleObject(style, theme),
+        },
+        ...others,
+      })}
+    >
+      {children}
+    </Box>
+  );
+});
 
 CollapsableSidebar.displayName = '@gen3/frontend/CollapsableSidebar';

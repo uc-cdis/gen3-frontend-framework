@@ -5,9 +5,9 @@ import { PanelHeaderStyle, PanelHeaderTextStyle, PanelStyle } from './styling';
 
 const ToolsPanel = () => {
   return (
-    <Stack gap="sm" className={PanelStyle}>
+    <Stack gap="sm" classNames={{ root: PanelStyle }}>
       <div className={PanelHeaderStyle}>
-        <Text className={PanelHeaderTextStyle}>Tools</Text>
+        <Text className={PanelHeaderTextStyle}>Data and Tools</Text>
       </div>
       <DataToolsPanel />
     </Stack>

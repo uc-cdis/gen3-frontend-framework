@@ -1,14 +1,38 @@
 import React from 'react';
-import { useJegGatewayStatusQuery } from '../../core/jegGatewayApi';
-import { Stack, Text } from '@mantine/core';
+import { Button, Stack, Text } from '@mantine/core';
+import ConnectionStatusBadge from './ConnectionStatusBadge';
+import type { GatewayConnectionState } from '../../hooks/useGatewayConnection';
+import { PanelStyle, TextStyle } from './styling';
 
-export const GatewayConnectionPanel = () => {
-  const { data, isFetching, isError, error, isSuccess, isLoading } =
-    useJegGatewayStatusQuery();
+interface GatewayConnectionPanelProps {
+  gatewayStatus: string;
+  onRetryConnection?: () => void;
+  onRunStaleReap?: () => void;
+}
 
+export const GatewayConnectionPanel = ({
+  gatewayStatus,
+  onRetryConnection = () => null,
+  onRunStaleReap = () => null,
+}: GatewayConnectionPanelProps) => {
   return (
-    <Stack>
-      <Text>Gateway Connection Panel</Text>
+    <Stack className={PanelStyle} justify="space-between">
+      <Text className={TextStyle}>Gateway</Text>
+      <div className="flex items-center gap-2">
+        {gatewayStatus && (
+          <ConnectionStatusBadge
+            state={gatewayStatus as GatewayConnectionState}
+            onRetry={onRetryConnection}
+          />
+        )}
+        <Button
+          onClick={onRunStaleReap}
+          disabled={!onRunStaleReap}
+          variant="default"
+        >
+          Run Stale Reap
+        </Button>
+      </div>
     </Stack>
   );
 };
