@@ -115,11 +115,16 @@ export function useMicroContainerRedux(
           : 'Error stopping workspace',
       );
 
-      showErrorNotification('Workspace Error', errorMessage);
+      if (isWorkspaceLaunchError) {
+        coreDispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.LaunchError));
+      } else {
+        coreDispatch(
+          setJEGActiveWorkspaceStatus(WorkspaceStatus.TerminateError),
+        );
+      }
       coreDispatch(
         setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Unset),
       );
-      coreDispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.NotFound));
     }
   }, [isWorkspaceLaunchError, isTerminateError]);
 

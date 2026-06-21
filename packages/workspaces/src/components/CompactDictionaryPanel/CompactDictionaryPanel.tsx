@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   Badge,
   Group,
-  Loader,
+  LoadingOverlay,
   Scroller,
   Table,
   Text,
@@ -51,29 +51,21 @@ const CompactDictionaryPanel = ({
     }
   }, [isSuccess, data]);
 
-  if (isFetching) {
-    return (
-      <div className="w-full flex items-center gap-2 py-4 text-xs text-base-darker">
-        <Loader size="1em" />
-        Loading dictionary…
-      </div>
-    );
-  }
-
   if (isError) {
     let message = 'Could not load dictionary';
     if (isFetchBaseQueryError(error)) {
       message = `Error loading dictionary from server`;
     }
     return (
-      <div className="w-[400px] rounded-lg border border-utility-error bg-utility-error opacity-90 px-3 py-2 text-xs text-utility-contrast-error">
+      <div className="rounded-lg border border-utility-error bg-utility-error opacity-90 px-3 py-2 text-xs text-utility-contrast-error">
         {message}
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-2 bg-base-lightest p-2">
+    <div className="relative flex flex-col gap-2 bg-base-lightest p-2 ">
+      <LoadingOverlay visible={isFetching} />
       <TextInput
         placeholder="Filter nodes…"
         value={search}

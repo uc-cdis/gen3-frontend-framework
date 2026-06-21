@@ -210,8 +210,6 @@ const RemoteComputeWorkspace = React.memo(
         setRetryCount((n) => n + 1);
       };
 
-      console.log('status', status);
-
       if (status !== WorkspaceStatus.Running) {
         return (
           <div className="w-full flex flex-col grow">

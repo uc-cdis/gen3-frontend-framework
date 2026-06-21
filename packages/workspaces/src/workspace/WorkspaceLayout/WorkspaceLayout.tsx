@@ -4,7 +4,6 @@ import ToolsPanel from './ToolsPanel';
 import SettingsPanel from '../../workspace/WorkspaceLayout/SettingsPanel';
 import WorkspaceToolbar from './WorkspaceToolbar';
 import { WORKSPACE_TIER_INFORMATION } from '../../config';
-import { Collapse } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import {
   CoreState,
@@ -14,7 +13,9 @@ import {
 } from '@gen3/core';
 import { WorkspaceTier } from '../../types';
 
-const TRANSITION_DURATION = 400;
+const TRANSITION_DURATION = 500;
+const TOOLS_PANEL_WIDTH = 300;
+const SETTINGS_PANEL_WIDTH = 300;
 
 interface WorkspaceLayoutProps {
   children: ReactNode;
@@ -44,26 +45,36 @@ const WorkspaceLayout = ({
     <div className="flex flex-col w-full grow">
       <WorkspaceToolbar
         toolbarConfiguration={WORKSPACE_TIER_INFORMATION[workspaceTier].toolbar}
+        toggleTools={toggleTools}
+        toggleSettings={toggleSettings}
       />
       <div className="flex w-full grow">
-        <Collapse
-          expanded={toolsExpanded && !isFullScreen}
-          onChange={toggleTools}
-          transitionDuration={TRANSITION_DURATION}
-          orientation="horizontal"
+        {/* Pure CSS horizontal collapse — avoids Mantine's JS scrollWidth measurement which causes a pause at the start of animation */}
+        <div
+          className="overflow-hidden shrink-0"
+          style={{
+            width: toolsExpanded && !isFullScreen ? TOOLS_PANEL_WIDTH : 0,
+            transition: `width ${TRANSITION_DURATION}ms ease`,
+          }}
         >
-          <ToolsPanel />
-        </Collapse>
+          <div style={{ width: TOOLS_PANEL_WIDTH }}>
+            <ToolsPanel />
+          </div>
+        </div>
         {children}
-        <Collapse
-          expanded={settingsExpanded && !isFullScreen}
-          transitionDuration={TRANSITION_DURATION}
-          orientation="horizontal"
+        <div
+          className="overflow-hidden shrink-0"
+          style={{
+            width: settingsExpanded && !isFullScreen ? SETTINGS_PANEL_WIDTH : 0,
+            transition: `width ${TRANSITION_DURATION}ms ease`,
+          }}
         >
-          <SettingsPanel
-            {...WORKSPACE_TIER_INFORMATION[workspaceTier].settings}
-          />
-        </Collapse>
+          <div style={{ width: SETTINGS_PANEL_WIDTH }}>
+            <SettingsPanel
+              {...WORKSPACE_TIER_INFORMATION[workspaceTier].settings}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

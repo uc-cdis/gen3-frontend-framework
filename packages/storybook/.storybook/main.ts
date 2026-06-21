@@ -6,10 +6,12 @@ import path from 'path';
 import webpack from 'webpack';
 import type { StorybookConfig } from '@storybook/nextjs';
 
-// @ts-ignore
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-// @ts-ignore
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 const require = createRequire(import.meta.url);
 
 const config: StorybookConfig = {
@@ -62,16 +64,25 @@ const config: StorybookConfig = {
       use: ['@svgr/webpack'],
     });
 
+    // @storybook/nextjs aliases react to next/dist/compiled/react (a canary build).
+    // Remove the non-exact prefix aliases so they don't shadow our explicit overrides below.
+    if (config.resolve?.alias && !Array.isArray(config.resolve.alias)) {
+      delete (config.resolve.alias as Record<string, string>)['react'];
+      delete (config.resolve.alias as Record<string, string>)['react-dom'];
+    }
+
     config.resolve = {
       ...config.resolve,
       alias: {
         ...config.resolve?.alias,
         'next/router': 'next-router-mock',
-        // @storybook/nextjs aliases react to next/dist/compiled/react (a canary build
-        // that lacks useEffectEvent). Override to use the project's React 19.2+ which
-        // exports useEffectEvent as used by @mantine/hooks 9.2+.
-        react: require.resolve('react'),
-        'react-dom': require.resolve('react-dom'),
+        // Pin all react/react-dom imports to the project's installed versions (19.2.6),
+        // not the canary build bundled with Next.js.
+        react$: require.resolve('react'),
+        'react/jsx-runtime': require.resolve('react/jsx-runtime'),
+        'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime'),
+        'react-dom$': require.resolve('react-dom'),
+        'react-dom/client': require.resolve('react-dom/client'),
       },
     };
 
@@ -88,7 +99,7 @@ const config: StorybookConfig = {
     ];
 
     return config;
-  },
+  };,
 };
 export default config;
 

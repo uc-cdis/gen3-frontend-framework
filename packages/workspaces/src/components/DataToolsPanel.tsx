@@ -58,33 +58,34 @@ const DataToolsPanel = ({
   kbUrl,
 }: DataToolsPanelProps) => {
   return (
-    <Tabs
-      maw={800}
-      w="100%"
-      defaultValue="dictionary"
-      variant="outline"
-      classNames={{ root: 'p-2' }}
-    >
-      {/* Tab bar */}
-      <Tabs.List className="bg-base-max">
-        {TABS.map((tab) => (
-          <Tabs.Tab value={tab.id} leftSection={tab.icon} key={tab.id}>
-            {tab.label}
-          </Tabs.Tab>
-        ))}
-      </Tabs.List>
-      {/* Tab content */}
-      <div className="min-h-0 flex-1 overflow-hidden pt-4">
-        <PanelErrorBoundary>
-          <Tabs.Panel value="dictionary">
-            <CompactDictionaryPanel schemaUrl={schemaUrl} />
-          </Tabs.Panel>
-          <Tabs.Panel value="assistant">
-            <CodingAssistantPanel schemaUrl={schemaUrl} kbUrl={kbUrl} />
-          </Tabs.Panel>
-        </PanelErrorBoundary>
-      </div>
-    </Tabs>
+    <div className="flex shrink-0">
+      <Tabs
+        defaultValue="dictionary"
+        variant="outline"
+        classNames={{ root: 'p-2' }}
+        keepMounted
+      >
+        {/* Tab bar */}
+        <Tabs.List className="bg-base-max">
+          {TABS.map((tab) => (
+            <Tabs.Tab value={tab.id} leftSection={tab.icon} key={tab.id}>
+              {tab.label}
+            </Tabs.Tab>
+          ))}
+        </Tabs.List>
+        {/* Tab content */}
+        <div className="min-h-0 flex-1 overflow-hidden pt-4">
+          <PanelErrorBoundary>
+            <Tabs.Panel value="dictionary">
+              <CompactDictionaryPanel schemaUrl={schemaUrl} />
+            </Tabs.Panel>
+            <Tabs.Panel value="assistant">
+              <CodingAssistantPanel schemaUrl={schemaUrl} kbUrl={kbUrl} />
+            </Tabs.Panel>
+          </PanelErrorBoundary>
+        </div>
+      </Tabs>
+    </div>
   );
 };
 

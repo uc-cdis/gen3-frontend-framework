@@ -92,9 +92,11 @@ const LoginPanel = (loginConfig: LoginConfig) => {
           process.env.NODE_ENV === 'development' && (
             <Stack>
               <CredentialsLogin handleLogin={handleCredentialsLogin} />
-              <Button component="a" href="/api/auth/login">
-                Log in with Fence using client key/secret
-              </Button>
+              <div className="flex justify-center">
+                <Button component="a" href="/api/auth/login">
+                  Log in with Fence using client key/secret
+                </Button>
+              </div>
             </Stack>
           )}
         <Center>

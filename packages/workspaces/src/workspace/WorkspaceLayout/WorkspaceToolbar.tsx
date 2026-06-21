@@ -15,14 +15,19 @@ import {
 } from '@gen3/core';
 
 import { WorkspaceTier } from '../../types';
-import { useDisclosure } from '@mantine/hooks';
 import { useTerminateHatcheryWorkspaceMutation } from '../../core/hatcheryApi';
 
 interface WorkspaceToolbarProps {
   toolbarConfiguration?: TierToolbarConfiguration;
+  toggleTools: () => void;
+  toggleSettings: () => void;
 }
 
-const WorkspaceToolbar = ({ toolbarConfiguration }: WorkspaceToolbarProps) => {
+const WorkspaceToolbar = ({
+  toolbarConfiguration,
+  toggleTools,
+  toggleSettings,
+}: WorkspaceToolbarProps) => {
   const workspaceTier = useCoreSelector(
     (state: CoreState) => selectWorkspaceTier(state) as WorkspaceTier | null,
   );
@@ -34,7 +39,7 @@ const WorkspaceToolbar = ({ toolbarConfiguration }: WorkspaceToolbarProps) => {
   const isFullScreen = useCoreSelector((state: CoreState) =>
     selectWorkspaceFullscreen(state),
   );
-  const [toolsExpanded, { toggle: toggleTools }] = useDisclosure(true);
+
   const [terminateWorkspace] = useTerminateHatcheryWorkspaceMutation();
   const { showStatus, showStop } = toolbarConfiguration || {};
 
@@ -85,6 +90,12 @@ const WorkspaceToolbar = ({ toolbarConfiguration }: WorkspaceToolbarProps) => {
             </Badge>
           </Group>
         )}
+        <Button onClick={() => toggleTools()} size="sm" variant="outline">
+          Tools
+        </Button>
+        <Button onClick={() => toggleSettings()} size="sm" variant="outline">
+          Settings
+        </Button>
         {showStop && (
           <Button
             size="sm"

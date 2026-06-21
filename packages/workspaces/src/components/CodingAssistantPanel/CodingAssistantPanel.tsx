@@ -1,20 +1,26 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Select, Textarea, TextInput, Button } from '@mantine/core';
-import { IoSettingsSharp as SettingsIcon } from "react-icons/io5";
-import { BsFillInfoCircleFill as InfoIcon } from "react-icons/bs";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { Button, Select, Textarea, TextInput } from '@mantine/core';
+import { IoSettingsSharp as SettingsIcon } from 'react-icons/io5';
+import { BsFillInfoCircleFill as InfoIcon } from 'react-icons/bs';
 import {
-  sendMessage,
-  DEFAULT_MODELS,
-  MODEL_OPTIONS,
-  type LLMProvider,
-  type LLMConfig,
   type ChatMessage,
+  DEFAULT_MODELS,
+  type LLMConfig,
+  type LLMProvider,
+  MODEL_OPTIONS,
+  sendMessage,
 } from '../../lib/llmClient';
 import {
-  parseSchemaNodes,
   buildDictionaryContext,
   buildKBContext,
   buildSystemPrompt,
+  parseSchemaNodes,
 } from '../../lib/ragContext';
 import { useCodeInjector } from '../../hooks/useCodeInjector';
 import MessageBubble from './MessageBubble';
@@ -24,7 +30,7 @@ export interface CodingAssistantPanelProps {
   schemaUrl?: string;
   kbUrl?: string;
   onInsertCode?: (code: string) => void;
-};
+}
 
 // ── Persistence helpers ─────────────────────────────────────────────────
 
@@ -99,7 +105,9 @@ const CodingAssistantPanel = ({
         // Silently skip — dictionary RAG is best-effort
       }
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [schemaUrl]);
 
   // Persist settings on change
@@ -172,7 +180,11 @@ const CodingAssistantPanel = ({
 
     try {
       let fullText = '';
-      for await (const chunk of sendMessage(llmConfig, chatHistory, systemPrompt)) {
+      for await (const chunk of sendMessage(
+        llmConfig,
+        chatHistory,
+        systemPrompt,
+      )) {
         fullText += chunk;
         setMessages((prev) =>
           prev.map((m) =>
@@ -191,7 +203,11 @@ const CodingAssistantPanel = ({
       setMessages((prev) =>
         prev.map((m) =>
           m.id === assistantMsg.id
-            ? { ...m, content: `⚠️ ${err.message || 'Request failed'}`, streaming: false }
+            ? {
+                ...m,
+                content: `⚠️ ${err.message || 'Request failed'}`,
+                streaming: false,
+              }
             : m,
         ),
       );
@@ -225,7 +241,7 @@ const CodingAssistantPanel = ({
   const needsApiKey = provider !== 'ollama'; // pragma: allowlist-secret;
   const isConfigured = provider === 'ollama' || !!apiKey;
 
-// ── Settings form (shared between onboarding and collapsible) ─────
+  // ── Settings form (shared between onboarding and collapsible) ─────
   const settingsForm = (
     <div className="flex flex-col gap-2">
       <Select
@@ -234,7 +250,7 @@ const CodingAssistantPanel = ({
           { value: 'openai', label: 'OpenAI' },
           { value: 'anthropic', label: 'Anthropic' },
           { value: 'gemini', label: 'Gemini' },
-          { value: 'ollama', label: 'Ollama (local)'}
+          { value: 'ollama', label: 'Ollama (local)' },
         ]}
         value={provider}
         onChange={(value) => setProvider(value as LLMProvider)}
@@ -249,13 +265,15 @@ const CodingAssistantPanel = ({
             placeholder={`Paste your ${provider} API key`}
             label="API Key"
           />
-          <span className="text-xs text-base-dark">Stored in this tab only — never sent to our servers</span>
+          <span className="text-xs text-base-dark">
+            Stored in this tab only — never sent to our servers
+          </span>
         </>
       )}
 
       {provider === 'ollama' && (
         <TextInput
-          label={"Ollama URL"}
+          label={'Ollama URL'}
           value={ollamaUrl}
           onChange={(e) => setOllamaUrl(e.target.value)}
           placeholder="http://localhost:11434"
@@ -263,18 +281,27 @@ const CodingAssistantPanel = ({
       )}
 
       <Select
-        value={MODEL_OPTIONS[provider].some((m) => m.id === model) ? model : '__custom'}
+        value={
+          MODEL_OPTIONS[provider].some((m) => m.id === model)
+            ? model
+            : '__custom'
+        }
         onChange={(value) => {
           if (value !== '__custom') setModel(value as string);
         }}
         label="Model"
         data={[
-          ...MODEL_OPTIONS[provider].map((m) => ({ value: m.id, label: m.label })),
-          !(MODEL_OPTIONS?.[provider] || []).some((m) => m.id === model) ? { value: "__custom", label: "(custom)"} : undefined
-        ].filter(v => v != undefined)}
+          ...MODEL_OPTIONS[provider].map((m) => ({
+            value: m.id,
+            label: m.label,
+          })),
+          !(MODEL_OPTIONS?.[provider] || []).some((m) => m.id === model)
+            ? { value: '__custom', label: '(custom)' }
+            : undefined,
+        ].filter((v) => v != undefined)}
       />
       <TextInput
-        value={model || ""}
+        value={model || ''}
         onChange={(e) => setModel(e.target.value)}
         placeholder="Or type a custom model ID"
       />
@@ -306,11 +333,14 @@ const CodingAssistantPanel = ({
         <div className="rounded-lg border border-blue-200 bg-gradient-to-b from-blue-50 to-white p-3">
           <div className="mb-2 flex items-center gap-2">
             <InfoIcon className="text-utility-info" aria-hidden="true" />
-            <span className="text-xs font-semibold text-base-darkest">AI Coding Assistant</span>
+            <span className="text-xs font-semibold text-base-darkest">
+              AI Coding Assistant
+            </span>
           </div>
           <p className="mb-3 text-sm leading-relaxed text-base-darker">
-            Get help writing Python code, querying data, and exploring the data dictionary —
-            powered by your own API key. Choose a provider and paste your key below to start.
+            Get help writing Python code, querying data, and exploring the data
+            dictionary — powered by your own API key. Choose a provider and
+            paste your key below to start.
           </p>
           {settingsForm}
         </div>
@@ -323,14 +353,16 @@ const CodingAssistantPanel = ({
 
   // ── Configured: normal chat UI ───────────────────────────────────
   return (
-    <div className="flex h-full flex-col gap-2">
+    <div className="flex h-full flex-col gap-2 w-full">
       {/* Compact header with settings toggle + clear */}
       <div className="flex items-center justify-between">
         <button
           type="button"
           onClick={() => setShowSettings((v) => !v)}
           className="flex items-center gap-1 text-sm font-medium text-base-darker hover:text-base-darkest"
-          aria-label={showSettings ? 'Hide provider settings' : 'Show provider settings'}
+          aria-label={
+            showSettings ? 'Hide provider settings' : 'Show provider settings'
+          }
         >
           <SettingsIcon aria-hidden="true" />
           {showSettings ? 'Hide' : provider}
@@ -369,7 +401,9 @@ const CodingAssistantPanel = ({
                 <button
                   key={q}
                   type="button"
-                  onClick={() => { setInput(q); }}
+                  onClick={() => {
+                    setInput(q);
+                  }}
                   className="rounded-md border border-base-lighter bg-white px-2 py-1 text-left text-sm text-base-darker hover:border-utility-link hover:text-utility-link"
                 >
                   {q}
@@ -380,11 +414,7 @@ const CodingAssistantPanel = ({
         )}
 
         {messages.map((msg) => (
-          <MessageBubble
-            key={msg.id}
-            message={msg}
-            onInsert={handleInsert}
-          />
+          <MessageBubble key={msg.id} message={msg} onInsert={handleInsert} />
         ))}
         <div ref={messagesEndRef} />
       </div>
@@ -395,7 +425,9 @@ const CodingAssistantPanel = ({
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={streaming ? 'Generating…' : 'Ask a question… (Enter to send)'}
+          placeholder={
+            streaming ? 'Generating…' : 'Ask a question… (Enter to send)'
+          }
           rows={2}
           disabled={streaming}
           className="w-full"
@@ -411,6 +443,5 @@ const CodingAssistantPanel = ({
     </div>
   );
 };
-
 
 export default CodingAssistantPanel;
