@@ -22,6 +22,8 @@ import { HatcheryServiceState } from '../core/types';
 import { hatcheryStateToWorkspaceStatus } from './utils';
 import { getRTKQErrorMessage } from '../utils';
 
+const MAXIMUM_START_TIME_IN_MINUTES = 6;
+
 enum NotificationStatus {
   Info,
   Warn,
@@ -208,7 +210,9 @@ export const useJEGWorkspaceResourceMonitor = (
         );
       }
       if (requestedStatus === RequestedWorkspaceStatus.Terminate) {
-        return;
+        setPollingInterval(
+          WorkspacePollingInterval[WorkspaceStatus.Terminating],
+        );
       }
 
       dispatch(setJEGActiveWorkspaceStatus(workspaceQueryStatus));
@@ -246,7 +250,7 @@ export const useJEGWorkspaceResourceMonitor = (
   useEffect(() => {
     if (
       requestedStatus === RequestedWorkspaceStatus.Launch &&
-      isTimeGreaterThan(requestedStatusTimestamp, 5)
+      isTimeGreaterThan(requestedStatusTimestamp, MAXIMUM_START_TIME_IN_MINUTES)
     ) {
       if (workspaceId) terminateWorkspace(workspaceId);
       dispatch(

@@ -4,6 +4,7 @@ import { Icon } from '@iconify-icon/react';
 import { TierToolbarConfiguration } from '../Tiers/types';
 import {
   CoreState,
+  selectJEGActiveWorkspaceId,
   selectJEGActiveWorkspaceStatus,
   selectWorkspaceFullscreen,
   selectWorkspaceTier,
@@ -36,22 +37,33 @@ const WorkspaceToolbar = ({
     selectJEGActiveWorkspaceStatus(state),
   );
 
-  const isFullScreen = useCoreSelector((state: CoreState) =>
+  const isFullscreen = useCoreSelector((state: CoreState) =>
     selectWorkspaceFullscreen(state),
   );
 
-  const [terminateWorkspace] = useTerminateHatcheryWorkspaceMutation();
   const { showStatus, showStop } = toolbarConfiguration || {};
 
   const coreDispatch = useCoreDispatch();
 
   const toggleFullscreen = useCallback(() => {
-    coreDispatch(setWorkspaceFullscreen(!isFullScreen));
-  }, [coreDispatch, isFullScreen]);
+    coreDispatch(setWorkspaceFullscreen(!isFullscreen));
+  }, [coreDispatch, isFullscreen]);
 
   const returnToWorkspaceSelection = () => {
     coreDispatch(setWorkspaceTier(null));
   };
+
+  const [terminateHatcheryWorkspace] = useTerminateHatcheryWorkspaceMutation();
+
+  const workspaceId = useCoreSelector((state: CoreState) =>
+    selectJEGActiveWorkspaceId(state),
+  );
+
+  const handleTerminateWorkspace = useCallback(() => {
+    if (workspaceId) {
+      terminateHatcheryWorkspace(workspaceId);
+    }
+  }, [terminateHatcheryWorkspace, workspaceId]);
 
   return (
     <div className="flex items-center justify-between px-4 border-b-2 border-base-lighter pb-4">
@@ -104,7 +116,7 @@ const WorkspaceToolbar = ({
             color="primary.5"
             onClick={() => {}}
             disabled={workspaceStatus !== WorkspaceStatus.Running}
-            rightSection={<Icon icon="gen3:stop" width="100%" height="100%" />}
+            leftSection={<Icon icon="gen3:stop" width={24} height={24} />}
           >
             Stop
           </Button>
@@ -115,9 +127,15 @@ const WorkspaceToolbar = ({
           aria-label=""
           color="primary.5"
           onClick={toggleFullscreen}
-          rightSection={<Icon icon="gen3:stop" width="100%" height="100%" />}
+          leftSection={
+            isFullscreen ? (
+              <Icon icon="gen3:fullscreen-exit" width={24} height={24} />
+            ) : (
+              <Icon icon="gen3:fullscreen" width={24} height={24} />
+            )
+          }
         >
-          {isFullScreen ? 'Exit' : 'Enter'} Fullscreen
+          {isFullscreen ? 'Exit' : 'Enter'} Fullscreen
         </Button>
       </div>
     </div>

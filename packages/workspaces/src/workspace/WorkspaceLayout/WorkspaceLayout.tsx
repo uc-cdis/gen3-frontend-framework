@@ -49,7 +49,6 @@ const WorkspaceLayout = ({
         toggleSettings={toggleSettings}
       />
       <div className="flex w-full grow">
-        {/* Pure CSS horizontal collapse — avoids Mantine's JS scrollWidth measurement which causes a pause at the start of animation */}
         <div
           className="overflow-hidden shrink-0"
           style={{

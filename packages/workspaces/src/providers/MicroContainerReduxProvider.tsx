@@ -2,7 +2,7 @@ import React, { createContext, ReactNode } from 'react';
 import { useMicroContainerRedux } from './useMicroContainerRedux';
 import { WorkspaceStatus } from '@gen3/core';
 import { MicroContainerReduxContextValue } from './types';
-import { useJEGWorkspaceResourceMonitor } from './JEGWorkspaceResourceMonitor';
+import { useJEGWorkspaceResourceMonitor } from './useJEGWorkspaceResourceMonitor';
 
 const MicroContainerReduxProviderContext =
   createContext<MicroContainerReduxContextValue>({

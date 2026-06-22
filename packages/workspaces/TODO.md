@@ -15,12 +15,16 @@
   * ~~kernel state~~
   * ~~kernel runtime in minutes~~
 * Stop Container Button
-  * hide when not running
+  * ~~hide when not running~~
 * Select Kernel
+* Show upgrade panel in Free Tier
+* Hide kernel controls in Free Tier
 * Update Polling
   * make polling configurable
 * Workspace Status in Navigation
 * ProtectedContent Overlay for Non-free Workspaces
+  * add authz check
+* Prevent Tired access when not logged in/authorized
 * Test deployment
     * Kernels
     * Proxys

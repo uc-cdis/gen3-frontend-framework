@@ -178,7 +178,13 @@ export function useMicroContainerRedux(
       );
       coreDispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.Terminating));
     }
-  }, [containerHash, enabled, workspaceContainerStatus, terminateWorkspace]);
+  }, [
+    enabled,
+    workspaceContainerStatus,
+    coreDispatch,
+    containerHash,
+    terminateWorkspace,
+  ]);
 
   return useMemo(
     () => ({

@@ -1,5 +1,12 @@
 import { WorkspaceStatus } from '@gen3/core';
 
+export interface JEGWorkspaceContextValue {
+  /** Current lifecycle status of the JEG workspace. */
+  status: WorkspaceStatus;
+  /** The workspace ID being monitored, or null if not set. */
+  workspaceId: string | null;
+}
+
 export interface MicroContainerReduxContextValue {
   /** Current lifecycle status of the micro container pod. */
   status: WorkspaceStatus;
