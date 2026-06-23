@@ -36,6 +36,10 @@ export default async function handler(
 ) {
   const action = req.query.action?.[0];
 
+  console.log(
+    `[workspace-hatchery] ${action} HTTP=${req.method} id=${req.query.id ?? '(none)'} path=/${req.url}`,
+  );
+
   // Intercept res.send to capture response body for logging
   let capturedBody = '';
   const originalSend = res.send.bind(res) as typeof res.send;

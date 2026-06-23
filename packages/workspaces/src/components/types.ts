@@ -1,5 +1,5 @@
 import { type WorkspaceTier } from '../types';
-import { FreeWorkspaceTierConfiguration } from '../workspace/Tiers/types';
+import { FreeWorkspaceTierConfiguration } from '../workspace/tiers/types';
 
 export interface WorkspaceCardConfig<
   T extends FreeWorkspaceTierConfiguration = FreeWorkspaceTierConfiguration,

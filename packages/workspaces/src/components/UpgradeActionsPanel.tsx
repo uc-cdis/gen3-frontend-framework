@@ -20,7 +20,7 @@ const UpgradeActionsPanel = ({
   return (
     <section className="mt-6 overflow-hidden rounded-xl border border-base bg-white shadow-sm">
       <div className="border-b border-base-lighter bg-base-lightest bg-opacity-40 px-4 py-3 backdrop-blur-sm">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-base-darker">
+        <h3 className="text-md font-bold uppercase tracking-wider text-base-darker">
           Capacity & Upgrade
         </h3>
       </div>
@@ -37,14 +37,16 @@ const UpgradeActionsPanel = ({
           </p>
         </div>
 
-        <Button
-          onClick={onUpgradeToRemote}
-          disabled={!canUpgrade}
-          className="w-full border-primary-light"
-          variant="light"
-        >
-          Upgrade To Remote Tier
-        </Button>
+        {currentTier === 'free' && (
+          <Button
+            onClick={onUpgradeToRemote}
+            disabled={!canUpgrade}
+            className="w-full border-primary-light"
+            variant="light"
+          >
+            Upgrade To Remote Tier
+          </Button>
+        )}
         {currentTier !== 'free' && (
           <>
             <Button

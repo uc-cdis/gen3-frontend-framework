@@ -1,10 +1,9 @@
 import React, { useCallback } from 'react';
 import { ActionIcon, Badge, Button, Group, Stack, Text } from '@mantine/core';
 import { Icon } from '@iconify-icon/react';
-import { TierToolbarConfiguration } from '../Tiers/types';
+import { TierToolbarConfiguration } from '../tiers/types';
 import {
   CoreState,
-  selectJEGActiveWorkspaceId,
   selectJEGActiveWorkspaceStatus,
   selectWorkspaceFullscreen,
   selectWorkspaceTier,
@@ -16,7 +15,7 @@ import {
 } from '@gen3/core';
 
 import { WorkspaceTier } from '../../types';
-import { useTerminateHatcheryWorkspaceMutation } from '../../core/hatcheryApi';
+import { useMicroContainerReduxContext } from '../../providers/MicroContainerReduxProvider';
 
 interface WorkspaceToolbarProps {
   toolbarConfiguration?: TierToolbarConfiguration;
@@ -53,17 +52,7 @@ const WorkspaceToolbar = ({
     coreDispatch(setWorkspaceTier(null));
   };
 
-  const [terminateHatcheryWorkspace] = useTerminateHatcheryWorkspaceMutation();
-
-  const workspaceId = useCoreSelector((state: CoreState) =>
-    selectJEGActiveWorkspaceId(state),
-  );
-
-  const handleTerminateWorkspace = useCallback(() => {
-    if (workspaceId) {
-      terminateHatcheryWorkspace(workspaceId);
-    }
-  }, [terminateHatcheryWorkspace, workspaceId]);
+  const { terminate } = useMicroContainerReduxContext();
 
   return (
     <div className="flex items-center justify-between px-4 border-b-2 border-base-lighter pb-4">
@@ -114,7 +103,7 @@ const WorkspaceToolbar = ({
             variant="outline"
             aria-label="Stop workspace"
             color="primary.5"
-            onClick={() => {}}
+            onClick={terminate}
             disabled={workspaceStatus !== WorkspaceStatus.Running}
             leftSection={<Icon icon="gen3:stop" width={24} height={24} />}
           >

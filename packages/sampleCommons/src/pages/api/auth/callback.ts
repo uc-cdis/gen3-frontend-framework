@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { serialize } from 'cookie';
-import { fenceConfig, tokenUrl } from '../../../lib/auth/fenceAuth.ts';
+import { fenceConfig, tokenUrl } from '../../../lib/auth/fenceAuth';
 
 type TokenResponse = {
   access_token: string;
@@ -19,15 +19,21 @@ export default async function handler(
     string | undefined
   >;
 
+  console.log('code: ', code);
+  console.log('state: ', state);
+  console.log('error: ', error);
+
   if (error) {
-    return res.redirect(`/login?error=${encodeURIComponent(error)}`);
+    res.redirect(`/Login?error=${encodeURIComponent(error)}`);
+    return;
   }
 
   const storedState = req.cookies.oauth_state;
   const verifier = req.cookies.oauth_verifier;
 
   if (!code || !state || !verifier || state !== storedState) {
-    return res.redirect('/login?error=invalid_state');
+    res.redirect('/Login?error=invalid_state');
+    return;
   }
 
   const basic = Buffer.from(
@@ -50,13 +56,16 @@ export default async function handler(
     cache: 'no-store',
   });
 
+  console.log('tokenRes: ', tokenRes);
+
   if (!tokenRes.ok) {
     console.error(
       'Fence token exchange failed',
       tokenRes.status,
       await tokenRes.text(),
     );
-    return res.redirect('/login?error=token_exchange');
+    res.redirect('/Login?error=token_exchange');
+    return;
   }
 
   const tokens = (await tokenRes.json()) as TokenResponse;

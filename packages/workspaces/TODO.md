@@ -50,3 +50,24 @@ kind load docker-image quay.io/cdis/gen3-vectis:qa-goproxy --name kind-multi-nod
 ```
 kubectl label node kind-multi-node-control-plane role=jupyter
 ```
+
+# set up fence with 'credentials' scope
+
+```bash
+fence-create client-create --client gen3dev2 --urls http://localhost:3000/api/auth/callback --username craigrbarnes@uchicago.edu   --allowed-scopes openid user data credentials --grant-types authorization_code refresh_token
+```
+
+modify example
+
+```bash
+ence-create client-modify --client gen3dev2 --urls http://gen3dev.local.io:3000/api/auth/callback
+
+```
+
+then add to `.env.development.local`:
+
+```bash
+FENCE_CLIENT_ID=<<fence client id>>
+FENCE_CLIENT_SECRET=<<fence client secret>>
+FENCE_REDIRECT_URI=http://gen3dev.local.io:3000/api/auth/callback
+```

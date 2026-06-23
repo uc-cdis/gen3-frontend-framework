@@ -1,6 +1,6 @@
 import React from 'react';
 import { Stack, Text } from '@mantine/core';
-import { SettingsPanelConfiguration } from '../Tiers/types';
+import { SettingsPanelConfiguration } from '../tiers/types';
 import KernelLifecyclePanel from '../../components/KernelLifecyclePanel/KernelLifecyclePanel';
 import { PanelHeaderStyle, PanelHeaderTextStyle, PanelStyle } from './styling';
 import UpgradeActionsPanel from '../../components/UpgradeActionsPanel';

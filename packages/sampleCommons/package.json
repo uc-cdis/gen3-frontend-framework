@@ -9,7 +9,7 @@
     "predev": "[ -f ../../node_modules/@gen3/toolsff/dist/scanSitePaths.esm.js ] && node ../../node_modules/@gen3/toolsff/dist/scanSitePaths.esm.js || (printf \"\\033[31mError: @gen3/toolsff not built. Please run build in the tools directory first.\\033[0m\\n\" && exit 1)",
     "dev": "next dev --webpack",
     "dev:turbopack": "next dev",
-    "devssh": "next dev --port 3010 --experimental-https --experimental-https-key /Users/craigrbarnes/ssl_certs/key.pem --experimental-https-cert /Users/craigrbarnes/ssl_certs/cert.pem ",
+    "dev:ssh": "NODE_USE_SYSTEM_CA=1 next dev --port 3000 --experimental-https --experimental-https-key /Users/craigrbarnes/ssl_certs/key.pem --experimental-https-cert /Users/craigrbarnes/ssl_certs/cert.pem ",
     "clean": "rm -rf .next && rm -rf out",
     "prebuild": "node ../../node_modules/@gen3/toolsff/dist/scanSitePaths.esm.js",
     "start": "next start",

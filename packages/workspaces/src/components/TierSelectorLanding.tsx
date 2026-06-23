@@ -43,15 +43,6 @@ const TierSelectorLanding = ({
 
   return (
     <div className={mergedClassnames.root}>
-      <div
-        className="absolute -left-20 top-10 h-56 w-56 rounded-full bg-primary-light/20 blur-3xl"
-        aria-hidden="true"
-      />
-      <div
-        className="absolute -right-20 bottom-0 h-64 w-64 rounded-full bg-accent-light/20 blur-3xl"
-        aria-hidden="true"
-      />
-
       <div className={mergedClassnames.background}>
         <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>

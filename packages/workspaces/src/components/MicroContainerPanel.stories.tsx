@@ -1,22 +1,22 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
-import MicroContainerPanel from './MicroContainerPanel';
+import MicroContainerReduxPanel from './MicroContainerReduxPanel';
 import React from 'react';
-import { MicroContainerProvider } from '../providers/MicroContainerProvider';
+import { MicroContainerReduxProvider } from '../providers/MicroContainerReduxProvider';
 
 const meta = {
   title: 'Workspace Components/MicroContainerPanel',
-  component: MicroContainerPanel,
+  component: MicroContainerReduxPanel,
   decorators: [
     (Story) => (
       <div className="bg-base-lightest p-4">
-        <MicroContainerProvider enabled={true}>
+        <MicroContainerReduxProvider enabled={true}>
           <Story />
-        </MicroContainerProvider>
+        </MicroContainerReduxProvider>
       </div>
     ),
   ],
-} satisfies Meta<typeof MicroContainerPanel>;
+} satisfies Meta<typeof MicroContainerReduxPanel>;
 
 export default meta;
 

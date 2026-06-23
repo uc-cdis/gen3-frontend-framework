@@ -1,7 +1,8 @@
+import { http, HttpResponse } from 'msw';
 import type { Meta, StoryObj } from '@storybook/nextjs';
-
 import CompactDictionaryPanel from './CompactDictionaryPanel';
 import { SchemaNode } from '../../lib/ragContext';
+import { GEN3_SUBMISSION_API } from '@gen3/core';
 
 const nodes: SchemaNode[] = [
   {
@@ -242,5 +243,14 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     schemaUrl: '/',
+  },
+  parameters: {
+    msw: {
+      handlers: [
+        http.get(`${GEN3_SUBMISSION_API}/`, () => {
+          return HttpResponse.json(nodes);
+        }),
+      ],
+    },
   },
 };

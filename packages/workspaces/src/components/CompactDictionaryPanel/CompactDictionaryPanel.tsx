@@ -18,6 +18,7 @@ import {
   isFetchBaseQueryError,
   useGetDictionaryFromUrlQuery,
 } from '@gen3/core';
+import FieldLinkCountBadge from './FieldLinkCountBadge';
 
 export interface CompactDictionaryPanelProps {
   schemaUrl?: string;
@@ -105,9 +106,10 @@ const CompactDictionaryPanel = ({
                     </div>
                   )}
                 </div>
-                <span className="shrink-0 text-sm text-base-darker">
-                  {propCount}f{linkCount ? ` · ${linkCount}l` : ''}
-                </span>
+                <FieldLinkCountBadge
+                  fieldsCount={propCount}
+                  linksCount={linkCount}
+                />
               </button>
 
               {isExpanded && (

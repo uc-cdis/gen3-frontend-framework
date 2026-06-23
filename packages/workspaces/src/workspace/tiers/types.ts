@@ -28,3 +28,10 @@ export interface FreeWorkspaceTierConfiguration extends WorkspaceTierInformation
 export interface MicroContainerWorkspaceTierConfiguration extends WorkspaceTierInformation {
   type: Extract<WorkspaceTier, 'remote'>;
 }
+
+export type RemoteComputeWorkspaceHandle = {
+  /** Attach a running kernel to the notebook open in the iframe. */
+  attachKernel: (kernelId: string, kernelName: string) => Promise<boolean>;
+  /** True once the JupyterLite app inside the iframe reports ready. */
+  isReady: boolean;
+};

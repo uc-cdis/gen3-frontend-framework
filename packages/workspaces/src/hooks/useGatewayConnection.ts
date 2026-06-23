@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { WorkspaceAuthContext } from '../auth/auth';
-import type { RemoteComputeWorkspaceHandle } from '../workspace/RemoteComputeWorkspace';
+import type { RemoteComputeWorkspaceHandle } from '../workspace/tiers/types';
 import {
   type GatewayKernel,
   launchKernelWithRetry,

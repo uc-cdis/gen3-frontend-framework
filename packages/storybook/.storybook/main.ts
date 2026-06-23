@@ -2,7 +2,11 @@
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import { dirname } from 'node:path';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 import path from 'path';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 import webpack from 'webpack';
 import type { StorybookConfig } from '@storybook/nextjs';
 
@@ -99,7 +103,7 @@ const config: StorybookConfig = {
     ];
 
     return config;
-  };,
+  },
 };
 export default config;
 

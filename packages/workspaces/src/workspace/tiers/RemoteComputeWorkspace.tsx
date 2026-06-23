@@ -12,13 +12,7 @@ import { getCookie } from 'cookies-next';
 import MicroContainerReduxPanel from '../../components/MicroContainerReduxPanel';
 import { useMicroContainerReduxContext } from '../../providers/MicroContainerReduxProvider';
 import { WorkspaceStatus } from '@gen3/core';
-
-export type RemoteComputeWorkspaceHandle = {
-  /** Attach a running kernel to the notebook open in the iframe. */
-  attachKernel: (kernelId: string, kernelName: string) => Promise<boolean>;
-  /** True once the JupyterLite app inside the iframe reports ready. */
-  isReady: boolean;
-};
+import { type RemoteComputeWorkspaceHandle } from './types';
 
 export type RemoteComputeWorkspaceProps = {
   assetBaseUrl?: string;

@@ -38,7 +38,7 @@ const persistConfig = {
   key: `${GEN3_COMMONS_NAME}-root`, // stored by domain name but name added for development using localhost which will share store across multiple configurations
   version: 1,
   storage,
-  whitelist: ['cohorts', 'activeWorkspace', 'cart'],
+  whitelist: ['cohorts', 'activeWorkspace', 'cart', 'workspaceKernels'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

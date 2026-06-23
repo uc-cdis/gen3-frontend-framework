@@ -1,6 +1,6 @@
-import { MicroContainerStatus } from '../providers/MicroContainerProvider';
-import { HatcheryServiceState } from '../core/types';
 import { WorkspaceStatus } from '@gen3/core';
+import { MicroContainerStatus } from './types';
+import { HatcheryServiceState } from '../core/types';
 
 export const hatcheryStateToMicroContainerStatus = (
   state: HatcheryServiceState,

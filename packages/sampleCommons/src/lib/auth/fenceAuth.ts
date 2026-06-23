@@ -7,11 +7,15 @@ export const fenceConfig = {
   clientSecret: process.env.FENCE_CLIENT_SECRET!,
   redirectUri: process.env.FENCE_REDIRECT_URI!,
   // openid+user are the basics; add offline_access to get a refresh_token
-  scope: 'openid user credentials profile',
+  scope: 'openid user credentials',
 };
 
-export const authorizeUrl = `${GEN3_FENCE_API}/oauth2/authorize`;
-export const tokenUrl = `${GEN3_FENCE_API}/oauth2/token`;
+// Use FENCE_BASE_URL for direct server-to-server and browser-to-fence URLs,
+// bypassing the Next.js dev proxy (which would require Node.js to trust the
+// upstream TLS cert). Falls back to the proxied GEN3_FENCE_API path.
+const fenceBase = process.env.FENCE_BASE_URL || GEN3_FENCE_API;
+export const authorizeUrl = `${fenceBase}/oauth2/authorize`;
+export const tokenUrl = `${fenceBase}/oauth2/token`;
 
 const base64url = (buf: Buffer) =>
   buf

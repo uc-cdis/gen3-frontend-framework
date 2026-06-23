@@ -9,7 +9,8 @@ import {
 
 export default function handler(_req: NextApiRequest, res: NextApiResponse) {
   const state = randomString();
-  const codeVerifier = randomString();
+  const verifier = randomString();
+  const challenge = pkceChallenge(verifier);
 
   const params = new URLSearchParams({
     client_id: fenceConfig.clientId,
@@ -17,9 +18,11 @@ export default function handler(_req: NextApiRequest, res: NextApiResponse) {
     redirect_uri: fenceConfig.redirectUri,
     scope: fenceConfig.scope,
     state,
-    code_challenge: pkceChallenge(codeVerifier),
-    code_challenge_method: 'S256',
+    // code_challenge: challenge,
+    // code_challenge_method: 'S256',
   });
+
+  console.log('fenceConfig.redirectUri: ', `${fenceConfig.redirectUri}`);
 
   const opts = {
     httpOnly: true,
@@ -31,7 +34,9 @@ export default function handler(_req: NextApiRequest, res: NextApiResponse) {
 
   res.setHeader('Set-Cookie', [
     serialize('oauth_state', state, opts),
-    serialize('oauth_verifier', codeVerifier, opts),
+    serialize('oauth_verifier', verifier, opts),
   ]);
+
+  console.log('authorizeUrl: ', `${authorizeUrl}?${params}`);
   res.redirect(`${authorizeUrl}?${params}`);
 }

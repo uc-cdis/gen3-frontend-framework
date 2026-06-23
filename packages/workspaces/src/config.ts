@@ -1,5 +1,5 @@
 import { JupyterWorkspaceConfig } from './types';
-import { WorkspaceTierInformation } from './workspace/Tiers/types';
+import { WorkspaceTierInformation } from './workspace/tiers/types';
 
 export const DEFAULT_WORKSPACE_CONFIG: JupyterWorkspaceConfig = {
   gateway: {

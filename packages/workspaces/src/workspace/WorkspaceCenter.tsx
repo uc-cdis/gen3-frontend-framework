@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import TierSelectorLanding from '../components/TierSelectorLanding';
-import FreeWorkspace from '../workspace/Tiers/FreeWorkspace';
-import RemoteWorkspace from '../workspace/Tiers/RemoteWorkspace';
+import FreeWorkspace from './tiers/FreeWorkspace';
+import RemoteWorkspace from './tiers/RemoteComputeWorkspace';
 import { WorkspacesCenterConfiguration } from '../workspace/types';
 import WorkspaceLayout from '../workspace/WorkspaceLayout/WorkspaceLayout';
 import {
@@ -81,6 +81,15 @@ const WorkspaceCenter = ({
       />
     );
   }
+
+  if (workspaceTier === 'free') {
+    return (
+      <WorkspaceLayout>
+        <FreeWorkspace />
+      </WorkspaceLayout>
+    );
+  }
+
   return (
     <WorkspaceLayout>
       {

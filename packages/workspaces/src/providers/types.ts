@@ -1,5 +1,13 @@
 import { WorkspaceStatus } from '@gen3/core';
 
+export type MicroContainerStatus =
+  | 'unknown'
+  | 'not-running'
+  | 'launching'
+  | 'running'
+  | 'terminating'
+  | 'error';
+
 export interface JEGWorkspaceContextValue {
   /** Current lifecycle status of the JEG workspace. */
   status: WorkspaceStatus;
