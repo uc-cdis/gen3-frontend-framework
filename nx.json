@@ -2,11 +2,15 @@
   "targetDefaults": {
     "lint": {
       "cache": true,
-      "dependsOn": ["^lint"]
+      "dependsOn": [
+        "^lint"
+      ]
     },
     "compile": {
       "cache": true,
-      "dependsOn": ["^compile"]
+      "dependsOn": [
+        "^compile"
+      ]
     },
     "clean": {
       "dependsOn": []
@@ -17,7 +21,9 @@
     },
     "build": {
       "cache": true,
-      "dependsOn": ["^build"]
+      "dependsOn": [
+        "^build"
+      ]
     },
     "build:clean": {
       "dependsOn": []
@@ -45,5 +51,6 @@
       "dependsOn": []
     }
   },
-  "analytics": true
+  "analytics": false,
+  "neverConnectToCloud": true
 }
