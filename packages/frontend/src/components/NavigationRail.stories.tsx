@@ -1,17 +1,17 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { CartIcon, PersonIcon } from '../types/icons';
-import NavigationRail, { NavRailItem } from './NavigationRail';
+import NavigationRail, { NavigationRailItem } from './NavigationRail';
 
-const railButtons: NavRailItem[] = [
+const railButtons: NavigationRailItem[] = [
   {
     label: 'Cart',
-    component: <div>Cart Panel</div>,
+    panel: <div>Cart Panel</div>,
     icon: <CartIcon size={20} aria-hidden="true" />,
   },
   {
     label: 'Person',
-    component: <div>Person Panel</div>,
+    panel: <div>Person Panel</div>,
     icon: <PersonIcon size={20} aria-hidden="true" />,
   },
 ];

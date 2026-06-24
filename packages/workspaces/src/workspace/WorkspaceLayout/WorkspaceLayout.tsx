@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react';
 
-import ToolsPanel from './ToolsPanel';
 import SettingsPanel from '../../workspace/WorkspaceLayout/SettingsPanel';
 import WorkspaceToolbar from './WorkspaceToolbar';
 import { WORKSPACE_TIER_INFORMATION } from '../../config';
@@ -12,10 +11,11 @@ import {
   useCoreSelector,
 } from '@gen3/core';
 import { WorkspaceTier } from '../../types';
+import ToolsPanel from './ToolsPanel';
 
 const TRANSITION_DURATION = 500;
-const TOOLS_PANEL_WIDTH = 300;
 const SETTINGS_PANEL_WIDTH = 300;
+const MIN_PANEL_WIDTH = 64;
 
 interface WorkspaceLayoutProps {
   children: ReactNode;
@@ -32,7 +32,8 @@ const WorkspaceLayout = ({
   const workspaceTier = useCoreSelector(
     (state: CoreState) => selectWorkspaceTier(state) as WorkspaceTier | null,
   );
-  const [toolsExpanded, { toggle: toggleTools }] = useDisclosure(true);
+  const [toolsExpanded, { toggle: toggleTools, set: setToolsExpanded }] =
+    useDisclosure(true);
   const [settingsExpanded, { toggle: toggleSettings }] = useDisclosure(true);
 
   const isFullScreen = useCoreSelector((state) =>
@@ -49,22 +50,18 @@ const WorkspaceLayout = ({
         toggleSettings={toggleSettings}
       />
       <div className="flex w-full grow">
-        <div
-          className="overflow-hidden shrink-0"
-          style={{
-            width: toolsExpanded && !isFullScreen ? TOOLS_PANEL_WIDTH : 0,
-            transition: `width ${TRANSITION_DURATION}ms ease`,
-          }}
-        >
-          <div style={{ width: TOOLS_PANEL_WIDTH }}>
-            <ToolsPanel />
-          </div>
-        </div>
+        <ToolsPanel
+          expanded={toolsExpanded && !isFullScreen}
+          setExpanded={setToolsExpanded}
+        />
         {children}
         <div
           className="overflow-hidden shrink-0"
           style={{
-            width: settingsExpanded && !isFullScreen ? SETTINGS_PANEL_WIDTH : 0,
+            width:
+              settingsExpanded && !isFullScreen
+                ? SETTINGS_PANEL_WIDTH
+                : MIN_PANEL_WIDTH,
             transition: `width ${TRANSITION_DURATION}ms ease`,
           }}
         >

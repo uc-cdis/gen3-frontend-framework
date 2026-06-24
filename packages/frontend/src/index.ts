@@ -1,26 +1,3 @@
-export * from './components/Profile';
-export * from './components/Login';
-
-export * from './components/Modals';
-export * from './components/MessageCards';
-export * from './components/charts';
-export * from './components/facets';
-export * from './components/Protected';
-// features
-export * from './features/Navigation';
-export * from './features/Discovery';
-export * from './features/Dictionary';
-export * from './features/Study';
-export * from './features/CohortBuilder';
-export * from './features/Query';
-export * from './features/Workspace';
-export * from './features/Analysis';
-export * from './features/StaticNotebook';
-export * from './features/Profile';
-export * from './features/FileSummary';
-export * from './utils/';
-export * from './types';
-
 import {
   ClinicalDataAnalysisPage,
   ClinicalDataAnalysisServerSideProps,
@@ -160,6 +137,33 @@ import {
 import type { AuthorizedRoutesConfig, RouteConfig } from './lib/authz/type';
 import { DefaultAuthorizedRoutesConfig } from './lib/authz/type';
 import OverflowTooltippedLabel from './components/OverflowTooltippedLabel';
+import PanelErrorBoundary from './components/PanelErrorBoundary';
+import NavigationRail, {
+  NavigationRailItem,
+} from './components/NavigationRail';
+
+export * from './components/Profile';
+export * from './components/Login';
+
+export * from './components/Modals';
+export * from './components/MessageCards';
+export * from './components/charts';
+export * from './components/facets';
+export * from './components/Protected';
+// features
+export * from './features/Navigation';
+export * from './features/Discovery';
+export * from './features/Dictionary';
+export * from './features/Study';
+export * from './features/CohortBuilder';
+export * from './features/Query';
+export * from './features/Workspace';
+export * from './features/Analysis';
+export * from './features/StaticNotebook';
+export * from './features/Profile';
+export * from './features/FileSummary';
+export * from './utils/';
+export * from './types';
 
 export {
   ContentSource,
@@ -185,6 +189,9 @@ export {
   ErrorCard,
   TopBar,
   CountsValue,
+  PanelErrorBoundary,
+  type NavigationRailItem,
+  NavigationRail,
   type InfoRolloverButtonProps,
   InfoRolloverButton,
 

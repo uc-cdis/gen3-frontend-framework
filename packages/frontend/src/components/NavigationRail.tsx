@@ -1,5 +1,10 @@
-import type { ReactElement } from 'react';
-import React, { useMemo, useState } from 'react';
+import React, {
+  ReactElement,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   ActionIcon,
   Box,
@@ -13,26 +18,30 @@ import {
 } from '@mantine/core';
 
 import { Icon } from '@iconify-icon/react';
-import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import PanelErrorBoundary from './PanelErrorBoundary';
 
-export type NavRailItem = {
+const TRANSITION_DURATION = 200;
+
+export type NavigationRailItem = {
   label: string;
   tooltip?: string;
   icon: string | ReactElement;
-  component: ReactElement;
+  panel: ReactElement;
 };
 
-interface NormalizedNavRailItem extends NavRailItem {
+interface NormalizedNavRailItem extends NavigationRailItem {
   value: string;
   IconComponent?: ReactElement;
 }
 
 type CollapsibleNavRailProps = {
-  items: NavRailItem[];
+  items: NavigationRailItem[];
   label?: string;
   defaultValue?: string;
   width?: number;
   collapsedWidth?: number;
+  isExpanded?: boolean;
+  onExpandChange?: (expanded: boolean) => void;
 };
 
 export const NavigationRail = ({
@@ -41,11 +50,31 @@ export const NavigationRail = ({
   defaultValue,
   width = 280,
   collapsedWidth = 64,
+  isExpanded = true,
+  onExpandChange = () => {},
 }: CollapsibleNavRailProps) => {
   const initialValue = defaultValue ?? items[0]?.label ?? null;
 
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(isExpanded);
+  const [showCollapsedIcons, setShowCollapsedIcons] = useState(!isExpanded);
   const [activeTab, setActiveTab] = useState<string | null>(initialValue);
+  const prevIsExpanded = useRef(isExpanded);
+
+  const applyExpand = (expand: boolean) => {
+    setExpanded(expand);
+    if (expand) {
+      setShowCollapsedIcons(false);
+    } else {
+      setTimeout(() => setShowCollapsedIcons(true), TRANSITION_DURATION);
+    }
+  };
+
+  useEffect(() => {
+    if (prevIsExpanded.current !== isExpanded) {
+      prevIsExpanded.current = isExpanded;
+      applyExpand(isExpanded);
+    }
+  }, [isExpanded]);
 
   const normalizedItems = useMemo(
     () =>
@@ -64,7 +93,8 @@ export const NavigationRail = ({
 
   const handleCollapsedIconClick = (value: string) => {
     setActiveTab(value);
-    setExpanded(true);
+    applyExpand(true);
+    onExpandChange?.(true);
   };
 
   return (
@@ -74,18 +104,21 @@ export const NavigationRail = ({
       style={{
         display: 'flex',
         width: expanded ? width : collapsedWidth,
-        transition: 'width 160ms ease',
+        transition: `width ${TRANSITION_DURATION}ms ease`,
         overflow: 'hidden',
       }}
     >
-      {!expanded && (
+      {showCollapsedIcons && (
         <Stack align="center" gap="xs" py="md" px="xs" w={collapsedWidth}>
           <ActionIcon
             variant="subtle"
             aria-label="Expand navigation"
-            onClick={() => setExpanded(true)}
+            onClick={() => {
+              applyExpand(true);
+              onExpandChange?.(true);
+            }}
           >
-            <IconChevronRight size={18} />
+            <Icon icon="gen3:left-panel-open" width={24} height={24} />
           </ActionIcon>
 
           {normalizedItems.map(
@@ -115,7 +148,7 @@ export const NavigationRail = ({
       <Collapse
         expanded={expanded}
         orientation="horizontal"
-        transitionDuration={160}
+        transitionDuration={TRANSITION_DURATION}
       >
         <Box w={width}>
           <Group justify="space-between" px="sm" py="xs">
@@ -126,9 +159,12 @@ export const NavigationRail = ({
             <ActionIcon
               variant="subtle"
               aria-label="Collapse navigation"
-              onClick={() => setExpanded(false)}
+              onClick={() => {
+                applyExpand(false);
+                onExpandChange?.(false);
+              }}
             >
-              <IconChevronLeft size={18} />
+              <Icon icon="gen3:left-panel-open" width={24} height={24} />
             </ActionIcon>
           </Group>
 
@@ -149,12 +185,13 @@ export const NavigationRail = ({
                 </Tabs.Tab>
               ))}
             </Tabs.List>
-
-            {normalizedItems.map(({ value, component }) => (
-              <Tabs.Panel key={value} value={value} p="md">
-                {component}
-              </Tabs.Panel>
-            ))}
+            <PanelErrorBoundary>
+              {normalizedItems.map(({ value, panel }) => (
+                <Tabs.Panel key={value} value={value} p="md">
+                  {panel}
+                </Tabs.Panel>
+              ))}
+            </PanelErrorBoundary>
           </Tabs>
         </Box>
       </Collapse>
