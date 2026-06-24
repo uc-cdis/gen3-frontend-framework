@@ -18,11 +18,12 @@ export interface FormOnSubmitReturnProps {
  * Interface representing the properties for rendering a form.
  */
 export interface FormProps {
-  readonly className?: string; // tailwind based styling to apply to the form container 
+  readonly className?: string; // tailwind based styling to apply to the form container
   readonly submitButtonText?: string; // submit Button Text defalts to Submit
+  readonly showResetButton?: boolean; // Determines if the reset button should be visible
   readonly body: FormPropsBody[]; // array of FormContent
-  readonly onSubmit: (values: FormOnSubmitReturnProps)=> void | Promise<any>; // function to trigger on form submit
-  readonly errorMessage?: string; // error messaage to desplay above submit button 
+  readonly onSubmit: (values: FormOnSubmitReturnProps) => void | Promise<any>; // function to trigger on form submit
+  readonly errorMessage?: string; // error messaage to desplay above submit button
 }
 
 /**
@@ -40,46 +41,53 @@ const Form = ({
   className = '',
   body,
   submitButtonText = 'Submit',
+  showResetButton = false,
   onSubmit,
   errorMessage,
 }: FormProps) => {
+  const initialValues: { [key: string]: string | boolean } = {};
+  const validate: FormValidateInput<any> = {};
 
-  const initialValues:{[key: string]: string | boolean} = {};
-  const validate:FormValidateInput<any> = {};
+  const bodyWithKey: Omit<FormContentProps, 'form'>[] = body.map(
+    (item, index) => {
+      const itemKey =
+        item.variable ||
+        `${index}${item.type || ''}${item.label || ''}`.replace(
+          /[^a-zA-Z0-9]/g,
+          '',
+        );
 
-  const bodyWithKey:Omit<FormContentProps, 'form'>[] = body.map((item, index) => {
-    const itemKey = item.variable || `${index}${item.type || ''}${item.label || ''}`.replace(/[^a-zA-Z0-9]/g, "");
-    
-    if ( item.type && item.type in FormContentType && item.label ) {
-      if (item.initialValue) {
-        initialValues[itemKey] = item.initialValue;
-      }
-      if (item.type === 'Email') {
-        const isvalidEmail = item.errorText || 'Invalid email';
-        validate[itemKey] = isEmail(isvalidEmail);
-      }
-      if (item.required) {
-        switch (item.type) {
-          case FormContentType.Email: {
-            const isValidEmail = item.errorText || 'Invalid email';
-            validate[itemKey] = isEmail(isValidEmail);
-            break;
-          }
-          case FormContentType.Checkbox: {
-            const isValidCheckbox = item.errorText || 'Must be checked';
-            validate[itemKey] = isNotEmpty(isValidCheckbox);
-            break;
-          }
-          default: {
-            const isValidText = item.errorText || `${item.label} is required`;
-            validate[itemKey] = isNotEmpty(isValidText);
+      if (item.type && item.type in FormContentType && item.label) {
+        if (item.initialValue) {
+          initialValues[itemKey] = item.initialValue;
+        }
+        if (item.type === 'Email') {
+          const isvalidEmail = item.errorText || 'Invalid email';
+          validate[itemKey] = isEmail(isvalidEmail);
+        }
+        if (item.required) {
+          switch (item.type) {
+            case FormContentType.Email: {
+              const isValidEmail = item.errorText || 'Invalid email';
+              validate[itemKey] = isEmail(isValidEmail);
+              break;
+            }
+            case FormContentType.Checkbox: {
+              const isValidCheckbox = item.errorText || 'Must be checked';
+              validate[itemKey] = isNotEmpty(isValidCheckbox);
+              break;
+            }
+            default: {
+              const isValidText = item.errorText || `${item.label} is required`;
+              validate[itemKey] = isNotEmpty(isValidText);
+            }
           }
         }
       }
-    }
-    // add key
-    return {...item , keyString: itemKey};
-  });
+      // add key
+      return { ...item, keyString: itemKey };
+    },
+  );
 
   const form = useForm({
     mode: 'uncontrolled',
@@ -94,7 +102,25 @@ const Form = ({
         <FormContent {...content} form={form} key={index} />
       ))}
       {errorMessage && <Text c="red">{errorMessage}</Text>}
-      <Button type="submit" disabled={form.submitting} loading={form.submitting}>{submitButtonText}</Button>
-    </form>);
+      <Button
+        type="submit"
+        disabled={form.submitting}
+        loading={form.submitting}
+      >
+        {submitButtonText}
+      </Button>
+      {showResetButton && (
+        <Button
+          className="ml-2"
+          type="button"
+          variant="outline"
+          onClick={form.reset}
+          disabled={form.submitting}
+        >
+          Reset
+        </Button>
+      )}
+    </form>
+  );
 };
 export default Form;

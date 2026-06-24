@@ -1,6 +1,6 @@
-import RequestAccessForm from '@gen3/frontend/pages/StudyForms/RequestAccessForm';
-import { DiscoveryPageGetServerSideProps as getServerSideProps } from '@gen3/frontend/pages/Discovery/data';
+import StudyRegistrationAccessRequestForm from '@gen3/frontend/pages/StudyForms/StudyRegistrationAccessRequest';
+import { RequestAccessFormPageGetServerSideProps as getServerSideProps } from '@gen3/frontend/pages/StudyForms/StudyRegistrationAccessRequest/data';
 
-export default RequestAccessForm;
+export default StudyRegistrationAccessRequestForm;
 
 export { getServerSideProps };

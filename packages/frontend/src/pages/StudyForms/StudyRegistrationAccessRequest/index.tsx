@@ -13,6 +13,10 @@ import {
   Box,
   Stack,
 } from '@mantine/core';
+import Form, {
+  FormOnSubmitReturnProps,
+  FormProps,
+} from '../../../components/Content/Form';
 
 interface FormValues {
   studyName: string;
@@ -23,36 +27,85 @@ interface FormValues {
   role: string;
 }
 
-const RequestAccessForm = ({
+interface StudyRegistrationAccessRequestFormProps extends NavPageLayoutProps {
+  configStudyRegistrationRequestAccessForm: any;
+  studyName: string;
+}
+
+const StudyRegistrationAccessRequestForm = ({
   headerProps,
   footerProps,
-}: NavPageLayoutProps) => {
-  const form = useForm<FormValues>({
-    mode: 'controlled',
-    initialValues: {
-      studyName: '',
-      firstName: '',
-      lastName: '',
-      email: '',
-      institution: '',
-      role: 'Principal Investigator',
+  configStudyRegistrationRequestAccessForm,
+  studyName = 'Study Name not found',
+}: StudyRegistrationAccessRequestFormProps) => {
+  console.log(
+    'configStudyRegistrationRequestAccessForm',
+    JSON.stringify(configStudyRegistrationRequestAccessForm),
+  );
+  const formBody = configStudyRegistrationRequestAccessForm.form;
+  /*  const formBody = [
+    {
+      type: 'markdown',
+      text: '## Study Registration Access Request',
     },
-    validate: {
-      studyName: (value) =>
-        value ? null : 'Study Name - Grant Number is required',
-      firstName: (value) => (value ? null : 'First Name is required'),
-      lastName: (value) => (value ? null : 'Last Name is required'),
-      email: (value) =>
-        /^\S+@\S+$/.test(value) ? null : 'Invalid e-mail address',
-      institution: (value) =>
-        value ? null : 'Affiliated Institution is required',
-      role: (value) => (value ? null : 'Please select a role'),
+    {
+      type: 'markdown',
+      text: ' Please fill out this form to request and be approved for access to register your study with the HEAL Platform.',
+      className: 'text-sm',
     },
-  });
+    {
+      type: 'TextInput',
+      label: 'Study Name - Grant Number',
+      initialValue: 'studyName',
+      disabled: true,
+      required: true,
+      variable: 'studyName',
+    },
+    {
+      type: 'TextInput',
+      label: 'Registrant First Name',
+      required: true,
+      variable: 'registrantFirstName',
+    },
+    {
+      type: 'TextInput',
+      label: 'Registrant Last Name',
+      required: true,
+      variable: 'registrantLastName',
+    },
+    {
+      type: 'Email',
+      label: 'E-mail Address',
+      required: true,
+      variable: 'emailAddress',
+    },
+    {
+      type: 'TextInput',
+      label: 'Affiliated Institution',
+      required: true,
+      variable: 'affiliatedInstituation',
+    },
+    {
+      type: 'RadioGroup',
+      label: 'Role on Project',
+      text: ['thing1', 'thing2'],
+      required: true,
+      variable: 'roleOnProject',
+    },
+  ]; */
 
-  const handleSubmit = (values: FormValues) => {
-    console.log('Form Submitted Successfully:', values);
-    // TODO: handle submission API logic here
+  const formOnSubmit = (formValues: FormOnSubmitReturnProps) => {
+    alert(JSON.stringify(formValues));
+  };
+
+  const autoFillValues = (formBody: FormProps['body']) => {
+    return formBody.map((item) => {
+      // replace userEmail with users email
+      if (item.initialValue === 'studyName') {
+        return { ...item, initialValue: studyName };
+      }
+      return item;
+    });
   };
 
   return (
@@ -67,7 +120,7 @@ const RequestAccessForm = ({
       <div className="flex justify-items-center w-full">
         <Box className="w-full bg-white rounded-md m-8 p-8 ">
           {/* Top Header Section */}
-          <div className="border-b font-medium text-sm text-gray-600 mb-6 mx-24">
+          {/*           <div className="border-b font-medium text-sm text-gray-600 mb-6 mx-24">
             <div
               className="flex items-center justify-center my-4 before:flex-1
             before:border-t before:border-gray-200 after:flex-1
@@ -81,21 +134,27 @@ const RequestAccessForm = ({
               Please fill out this form to request and be approved for access to
               register your study with the HEAL Platform.
             </Text>
+          </div> */}
+          <div className="max-w-4xl mx-auto">
+            <Form
+              className="*:mt-5 mb-5"
+              body={autoFillValues(formBody)}
+              showResetButton
+              onSubmit={formOnSubmit}
+            />
           </div>
-
-          {/* Form Area */}
+          {/*
           <form
             onSubmit={form.onSubmit(handleSubmit)}
             className="max-w-4xl mx-auto"
           >
-            {/* Required indicator note */}
+
             <div className="text-right text-xs text-neutral-500 mb-4">
               <span className="text-red-500 font-bold mr-1">*</span>Indicates
               required fields
             </div>
 
             <Stack gap="md">
-              {/* Study Name */}
               <div className="grid grid-cols-1 md:grid-cols-4 items-start gap-2 md:gap-4">
                 <label className="text-right text-sm font-medium pt-2 md:col-span-1">
                   <span className="text-red-500 mr-1">*</span>Study Name - Grant
@@ -111,7 +170,7 @@ const RequestAccessForm = ({
                 </div>
               </div>
 
-              {/* Registrant First Name */}
+
               <div className="grid grid-cols-1 md:grid-cols-4 items-start gap-2 md:gap-4">
                 <label className="text-right text-sm font-medium pt-2 md:col-span-1">
                   <span className="text-red-500 mr-1">*</span>Registrant First
@@ -127,7 +186,7 @@ const RequestAccessForm = ({
                 </div>
               </div>
 
-              {/* Registrant Last Name */}
+
               <div className="grid grid-cols-1 md:grid-cols-4 items-start gap-2 md:gap-4">
                 <label className="text-right text-sm font-medium pt-2 md:col-span-1">
                   <span className="text-red-500 mr-1">*</span>Registrant Last
@@ -143,7 +202,7 @@ const RequestAccessForm = ({
                 </div>
               </div>
 
-              {/* E-mail Address */}
+
               <div className="grid grid-cols-1 md:grid-cols-4 items-start gap-2 md:gap-4">
                 <label className="text-right text-sm font-medium pt-2 md:col-span-1">
                   <span className="text-red-500 mr-1">*</span>E-mail Address :
@@ -159,7 +218,7 @@ const RequestAccessForm = ({
                 </div>
               </div>
 
-              {/* Affiliated Institution */}
+
               <div className="grid grid-cols-1 md:grid-cols-4 items-start gap-2 md:gap-4">
                 <label className="text-right text-sm font-medium pt-2 md:col-span-1">
                   <span className="text-red-500 mr-1">*</span>Affiliated
@@ -175,7 +234,7 @@ const RequestAccessForm = ({
                 </div>
               </div>
 
-              {/* Role on Project (Radio Options) */}
+
               <div className="grid grid-cols-1 md:grid-cols-4 items-start gap-2 md:gap-4 mt-2">
                 <label className="text-right text-sm font-medium pt-0.5 md:col-span-1">
                   <span className="text-red-500 mr-1">*</span>Role on Project :
@@ -258,8 +317,6 @@ const RequestAccessForm = ({
                 </div>
               </div>
             </Stack>
-
-            {/* Buttons Action Container aligned with inputs */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8">
               <div className="hidden md:block md:col-span-1"></div>
               <div className="md:col-span-3">
@@ -282,8 +339,8 @@ const RequestAccessForm = ({
               </div>
             </div>
           </form>
+            */}
 
-          {/* Footer Info Notice */}
           <div className="mt-12 pt-4 border-t border-neutral-100 max-w-4xl mx-auto">
             <Text className="text-xs text-neutral-500 leading-relaxed">
               Information provided on this page will be used for correspondence
@@ -297,4 +354,4 @@ const RequestAccessForm = ({
   );
 };
 
-export default RequestAccessForm;
+export default StudyRegistrationAccessRequestForm;
