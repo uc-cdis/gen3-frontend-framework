@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 
 import SettingsPanel from '../../workspace/WorkspaceLayout/SettingsPanel';
 import WorkspaceToolbar from './WorkspaceToolbar';
@@ -34,11 +34,21 @@ const WorkspaceLayout = ({
   );
   const [toolsExpanded, { toggle: toggleTools, set: setToolsExpanded }] =
     useDisclosure(true);
-  const [settingsExpanded, { toggle: toggleSettings }] = useDisclosure(true);
+  const [
+    settingsExpanded,
+    { toggle: toggleSettings, set: setSettingsExpanded },
+  ] = useDisclosure(true);
 
   const isFullScreen = useCoreSelector((state) =>
     selectWorkspaceFullscreen(state),
   );
+
+  useEffect(() => {
+    if (isFullScreen) {
+      setToolsExpanded(false);
+      setSettingsExpanded(false);
+    }
+  }, [isFullScreen, setToolsExpanded, setSettingsExpanded]);
 
   if (!workspaceTier) return null;
 
@@ -50,27 +60,16 @@ const WorkspaceLayout = ({
         toggleSettings={toggleSettings}
       />
       <div className="flex w-full grow">
-        <ToolsPanel
-          expanded={toolsExpanded && !isFullScreen}
-          setExpanded={setToolsExpanded}
-        />
+        <ToolsPanel expanded={toolsExpanded} setExpanded={setToolsExpanded} />
         {children}
-        <div
-          className="overflow-hidden shrink-0"
-          style={{
-            width:
-              settingsExpanded && !isFullScreen
-                ? SETTINGS_PANEL_WIDTH
-                : MIN_PANEL_WIDTH,
-            transition: `width ${TRANSITION_DURATION}ms ease`,
-          }}
-        >
-          <div style={{ width: SETTINGS_PANEL_WIDTH }}>
-            <SettingsPanel
-              {...WORKSPACE_TIER_INFORMATION[workspaceTier].settings}
-            />
-          </div>
-        </div>
+
+        <SettingsPanel
+          showKernels={
+            WORKSPACE_TIER_INFORMATION[workspaceTier].settings.showKernels
+          }
+          expanded={settingsExpanded}
+          setExpanded={setSettingsExpanded}
+        />
       </div>
     </div>
   );
