@@ -131,6 +131,15 @@
     "@types/react": "19.2.15",
     "nx": {
       "tmp": "^0.2.7"
+    },
+    "lerna": {
+      "npmcli": {
+        "arborist": {
+          "pacote": "^21.1.5"
+        },
+        "pacote": "^21.1.5"
+      },
+      "pacote": "^21.1.5"
     }
   },
   "optionalDependencies": {
