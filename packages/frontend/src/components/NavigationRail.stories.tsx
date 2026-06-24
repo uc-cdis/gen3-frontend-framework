@@ -34,6 +34,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     items: railButtons,
+    label: 'Navigation',
     defaultValue: railButtons[0].label,
   },
 };

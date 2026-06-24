@@ -29,6 +29,7 @@ interface NormalizedNavRailItem extends NavRailItem {
 
 type CollapsibleNavRailProps = {
   items: NavRailItem[];
+  label?: string;
   defaultValue?: string;
   width?: number;
   collapsedWidth?: number;
@@ -36,6 +37,7 @@ type CollapsibleNavRailProps = {
 
 export const NavigationRail = ({
   items,
+  label,
   defaultValue,
   width = 280,
   collapsedWidth = 64,
@@ -118,7 +120,7 @@ export const NavigationRail = ({
         <Box w={width}>
           <Group justify="space-between" px="sm" py="xs">
             <Text fw={600} size="sm">
-              Navigation
+              {label}
             </Text>
 
             <ActionIcon

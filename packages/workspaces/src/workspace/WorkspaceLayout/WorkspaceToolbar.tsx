@@ -55,77 +55,79 @@ const WorkspaceToolbar = ({
   const { terminate } = useMicroContainerReduxContext();
 
   return (
-    <div className="flex items-center justify-between px-4 border-b-2 border-base-lighter pb-4">
-      <div className="flex items-center gap-2">
-        <ActionIcon
-          variant="outline"
-          radius="xl"
-          size="lg"
-          aria-label="Back to workspace list"
-          color="primary.5"
-          className="mr-4"
-          onClick={returnToWorkspaceSelection}
-        >
-          <Icon icon="gen3:back-arrow" width="100%" height="100%" />
-        </ActionIcon>
-        <Stack gap="-10px">
-          <Text size="xl" c="primary.4">
-            {toolbarConfiguration?.label}
-          </Text>
-          <Group>
-            <Text size="sm">{toolbarConfiguration?.description}</Text>
-            <Badge>{workspaceTier as string}</Badge>
-          </Group>
-        </Stack>
-      </div>
-      <div className="flex items-center gap-4 mr-8">
-        {showStatus && (
-          <Group gap="xs">
-            <Text size="md" c="base-contrast.4">
-              Workspace Status:
+    <div className="flex flex-col px-4 border-b-2 border-base-lighter pb-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <ActionIcon
+            variant="outline"
+            radius="xl"
+            size="lg"
+            aria-label="Back to workspace list"
+            color="primary.5"
+            className="mr-4"
+            onClick={returnToWorkspaceSelection}
+          >
+            <Icon icon="gen3:back-arrow" width="100%" height="100%" />
+          </ActionIcon>
+          <Stack gap="-10px">
+            <Text size="xl" c="primary.4">
+              {toolbarConfiguration?.label}
             </Text>
-            <Badge size="md" radius="md">
-              {workspaceStatus === WorkspaceStatus.NotFound
-                ? 'Not Running'
-                : (workspaceStatus as string)}
-            </Badge>
-          </Group>
-        )}
-        <Button onClick={() => toggleTools()} size="sm" variant="outline">
-          Tools
-        </Button>
-        <Button onClick={() => toggleSettings()} size="sm" variant="outline">
-          Settings
-        </Button>
-        {showStop && (
+            <Group>
+              <Text size="sm">{toolbarConfiguration?.description}</Text>
+              <Badge>{workspaceTier as string}</Badge>
+            </Group>
+          </Stack>
+        </div>
+        <div className="flex items-center gap-4 mr-8">
+          {showStatus && (
+            <Group gap="xs">
+              <Text size="md" c="base-contrast.4">
+                Workspace Status:
+              </Text>
+              <Badge size="md" radius="md">
+                {workspaceStatus === WorkspaceStatus.NotFound
+                  ? 'Not Running'
+                  : (workspaceStatus as string)}
+              </Badge>
+            </Group>
+          )}
+          <Button onClick={() => toggleTools()} size="sm" variant="outline">
+            Tools
+          </Button>
+          <Button onClick={() => toggleSettings()} size="sm" variant="outline">
+            Settings
+          </Button>
+          {showStop && (
+            <Button
+              size="sm"
+              variant="outline"
+              aria-label="Stop workspace"
+              color="primary.5"
+              onClick={terminate}
+              disabled={workspaceStatus !== WorkspaceStatus.Running}
+              leftSection={<Icon icon="gen3:stop" width={24} height={24} />}
+            >
+              Stop
+            </Button>
+          )}
           <Button
             size="sm"
             variant="outline"
-            aria-label="Stop workspace"
+            aria-label=""
             color="primary.5"
-            onClick={terminate}
-            disabled={workspaceStatus !== WorkspaceStatus.Running}
-            leftSection={<Icon icon="gen3:stop" width={24} height={24} />}
+            onClick={toggleFullscreen}
+            leftSection={
+              isFullscreen ? (
+                <Icon icon="gen3:fullscreen-exit" width={24} height={24} />
+              ) : (
+                <Icon icon="gen3:fullscreen" width={24} height={24} />
+              )
+            }
           >
-            Stop
+            {isFullscreen ? 'Exit' : 'Enter'} Fullscreen
           </Button>
-        )}
-        <Button
-          size="sm"
-          variant="outline"
-          aria-label=""
-          color="primary.5"
-          onClick={toggleFullscreen}
-          leftSection={
-            isFullscreen ? (
-              <Icon icon="gen3:fullscreen-exit" width={24} height={24} />
-            ) : (
-              <Icon icon="gen3:fullscreen" width={24} height={24} />
-            )
-          }
-        >
-          {isFullscreen ? 'Exit' : 'Enter'} Fullscreen
-        </Button>
+        </div>
       </div>
     </div>
   );
