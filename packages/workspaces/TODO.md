@@ -58,6 +58,14 @@ kubectl label node kind-multi-node-control-plane role=jupyter
 fence-create client-create --client gen3dev2 --urls http://localhost:3000/api/auth/callback --username craigrbarnes@uchicago.edu   --allowed-scopes openid user data credentials --grant-types authorization_code refresh_token
 ```
 
+```bash
+fence-create client-create \
+  --client gen3dev \
+  --urls http://localhost:3000/api/auth/callback https://gen3dev.local.io/api/auth/callback \
+  --username craigrbarnes@uchicago.edu \
+  --allowed-scopes openid user data credentials
+```
+
 modify example
 
 ```bash

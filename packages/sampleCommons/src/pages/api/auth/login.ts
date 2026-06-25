@@ -18,8 +18,8 @@ export default function handler(_req: NextApiRequest, res: NextApiResponse) {
     redirect_uri: fenceConfig.redirectUri,
     scope: fenceConfig.scope,
     state,
-    // code_challenge: challenge,
-    // code_challenge_method: 'S256',
+    code_challenge: challenge,
+    code_challenge_method: 'S256',
   });
 
   console.log('fenceConfig.redirectUri: ', `${fenceConfig.redirectUri}`);
