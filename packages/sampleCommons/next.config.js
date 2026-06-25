@@ -178,7 +178,7 @@ const nextConfig = {
         },
       ];
     } else {
-      return [...workspaceApiRewrite];
+      return [workspaceApiRewrite];
     }
   },
   async headers() {
