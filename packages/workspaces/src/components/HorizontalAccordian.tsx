@@ -6,8 +6,19 @@ import {
   PanelHeaderTextStyle,
   PanelStyle,
 } from '../workspace/WorkspaceLayout/styling';
+import {
+  mergeDefaultTailwindClassnames,
+  StylingOverrideWithMergeControl,
+} from '@gen3/frontend';
 
 const TRANSITION_MS = 250;
+const ICON_SIZE = 24;
+
+const STYLING_DEFAULTS = {
+  root: PanelStyle,
+  header: PanelHeaderTextStyle,
+  label: PanelHeaderTextStyle,
+};
 
 type HorizontalAccordionProps = {
   label: ReactNode;
@@ -17,6 +28,7 @@ type HorizontalAccordionProps = {
   rightSide?: boolean;
   expandedWidth?: number | string;
   collapsedWidth?: number | string;
+  classNames?: StylingOverrideWithMergeControl;
 };
 
 export function HorizontalAccordion({
@@ -27,33 +39,39 @@ export function HorizontalAccordion({
   expandedWidth = 300,
   collapsedWidth = 36,
   rightSide = false,
+  classNames = {},
 }: HorizontalAccordionProps) {
   const closeIcon = rightSide ? (
-    <Icon icon="gen3:left-panel-close" width={32} height={32} />
+    <Icon icon="gen3:sidebar-close" width={ICON_SIZE} height={ICON_SIZE} />
   ) : (
-    <Icon icon="gen3:left-panel-open" width={32} height={32} />
+    <Icon icon="gen3:sidebar-open" width={ICON_SIZE} height={ICON_SIZE} />
   );
 
   const openIcon = rightSide ? (
-    <Icon icon="gen3:left-panel-open" width={32} height={32} />
+    <Icon icon="gen3:sidebar-open" width={ICON_SIZE} height={ICON_SIZE} />
   ) : (
-    <Icon icon="gen3:left-panel-close" width={32} height={32} />
+    <Icon icon="gen3:sidebar-close" width={ICON_SIZE} height={ICON_SIZE} />
+  );
+
+  const mergedClassNames = mergeDefaultTailwindClassnames(
+    STYLING_DEFAULTS,
+    classNames,
   );
 
   return (
     <div
-      className={`overflow-hidden shrink-0 ${PanelStyle}`}
+      className={`overflow-hidden shrink-0 ${mergedClassNames.root}`}
       style={{
         width: expanded ? expandedWidth : collapsedWidth,
         transition: `width ${TRANSITION_MS}ms ease`,
       }}
     >
       <div className="flex flex-col no-wrap">
-        <div className="flex items-center justify-between px-1 py-1 border-b-2 border-base-lighter bg-base-max">
+        <div className="flex items-center justify-between px-1 py-1 bg-base-max">
           <Text
             fw={600}
             size="sm"
-            className={`overflow-hidden text-nowrap ${PanelHeaderTextStyle}`}
+            className={`overflow-hidden text-nowrap ${mergedClassNames.label}`}
             style={{
               opacity: expanded ? 1 : 0,
               transition: `opacity transform ${TRANSITION_MS}ms ease`,
@@ -67,13 +85,14 @@ export function HorizontalAccordion({
             variant="subtle"
             aria-label={expanded ? 'Collapse panel' : 'Expand panel'}
             onClick={() => setExpanded(!expanded)}
+            radius="xs"
           >
             {expanded ? openIcon : closeIcon}
           </ActionIcon>
         </div>
 
         <div
-          className="overflow-hidden shrink-0"
+          className="overflow-hidden shrink-0 px-2"
           style={{
             opacity: expanded ? 1 : 0,
             pointerEvents: expanded ? 'auto' : 'none',

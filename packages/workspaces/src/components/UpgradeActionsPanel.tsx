@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button } from '@mantine/core';
+import { Badge, Button, Group, Stack, Text } from '@mantine/core';
+import { Icon } from '@iconify-icon/react';
 import { WorkspaceTier } from '../types';
 
 export interface UpgradeActionsPanelProps {
@@ -15,34 +16,43 @@ const UpgradeActionsPanel = ({
   onRequestQuotaIncrease,
   onOpenBillingSupport,
 }: UpgradeActionsPanelProps) => {
-  const canUpgrade = currentTier === 'free' && Boolean(onUpgradeToRemote);
+  const canUpgrade = currentTier === 'free' || Boolean(onUpgradeToRemote);
 
   return (
-    <section className="mt-6 overflow-hidden rounded-xl border border-base bg-white shadow-sm">
-      <div className="border-b border-base-lighter bg-base-lightest bg-opacity-40 px-4 py-3 backdrop-blur-sm">
-        <h3 className="text-md font-bold uppercase tracking-wider text-base-darker">
-          Capacity & Upgrade
-        </h3>
+    <section className="mt-6 overflow-hidden rounded-xl border-2 border-base bg-base-max shadow-sm">
+      <div className="px-4 py-3">
+        <Group justify="space-between" wrap="nowrap">
+          <Text size="lg" fw={600} c="base-darker" tt="uppercase">
+            Capacity & Upgrade
+          </Text>
+          <Icon icon="gen3:bolt" width={16} height={16} />
+        </Group>
       </div>
 
-      <div className="space-y-3 p-4">
-        <div className="rounded-lg border border-accent-light bg-accent-max p-3">
-          <p className="text-sm font-bold text-accent-dark">
-            Current Tier: {currentTier === 'free' ? 'Free' : 'Remote Compute'}
-          </p>
-          <p className="mt-1 text-sm text-accent-dark">
+      <div className="space-y-2 p-4 pt-0">
+        <Stack>
+          <Group justify="space-between" wrap="nowrap">
+            <p className="text-md font-bold text-base-contrast-max">
+              Current Tier
+            </p>
+            <Badge color="primary.3">{currentTier as string}</Badge>
+          </Group>
+          <p className="mt-1 text-sm text-base-contrast-max">
             {currentTier === 'free'
               ? 'Upgrade to remote kernels for long-running jobs and larger memory footprints.'
               : 'Remote compute is active. You can request expanded quota for larger workloads.'}
           </p>
-        </div>
+        </Stack>
 
         {currentTier === 'free' && (
           <Button
             onClick={onUpgradeToRemote}
             disabled={!canUpgrade}
             className="w-full border-primary-light"
-            variant="light"
+            variant="filled"
+            leftSection={
+              <Icon icon="gen3:up-trend-arrow" width={16} height={16} />
+            }
           >
             Upgrade To Remote Tier
           </Button>

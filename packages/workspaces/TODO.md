@@ -1,6 +1,7 @@
 ## JEG Workspaces
 
-* Show/Hide panels controls
+* Show/Hide panels control
+  * tooltips for each panel button
 * Full screen toggle
   ~~* Container Error Panel~~
 * Active Kernel? Note sure is this needed
@@ -18,19 +19,19 @@
   * ~~hide when not running~~
 * Select Kernel
 * Show upgrade panel in Free Tier
-* Hide kernel controls in Free Tier
+* ~~Hide kernel controls in Free Tier~~
 * Update Polling
   * make polling configurable
 * Workspace Status in Navigation
 * ProtectedContent Overlay for Non-free Workspaces
   * add authz check
-* Prevent Tired access when not logged in/authorized
+* Prevent Tier access when not logged in/authorized
 * Test deployment
     * Kernels
     * Proxys
 * Fix service config/definition
 * move to NPM
-* create public stub for npm package
+* ~~create public stub for npm package~~
 * Development Environment Support
 
 ## Load images

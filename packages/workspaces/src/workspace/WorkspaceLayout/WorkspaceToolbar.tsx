@@ -1,5 +1,13 @@
 import React, { useCallback } from 'react';
-import { ActionIcon, Badge, Button, Group, Stack, Text } from '@mantine/core';
+import {
+  ActionIcon,
+  Badge,
+  Button,
+  Group,
+  Stack,
+  Text,
+  Tooltip,
+} from '@mantine/core';
 import { Icon } from '@iconify-icon/react';
 import { TierToolbarConfiguration } from '../tiers/types';
 import {
@@ -19,15 +27,9 @@ import { useMicroContainerReduxContext } from '../../providers/MicroContainerRed
 
 interface WorkspaceToolbarProps {
   toolbarConfiguration?: TierToolbarConfiguration;
-  toggleTools: () => void;
-  toggleSettings: () => void;
 }
 
-const WorkspaceToolbar = ({
-  toolbarConfiguration,
-  toggleTools,
-  toggleSettings,
-}: WorkspaceToolbarProps) => {
+const WorkspaceToolbar = ({ toolbarConfiguration }: WorkspaceToolbarProps) => {
   const workspaceTier = useCoreSelector(
     (state: CoreState) => selectWorkspaceTier(state) as WorkspaceTier | null,
   );
@@ -54,80 +56,108 @@ const WorkspaceToolbar = ({
 
   const { terminate } = useMicroContainerReduxContext();
 
+  const fullscreenLabel = isFullscreen ? 'Exit Fullscreen' : 'Fullscreen View';
+  const statusLabel =
+    workspaceStatus === WorkspaceStatus.NotFound
+      ? 'Not Running'
+      : (workspaceStatus as string);
+
   return (
-    <div className="flex flex-col px-4 border-b-2 border-base-lighter pb-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <ActionIcon
-            variant="outline"
-            radius="xl"
-            size="lg"
-            aria-label="Back to workspace list"
-            color="primary.5"
-            className="mr-4"
-            onClick={returnToWorkspaceSelection}
-          >
-            <Icon icon="gen3:back-arrow" width="100%" height="100%" />
-          </ActionIcon>
-          <Stack gap="-10px">
-            <Text size="xl" c="primary.4">
-              {toolbarConfiguration?.label}
+    <div
+      role="toolbar"
+      aria-label="Workspace toolbar"
+      className="flex items-center justify-between px-4 border-b-2 border-base-lighter pb-4"
+    >
+      <div className="flex items-center gap-2">
+        <ActionIcon
+          variant="outline"
+          radius="xl"
+          size="lg"
+          aria-label="Back to workspace list"
+          color="primary.5"
+          className="mr-4"
+          onClick={returnToWorkspaceSelection}
+        >
+          <Icon
+            icon="gen3:back-arrow"
+            width="100%"
+            height="100%"
+            aria-hidden="true"
+          />
+        </ActionIcon>
+        <Stack gap="-10px">
+          <Text size="xl" c="primary.4">
+            {toolbarConfiguration?.label}
+          </Text>
+          <Group>
+            <Text size="sm">{toolbarConfiguration?.description}</Text>
+            <Badge aria-label={`Workspace tier: ${workspaceTier as string}`}>
+              {workspaceTier as string}
+            </Badge>
+          </Group>
+        </Stack>
+      </div>
+      <div className="flex items-center gap-4 mr-8">
+        {showStatus && (
+          <Group gap="xs" role="status" aria-label="Workspace status">
+            <Text size="md" c="base-contrast.4" aria-hidden="true">
+              Workspace Status:
             </Text>
-            <Group>
-              <Text size="sm">{toolbarConfiguration?.description}</Text>
-              <Badge>{workspaceTier as string}</Badge>
-            </Group>
-          </Stack>
-        </div>
-        <div className="flex items-center gap-4 mr-8">
-          {showStatus && (
-            <Group gap="xs">
-              <Text size="md" c="base-contrast.4">
-                Workspace Status:
-              </Text>
-              <Badge size="md" radius="md">
-                {workspaceStatus === WorkspaceStatus.NotFound
-                  ? 'Not Running'
-                  : (workspaceStatus as string)}
-              </Badge>
-            </Group>
-          )}
-          <Button onClick={() => toggleTools()} size="sm" variant="outline">
-            Tools
-          </Button>
-          <Button onClick={() => toggleSettings()} size="sm" variant="outline">
-            Settings
-          </Button>
-          {showStop && (
-            <Button
-              size="sm"
-              variant="outline"
-              aria-label="Stop workspace"
-              color="primary.5"
-              onClick={terminate}
-              disabled={workspaceStatus !== WorkspaceStatus.Running}
-              leftSection={<Icon icon="gen3:stop" width={24} height={24} />}
-            >
-              Stop
-            </Button>
-          )}
+            <Badge size="md" radius="md" aria-live="polite" aria-atomic="true">
+              {statusLabel}
+            </Badge>
+          </Group>
+        )}
+        {showStop && (
           <Button
             size="sm"
             variant="outline"
-            aria-label=""
+            aria-label="Stop workspace"
+            aria-disabled={workspaceStatus !== WorkspaceStatus.Running}
+            color="primary.5"
+            onClick={terminate}
+            disabled={workspaceStatus !== WorkspaceStatus.Running}
+            leftSection={
+              <Icon
+                icon="gen3:stop"
+                width={24}
+                height={24}
+                aria-hidden="true"
+              />
+            }
+          >
+            Stop
+          </Button>
+        )}
+        <Tooltip label={fullscreenLabel}>
+          <Button
+            size="sm"
+            variant="outline"
+            aria-label={fullscreenLabel}
+            aria-pressed={isFullscreen}
             color="primary.5"
             onClick={toggleFullscreen}
             leftSection={
               isFullscreen ? (
-                <Icon icon="gen3:fullscreen-exit" width={24} height={24} />
+                <Icon
+                  icon="gen3:fullscreen-exit"
+                  width={24}
+                  height={24}
+                  aria-hidden="true"
+                />
               ) : (
-                <Icon icon="gen3:fullscreen" width={24} height={24} />
+                <Icon
+                  icon="gen3:fullscreen"
+                  width={24}
+                  height={24}
+                  aria-hidden="true"
+                />
               )
             }
           >
-            {isFullscreen ? 'Exit' : 'Enter'} Fullscreen
+            {fullscreenLabel}
           </Button>
-        </div>
+        </Tooltip>
       </div>
     </div>
   );

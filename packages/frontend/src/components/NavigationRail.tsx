@@ -34,13 +34,13 @@ interface NormalizedNavRailItem extends NavigationRailItem {
   IconComponent?: ReactElement;
 }
 
-type CollapsibleNavRailProps = {
+type NavigationRailProps = {
   items: NavigationRailItem[];
   label?: string;
   defaultValue?: string;
   width?: number;
   collapsedWidth?: number;
-  isExpanded?: boolean;
+  expanded?: boolean;
   onExpandChange?: (expanded: boolean) => void;
 };
 
@@ -50,18 +50,18 @@ export const NavigationRail = ({
   defaultValue,
   width = 280,
   collapsedWidth = 64,
-  isExpanded = true,
+  expanded = true,
   onExpandChange = () => {},
-}: CollapsibleNavRailProps) => {
+}: NavigationRailProps) => {
   const initialValue = defaultValue ?? items[0]?.label ?? null;
 
-  const [expanded, setExpanded] = useState(isExpanded);
+  const [isExpanded, setIsExpanded] = useState(expanded);
   const [showCollapsedIcons, setShowCollapsedIcons] = useState(!isExpanded);
   const [activeTab, setActiveTab] = useState<string | null>(initialValue);
   const prevIsExpanded = useRef(isExpanded);
 
   const applyExpand = (expand: boolean) => {
-    setExpanded(expand);
+    setIsExpanded(expand);
     if (expand) {
       setShowCollapsedIcons(false);
     } else {
@@ -103,7 +103,7 @@ export const NavigationRail = ({
       h="100%"
       style={{
         display: 'flex',
-        width: expanded ? width : collapsedWidth,
+        width: isExpanded ? width : collapsedWidth,
         transition: `width ${TRANSITION_DURATION}ms ease`,
         overflow: 'hidden',
       }}
@@ -146,7 +146,7 @@ export const NavigationRail = ({
       )}
 
       <Collapse
-        expanded={expanded}
+        expanded={isExpanded}
         orientation="horizontal"
         transitionDuration={TRANSITION_DURATION}
       >

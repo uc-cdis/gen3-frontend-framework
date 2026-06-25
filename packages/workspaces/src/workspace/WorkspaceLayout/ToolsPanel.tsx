@@ -14,9 +14,10 @@ const ToolsPanel = ({
 }: ToolsPanelProps) => {
   return (
     <HorizontalAccordion
-      label="Data and Tools"
+      label="Data & Tools"
       expanded={expanded}
       setExpanded={setExpanded}
+      expandedWidth={310}
     >
       <DataToolsPanel />
     </HorizontalAccordion>

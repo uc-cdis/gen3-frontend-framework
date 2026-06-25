@@ -1,9 +1,6 @@
 import React from 'react';
 import { Tabs } from '@mantine/core';
-import {
-  FaBell as AssistantIcon,
-  FaBookOpen as DictionaryIcon,
-} from 'react-icons/fa';
+import { Icon } from '@iconify-icon/react';
 import CodingAssistantPanel from './CodingAssistantPanel';
 import CompactDictionaryPanel from './CompactDictionaryPanel/CompactDictionaryPanel';
 import { PanelErrorBoundary } from '@gen3/frontend';
@@ -14,6 +11,7 @@ export interface DataToolsPanelProps {
 }
 
 const DEFAULT_DICTIONARY_SCHEMA_URL = '_dictionary/_all';
+const ICON_SIZE = 16;
 
 type Tab = 'dictionary' | 'assistant';
 
@@ -21,13 +19,21 @@ const TABS: Array<{ id: Tab; label: string; icon: React.ReactNode }> = [
   {
     id: 'dictionary',
     label: 'Dictionary',
-    icon: <DictionaryIcon />,
+    icon: (
+      <Icon
+        icon="gen3:compact-dictionary"
+        width={ICON_SIZE}
+        height={ICON_SIZE}
+      />
+    ),
   },
+  /*
   {
     id: 'assistant',
     label: 'AI Assistant',
-    icon: <AssistantIcon />,
+    icon: <Icon icon="gen3:ai-chat" width={ICON_SIZE} height={ICON_SIZE} />,
   },
+  */
 ];
 
 const DataToolsPanel = ({

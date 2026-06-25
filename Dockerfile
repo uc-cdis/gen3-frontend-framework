@@ -12,7 +12,7 @@ COPY package.json package-lock.json lerna.json ./
 COPY packages ./packages
 
 # Install lerna globally and dependencies (using CI-friendly, deterministic install)
-RUN npm install --location=global lerna@^9.0.3 \
+RUN npm install --location=global lerna@^9.0.7 \
     && npm ci --include=optional
 
 # Build monorepo (including sampleCommons)

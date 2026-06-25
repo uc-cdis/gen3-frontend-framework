@@ -52,7 +52,7 @@ const DataToolsPanel = ({
       collapsedWidth={collapsedWidth}
       defaultValue={TABS[0].label}
       expanded={expanded}
-      setExpanded={setExpanded}
+      onExpandChange={setExpanded}
     />
   );
 };

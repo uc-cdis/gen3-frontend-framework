@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode } from 'react';
 
 import SettingsPanel from '../../workspace/WorkspaceLayout/SettingsPanel';
 import WorkspaceToolbar from './WorkspaceToolbar';
@@ -12,10 +12,6 @@ import {
 } from '@gen3/core';
 import { WorkspaceTier } from '../../types';
 import ToolsPanel from './ToolsPanel';
-
-const TRANSITION_DURATION = 500;
-const SETTINGS_PANEL_WIDTH = 300;
-const MIN_PANEL_WIDTH = 64;
 
 interface WorkspaceLayoutProps {
   children: ReactNode;
@@ -32,23 +28,12 @@ const WorkspaceLayout = ({
   const workspaceTier = useCoreSelector(
     (state: CoreState) => selectWorkspaceTier(state) as WorkspaceTier | null,
   );
-  const [toolsExpanded, { toggle: toggleTools, set: setToolsExpanded }] =
-    useDisclosure(true);
-  const [
-    settingsExpanded,
-    { toggle: toggleSettings, set: setSettingsExpanded },
-  ] = useDisclosure(true);
+  const [toolsExpanded, { set: setToolsExpanded }] = useDisclosure(true);
+  const [settingsExpanded, { set: setSettingsExpanded }] = useDisclosure(true);
 
   const isFullScreen = useCoreSelector((state) =>
     selectWorkspaceFullscreen(state),
   );
-
-  useEffect(() => {
-    if (isFullScreen) {
-      setToolsExpanded(false);
-      setSettingsExpanded(false);
-    }
-  }, [isFullScreen, setToolsExpanded, setSettingsExpanded]);
 
   if (!workspaceTier) return null;
 
@@ -56,18 +41,19 @@ const WorkspaceLayout = ({
     <div className="flex flex-col w-full grow">
       <WorkspaceToolbar
         toolbarConfiguration={WORKSPACE_TIER_INFORMATION[workspaceTier].toolbar}
-        toggleTools={toggleTools}
-        toggleSettings={toggleSettings}
       />
       <div className="flex w-full grow">
-        <ToolsPanel expanded={toolsExpanded} setExpanded={setToolsExpanded} />
+        <ToolsPanel
+          expanded={toolsExpanded && !isFullScreen}
+          setExpanded={setToolsExpanded}
+        />
         {children}
 
         <SettingsPanel
           showKernels={
             WORKSPACE_TIER_INFORMATION[workspaceTier].settings.showKernels
           }
-          expanded={settingsExpanded}
+          expanded={settingsExpanded && !isFullScreen}
           setExpanded={setSettingsExpanded}
         />
       </div>
