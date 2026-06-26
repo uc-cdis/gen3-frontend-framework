@@ -10,6 +10,7 @@ import { DataAuthorization } from '../../../utils';
 import StudyDetailsHeaderButtons from './StudyDetailsHeaderButtons';
 import { toString } from 'lodash';
 import { useDiscoveryContext } from '../../Discovery/DiscoveryProvider';
+import { CoreState, selectUserAuthStatus, useCoreSelector } from '@gen3/core';
 
 const StudyDetails = () => {
   const { discoveryConfig: config } = useDiscoveryContext();
@@ -51,13 +52,21 @@ const StudyDetails = () => {
     }
   }, [studyDetails, open]);
 
+  const userStatus = useCoreSelector((state: CoreState) =>
+    selectUserAuthStatus(state),
+  );
+
   return (
     <Drawer.Root opened={opened} onClose={close} size="50%" position="right">
       <Drawer.Overlay opacity={0.5} blur={4} />
       {hasStudyDetails && (
         <Drawer.Content className="pl-2">
           <Drawer.Header>
-            <StudyDetailsHeaderButtons onClose={close} permalink={permalink} />
+            <StudyDetailsHeaderButtons
+              onClose={close}
+              permalink={permalink}
+              userStatus={userStatus}
+            />
           </Drawer.Header>
           <Drawer.Body>
             {detailView ? (
