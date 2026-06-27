@@ -2,12 +2,12 @@ import crypto from 'node:crypto';
 import { GEN3_FENCE_API } from '@gen3/core/server';
 
 export const fenceConfig = {
-  baseUrl: process.env.FENCE_BASE_URL!,
-  clientId: process.env.FENCE_CLIENT_ID!,
-  clientSecret: process.env.FENCE_CLIENT_SECRET!,
-  redirectUri: process.env.FENCE_REDIRECT_URI!,
-  // openid+user are the basics; add offline_access to get a refresh_token
-  scope: 'openid user credentials',
+  baseUrl: process.env.FENCE_BASE_URL,
+  clientId: process.env.FENCE_CLIENT_ID,
+  clientSecret: process.env.FENCE_CLIENT_SECRET,
+  redirectUri: process.env.FENCE_REDIRECT_URI,
+  // openid+user are the basics; data are required for hatchery/workspace access
+  scope: 'openid user data credentials fence ga4gh_passport_v1',
 };
 
 // Use FENCE_BASE_URL for direct server-to-server and browser-to-fence URLs,

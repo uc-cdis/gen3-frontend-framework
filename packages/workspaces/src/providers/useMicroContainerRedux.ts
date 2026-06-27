@@ -100,7 +100,6 @@ export function useMicroContainerRedux(
     terminateWorkspace,
     { isError: isTerminateError, error: workspaceTerminateError },
   ] = useTerminateHatcheryWorkspaceMutation();
-
   useEffect(() => {
     if (optionData) setContainerHash(optionData);
   }, [optionData]);

@@ -60,7 +60,7 @@ export const hatcheryApi = HatcheryWithTags.injectEndpoints({
       query: (containerHash) => {
         const hash = containerHash;
         const query = hash ? `?id=${encodeURIComponent(hash)}` : '';
-        return `${GEN3_HATCHERY_API}/status/${query}`;
+        return `${GEN3_HATCHERY_API}/status${query}`;
       },
       transformErrorResponse: (error) => {
         return {

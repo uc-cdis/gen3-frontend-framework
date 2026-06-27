@@ -4,7 +4,6 @@
 import { createHatcheryProxyHandler } from '../server/hatcheryProxy';
 import { getAccessToken } from '@gen3/frontend/server';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getAccessTokenWorkspace } from './utils';
 
 const defaultHatcheryUrl = process.env.KUBERNETES_SERVICE_HOST
   ? 'http://hatchery-service.gen3.svc.cluster.local'
@@ -53,7 +52,7 @@ export default async function handler(
   await upstreamHandler(req, res);
 
   if (action === 'launch' || action === 'status') {
-    const jwt = getAccessTokenWorkspace(req.headers['cookie'] ?? '');
+    const jwt = getAccessToken(req.headers['cookie'] ?? '');
     const username = jwt ? decodeJwtUsername(jwt) : '<no-token>';
     console.log(
       `[workspace-hatchery] ${action} HTTP=${res.statusCode} id=${req.query.id ?? '(none)'} user=${username} body=${capturedBody}`,

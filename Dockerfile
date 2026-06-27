@@ -58,4 +58,4 @@ RUN ln -s ./packages/sampleCommons/config  /gen3/config \
 
 USER nextjs:nextjs
 
-CMD ["bash", "./start.sh"]
+CMD ["sh", "./start.sh"]

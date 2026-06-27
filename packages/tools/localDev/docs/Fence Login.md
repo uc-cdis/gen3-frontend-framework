@@ -1,12 +1,12 @@
-# Set up fence to login with a user account with credientials scope
+# Set up fence to login with a user account with credentials scope
 
 login into the fence pod.
 
 ```bash
 fence-create client-create \
   --client nextjs-local \
-  --urls http://localhost:3000/api/auth/callback \
-  --scopes openid user credentials \
+  --urls https://gen3dev.local.io:3000/api/auth/callback \
+  --scopes openid user data credentials \
   --username <your-username>
 ```
 

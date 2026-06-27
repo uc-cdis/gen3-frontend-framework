@@ -1,16 +1,16 @@
-import { GEN3_API } from '@gen3/core';
+import { GEN3_API, GEN3_WORKSPACE_API } from '@gen3/core';
+
+// TODO: migrate this to @gen3/core
 
 export const GEN3_HATCHERY_API =
-  process.env.NEXT_PUBLIC_GEN3_HATCHERY_API || '/api/workspace/hatchery';
+  GEN3_WORKSPACE_API || '/workspace-api/workspace/hatchery'; // get replaced by revproxy
 
 export const GEN3_KERNEL_API =
-  process.env.NEXT_PUBLIC_GEN3_KERNEL_API ||
-  `${GEN3_API}/lw-workspace/proxy/jeg-panel/api`;
+  process.env.GEN3_KERNEL_API || `${GEN3_API}/lw-workspace/proxy/jeg-panel/api`;
 
 export const GEN3_JEG_GATEWAY_API =
-  process.env.NEXT_PUBLIC_GEN3_JEG_GATEWAY_API ||
-  `${GEN3_API}/lw-workspace/proxy/jeg-panel/api`;
+  process.env.JEG_GATEWAY_API || `${GEN3_API}/lw-workspace/proxy/jeg-panel/api`;
 
 // TODO: resolve this with @gen3/core
 export const GEN3_WORKSPACES_API =
-  process.env.NEXT_PUBLIC_GEN3_WORKSPACES_API || `${GEN3_API}/lw-workspace`;
+  GEN3_WORKSPACE_API || `${GEN3_API}/lw-workspace`;

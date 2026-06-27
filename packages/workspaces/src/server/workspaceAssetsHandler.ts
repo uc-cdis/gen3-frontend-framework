@@ -81,7 +81,7 @@ const ASSETS_ROOT_PATH =
   'node_modules/@gen3/workspaces/assets';
 
 function defaultAssetRoot(): string {
-  return nodePath.join(process.cwd(), ASSETS_ROOT_PATH);
+  return nodePath.normalize(ASSETS_ROOT_PATH);
 }
 
 interface BrandingConfig {
@@ -229,7 +229,7 @@ export function createWorkspaceAssetsHandler(
     process.env.JUPYTER_GATEWAY_BASE_URL ??
     '/api/workspace/gateway/';
 
-  console.log('gatewayBaseUrl:', gatewayBaseUrl);
+  console.log('' + 'gatewayBaseUrl:', gatewayBaseUrl);
 
   const assetRoot = options?.assetRoot ?? defaultAssetRoot();
 

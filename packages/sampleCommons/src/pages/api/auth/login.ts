@@ -13,16 +13,14 @@ export default function handler(_req: NextApiRequest, res: NextApiResponse) {
   const challenge = pkceChallenge(verifier);
 
   const params = new URLSearchParams({
-    client_id: fenceConfig.clientId,
+    client_id: fenceConfig.clientId ?? '',
     response_type: 'code',
-    redirect_uri: fenceConfig.redirectUri,
+    redirect_uri: fenceConfig.redirectUri ?? '',
     scope: fenceConfig.scope,
     state,
     code_challenge: challenge,
     code_challenge_method: 'S256',
   });
-
-  console.log('fenceConfig.redirectUri: ', `${fenceConfig.redirectUri}`);
 
   const opts = {
     httpOnly: true,
@@ -37,6 +35,5 @@ export default function handler(_req: NextApiRequest, res: NextApiResponse) {
     serialize('oauth_verifier', verifier, opts),
   ]);
 
-  console.log('authorizeUrl: ', `${authorizeUrl}?${params}`);
   res.redirect(`${authorizeUrl}?${params}`);
 }
