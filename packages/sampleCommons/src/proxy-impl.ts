@@ -21,6 +21,7 @@ function isLoggedIn(loginStatus: LoginStatus) {
 export async function proxy(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
   const { routes: routeConfig } = await getRouteConfig();
+  console.log('routeConfig', routeConfig);
   let rule = getRouteRuleForPath(pathname, routeConfig);
 
   // check if there is a wildcard route
@@ -39,13 +40,6 @@ export async function proxy(req: NextRequest) {
     return NextResponse.next();
   }
 
-  const needsAuthz = Array.isArray(rule?.authz) && rule?.authz.length > 0;
-
-  // If no authz resources configured, login is enough
-  if (!needsAuthz) {
-    return NextResponse.next();
-  }
-
   // Gen3 login check
   const loginStatus = await getLoginStatus(req.headers.get('Cookie') || '');
   const loggedIn = await isLoggedIn(loginStatus);
@@ -55,6 +49,13 @@ export async function proxy(req: NextRequest) {
     const loginUrl = new URL('/Login', req.url);
     loginUrl.searchParams.set('referer', pathname);
     return NextResponse.redirect(loginUrl);
+  }
+
+  const needsAuthz = Array.isArray(rule?.authz) && rule?.authz.length > 0;
+
+  // If no authz resources configured, login is enough
+  if (!needsAuthz) {
+    return NextResponse.next();
   }
 
   // Authz is enabled AND route has authzResources → check Arborist resources

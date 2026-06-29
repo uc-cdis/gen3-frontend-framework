@@ -90,12 +90,11 @@ const RemoteComputeWorkspace = React.memo(
 
             // Inject server-side JEG token — overrides any client-supplied auth header.
             // This ensures calls from JupyterLite's own serverconnection.js are also authenticated.
-            let accessToken = undefined;
+            let accessToken = getCookie('access_token');
             if (process.env.NODE_ENV === 'development') {
               // NOTE: This cookie can only be accessed from the client side
               // in development mode. Otherwise, the cookie is set as httpOnly
               accessToken = getCookie('credentials_token');
-              console.log('Injecting server-side JEG token from cookie', app);
             }
 
             if (app && accessToken) {

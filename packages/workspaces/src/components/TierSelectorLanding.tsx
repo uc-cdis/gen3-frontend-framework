@@ -15,14 +15,13 @@ export interface TierSelectorLandingProps extends Partial<TierSelectorLandingCon
 
 const DEFAULT_CLASSNAMES: DefaultTierLandingClassnames = {
   root: 'mx-auto w-full max-w-7xl p-6 md:p-10',
-  background:
-    'relative overflow-hidden rounded-3xl border border-base-light/80 bg-gradient-to-b from-white via-white to-slate-50 p-8 shadow-2xl shadow-slate-300/40 md:p-12',
+  background: 'relative overflow-hidden md:p-12',
   label: 'text-md uppercase tracking-[0.28em] text-primary',
   description:
     'text-4xl font-black leading-tight text-primary md:text-3xl sm:text-2xl mt-4 mb-4',
   additionalDescription: 'max-w-2xl text-md font-medium text-base-contrast',
   button:
-    'mt-10 flex w-full items-center justify-center rounded-md bg-primary px-8 py-3 text-sm font-semibold text-white shadow-sm hover:bg-primary-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
+    'mt-10 flex w-full items-center justify-center rounded-md bg-primary px-8 py-3 text-sm font-semibold text-primary-contrast shadow-sm hover:bg-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
 };
 
 const TierSelectorLanding = ({
@@ -76,6 +75,7 @@ const TierSelectorLanding = ({
               features={card.features}
               tooltip={card.tooltip}
               buttonLabel={card.buttonLabel}
+              baseColor={card.baseColor}
             />
           ))}
         </div>

@@ -137,7 +137,10 @@ function injectRemoteConfig(
   req: NextApiRequest,
   gatewayBaseUrl: string,
   disabledExtensions: string[],
-  branding?: BrandingConfig,
+  branding = {
+    appName: 'JupyterLite',
+    faviconUrl: '/favicon2.ico',
+  } as BrandingConfig,
 ): string {
   const { proto, host } = resolveOrigin(req);
   const absoluteGatewayBase = `${proto}://${host}${gatewayBaseUrl}`;
@@ -259,6 +262,8 @@ export function createWorkspaceAssetsHandler(
     const tierRoot = nodePath.join(assetRoot, tier);
     const requestedPath = nodePath.join(tierRoot, ...segments);
     const resolved = nodePath.normalize(requestedPath);
+
+    console.log('resolved', resolved);
 
     // Security: reject any path that escapes the tier root directory
     if (

@@ -59,16 +59,9 @@ export interface KernelLifecyclePanelProps {
 }
 
 const KernelLifecyclePanel = ({
-  launching = false,
   activeKernelName,
-  containerUptimeMinutes,
   onRetryConnection,
   onRunStaleReap,
-  onLaunchKernel,
-  onOpenNotebook,
-  onTerminateKernel,
-  onKernelSelectionChange,
-  forceTerminate = false,
 }: KernelLifecyclePanelProps) => {
   const notice = undefined;
 

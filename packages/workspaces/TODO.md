@@ -1,9 +1,12 @@
 ## JEG Workspaces
 
-* Show/Hide panels control
-  * tooltips for each panel button
-* Full screen toggle
+* ~~Show/Hide panels control~~
+  * ~~tooltips for each panel button~~
+* ~~Full screen toggle~~
   ~~* Container Error Panel~~
+* Match wireframe
+  * landing page
+    ~~* Terminate Kernels~~
 * Active Kernel? Note sure is this needed
 * Correct Runtime
 * Persistence of Active Kernels
@@ -12,19 +15,17 @@
   * ~~reconnection~~
   * dropped connections
   * connection timeout
-  * number of connections
+  * ~~number of connections~~
   * ~~kernel state~~
   * ~~kernel runtime in minutes~~
-* Stop Container Button
+* ~~Stop Container Button~~
   * ~~hide when not running~~
 * Select Kernel
-* Show upgrade panel in Free Tier
+* ~~Show upgrade panel in Free Tier~~
 * ~~Hide kernel controls in Free Tier~~
 * Update Polling
   * make polling configurable
 * Workspace Status in Navigation
-* ProtectedContent Overlay for Non-free Workspaces
-  * add authz check
 * Prevent Tier access when not logged in/authorized
 * Test deployment
     * Kernels
@@ -35,6 +36,11 @@
 * move to NPM
 * ~~create public stub for npm package~~
 * Development Environment Support
+
+# Backlog
+
+* ProtectedContent Overlay for Non-free Workspaces
+  * add authz check
 
 ## Load images
 

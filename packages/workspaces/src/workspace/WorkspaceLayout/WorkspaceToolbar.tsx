@@ -126,7 +126,7 @@ const WorkspaceToolbar = ({ toolbarConfiguration }: WorkspaceToolbarProps) => {
               />
             }
           >
-            Stop
+            Stop Workspace
           </Button>
         )}
         <Tooltip label={fullscreenLabel}>

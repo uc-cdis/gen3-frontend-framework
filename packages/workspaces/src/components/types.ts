@@ -7,6 +7,7 @@ export interface WorkspaceCardConfig {
   features?: string[];
   tooltip?: string;
   buttonLabel?: string;
+  baseColor?: string;
 }
 
 export interface DefaultTierLandingClassnames extends Record<string, string> {

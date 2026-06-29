@@ -13,6 +13,7 @@ import {
   useUserAuth,
 } from '@gen3/core';
 import { MicroContainerReduxProvider } from '../providers/MicroContainerReduxProvider';
+import { Card, Center } from '@mantine/core';
 
 export type WorkspaceAuthContext = {
   username?: string;
@@ -72,14 +73,16 @@ const WorkspaceCenter = ({
 
   if (!workspaceTier) {
     return (
-      <TierSelectorLanding
-        cards={workspaces}
-        onSelectTier={handleSelectTier}
-        label={landingPage?.label}
-        description={landingPage?.description}
-        additionalDescriptions={landingPage?.additionalDescriptions}
-        classNames={landingPage?.classNames}
-      />
+      <div className="w-full bg-base-lightest ">
+        <TierSelectorLanding
+          cards={workspaces}
+          onSelectTier={handleSelectTier}
+          label={landingPage?.label}
+          description={landingPage?.description}
+          additionalDescriptions={landingPage?.additionalDescriptions}
+          classNames={landingPage?.classNames}
+        />
+      </div>
     );
   }
 
@@ -91,24 +94,26 @@ const WorkspaceCenter = ({
     );
   }
 
+  if (workspaceTier === 'remote') {
+    return (
+      <MicroContainerReduxProvider enabled={true}>
+        <WorkspaceLayout>
+          <RemoteWorkspace
+            tenantId={authContext?.tenantId || 'default'}
+            workspaceId={authContext?.workspaceId || 'workspace-default'}
+            userId={authContext?.username || 'anonymous'}
+          />
+        </WorkspaceLayout>
+      </MicroContainerReduxProvider>
+    );
+  }
   return (
-    <WorkspaceLayout>
-      {
-        {
-          free: <FreeWorkspace />,
-          local: <div>Local Workspace</div>,
-          remote: (
-            <MicroContainerReduxProvider enabled={true}>
-              <RemoteWorkspace
-                tenantId={authContext?.tenantId || 'default'}
-                workspaceId={authContext?.workspaceId || 'workspace-default'}
-                userId={authContext?.username || 'anonymous'}
-              />
-            </MicroContainerReduxProvider>
-          ),
-        }[workspaceTier as string]
-      }
-    </WorkspaceLayout>
+    <Card shadow="sm" padding="lg" withBorder>
+      <Center>
+        Workspaces are not configured correctly or are not supported by this
+        instance. Please contact your administrator.
+      </Center>
+    </Card>
   );
 };
 

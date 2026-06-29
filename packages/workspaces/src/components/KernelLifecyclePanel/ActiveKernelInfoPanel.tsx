@@ -1,6 +1,6 @@
 import React from 'react';
 import { formatUptimeInMinutes } from '@gen3/core';
-import { Badge, Button, Divider, Stack } from '@mantine/core';
+import { Badge, Button, Divider, Stack, Text } from '@mantine/core';
 import { KernelRow, KernelSpecEntry } from '../../core/types';
 import { useTerminateKernelMutation } from '../../core/jegGatewayApi';
 
@@ -60,8 +60,9 @@ const ActiveKernelInfoPanel = ({
                       </p>
                     )*/}
         </div>
-        <Badge color={isStaleOrIdle ? 'accentWarm.4' : 'accent.4'}>
-          {isStaleOrIdle ? 'Stale/Idle' : 'Active'}
+        <Badge color={isStaleOrIdle ? 'utility.2' : 'utility.6'}>
+          <Text size="xs" tt="uppercase" fw={600} c="base-contrast.4"></Text>
+          {isStaleOrIdle ? 'Idle' : 'Active'}
         </Badge>
       </div>
 
@@ -108,6 +109,7 @@ const ActiveKernelInfoPanel = ({
       </Stack>
 
       <div className="mt-5 flex gap-3 m-2">
+        {/* TODO: Implement when functionality is available
         <Button
           aria-label={`Open notebook for ${kernelName || 'python3'} kernel`}
           onClick={() => onOpenNotebook?.(kernelId)}
@@ -118,12 +120,14 @@ const ActiveKernelInfoPanel = ({
         >
           Open Notebook
         </Button>
+        ----------- */}
         <Button
           aria-label={`${forceTerminate ? 'Force terminate' : 'Terminate'} ${kernelName || 'python3'} kernel`}
           onClick={() => terminateKernel(kernelId)}
           loading={isTerminatingLoading}
-          variant="light"
-          className="flex-1 border-primary-light"
+          variant="outline"
+          color="primary.4"
+          fullWidth
         >
           {forceTerminate ? 'Force Terminate' : 'Terminate'}
         </Button>

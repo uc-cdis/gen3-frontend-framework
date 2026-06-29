@@ -160,13 +160,14 @@ export function useMicroContainerRedux(
     launchTrigger,
   ]);
 
-  const terminate = useCallback(async () => {
+  const terminate = useCallback(() => {
+    console.log('Terminating workspace');
     if (!enabled || workspaceContainerStatus === WorkspaceStatus.Terminating)
       return;
     coreDispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.Running));
-    const query = containerHash ? encodeURIComponent(containerHash) : '';
+    const containerId = containerHash ? encodeURIComponent(containerHash) : '';
     try {
-      const status = await terminateWorkspace(query).unwrap();
+      const status = terminateWorkspace(containerId).unwrap();
       coreDispatch(
         setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate),
       );

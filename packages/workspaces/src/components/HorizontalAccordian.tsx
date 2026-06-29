@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import React from 'react';
-import { ActionIcon, Text } from '@mantine/core';
+import { ActionIcon, Text, Tooltip } from '@mantine/core';
 import { Icon } from '@iconify-icon/react';
 import {
   PanelHeaderTextStyle,
@@ -81,14 +81,16 @@ export function HorizontalAccordion({
             {label}
           </Text>
 
-          <ActionIcon
-            variant="subtle"
-            aria-label={expanded ? 'Collapse panel' : 'Expand panel'}
-            onClick={() => setExpanded(!expanded)}
-            radius="xs"
-          >
-            {expanded ? openIcon : closeIcon}
-          </ActionIcon>
+          <Tooltip label={expanded ? `Collapse ${label}` : `Expand ${label}`}>
+            <ActionIcon
+              variant="subtle"
+              aria-label={expanded ? 'Collapse panel' : 'Expand panel'}
+              onClick={() => setExpanded(!expanded)}
+              radius="xs"
+            >
+              {expanded ? openIcon : closeIcon}
+            </ActionIcon>
+          </Tooltip>
         </div>
 
         <div
