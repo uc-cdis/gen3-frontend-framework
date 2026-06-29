@@ -100,6 +100,7 @@ const StudyRegistrationAccessRequestForm = ({
     console.log('isLoading', isLoading);
     console.log('isError', isError);
     console.log('JSON.stringify(formValues)', JSON.stringify(formValues)); */
+    const hostname = window.location.hostname;
     alert(JSON.stringify(formValues));
     return requestQuery({
       username: userInfo.username,
@@ -119,20 +120,14 @@ const StudyRegistrationAccessRequestForm = ({
           printFormValuesArr.push(`${key}: ${value}`);
         }
         const zenDeskSubmission = {
-          subject: `Workspace Access Request for Workspace in ${window.location.href}`,
+          subject: `Study registration access request for ${studyUID} ${studyName}`,
           fullName: `${userInfo?.email}`,
           email: `${userInfo?.email}`,
-          contents:
-            'Workspace Access Request for Workspace in:\n\n' +
-            `\n\nRequestor: ${userInfo?.display_name} (${userInfo?.email})` +
-            '\n\nResources: "/workspace"' +
-            `\n\nRequestor ID: ${userInfo?.username || 'unknown'}` +
-            `\n\nRequest ID: ${request.request_id}` +
-            `\n\nRequest URL: ${window.location.href}` +
-            `\n\nRequestor Email: ${userInfo?.email}` +
-            `\n\nRequestor Name: ${userInfo?.username}` +
-            '\n\nForm Values:\n\n' +
-            printFormValuesArr.join('\n\n'),
+          contents: `Request ID: ${request.request_id}\n
+          Grant Number: ${studyUID}\n
+          Study Name: ${studyName}\n
+          Environment: ${hostname}
+          Form Values: ${printFormValuesArr.join('\n\n')}`,
         };
         console.log('zenDeskSubmission', zenDeskSubmission);
         return zendeskRequestAction(
