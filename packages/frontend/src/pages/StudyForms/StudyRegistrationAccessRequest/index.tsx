@@ -10,6 +10,7 @@ import Form, {
 } from '../../../components/Content/Form';
 import {
   CoreState,
+  getRemoteSupportServiceRegistry,
   HttpError,
   isHttpStatusError,
   selectUserDetails,
@@ -86,6 +87,12 @@ const StudyRegistrationAccessRequestForm = ({
   const userInfo = useCoreSelector((state: CoreState) =>
     selectUserDetails(state),
   );
+
+  const zendeskRequestAction =
+    getRemoteSupportServiceRegistry().getSupportService(
+      configStudyRegistrationRequestAccessForm.remoteSupportService.service,
+    );
+
   const [requestQuery] = useCreateRequestMutation();
   const formOnSubmit = (formValues: FormOnSubmitReturnProps) => {
     /* console.log('userInfo ', userInfo);
@@ -96,7 +103,7 @@ const StudyRegistrationAccessRequestForm = ({
     alert(JSON.stringify(formValues));
     return requestQuery({
       username: userInfo.username,
-      resource_id: studyUID,
+      resource_id: studyUID as string,
       resource_paths: [
         studyRegistrationAuthZ as string,
         '/mds_gateway',
@@ -107,6 +114,32 @@ const StudyRegistrationAccessRequestForm = ({
       .unwrap()
       .then((request) => {
         console.log('ln 70', request);
+        const printFormValuesArr: string[] = [];
+        for (const [key, value] of Object.entries(formValues)) {
+          printFormValuesArr.push(`${key}: ${value}`);
+        }
+        const zenDeskSubmission = {
+          subject: `Workspace Access Request for Workspace in ${window.location.href}`,
+          fullName: `${userInfo?.email}`,
+          email: `${userInfo?.email}`,
+          contents:
+            'Workspace Access Request for Workspace in:\n\n' +
+            `\n\nRequestor: ${userInfo?.display_name} (${userInfo?.email})` +
+            '\n\nResources: "/workspace"' +
+            `\n\nRequestor ID: ${userInfo?.username || 'unknown'}` +
+            `\n\nRequest ID: ${request.request_id}` +
+            `\n\nRequest URL: ${window.location.href}` +
+            `\n\nRequestor Email: ${userInfo?.email}` +
+            `\n\nRequestor Name: ${userInfo?.username}` +
+            '\n\nForm Values:\n\n' +
+            printFormValuesArr.join('\n\n'),
+        };
+        console.log('zenDeskSubmission', zenDeskSubmission);
+        return zendeskRequestAction(
+          zenDeskSubmission,
+          configStudyRegistrationRequestAccessForm.remoteSupportService
+            .configuration,
+        );
       })
       .catch((error: unknown) => {
         if (isHttpStatusError(error)) {

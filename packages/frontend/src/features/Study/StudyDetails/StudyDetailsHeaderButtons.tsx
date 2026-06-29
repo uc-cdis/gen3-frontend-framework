@@ -5,6 +5,7 @@ import { FiLogIn as LoginIcon } from 'react-icons/fi';
 import {
   CoreState,
   selectUserAuthStatus,
+  selectUserDetails,
   useCoreSelector,
   useIsUserLoggedIn,
 } from '@gen3/core';
@@ -21,8 +22,14 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   onClose,
   permalink,
 }) => {
-  const userStatus = useIsUserLoggedIn();
-  const requiresLogin = !userStatus;
+  // const userStatus = useIsUserLoggedIn();
+  //   const requiresLogin = !userStatus;
+
+  const userInfo = useCoreSelector((state: CoreState) =>
+    selectUserDetails(state),
+  );
+  console.log('userInfo', userInfo);
+  const requiresLogin = !userInfo.active;
 
   const { discoveryConfig: config } = useDiscoveryContext();
   const index = config?.minimalFieldMapping?.uid ?? 'unknown';
@@ -30,8 +37,7 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   const studyUID = toString(studyDetails[index]);
   const studyName = studyDetails.study_metadata.minimal_info
     .study_name as string;
-
-  console.log('studyDetails', studyDetails);
+  const studyRegistrationAuthZ = studyDetails.registration_authz;
   const showSubmitButton = config.detailView?.showSubmitButton;
   const router = useRouter();
 
@@ -45,7 +51,7 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
           query: {
             studyUID: studyUID,
             studyName: studyName,
-            studyRegistrationAuthZ: 'studyRegistrationAuthZ from Button',
+            studyRegistrationAuthZ: studyRegistrationAuthZ,
           },
         },
         '/study-reg/request-access',

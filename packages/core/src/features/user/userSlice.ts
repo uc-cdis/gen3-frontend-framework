@@ -50,8 +50,8 @@ export const fetchUserState = createAsyncThunk<
   });
 });
 
-export const isAuthenticated = (loginStatus: LoginStatus): boolean => true;
-// loginStatus === 'authenticated';
+export const isAuthenticated = (loginStatus: LoginStatus): boolean =>
+  loginStatus === 'authenticated';
 
 export const isPending = (loginStatus: LoginStatus): boolean =>
   loginStatus === 'pending';
