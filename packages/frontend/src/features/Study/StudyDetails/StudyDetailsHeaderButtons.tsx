@@ -2,7 +2,12 @@ import React, { useMemo } from 'react';
 import { Button, CopyButton } from '@mantine/core';
 import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
 import { FiLogIn as LoginIcon } from 'react-icons/fi';
-import { CoreState, selectUserAuthStatus, useCoreSelector } from '@gen3/core';
+import {
+  CoreState,
+  selectUserAuthStatus,
+  useCoreSelector,
+  useIsUserLoggedIn,
+} from '@gen3/core';
 import { useDiscoveryContext } from '../../Discovery/DiscoveryProvider';
 import { useRouter } from 'next/router';
 import { useStudyContext } from '../StudyProvider';
@@ -11,14 +16,14 @@ import { toString } from 'lodash';
 interface StudyDetailsHeaderButtonsProps {
   onClose: () => void;
   permalink: string;
-  userStatus: string;
 }
 const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   onClose,
   permalink,
-  userStatus,
 }) => {
-  const requiresLogin = userStatus !== 'authenticated';
+  const userStatus = useIsUserLoggedIn();
+  const requiresLogin = !userStatus;
+
   const { discoveryConfig: config } = useDiscoveryContext();
   const index = config?.minimalFieldMapping?.uid ?? 'unknown';
   const { studyDetails, setStudyDetails } = useStudyContext();
