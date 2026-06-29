@@ -1,13 +1,8 @@
-import {
-  TierSelectorLandingConfiguration,
-  WorkspaceCardConfig,
-} from '../../components/types';
 import { Gen3AppConfigData, NavPageLayoutProps } from '@gen3/frontend';
+import { WorkspacesCenterConfiguration } from '../../workspace/types';
 
-export interface WorkspacesCenterPageConfiguration extends Gen3AppConfigData {
-  workspaces: ReadonlyArray<WorkspaceCardConfig>;
-  landingPage?: TierSelectorLandingConfiguration;
-}
+export type WorkspacesCenterPageConfiguration = WorkspacesCenterConfiguration &
+  Gen3AppConfigData;
 
 export interface WorkspacesPageLayoutProps extends NavPageLayoutProps {
   configuration: WorkspacesCenterPageConfiguration;

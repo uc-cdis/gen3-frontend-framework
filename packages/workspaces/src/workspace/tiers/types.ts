@@ -25,8 +25,9 @@ export interface FreeWorkspaceTierConfiguration extends WorkspaceTierInformation
   type: Extract<WorkspaceTier, 'free'>;
 }
 
-export interface MicroContainerWorkspaceTierConfiguration extends WorkspaceTierInformation {
+export interface RemoteComputeWorkspaceTierConfiguration extends WorkspaceTierInformation {
   type: Extract<WorkspaceTier, 'remote'>;
+  baseUrl?: string;
 }
 
 export type RemoteComputeWorkspaceHandle = {

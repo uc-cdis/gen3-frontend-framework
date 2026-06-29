@@ -30,6 +30,8 @@
     * Kernels
     * Proxys
 * Fix service config/definition
+  * Hatchery URL
+  * Jupyter lite source
 * move to NPM
 * ~~create public stub for npm package~~
 * Development Environment Support
@@ -132,4 +134,12 @@ verify
 
 ```bash
 kubectl run -it --rm dns-test --image=busybox:1.36 --restart=Never -- nslookup gen3dev.local.io
+```
+
+## Build and deploy docker file
+
+```bash
+npm run build:docker
+kind load docker-image gen3:fef --name kind-multi-node
+kubectl rollout restart deployment/frontend-framework-deployment
 ```

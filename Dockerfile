@@ -43,7 +43,14 @@ COPY --from=builder --chown=nextjs:nextjs /gen3/packages/sampleCommons/.next/sta
   ./packages/sampleCommons/.next/static
 COPY --from=builder --chown=nextjs:nextjs /gen3/packages/sampleCommons/config ./packages/sampleCommons/config
 COPY --from=builder --chown=nextjs:nextjs /gen3/packages/sampleCommons/public ./packages/sampleCommons/public
-
+# only copy if exist
+# Copy jupyter assets only if they exist in the builder stage.
+RUN --mount=from=builder,source=/gen3/packages/sampleCommons,target=/tmp/sampleCommons,readonly \
+    if [ -d /tmp/sampleCommons/workspaces ]; then \
+      mkdir -p ./packages/sampleCommons; \
+      cp -a /tmp/sampleCommons/workspaces ./packages/sampleCommons/workspaces; \
+      chown -R nextjs:nextjs ./packages/sampleCommons/workspaces; \
+    fi
 
 # Copy runtime script
 COPY --from=builder --chown=nextjs:nextjs /gen3/start.sh ./start.sh

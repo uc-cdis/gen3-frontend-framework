@@ -1,0 +1,4 @@
+jupyterlite-core>=0.4.0
+jupyterlab>=4.2.0
+xeus-python
+jupyterlite-pyodide-kernel

@@ -77,13 +77,13 @@ const REMOTE_DISABLED_EXTENSIONS = [
 // ---------- helpers ----------
 
 const ASSETS_ROOT_PATH =
-  process.env.JUPYTER_ASSETS_ROOT_PATH ||
-  'node_modules/@gen3/workspaces/assets';
+  process.env.JUPYTER_ASSETS_ROOT_PATH || '/gen3/workspaces/assets';
 
 function defaultAssetRoot(): string {
-  return nodePath.normalize(ASSETS_ROOT_PATH);
+  return ASSETS_ROOT_PATH.startsWith('/')
+    ? ASSETS_ROOT_PATH
+    : nodePath.join(process.cwd(), ASSETS_ROOT_PATH);
 }
-
 interface BrandingConfig {
   appName?: string;
   faviconUrl?: string;

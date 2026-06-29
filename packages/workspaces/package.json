@@ -21,7 +21,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run compile && npm run types && npm run rollup",
     "build:clean": "npm run compile && npm run types && npm run rollup",
-    "dev": "echo no dev tasks"
+    "dev": "echo no dev tasks",
+    "build:jupyterlite:free": "bash scripts/build-jupyterlite-free.sh",
+    "build:jupyterlite:remote": "bash scripts/build-jupyterlite-remote.sh",
+    "build:jupyterlite:all": "npm run build:jupyterlite:free && npm run build:jupyterlite:remote && npm run validate:jupyterlite:assets",
+    "validate:jupyterlite:assets": "bash scripts/validate-jupyterlite-assets.sh --free-dir jupyterlite-builds/free-private/site --remote-dir jupyterlite-builds/remote-private/site"
   },
   "exports": {
     ".": {
