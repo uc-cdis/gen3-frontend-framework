@@ -8,5 +8,7 @@ export const pageFromURL = (currentURL: string): string => {
 export const isUserOnPage = (pageName: string): boolean => {
   if (typeof window === 'undefined') return false;
 
-  return pageFromURL(window.location.href) === pageName;
+  return pageFromURL(window.location.href)
+    .toLowerCase()
+    .includes(pageName.toLowerCase());
 };
