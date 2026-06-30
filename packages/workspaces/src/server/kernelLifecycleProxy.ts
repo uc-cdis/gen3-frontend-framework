@@ -321,8 +321,7 @@ function resolveKernelRoute(
   method: string,
   actionSegments: string[],
 ): KernelRoute | null {
-  const [seg0, seg1, seg2] = actionSegments;
-  if (seg0 !== 'api') return null;
+  const [seg1, seg2] = actionSegments;
 
   if (!seg2) {
     return SIMPLE_ROUTES.get(`${method}:${seg1}`) ?? null;
@@ -422,7 +421,8 @@ async function handleReap(
   ctx: RouteContext,
   res: NextApiResponse,
 ): Promise<void> {
-  const listUpstream = buildAmbassadorUrl(ctx.gen3Endpoint, '/api/kernels');
+  //  const listUpstream = buildAmbassadorUrl(ctx.gen3Endpoint, '/api/kernels');
+  const listUpstream = `${ctx.gen3Endpoint}/api/kernels`;
   let kernelList: Array<{ id: string; name: string; last_activity?: string }> =
     [];
   try {
@@ -430,6 +430,7 @@ async function handleReap(
       method: 'GET',
       headers: ctx.ambassadorHeaders,
     });
+
     if (!listRes.ok) {
       res
         .status(listRes.status)
@@ -698,6 +699,7 @@ export function createKernelProxyHandler(config: KernelLifecycleProxyConfig) {
     const jwt = config.getToken
       ? config.getToken(req)
       : extractTokenFallback(req);
+
     if (!jwt) {
       res.status(401).json({ error: 'Authentication required.' });
       return;

@@ -22,7 +22,7 @@ export function extractTokenFallback(req: NextApiRequest): string | null {
     return auth.slice(7).trim() || null;
   }
   const cookie = req.headers['cookie'] ?? '';
-  const m = cookie.match(/(?:^|;\s*)access_token=([^;]+)/);
+  let m = cookie.match(/(?:^|;\s*)access_token=([^;]+)/);
   return m ? decodeURIComponent(m[1]).trim() || null : null;
 }
 

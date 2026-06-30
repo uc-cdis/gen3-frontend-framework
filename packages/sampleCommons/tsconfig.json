@@ -28,7 +28,7 @@
       "@gen3/frontend/explorerRenderers": [
         "../frontend/src/exports/explorerRenderers.ts"
       ],
-      "@gen3/workspaces": ["../workspaces/src/index.ts"],
+      "@gen3/workspaces": ["../workspaces/src/*"],
       "@gen3/workspaces/server": ["../workspaces/src/server.ts"]
     },
     "plugins": [

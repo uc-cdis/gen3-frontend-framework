@@ -14,3 +14,6 @@ export const GEN3_JEG_GATEWAY_API =
 // TODO: resolve this with @gen3/core
 export const GEN3_WORKSPACES_API =
   GEN3_WORKSPACE_API || `${GEN3_API}/lw-workspace`;
+
+export const JEG_SERVICE_API =
+  'http://jupyter-enterprise-gateway.jupyter-pods.svc.cluster.local:8888';

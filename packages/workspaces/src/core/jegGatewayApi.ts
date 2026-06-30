@@ -51,6 +51,15 @@ export const jegGatewayApi = GatewayWithTags.injectEndpoints({
       }),
       invalidatesTags: ['ActiveKernels'],
     }),
+    reapKernels: builder.mutation<any, void>({
+      query: () => {
+        return {
+          url: `/api/workspace/kernel/reap`,
+          method: 'POST',
+        };
+      },
+      invalidatesTags: ['ActiveKernels'],
+    }),
   }),
   overrideExisting: true,
 });
@@ -60,4 +69,5 @@ export const {
   useLaunchKernelMutation,
   useTerminateKernelMutation,
   useJegGatewayStatusQuery,
+  useReapKernelsMutation,
 } = jegGatewayApi;

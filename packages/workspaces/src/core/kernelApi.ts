@@ -54,8 +54,19 @@ export const kernelApi = KernelWithTags.injectEndpoints({
         return res;
       },
     }),
+    kernelsList: builder.query<Array<KernelItem>, void>({
+      query: () => `${GEN3_KERNEL_API}/kernels_list`,
+      transformResponse: (response: Array<KernelItemResponse>) => {
+        return response.map((kernel) => ({
+          ...kernel,
+          executionState: kernel.execution_state,
+          lastActivity: kernel.last_activity,
+        }));
+      },
+    }),
   }),
   overrideExisting: true,
 });
 
-export const { useKernelsQuery, useKernalSpecsQuery } = kernelApi;
+export const { useKernelsQuery, useKernalSpecsQuery, useKernelsListQuery } =
+  kernelApi;

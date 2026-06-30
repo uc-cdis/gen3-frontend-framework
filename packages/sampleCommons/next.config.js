@@ -147,6 +147,11 @@ const nextConfig = {
           destination: `${GEN3_TARGET}/authz/:path*`,
         },
         {
+          source:
+            '/lw-workspace/proxy/jeg-proxy/kernelspecs/:kernel/logo-:size.png',
+          destination: '/icons/kernels/logo-64.png',
+        },
+        {
           source: '/lw-workspace/:path*',
           destination: `${GEN3_TARGET}/lw-workspace/:path*`,
         },

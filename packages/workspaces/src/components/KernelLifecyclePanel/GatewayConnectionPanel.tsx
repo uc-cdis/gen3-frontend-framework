@@ -1,8 +1,9 @@
 import React from 'react';
-import { Stack, Text } from '@mantine/core';
+import { Button, Stack, Text } from '@mantine/core';
 import ConnectionStatusBadge from './ConnectionStatusBadge';
 import type { GatewayConnectionState } from '../../hooks/useGatewayConnection';
 import { PanelStyle, TextStyle } from './styling';
+import { useReapKernelsMutation } from '../../core/jegGatewayApi';
 
 interface GatewayConnectionPanelProps {
   gatewayStatus: string;
@@ -15,6 +16,7 @@ export const GatewayConnectionPanel = ({
   onRetryConnection = () => null,
   onRunStaleReap = () => null,
 }: GatewayConnectionPanelProps) => {
+  const [reapKernels, { isLoading, isError }] = useReapKernelsMutation();
   return (
     <Stack className={PanelStyle} justify="space-between">
       <Text className={TextStyle}>Gateway</Text>
@@ -25,15 +27,15 @@ export const GatewayConnectionPanel = ({
             onRetry={onRetryConnection}
           />
         )}
-        {/* TODO: Implement when api is ready
+
         <Button
-          onClick={onRunStaleReap}
+          onClick={() => reapKernels()}
           disabled={!onRunStaleReap}
           variant="default"
+          loading={isLoading}
         >
-          Run Stale Reap
+          Reap Stale Kernels
         </Button>
-        ----------------------------------- */}
       </div>
     </Stack>
   );

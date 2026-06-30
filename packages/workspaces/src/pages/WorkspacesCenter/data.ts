@@ -16,13 +16,13 @@ const DEFAULT_WORKSPACES_CONFIGURATION: WorkspacesCenterPageConfiguration = {
   tierConfiguration: {
     free: {
       baseUrl:
-        process.env.FREE_WORKSPACE_ASSESTS_BASE_URL ??
+        process.env.FREE_WORKSPACE_ASSETS_BASE_URL ??
         '/api/workspace-assets/free',
     },
     remote: {
       baseUrl:
-        process.env.REMOTE_COMPUTE_WORKSPACE_ASSESTS_BASE_URL ??
-        '/api/workspace-assets/remote-compute',
+        process.env.REMOTE_COMPUTE_WORKSPACE_ASSETS_BASE_URL ??
+        '/api/workspace-assets/remote',
     },
   } as Record<
     WorkspaceTier,

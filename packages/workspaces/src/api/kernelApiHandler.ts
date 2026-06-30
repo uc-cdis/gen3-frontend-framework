@@ -6,21 +6,21 @@ import { createKernelProxyHandler } from '../server/kernelLifecycleProxy';
 import { getAccessToken } from '@gen3/frontend/server';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { GEN3_FENCE_API } from '@gen3/core/server';
+import { JEG_SERVICE_API } from '../constants';
+import { GEN3_API } from '@gen3/core';
 
 const inCluster = Boolean(process.env.KUBERNETES_SERVICE_HOST);
-const defaultGen3Endpoint = inCluster
-  ? 'http://jupyter-enterprise-gateway.jupyter-pods.svc.cluster.local:8888'
-  : undefined;
+const defaultGen3Endpoint = inCluster ? JEG_SERVICE_API : GEN3_API;
 const defaultFenceUrl = inCluster
   ? 'http://fence-service.gen3.svc.cluster.local'
   : GEN3_FENCE_API;
 
-const gen3Endpoint = process.env.GEN3_ENDPOINT ?? defaultGen3Endpoint;
+const gen3Endpoint = process.env.JEG_SERVICE_API ?? defaultGen3Endpoint;
 const fenceUrl = process.env.FENCE_URL ?? defaultFenceUrl;
 
 if (!gen3Endpoint) {
   console.warn(
-    '[workspace-kernel] GEN3_ENDPOINT is not set and not running in-cluster — kernel proxy will likely fail',
+    '[workspace-kernel] JEG_SERVICE_API is not set and not running in-cluster — kernel proxy will likely fail',
   );
 }
 if (!fenceUrl) {
@@ -63,7 +63,9 @@ export default async function handler(
   const action = Array.isArray(req.query.action) ? req.query.action : [];
   const isStatusPath = action[0] === 'api' && action[1] === 'status';
 
+  console.log('action', action);
   try {
+    console.log('upstreamHandler', req.method, action);
     await upstreamHandler(req, res);
   } catch (err) {
     console.error('[workspace-kernel] Upstream handler threw:', err);

@@ -117,11 +117,13 @@ export const hatcheryApi = HatcheryWithTags.injectEndpoints({
       },
     }),
     terminateHatcheryWorkspace: builder.mutation<string, string>({
-      query: (id) => ({
-        url: `${GEN3_HATCHERY_API}/terminate/?id=${id}`,
-        method: 'POST',
-        responseHandler: (response) => response.text(),
-      }),
+      query: (id) => {
+        return {
+          url: `${GEN3_HATCHERY_API}/terminate?id=${id}`,
+          method: 'POST',
+          responseHandler: (response) => response.text(),
+        };
+      },
       invalidatesTags: ['Hatchery'],
     }),
   }),

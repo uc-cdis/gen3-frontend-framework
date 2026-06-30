@@ -23,15 +23,21 @@ export function useGatewayConnectionStatus() {
   );
 
   // get the status of the gateway
-  const { data: gatewayStatusData, isFetching: isGatewayFetching } =
-    useJegGatewayStatusQuery();
+  const {
+    data: gatewayStatusData,
+    isFetching: isGatewayFetching,
+    isError,
+    error: gatewayError,
+  } = useJegGatewayStatusQuery();
 
+  console.log('gatewayStatusData', gatewayStatusData);
   const gatewayServiceStatus = useMemo(() => {
     if (isGatewayFetching) return 'fetching';
+    if (!isError) return 'service_unavailable';
     if (!gatewayStatus) return 'service_unavailable';
     if (gatewayStatusData) return 'connected';
     return 'disconnected';
-  }, [gatewayStatus, gatewayStatusData, isGatewayFetching]);
+  }, [gatewayStatus, gatewayStatusData, isError, isGatewayFetching]);
 
   return useMemo(
     () => ({

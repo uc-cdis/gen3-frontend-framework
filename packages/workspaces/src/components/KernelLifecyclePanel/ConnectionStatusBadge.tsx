@@ -1,5 +1,5 @@
 import React from 'react';
-import { Badge, Button, Loader } from '@mantine/core';
+import { Badge, Loader } from '@mantine/core';
 import type { GatewayConnectionState } from '../../hooks/useGatewayConnection';
 
 export interface ConnectionStatusBadgeProps {
@@ -85,17 +85,10 @@ const ConnectionStatusBadge = ({
       <Badge
         variant="light"
         leftSection={<span aria-hidden="true">✕</span>}
-        rightSection={
-          onRetry ? (
-            <Button onClick={onRetry} aria-label="Retry kernel connection">
-              Retry
-            </Button>
-          ) : null
-        }
         className="normal-case"
         role="alert"
       >
-        Disconnected
+        Error
       </Badge>
     );
   }

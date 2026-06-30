@@ -14,6 +14,7 @@ import {
 } from '@gen3/core';
 import { MicroContainerReduxProvider } from '../providers/MicroContainerReduxProvider';
 import { Card, Center } from '@mantine/core';
+import { ProtectedContent } from '@gen3/frontend';
 
 export type WorkspaceAuthContext = {
   username?: string;
@@ -96,15 +97,17 @@ const WorkspaceCenter = ({
 
   if (workspaceTier === 'remote') {
     return (
-      <MicroContainerReduxProvider enabled={true}>
-        <WorkspaceLayout>
-          <RemoteWorkspace
-            tenantId={authContext?.tenantId || 'default'}
-            workspaceId={authContext?.workspaceId || 'workspace-default'}
-            userId={authContext?.username || 'anonymous'}
-          />
-        </WorkspaceLayout>
-      </MicroContainerReduxProvider>
+      <ProtectedContent>
+        <MicroContainerReduxProvider enabled={true}>
+          <WorkspaceLayout>
+            <RemoteWorkspace
+              tenantId={authContext?.tenantId || 'default'}
+              workspaceId={authContext?.workspaceId || 'workspace-default'}
+              userId={authContext?.username || 'anonymous'}
+            />
+          </WorkspaceLayout>
+        </MicroContainerReduxProvider>
+      </ProtectedContent>
     );
   }
   return (

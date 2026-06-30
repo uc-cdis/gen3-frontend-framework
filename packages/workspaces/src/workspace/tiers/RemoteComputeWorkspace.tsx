@@ -54,6 +54,8 @@ const RemoteComputeWorkspace = React.memo(
 
       const normalizedBase = assetBaseUrl.replace(/\/$/, '');
 
+      console.log('remote iframe url', `${normalizedBase}/lab/index.html`);
+
       // Scoped notebook path for session isolation
       let scopedNotebookPath: string;
       try {

@@ -1,4 +1,4 @@
 import { kernelApiHandler } from '@gen3/workspaces/server';
 
+console.log('kernelApiHandler');
 export default kernelApiHandler;
-export const config = { api: { bodyParser: false } };
