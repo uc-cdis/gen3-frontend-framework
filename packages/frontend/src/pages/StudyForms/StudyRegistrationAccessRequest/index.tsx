@@ -22,15 +22,6 @@ import { useRouter } from 'next/router';
 import StudyRegistrationAccessRequestSuccess from './StudyRegistrationAccessRequestSuccess';
 import { toString } from 'lodash';
 
-interface FormValues {
-  studyName: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  institution: string;
-  role: string;
-}
-
 interface StudyRegistrationAccessRequestFormProps extends NavPageLayoutProps {
   configStudyRegistrationRequestAccessForm: any;
   studyName: string;
@@ -58,7 +49,6 @@ const StudyRegistrationAccessRequestForm = ({
     if (router.isReady && router.query) {
       const { studyUID, studyRegistrationAuthZ, studyName } = router.query;
       if (studyUID) setStudyUID(studyUID as string);
-      console.log('studyName', studyName);
       if (studyName) setStudyName(toString(studyName));
       if (studyRegistrationAuthZ) {
         try {
@@ -74,7 +64,7 @@ const StudyRegistrationAccessRequestForm = ({
 
   // check requester to see if user has already submitted workspace request for access
   const { data, isLoading, isError } = useUserRequestQuery({
-    policy_ids: ['workspace_accessor'],
+    policy_ids: ['workspace_accessor'], // <- IS THIS CORRECT?!
   });
   useEffect(() => {
     if (!isLoading && isError) {
@@ -98,62 +88,57 @@ const StudyRegistrationAccessRequestForm = ({
 
   const [requestQuery] = useCreateRequestMutation();
 
-  const formOnSubmit = (formValues: FormOnSubmitReturnProps) => {
+  const formOnSubmit = async (formValues: FormOnSubmitReturnProps) => {
     const hostname = window.location.hostname;
-    return requestQuery({
-      username: userInfo.username,
-      resource_id: studyUID as string,
-      resource_paths: [
-        studyRegistrationAuthZ as string,
-        '/mds_gateway',
-        '/cedar',
-      ],
-      role_ids: ['study_registrant', 'mds_user', 'cedar_user'],
-    })
-      .unwrap()
-      .then((request) => {
-        const printFormValuesArr: string[] = [];
-        for (const [key, value] of Object.entries(formValues)) {
-          printFormValuesArr.push(`${key}: ${value}`);
-        }
-        const zenDeskSubmission = {
-          subject: `Study registration access request for ${studyUID} ${studyName}`,
-          fullName: `${userInfo?.email}`,
-          email: `${userInfo?.email}`,
-          contents: `Request ID: ${request.request_id}\n
+    try {
+      const request = await requestQuery({
+        username: userInfo.username,
+        resource_id: studyUID as string,
+        resource_paths: [
+          studyRegistrationAuthZ as string,
+          '/mds_gateway',
+          '/cedar',
+        ],
+        role_ids: ['study_registrant', 'mds_user', 'cedar_user'],
+      }).unwrap();
+      const printFormValuesArr: string[] = [];
+      for (const [key, value] of Object.entries(formValues)) {
+        printFormValuesArr.push(`${key}: ${value}`);
+      }
+      const zenDeskSubmission = {
+        subject: `Study registration access request for ${studyUID} ${studyName}`,
+        fullName: `${userInfo?.email}`,
+        email: `${userInfo?.email}`,
+        contents: `Request ID: ${request.request_id}\n
           Grant Number: ${studyUID}\n
           Study Name: ${studyName}\n
           Environment: ${hostname}
           Form Values: ${printFormValuesArr.join('\n\n')}`,
-        };
-        const zendeskRequestAction =
-          getRemoteSupportServiceRegistry().getSupportService(
-            configStudyRegistrationRequestAccessForm.remoteSupportService
-              .service,
-          );
-        return zendeskRequestAction(
-          zenDeskSubmission,
-          configStudyRegistrationRequestAccessForm.remoteSupportService
-            .configuration,
+      };
+      const zendeskRequestAction =
+        getRemoteSupportServiceRegistry().getSupportService(
+          configStudyRegistrationRequestAccessForm.remoteSupportService.service,
         );
-      })
-      .then(() => {
-        setFormSuccess(true);
-      })
-      .catch((error: unknown) => {
-        if (isHttpStatusError(error)) {
-          const httpError = error as HttpError;
-          setFormError(
-            `[${httpError.status}]: Error while submitting resource request`,
-          );
-        } else if (error instanceof Error) {
-          setFormError(
-            `Error while submitting resource request: ${error.message}`,
-          );
-        } else {
-          setFormError('Unknown error while submitting resource request');
-        }
-      });
+      await zendeskRequestAction(
+        zenDeskSubmission,
+        configStudyRegistrationRequestAccessForm.remoteSupportService
+          .configuration,
+      );
+      setFormSuccess(true);
+    } catch (error) {
+      if (isHttpStatusError(error)) {
+        const httpError = error as HttpError;
+        setFormError(
+          `[${httpError.status}]: Error while submitting resource request`,
+        );
+      } else if (error instanceof Error) {
+        setFormError(
+          `Error while submitting resource request: ${error.message}`,
+        );
+      } else {
+        setFormError('Unknown error while submitting resource request');
+      }
+    }
   };
 
   const autoFillValues = (formBody: FormProps['body']) => {

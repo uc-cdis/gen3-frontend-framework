@@ -11,7 +11,6 @@ const StudyRegistrationAccessRequestSuccess = ({
   config: studyRegistrationAccessRequestFormSuccessProps;
 }) => {
   const { content, button } = config;
-
   return (
     <div className="w-full max-w-[500px] m-auto text-center">
       {content?.map((item: TextContentProps, index: number) => (
