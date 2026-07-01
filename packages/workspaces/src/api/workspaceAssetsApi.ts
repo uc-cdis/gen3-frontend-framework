@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createWorkspaceAssetsHandler } from '../server';
+import { GEN3_COMMONS_NAME } from '@gen3/core';
 
 const upstreamHandler = createWorkspaceAssetsHandler({
   // Route JupyterLite remote-mode kernel WebSocket traffic through revproxy's
@@ -114,7 +115,7 @@ function injectVectisBranding(html: string, req: NextApiRequest): string {
 
       const merged: Record<string, unknown> = {
         ...existing,
-        appName: VECTIS_WORKSPACE_APP_NAME,
+        appName: GEN3_COMMONS_NAME,
         faviconUrl: VECTIS_FAVICON_URL,
         ...(remoteDisabledExtensions.length > 0
           ? {
@@ -137,7 +138,7 @@ function injectVectisBranding(html: string, req: NextApiRequest): string {
           : {}),
       };
 
-      console.log('[vectis-branding] Merged config:', merged);
+      console.log('merged', merged);
 
       return `${openTag}${JSON.stringify(merged)}${closeTag}`;
     },
@@ -161,8 +162,6 @@ function isHtmlResponse(res: NextApiResponse): boolean {
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const originalSend = res.send.bind(res);
 
-  console.log('Workspace assets handler called');
-
   res.send = ((body: unknown) => {
     if (
       typeof body === 'string' &&
@@ -170,6 +169,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       body.includes('id="jupyter-config-data"') &&
       body.includes('<title>')
     ) {
+      console.log('>>>>>>>>>>>>>>>>> injectVectisBranding');
       return originalSend(injectVectisBranding(body, req));
     }
     return originalSend(body);

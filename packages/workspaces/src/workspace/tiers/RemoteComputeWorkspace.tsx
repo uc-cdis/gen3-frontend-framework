@@ -54,8 +54,6 @@ const RemoteComputeWorkspace = React.memo(
 
       const normalizedBase = assetBaseUrl.replace(/\/$/, '');
 
-      console.log('remote iframe url', `${normalizedBase}/lab/index.html`);
-
       // Scoped notebook path for session isolation
       let scopedNotebookPath: string;
       try {
@@ -74,6 +72,13 @@ const RemoteComputeWorkspace = React.memo(
         scopedNotebookPath = `/workspace/${userHash}/${notebookName}.ipynb`;
       }
 
+      let accessToken = undefined;
+      if (process.env.NODE_ENV === 'development') {
+        // NOTE: This cookie can only be accessed from the client side
+        // in development mode. Otherwise, the cookie is set as httpOnly
+        accessToken = getCookie('credentials_token');
+      }
+
       /* ---- Wait for JupyterLite app inside the iframe --------------- */
 
       useEffect(() => {
@@ -90,6 +95,7 @@ const RemoteComputeWorkspace = React.memo(
           try {
             const app = (iframeRef.current?.contentWindow as any)?.jupyterapp;
 
+            /* ------ TODO Remove
             // Inject server-side JEG token — overrides any client-supplied auth header.
             // This ensures calls from JupyterLite's own serverconnection.js are also authenticated.
             let accessToken = getCookie('access_token');
@@ -125,6 +131,7 @@ const RemoteComputeWorkspace = React.memo(
                 }
               }
             }
+            ------ */
 
             if (app?.status === 'ready' || app?.started) {
               setJupyterReady(true);
@@ -263,7 +270,11 @@ const RemoteComputeWorkspace = React.memo(
             <iframe
               key={retryCount}
               ref={iframeRef}
-              src={`${normalizedBase}/lab/index.html`}
+              src={
+                accessToken
+                  ? `${normalizedBase}/lab/index.html?token=${accessToken}`
+                  : `${normalizedBase}/lab/index.html`
+              }
               width="100%"
               height="100%"
               title="Remote Jupyter Workspace"

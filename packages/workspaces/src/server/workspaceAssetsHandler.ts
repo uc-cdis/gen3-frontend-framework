@@ -263,8 +263,6 @@ export function createWorkspaceAssetsHandler(
     const requestedPath = nodePath.join(tierRoot, ...segments);
     const resolved = nodePath.normalize(requestedPath);
 
-    console.log('resolved', resolved);
-
     // Security: reject any path that escapes the tier root directory
     if (
       !resolved.startsWith(tierRoot + nodePath.sep) &&
@@ -276,7 +274,7 @@ export function createWorkspaceAssetsHandler(
 
     let filePath = resolved;
 
-    console.log('Resolved file path:', filePath);
+    console.log(`Resolved path: ${filePath}`);
 
     try {
       const stat = fs.statSync(filePath);

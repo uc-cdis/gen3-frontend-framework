@@ -60,7 +60,6 @@ export default async function handler(
 ) {
   const gatewayUrl = process.env.JUPYTER_GATEWAY_URL;
 
-  console.log('gatewayUrl', gatewayUrl);
   if (!gatewayUrl) {
     res.status(500).json({ error: 'JUPYTER_GATEWAY_URL is not configured' });
     return;

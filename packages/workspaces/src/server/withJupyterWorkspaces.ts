@@ -25,11 +25,7 @@ export interface WithJupyterWorkspacesOptions {
   workspaceRoutes?: string[];
 }
 
-const DEFAULT_WORKSPACE_ROUTES = [
-  '/workspaces/jupyter',
-  '/workspaces/jupyter-lite',
-  '/workspaces/jupyter-kernel',
-];
+const DEFAULT_WORKSPACE_ROUTES = ['/Workspaces'];
 
 export function withJupyterWorkspaces(
   nextConfig: NextConfig,

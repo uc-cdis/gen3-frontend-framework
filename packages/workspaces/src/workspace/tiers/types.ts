@@ -14,9 +14,15 @@ export interface SettingsPanelConfiguration {
   showKernels: boolean; // do we need to show the kernel panel?
 }
 
+export interface DataAndToolsPanelConfiguration {
+  enabled: boolean;
+  tabs?: LabelAndDescription[]; // TODO: add support for tabs
+}
+
 export interface WorkspaceTierInformation {
   tier: WorkspaceTier;
   toolbar: TierToolbarConfiguration;
+  dataAndTools: DataAndToolsPanelConfiguration;
   settings: SettingsPanelConfiguration;
 }
 

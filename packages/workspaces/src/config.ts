@@ -31,6 +31,10 @@ export const WORKSPACE_TIER_INFORMATION: Record<
     settings: {
       showKernels: false,
     },
+    dataAndTools: {
+      enabled: true,
+      tabs: [],
+    },
   },
   remote: {
     tier: 'remote',
@@ -42,6 +46,10 @@ export const WORKSPACE_TIER_INFORMATION: Record<
     },
     settings: {
       showKernels: true,
+    },
+    dataAndTools: {
+      enabled: true,
+      tabs: [],
     },
   },
 };

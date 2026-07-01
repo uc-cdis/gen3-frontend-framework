@@ -72,17 +72,9 @@ const workspaceShutdownAlertLimit = 30000; // 5 minutes: 5 * 60 * 1000 TODO Figu
 export const useJEGWorkspaceResourceMonitor = (
   workspaceId: string | null = null,
   monitorWorkspace: boolean,
-  monitorPayment: boolean = true, // Unused and vil go to a separate monitor
 ) => {
   const [pollingInterval, setPollingInterval] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
-
-  console.log(
-    'useJEGWorkspaceResourceMonitor',
-    workspaceId,
-    pollingInterval,
-    monitorPayment,
-  );
 
   const {
     data: workspaceStatusData,
@@ -102,10 +94,10 @@ export const useJEGWorkspaceResourceMonitor = (
   );
 
   console.log(
-    'useJEGWorkspaceResourceMonitor',
+    'workspaceStatusData',
     workspaceStatusData,
     isWorkspaceStatusError,
-    workspaceStatusError,
+    error,
   );
 
   const [terminateWorkspace] = useTerminateHatcheryWorkspaceMutation();
@@ -131,11 +123,9 @@ export const useJEGWorkspaceResourceMonitor = (
   useEffect(() => {
     if (requestedStatus === RequestedWorkspaceStatus.Launch) {
       setPollingInterval(WorkspacePollingInterval[WorkspaceStatus.Launching]);
-      console.log('setPollingInterval to Launch');
     }
     if (requestedStatus === RequestedWorkspaceStatus.Terminate) {
       setPollingInterval(WorkspacePollingInterval[WorkspaceStatus.Terminating]);
-      console.log('setPollingInterval to Terminate');
     }
   }, [requestedStatus]);
 
@@ -260,7 +250,6 @@ export const useJEGWorkspaceResourceMonitor = (
     }
 
     // if here, update active workspace status and polling interval
-    console.log('updating JEG workspaceStatusData', workspaceStatusData);
     dispatch(setJEGActiveWorkspaceStatus(workspaceQueryStatus));
     setPollingInterval(WorkspacePollingInterval[workspaceQueryStatus]);
   }, [dispatch, workspaceStatusData, requestedStatus, activeStatus]);

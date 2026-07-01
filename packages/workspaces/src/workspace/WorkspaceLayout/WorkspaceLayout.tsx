@@ -43,12 +43,13 @@ const WorkspaceLayout = ({
         toolbarConfiguration={WORKSPACE_TIER_INFORMATION[workspaceTier].toolbar}
       />
       <div className="flex w-full grow">
-        <ToolsPanel
-          expanded={toolsExpanded && !isFullScreen}
-          setExpanded={setToolsExpanded}
-        />
+        {WORKSPACE_TIER_INFORMATION[workspaceTier].dataAndTools.enabled && (
+          <ToolsPanel
+            expanded={toolsExpanded && !isFullScreen}
+            setExpanded={setToolsExpanded}
+          />
+        )}
         {children}
-
         <SettingsPanel
           showKernels={
             WORKSPACE_TIER_INFORMATION[workspaceTier].settings.showKernels

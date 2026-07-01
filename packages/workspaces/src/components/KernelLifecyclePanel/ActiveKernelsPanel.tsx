@@ -58,7 +58,7 @@ export const ActiveKernelsPanel = () => {
         })),
       ),
     );
-  }, [kernels]);
+  }, [coreDispatch, kernels, persistedActiveKernels]);
 
   const {
     data: kernelSpecs,

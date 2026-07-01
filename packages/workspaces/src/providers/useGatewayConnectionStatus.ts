@@ -30,7 +30,6 @@ export function useGatewayConnectionStatus() {
     error: gatewayError,
   } = useJegGatewayStatusQuery();
 
-  console.log('gatewayStatusData', gatewayStatusData);
   const gatewayServiceStatus = useMemo(() => {
     if (isGatewayFetching) return 'fetching';
     if (!isError) return 'service_unavailable';

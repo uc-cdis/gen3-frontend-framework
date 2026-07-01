@@ -2,9 +2,9 @@
 // Browser never sees JEG URL or raw kernel spec names.
 // POST /kernels calls Fence /credentials/cdis first — if it fails, no kernel is launched.
 // getToken reuses this app's cookie extraction — no JWT reinvention.
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { createKernelProxyHandler } from '../server/kernelLifecycleProxy';
 import { getAccessToken } from '@gen3/frontend/server';
-import type { NextApiRequest, NextApiResponse } from 'next';
 import { GEN3_FENCE_API } from '@gen3/core/server';
 import { JEG_SERVICE_API } from '../constants';
 import { GEN3_API } from '@gen3/core';
@@ -62,10 +62,7 @@ export default async function handler(
 ) {
   const action = Array.isArray(req.query.action) ? req.query.action : [];
   const isStatusPath = action[0] === 'api' && action[1] === 'status';
-
-  console.log('action', action);
   try {
-    console.log('upstreamHandler', req.method, action);
     await upstreamHandler(req, res);
   } catch (err) {
     console.error('[workspace-kernel] Upstream handler threw:', err);

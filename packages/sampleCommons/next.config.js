@@ -121,16 +121,23 @@ const nextConfig = {
     return config;
   },
   async rewrites() {
-    const workspaceApiRewrite = {
-      source: '/workspace-api/:path*',
-      destination: '/api/:path*',
-    };
+    const workspaceApiRewrite = [
+      {
+        source: '/workspace-api/:path*',
+        destination: '/api/:path*',
+      },
+      {
+        source:
+          '/lw-workspace/proxy/jeg-proxy/kernelspecs/:kernel/logo-:size.png',
+        destination: '/icons/kernels/logo-64.png',
+      },
+    ];
     if (isDev) {
       const GEN3_TARGET =
         process.env.NEXT_PUBLIC_GEN3_API_TARGET || 'https://localhost';
 
       return [
-        workspaceApiRewrite,
+        ...workspaceApiRewrite,
         { source: '/_status', destination: `${GEN3_TARGET}/_status` },
         { source: '/user/:path*', destination: `${GEN3_TARGET}/user/:path*` },
         {
@@ -145,11 +152,6 @@ const nextConfig = {
         {
           source: '/authz/:path*',
           destination: `${GEN3_TARGET}/authz/:path*`,
-        },
-        {
-          source:
-            '/lw-workspace/proxy/jeg-proxy/kernelspecs/:kernel/logo-:size.png',
-          destination: '/icons/kernels/logo-64.png',
         },
         {
           source: '/lw-workspace/:path*',
@@ -183,7 +185,7 @@ const nextConfig = {
         },
       ];
     } else {
-      return [workspaceApiRewrite];
+      return workspaceApiRewrite;
     }
   },
   async headers() {

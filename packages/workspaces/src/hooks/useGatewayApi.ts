@@ -57,7 +57,7 @@ const buildHeaders = (
   if (jwt) {
     headers['Authorization'] = `Bearer ${jwt}`;
   }
-  console.log('Headers built:', headers);
+
   return headers;
 };
 

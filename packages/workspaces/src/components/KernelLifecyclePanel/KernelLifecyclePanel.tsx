@@ -13,16 +13,6 @@ import { addJEGActiveKernel, useCoreDispatch } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { TextStyle } from './styling';
 
-// const JEGGatewayMessage = (gateway) => {
-//   if (!jegEnabled) return null;
-//   if (gateway.connectionState === 'unavailable') return null;
-//   if (gateway.specs.loading || gateway.kernelList.loading) return null;
-//   if (gateway.activeKernel) {
-//     return 'GPU kernel running — open the kernel picker (in JupyterLab above) to connect notebooks to it.';
-//   }
-//   return 'Select a GPU kernel type and click Launch. Once it starts, JupyterLab will detect it — open the kernel picker to connect.';
-// };
-
 interface LaunchKernelInput {
   kernelName: string;
 }
@@ -57,6 +47,8 @@ export interface KernelLifecyclePanelProps {
    */
   forceTerminate?: boolean;
 }
+
+const MAX_KERNELS_ACTIVE = 2;
 
 const KernelLifecyclePanel = ({
   activeKernelName,

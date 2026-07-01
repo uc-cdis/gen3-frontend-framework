@@ -164,7 +164,6 @@ export function useMicroContainerRedux(
   ]);
 
   const terminate = useCallback(async () => {
-    console.log('Terminating workspace');
     if (!enabled || workspaceContainerStatus === WorkspaceStatus.Terminating)
       return; // skip if already terminating
 

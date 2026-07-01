@@ -41,8 +41,6 @@ const WorkspaceTierCard = ({
     </span>
   );
 
-  console.log('baseColor', baseColor);
-
   return (
     <Card
       withBorder

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Stack, Text } from '@mantine/core';
+import { Stack, Text } from '@mantine/core';
 import ConnectionStatusBadge from './ConnectionStatusBadge';
 import type { GatewayConnectionState } from '../../hooks/useGatewayConnection';
 import { PanelStyle, TextStyle } from './styling';
@@ -27,7 +27,7 @@ export const GatewayConnectionPanel = ({
             onRetry={onRetryConnection}
           />
         )}
-
+        {/* TODO: Implement or place somewhere else
         <Button
           onClick={() => reapKernels()}
           disabled={!onRunStaleReap}
@@ -36,6 +36,7 @@ export const GatewayConnectionPanel = ({
         >
           Reap Stale Kernels
         </Button>
+        */}
       </div>
     </Stack>
   );

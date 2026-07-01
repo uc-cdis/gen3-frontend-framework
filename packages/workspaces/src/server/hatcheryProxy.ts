@@ -72,8 +72,6 @@ export function createHatcheryProxyHandler(config: HatcheryProxyConfig) {
   ): Promise<void> {
     const hatcheryUrl = config.hatcheryUrl;
 
-    console.log('Hatchery proxy:', req.method, req.url);
-    console.log('hatcheryUrl:', hatcheryUrl);
     if (!hatcheryUrl) {
       res.status(503).json({
         error: 'Hatchery service is not configured (HATCHERY_URL missing).',
@@ -140,7 +138,6 @@ export function createHatcheryProxyHandler(config: HatcheryProxyConfig) {
         queryString = `?id=${encodeURIComponent(id)}`;
       }
     } else if (route.path === '/status' || route.path === '/options') {
-      console.log('Hatchery proxy: status/options id:', req.query.id);
       // Pass id through safely for status/options
       const id = (req.query.id as string) || '';
       if (id) {
@@ -154,9 +151,6 @@ export function createHatcheryProxyHandler(config: HatcheryProxyConfig) {
 
     const hatcheryBase = `${parsedHatcheryUrl.origin}${parsedHatcheryUrl.pathname.replace(/\/$/, '')}`;
     const targetUrl = `${hatcheryBase}${route.path}${queryString}`;
-
-    console.log('Hatchery proxy:', req.method, route.path, targetUrl);
-    console.log('safeUsername:', safeUsername);
 
     await createProxyRequest({
       req,

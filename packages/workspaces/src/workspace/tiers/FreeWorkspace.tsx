@@ -9,7 +9,7 @@ export interface FreeWorkspaceProps {
 }
 
 const FreeWorkspace = ({
-  assetBaseUrl = '/site',
+  assetBaseUrl = '/api/workspace-assets/free',
   onReady,
   onError,
 }: FreeWorkspaceProps) => {
