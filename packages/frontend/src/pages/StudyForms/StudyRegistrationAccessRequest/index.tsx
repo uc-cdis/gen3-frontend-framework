@@ -62,11 +62,12 @@ const StudyRegistrationAccessRequestForm = ({
     }
   }, [router.isReady, router.query]);
 
-  // check requester to see if user has already submitted workspace request for access
+  // check requester to see if user has already submitted study registration access request
   const { data, isLoading, isError } = useUserRequestQuery({
-    policy_ids: ['workspace_accessor'], // <- IS THIS CORRECT?!
+    // policy_ids: ['workspace_accessor'], // <- IS THIS CORRECT?!
   });
   useEffect(() => {
+    console.log('DATA! LINE 70', data);
     if (!isLoading && isError) {
       setFormError(
         'Unable to load data from Requester, form may not submit correctly. Try refreshing this page',
@@ -81,7 +82,10 @@ const StudyRegistrationAccessRequestForm = ({
       )
     ) {
       setFormError(
-        'Unable to load data from Requester, form may not submit correctly. Try refreshing this page',
+        `There is already a pending request for this user to access this
+         study. We are processing your request. You will be notified when approved.<br />
+          If you do not receive notification within 1 business day of your initial request,
+          please reach out to <a href={mailto: supportEmail || defaultEmail}>{supportEmail || defaultEmail}</a>`,
       );
     }
   }, [isLoading, isError]);
