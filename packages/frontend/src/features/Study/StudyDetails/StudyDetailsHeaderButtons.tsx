@@ -4,10 +4,9 @@ import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
 import { FiLogIn as LoginIcon } from 'react-icons/fi';
 import {
   CoreState,
-  selectUserAuthStatus,
   selectUserDetails,
   useCoreSelector,
-  useIsUserLoggedIn,
+  UserProfile,
 } from '@gen3/core';
 import { useDiscoveryContext } from '../../Discovery/DiscoveryProvider';
 import { useRouter } from 'next/router';
@@ -22,11 +21,9 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   onClose,
   permalink,
 }) => {
-  // const userStatus = useIsUserLoggedIn();
-  //   const requiresLogin = !userStatus;
-
-  const userInfo = useCoreSelector((state: CoreState) =>
-    selectUserDetails(state),
+  type ActiveUser = Partial<UserProfile> & { active: boolean };
+  const userInfo = useCoreSelector(
+    (state: CoreState) => selectUserDetails(state) as ActiveUser,
   );
   const requiresLogin = !userInfo.active;
 
@@ -34,9 +31,7 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   const index = config?.minimalFieldMapping?.uid ?? 'unknown';
   const { studyDetails, setStudyDetails } = useStudyContext();
   const studyUID = toString(studyDetails[index]);
-  const studyName = studyDetails.study_metadata.minimal_info
-    .study_name as string;
-  console.log('studyName', studyName);
+  const studyName = studyDetails?.study_metadata?.minimal_info?.study_name;
   const studyRegistrationAuthZ = studyDetails.registration_authz;
   const showSubmitButton = config.detailView?.showSubmitButton;
   const router = useRouter();

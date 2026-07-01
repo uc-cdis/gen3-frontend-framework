@@ -20,8 +20,8 @@ export enum FormContentType {
   TextInput = 'TextInput', // mantine TextInput
   Email = 'Email', // mantine TextInput set to validate email
   Checkbox = 'Checkbox', // mantine Checkbox
-  Textarea = 'Textarea',
-  RadioGroup = 'RadioGroup', // mantine Textarea
+  Textarea = 'Textarea', // mantine Textarea
+  RadioGroup = 'RadioGroup', // mantine Radio.Group
 }
 
 /**
