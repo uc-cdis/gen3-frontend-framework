@@ -19,8 +19,9 @@ import {
   useUserRequestQuery,
 } from '@gen3/core';
 import { useRouter } from 'next/router';
-import StudyRegistrationAccessRequestSuccess from './StudyRegistrationAccessRequestSuccess';
+import StudyRegistrationAccessRequestOutcome from './StudyRegistrationAccessRequestOutcome';
 import { toString } from 'lodash';
+import { FormOutcome } from './types';
 
 interface StudyRegistrationAccessRequestFormProps extends NavPageLayoutProps {
   configStudyRegistrationRequestAccessForm: any;
@@ -33,7 +34,7 @@ const StudyRegistrationAccessRequestForm = ({
   configStudyRegistrationRequestAccessForm,
 }: StudyRegistrationAccessRequestFormProps) => {
   const [formError, setFormError] = useState<string>();
-  const [formSuccess, setFormSuccess] = useState(false);
+  const [formOutcome, setFormOutcome] = useState('');
   const formBody = configStudyRegistrationRequestAccessForm.form;
   const userInfo = useCoreSelector((state: CoreState) =>
     selectUserDetails(state),
@@ -63,11 +64,8 @@ const StudyRegistrationAccessRequestForm = ({
   }, [router.isReady, router.query]);
 
   // check requester to see if user has already submitted study registration access request
-  const { data, isLoading, isError } = useUserRequestQuery({
-    // policy_ids: ['workspace_accessor'], // <- IS THIS CORRECT?!
-  });
+  const { data, isLoading, isError } = useUserRequestQuery({});
   useEffect(() => {
-    console.log('DATA! LINE 70', data);
     if (!isLoading && isError) {
       setFormError(
         'Unable to load data from Requester, form may not submit correctly. Try refreshing this page',
@@ -81,12 +79,7 @@ const StudyRegistrationAccessRequestForm = ({
           item.resource_id === studyUID && item.username === userInfo.username,
       )
     ) {
-      setFormError(
-        `There is already a pending request for this user to access this
-         study. We are processing your request. You will be notified when approved.<br />
-          If you do not receive notification within 1 business day of your initial request,
-          please reach out to <a href={mailto: supportEmail || defaultEmail}>{supportEmail || defaultEmail}</a>`,
-      );
+      setFormOutcome(FormOutcome.duplicateSubmission);
     }
   }, [isLoading, isError]);
 
@@ -128,7 +121,7 @@ const StudyRegistrationAccessRequestForm = ({
         configStudyRegistrationRequestAccessForm.remoteSupportService
           .configuration,
       );
-      setFormSuccess(true);
+      setFormOutcome(FormOutcome.success);
     } catch (error) {
       if (isHttpStatusError(error)) {
         const httpError = error as HttpError;
@@ -167,9 +160,9 @@ const StudyRegistrationAccessRequestForm = ({
       <div className="flex justify-items-center w-full">
         <Box className="w-full bg-white rounded-md m-8 p-8 ">
           <div className="max-w-4xl mx-auto">
-            {formSuccess ? (
-              <StudyRegistrationAccessRequestSuccess
-                config={configStudyRegistrationRequestAccessForm.success}
+            {formOutcome ? (
+              <StudyRegistrationAccessRequestOutcome
+                config={configStudyRegistrationRequestAccessForm[formOutcome]}
               />
             ) : (
               <Form

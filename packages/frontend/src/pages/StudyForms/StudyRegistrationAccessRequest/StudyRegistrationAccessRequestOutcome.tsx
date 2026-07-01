@@ -3,12 +3,12 @@ import React from 'react';
 import TextContent, {
   TextContentProps,
 } from '../../../components/Content/TextContent';
-import { studyRegistrationAccessRequestFormSuccessProps } from './types';
+import { studyRegistrationAccessRequestFormOutcomeProps } from './types';
 
-const StudyRegistrationAccessRequestSuccess = ({
+const StudyRegistrationAccessRequestOutcome = ({
   config,
 }: {
-  config: studyRegistrationAccessRequestFormSuccessProps;
+  config: studyRegistrationAccessRequestFormOutcomeProps;
 }) => {
   const { content, button } = config;
   return (
@@ -32,4 +32,4 @@ const StudyRegistrationAccessRequestSuccess = ({
   );
 };
 
-export default StudyRegistrationAccessRequestSuccess;
+export default StudyRegistrationAccessRequestOutcome;

@@ -8,11 +8,16 @@ export interface ConfigStudyRegistrationAccessRequestFormProps extends Gen3AppCo
   content?: ReadonlyArray<TextContentProps>;
 }
 
-export interface studyRegistrationAccessRequestFormSuccessProps extends Gen3AppConfigData {
+export interface studyRegistrationAccessRequestFormOutcomeProps extends Gen3AppConfigData {
   content?: ReadonlyArray<TextContentProps>;
   button?: {
     href: string;
     variant?: ButtonVariant;
     text: string;
   };
+}
+
+export enum FormOutcome {
+  success = 'success',
+  duplicateSubmission = 'duplicateSubmission',
 }
