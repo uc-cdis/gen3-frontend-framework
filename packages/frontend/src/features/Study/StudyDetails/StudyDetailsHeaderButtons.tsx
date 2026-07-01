@@ -28,7 +28,6 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   const userInfo = useCoreSelector((state: CoreState) =>
     selectUserDetails(state),
   );
-  console.log('userInfo', userInfo);
   const requiresLogin = !userInfo.active;
 
   const { discoveryConfig: config } = useDiscoveryContext();
@@ -37,6 +36,7 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   const studyUID = toString(studyDetails[index]);
   const studyName = studyDetails.study_metadata.minimal_info
     .study_name as string;
+  console.log('studyName', studyName);
   const studyRegistrationAuthZ = studyDetails.registration_authz;
   const showSubmitButton = config.detailView?.showSubmitButton;
   const router = useRouter();

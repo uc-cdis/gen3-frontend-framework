@@ -62,11 +62,7 @@ const StudyDetails = () => {
       {hasStudyDetails && (
         <Drawer.Content className="pl-2">
           <Drawer.Header>
-            <StudyDetailsHeaderButtons
-              onClose={close}
-              permalink={permalink}
-              userStatus={userStatus}
-            />
+            <StudyDetailsHeaderButtons onClose={close} permalink={permalink} />
           </Drawer.Header>
           <Drawer.Body>
             {detailView ? (

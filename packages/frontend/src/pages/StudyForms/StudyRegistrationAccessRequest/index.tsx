@@ -19,6 +19,8 @@ import {
   useUserRequestQuery,
 } from '@gen3/core';
 import { useRouter } from 'next/router';
+import StudyRegistrationAccessRequestSuccess from './StudyRegistrationAccessRequestSuccess';
+import { toString } from 'lodash';
 
 interface FormValues {
   studyName: string;
@@ -39,31 +41,25 @@ const StudyRegistrationAccessRequestForm = ({
   footerProps,
   configStudyRegistrationRequestAccessForm,
 }: StudyRegistrationAccessRequestFormProps) => {
-  const router = useRouter();
-  const [autoFilledValues, setAutoFilledValues] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string>();
+  const [formSuccess, setFormSuccess] = useState(false);
+  const formBody = configStudyRegistrationRequestAccessForm.form;
+  const userInfo = useCoreSelector((state: CoreState) =>
+    selectUserDetails(state),
+  );
   const [studyUID, setStudyUID] = useState<string | null>(null);
   const [studyName, setStudyName] = useState<string | null>(null);
   const [studyRegistrationAuthZ, setStudyRegistrationAuthZ] = useState<
     string | null
   >(null);
+  const router = useRouter();
 
-  const autoFillValues = (formBody: FormProps['body']) => {
-    return formBody.map((item) => {
-      // replace userEmail with users email
-      if (item.initialValue === 'studyName') {
-        return { ...item, initialValue: studyName };
-      }
-      return item;
-    });
-  };
   useEffect(() => {
-    // Ensure the router is ready and query has data
     if (router.isReady && router.query) {
       const { studyUID, studyRegistrationAuthZ, studyName } = router.query;
-      console.log('router.query', router.query);
       if (studyUID) setStudyUID(studyUID as string);
-      if (studyName) setStudyName(studyName as string);
-
+      console.log('studyName', studyName);
+      if (studyName) setStudyName(toString(studyName));
       if (studyRegistrationAuthZ) {
         try {
           setStudyRegistrationAuthZ(
@@ -76,32 +72,34 @@ const StudyRegistrationAccessRequestForm = ({
     }
   }, [router.isReady, router.query]);
 
-  const formBody = configStudyRegistrationRequestAccessForm.form;
-  const [formError, setFormError] = useState<string>();
-
   // check requester to see if user has already submitted workspace request for access
   const { data, isLoading, isError } = useUserRequestQuery({
     policy_ids: ['workspace_accessor'],
   });
-
-  const userInfo = useCoreSelector((state: CoreState) =>
-    selectUserDetails(state),
-  );
-
-  const zendeskRequestAction =
-    getRemoteSupportServiceRegistry().getSupportService(
-      configStudyRegistrationRequestAccessForm.remoteSupportService.service,
-    );
+  useEffect(() => {
+    if (!isLoading && isError) {
+      setFormError(
+        'Unable to load data from Requester, form may not submit correctly. Try refreshing this page',
+      );
+    }
+    //We need to check the data and see if the users request already exists in the data
+    if (
+      data &&
+      data.some(
+        (item) =>
+          item.resource_id === studyUID && item.username === userInfo.username,
+      )
+    ) {
+      setFormError(
+        'Unable to load data from Requester, form may not submit correctly. Try refreshing this page',
+      );
+    }
+  }, [isLoading, isError]);
 
   const [requestQuery] = useCreateRequestMutation();
+
   const formOnSubmit = (formValues: FormOnSubmitReturnProps) => {
-    /* console.log('userInfo ', userInfo);
-    console.log('data', data);
-    console.log('isLoading', isLoading);
-    console.log('isError', isError);
-    console.log('JSON.stringify(formValues)', JSON.stringify(formValues)); */
     const hostname = window.location.hostname;
-    alert(JSON.stringify(formValues));
     return requestQuery({
       username: userInfo.username,
       resource_id: studyUID as string,
@@ -114,7 +112,6 @@ const StudyRegistrationAccessRequestForm = ({
     })
       .unwrap()
       .then((request) => {
-        console.log('ln 70', request);
         const printFormValuesArr: string[] = [];
         for (const [key, value] of Object.entries(formValues)) {
           printFormValuesArr.push(`${key}: ${value}`);
@@ -129,12 +126,19 @@ const StudyRegistrationAccessRequestForm = ({
           Environment: ${hostname}
           Form Values: ${printFormValuesArr.join('\n\n')}`,
         };
-        console.log('zenDeskSubmission', zenDeskSubmission);
+        const zendeskRequestAction =
+          getRemoteSupportServiceRegistry().getSupportService(
+            configStudyRegistrationRequestAccessForm.remoteSupportService
+              .service,
+          );
         return zendeskRequestAction(
           zenDeskSubmission,
           configStudyRegistrationRequestAccessForm.remoteSupportService
             .configuration,
         );
+      })
+      .then(() => {
+        setFormSuccess(true);
       })
       .catch((error: unknown) => {
         if (isHttpStatusError(error)) {
@@ -152,6 +156,16 @@ const StudyRegistrationAccessRequestForm = ({
       });
   };
 
+  const autoFillValues = (formBody: FormProps['body']) => {
+    return formBody.map((item) => {
+      // replace studyName with studyName from router
+      if (item.initialValue === 'studyName') {
+        return { ...item, initialValue: studyName };
+      }
+      return item;
+    });
+  };
+
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
@@ -164,16 +178,21 @@ const StudyRegistrationAccessRequestForm = ({
       <div className="flex justify-items-center w-full">
         <Box className="w-full bg-white rounded-md m-8 p-8 ">
           <div className="max-w-4xl mx-auto">
-            <Form
-              key={studyUID}
-              className="*:mt-5 mb-5"
-              body={autoFillValues(formBody)}
-              showResetButton
-              onSubmit={formOnSubmit}
-              errorMessage={formError}
-            />
+            {formSuccess ? (
+              <StudyRegistrationAccessRequestSuccess
+                config={configStudyRegistrationRequestAccessForm.success}
+              />
+            ) : (
+              <Form
+                key={studyUID}
+                className="*:mt-5 mb-5"
+                body={autoFillValues(formBody) as FormProps['body']}
+                showResetButton
+                onSubmit={formOnSubmit}
+                errorMessage={formError}
+              />
+            )}
           </div>
-
           <div className="mt-12 pt-4 border-t border-neutral-100 max-w-4xl mx-auto">
             <Text className="text-xs text-neutral-500 leading-relaxed">
               Information provided on this page will be used for correspondence
