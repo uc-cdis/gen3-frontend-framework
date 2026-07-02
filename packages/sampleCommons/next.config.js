@@ -200,7 +200,7 @@ const nextConfig = {
         ],
       },
       {
-        source: '/jupyter/(.*)?',
+        source: '/Workspaces/(.*)?',
         headers: [
           {
             key: 'X-Frame-Options',
@@ -208,7 +208,10 @@ const nextConfig = {
           },
           {
             key: 'Cross-Origin-Embedder-Policy',
-            value: 'require-corp',
+            // 'credentialless' is less strict than 'require-corp' — allows
+            // cross-origin iframes without CORP headers, needed in dev when
+            // the remote Jupyter server doesn't send COEP headers.
+            value: isDev ? 'credentialless' : 'require-corp',
           },
           {
             key: 'Cross-Origin-Opener-Policy',
