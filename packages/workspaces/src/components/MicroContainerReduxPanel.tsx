@@ -103,10 +103,12 @@ const MicroContainerReduxPanel = ({
             workflows.
           </p>
           <p className="mt-1 text-xs text-base-darker">
-            Included with your subscription · typically ready in under 60 s
+            Included with your subscription · typically ready in under 60s
           </p>
         </div>
-        <Button onClick={launch}>Launch Workspace</Button>
+        <Button variant="outline" onClick={launch}>
+          Launch Workspace
+        </Button>
       </div>
     );
   }

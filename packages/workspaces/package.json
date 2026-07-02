@@ -12,6 +12,11 @@
   "main": "dist/index/cjs/index.js",
   "module": "dist/index/esm/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "gen3-build-jupyterlite": "dist/jupyterlite-builds/scripts/build-jupyterlite.sh",
+    "gen3-sync-jupyter-assets": "dist/jupyterlite-builds/scripts/sync-jupyter-assets-into-package.sh",
+    "gen3-validate-jupyterlite": "dist/jupyterlite-builds/scripts/validate-jupyterlite-assets.sh"
+  },
   "scripts": {
     "lint": "eslint .",
     "compile": "tsc",
@@ -20,10 +25,10 @@
     "rollup": "rollup --config rollup.config.mjs",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run compile && npm run types && npm run rollup",
-    "build:clean": "npm run compile && npm run types && npm run rollup",
+    "build:clean": "npm run clean && npm run build",
     "dev": "echo no dev tasks",
-    "build:jupyterlite:free": "bash scripts/build-jupyterlite-free.sh",
-    "build:jupyterlite:remote": "bash scripts/build-jupyterlite-remote.sh",
+    "build:jupyterlite:free": "bash scripts/build-jupyterlite.sh free",
+    "build:jupyterlite:remote": "bash scripts/build-jupyterlite.sh remote",
     "build:jupyterlite:all": "npm run build:jupyterlite:free && npm run build:jupyterlite:remote && npm run validate:jupyterlite:assets",
     "validate:jupyterlite:assets": "bash scripts/validate-jupyterlite-assets.sh --free-dir jupyterlite-builds/free-private/site --remote-dir jupyterlite-builds/remote-private/site"
   },
@@ -42,7 +47,8 @@
       "types": "./dist/server.d.ts",
       "import": "./dist/server/esm/server.js",
       "require": "./dist/server/cjs/server.js"
-    }
+    },
+    "./jupyterlite-builds/*": "./dist/jupyterlite-builds/*"
   },
   "dependencies": {
     "@gen3/core": "^0.12.44",

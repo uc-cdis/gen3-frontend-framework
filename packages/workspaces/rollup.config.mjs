@@ -18,35 +18,20 @@ const globals = {
   '@mantine/core ': 'mantineCore',
   redux: 'redux',
   uuid: 'uuid',
-  graphiql: 'graphiql',
   lodash: 'lodash',
   immer: 'immer',
-  minisearch: 'minisearch',
-  tinycolot2: 'tinyColor',
   fs: 'fs',
   path: 'path',
   glob: 'glob',
-  idb: 'idb',
   '@gen3/core': 'gen3Core',
   'jsonpath-plus': 'jsonpathPlus',
   '@hello-pangea/dnd': '@hello-pangea/dnd',
   '@mantine/notifications': 'mantineNotifications',
-  'redux-persist/integration/react': 'redux-persist/integration/react',
-  'redux-persist/lib/storage/createWebStorage':
-    'redux-persist/lib/storage/createWebStorage',
   '@mantine/hooks': 'mantineHooks',
   '@mantine/core': 'mantineCore',
   '@mantine/form': 'mantineForm',
   '@mantine/modals': 'mantineModals',
   '@tabler/icons-react': 'tablerIcons',
-  'react-icons/ai': 'reactIcons',
-  'react-icons/bs': 'reactIcons',
-  'react-icons/fi': 'reactIcons',
-  'react-icons/lu': 'reactIcons',
-  'react-icons/md': 'reactIcons',
-  'react-icons/io': 'reactIcons',
-  'react-icons/ri': 'reactIcons',
-  'react-icons/ti': 'reactIcons',
   'react-minisearch': 'reactMinisearch',
   'lodash/uniq': 'lodashUniq',
   'lodash/sum': 'lodashSum',
@@ -66,13 +51,9 @@ const globals = {
   'tailwind-merge': 'tailwind-merge',
   util: 'util',
   swc: 'swc',
-  'redux-persist': 'reduxPersist',
-  '@hello-pangea': 'pangea',
   'use-deep-compare': 'use-deep-compare',
-  graphql: 'graphql',
   'isomorphic-dompurify': 'isomorphic-dompurify',
   '@iconify-icon/react': 'iconify-iconReact',
-  'igv/dist/igv.esm.min.js': 'igv',
 };
 
 const external = [
@@ -83,26 +64,8 @@ const external = [
   'next/dynamic',
   'next/link',
   'next/image',
-  'react-icons/bi',
-  'react-icons/fa',
-  'react-icons/im',
-  'react-icons/pi',
-  'tinycolor2',
-  'tailwind-styled-components',
-  '@graphiql/plugin-explorer',
-  'mantine-react-table',
-  'victory',
-  'echarts',
-  'swr',
-  '@dnd-kit/core',
-  '@dnd-kit/sortable',
-  '@dnd-kit/utilities',
-  '@dnd-kit/modifiers',
   '@gen3/core/server',
-  'graphiql/setup-workers/webpack',
-  '@theothergothamdev/pluralize-ts',
   '@tanstack/react-table',
-  'rehype-sanitize',
 ];
 
 const jsBundle = (input, baseName, additionalExternal) => ({
@@ -191,6 +154,21 @@ const config = [
           {
             src: ['dist/index/esm/styles.css'],
             dest: 'dist',
+          },
+          {
+            // copy the juypterlite build files
+            src: 'jupyterlite-builds/{free-private,remote-private}/{jupyter_lite_config.json,requirements.txt}',
+            dest: 'dist/jupyterlite-builds',
+            rename: (name, extension, fullPath) => {
+              const match = fullPath.match(/jupyterlite-builds\/([^/]+)\//);
+              return match
+                ? `${match[1]}/${name}.${extension}`
+                : `${name}.${extension}`;
+            },
+          },
+          {
+            src: 'scripts/*.sh',
+            dest: 'dist/jupyterlite-builds/scripts',
           },
         ],
       }),

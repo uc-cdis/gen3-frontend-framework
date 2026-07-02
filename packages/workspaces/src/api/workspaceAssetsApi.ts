@@ -137,9 +137,6 @@ function injectVectisBranding(html: string, req: NextApiRequest): string {
             }
           : {}),
       };
-
-      console.log('merged', merged);
-
       return `${openTag}${JSON.stringify(merged)}${closeTag}`;
     },
   );
@@ -169,7 +166,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       body.includes('id="jupyter-config-data"') &&
       body.includes('<title>')
     ) {
-      console.log('>>>>>>>>>>>>>>>>> injectVectisBranding');
       return originalSend(injectVectisBranding(body, req));
     }
     return originalSend(body);

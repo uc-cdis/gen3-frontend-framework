@@ -114,16 +114,15 @@ const WorkspaceToolbar = ({ toolbarConfiguration }: WorkspaceToolbarProps) => {
             variant="outline"
             aria-label="Stop workspace"
             aria-disabled={workspaceStatus !== WorkspaceStatus.Running}
-            color="primary.5"
+            color={
+              workspaceStatus !== WorkspaceStatus.Running
+                ? 'primary.5'
+                : 'utility.3'
+            }
             onClick={terminate}
             disabled={workspaceStatus !== WorkspaceStatus.Running}
             leftSection={
-              <Icon
-                icon="gen3:stop"
-                width={24}
-                height={24}
-                aria-hidden="true"
-              />
+              <Icon icon="gen3:dot" width={24} height={24} aria-hidden="true" />
             }
           >
             Stop Workspace

@@ -21,7 +21,6 @@ function isLoggedIn(loginStatus: LoginStatus) {
 export async function proxy(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
   const { routes: routeConfig } = await getRouteConfig();
-  console.log('routeConfig', routeConfig);
   let rule = getRouteRuleForPath(pathname, routeConfig);
 
   // check if there is a wildcard route

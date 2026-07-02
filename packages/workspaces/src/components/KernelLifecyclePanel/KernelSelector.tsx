@@ -9,12 +9,14 @@ interface KernelSelectorProps {
   handleLaunchKernel: (kernelName: string) => void;
   isLaunchingLoading: boolean;
   onKernelSelectionChange?: (selection: KernelSelection) => void;
+  disabled?: boolean;
 }
 
 const KernelSelector = ({
   handleLaunchKernel,
   isLaunchingLoading,
   onKernelSelectionChange,
+  disabled = false,
 }: KernelSelectorProps) => {
   const {
     data: kernelSpecs,
@@ -88,6 +90,7 @@ const KernelSelector = ({
             id="klp-kernel-spec"
             value={selectedKernelName}
             onChange={(value) => setSelectedKernelName(value as string)}
+            disabled={disabled}
             data={
               kernelSpecs?.length === 0
                 ? [{ value: 'python3', label: 'python3' }]
@@ -142,6 +145,7 @@ const KernelSelector = ({
           onClick={() => handleLaunchKernel(selectedKernelName || 'python3')}
           loading={isLaunchingLoading}
           fullWidth
+          disabled={disabled}
         >
           {isLaunchingLoading ? 'Working...' : 'Launch Kernel'}
         </Button>

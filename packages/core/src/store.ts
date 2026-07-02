@@ -43,7 +43,7 @@ const persistConfig = {
     'activeWorkspace',
     'cart',
     'workspaceKernels',
-    'tieredWorkspaceReducer',
+    'tieredWorkspace',
   ],
 };
 

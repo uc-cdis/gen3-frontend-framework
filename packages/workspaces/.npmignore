@@ -1,3 +1,4 @@
 src/
 tsconfig.*
 setupTests.js
+!dist/

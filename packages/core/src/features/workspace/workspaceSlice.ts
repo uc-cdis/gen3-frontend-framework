@@ -25,7 +25,7 @@ const initialState: WorkspaceState = {
 };
 
 const slice = createSlice({
-  name: 'ActiveWorkspace',
+  name: 'activeWorkspace',
   initialState,
   reducers: {
     setActiveWorkspaceId: (state, action: PayloadAction<WorkspaceId>) => {

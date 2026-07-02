@@ -9,7 +9,12 @@ import KernelSelector from './KernelSelector';
 import { KernelSelection } from './types';
 import { useKernalSpecsQuery } from '../../core/kernelApi';
 import { useGatewayConnectionStatus } from '../../providers/useGatewayConnectionStatus';
-import { addJEGActiveKernel, useCoreDispatch } from '@gen3/core';
+import {
+  addJEGActiveKernel,
+  selectAllJEGKernels,
+  useCoreDispatch,
+  useCoreSelector,
+} from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { TextStyle } from './styling';
 
@@ -58,6 +63,8 @@ const KernelLifecyclePanel = ({
   const notice = undefined;
 
   const coreDispatch = useCoreDispatch();
+
+  const numActiveKernels = useCoreSelector(selectAllJEGKernels)?.length || 0;
 
   const {
     gatewayServiceStatus,
@@ -180,6 +187,7 @@ const KernelLifecyclePanel = ({
       <KernelSelector
         handleLaunchKernel={handleLaunchKernel}
         isLaunchingLoading={isLaunchingLoading}
+        disabled={numActiveKernels >= MAX_KERNELS_ACTIVE}
       />
       <ActiveKernelsPanel />
     </div>

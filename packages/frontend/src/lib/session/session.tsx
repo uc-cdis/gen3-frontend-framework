@@ -129,6 +129,7 @@ const refreshSession = (
 
   // hitting Fence endpoint refreshes the token
   updateSessionRefreshTimestamp(Date.now());
+  console.log('refreshing session');
   getUserDetails();
 };
 
@@ -277,7 +278,7 @@ export const SessionProvider = ({
   const isSessionActive = useThrottledCallback(() => {
     //Check session token, this call updates info
     getUserDetails().then((obj) => {
-      //check to make sure logged out useres are logged out
+      //check to make sure logged-out users are logged out
       if (
         obj?.data?.loginStatus != 'authenticated' &&
         userStatus === 'authenticated'
@@ -299,6 +300,7 @@ export const SessionProvider = ({
       const timestamp = Date.now();
       setMostRecentActivityTimestamp(timestamp);
 
+      console.log('updating user activity');
       if (broadcastChannelRef.current) {
         broadcastChannelRef.current.postMessage({
           type: 'activity-update',
@@ -328,10 +330,15 @@ export const SessionProvider = ({
 
   useInterval(
     () => {
+      console.log(
+        "sessionInfo.status != 'issued'",
+        sessionInfo.status != 'issued',
+      );
       if (sessionInfo.status != 'issued') return; // no need to update session if user is not logged in
       if (isUserOnPage('Login') /* || this.popupShown */) return;
 
       const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
+      console.log('time since last activity', timeSinceLastActivity);
       if (logoutInactiveUsers) {
         if (
           timeSinceLastActivity >= inactiveTimeLimitMilliseconds &&

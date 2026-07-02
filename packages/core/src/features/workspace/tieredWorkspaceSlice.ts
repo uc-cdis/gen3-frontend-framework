@@ -18,7 +18,7 @@ const initialState: TieredWorkspaceState = {
 };
 
 const slice = createSlice({
-  name: 'TieredWorkspace',
+  name: 'tieredWorkspace',
   initialState,
   reducers: {
     setTieredWorkspaceId: (state, action: PayloadAction<WorkspaceId>) => {

@@ -270,11 +270,7 @@ const RemoteComputeWorkspace = React.memo(
             <iframe
               key={retryCount}
               ref={iframeRef}
-              src={
-                accessToken
-                  ? `${normalizedBase}/lab/index.html?token=${accessToken}`
-                  : `${normalizedBase}/lab/index.html`
-              }
+              src={`${normalizedBase}/lab/index.html`}
               width="100%"
               height="100%"
               title="Remote Jupyter Workspace"
