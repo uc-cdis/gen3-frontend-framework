@@ -1,4 +1,3 @@
-// FormContentSwitcher.tsx
 import React from 'react';
 import { FormOutcome } from './types';
 import Form, {
@@ -8,7 +7,7 @@ import Form, {
 import StudyRegistrationAccessRequestOutcome from './StudyRegistrationAccessRequestOutcome';
 import { Center, Loader } from '@mantine/core';
 
-interface FormContentSwitcherProps {
+interface FormContentViewsProps {
   formOutcome: FormOutcome;
   formError?: string;
   studyUID: string | null;
@@ -18,7 +17,7 @@ interface FormContentSwitcherProps {
   isLoading: boolean;
 }
 
-export const FormContentSwitcher = ({
+export const FormContentViews = ({
   formOutcome,
   formError,
   studyUID,
@@ -26,7 +25,7 @@ export const FormContentSwitcher = ({
   config,
   onSubmit,
   isLoading,
-}: FormContentSwitcherProps) => {
+}: FormContentViewsProps) => {
   if (isLoading) {
     return (
       <Center h="50vh">

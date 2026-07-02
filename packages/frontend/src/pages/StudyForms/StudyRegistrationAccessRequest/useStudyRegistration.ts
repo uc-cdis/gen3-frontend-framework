@@ -44,26 +44,22 @@ export const useStudyRegistration = (
 
   useEffect(() => {
     if (router.isReady && router.query) {
-      const {
-        studyUID: queryStudyUID,
-        studyRegistrationAuthZ: queryStudyRegistrationAuthZ,
-        studyName: queryStudyName,
-      } = router.query;
-      if (queryStudyUID) setStudyUID(queryStudyUID as string);
-      if (queryStudyName) setStudyName(toString(queryStudyName));
-      if (queryStudyRegistrationAuthZ) {
+      const { query } = router;
+      if (query.studyUID) setStudyUID(query.studyUID as string);
+      if (query.studyName) setStudyName(toString(query.studyName));
+      if (query.studyRegistrationAuthZ) {
         try {
           setStudyRegistrationAuthZ(
-            JSON.parse(queryStudyRegistrationAuthZ as string),
+            JSON.parse(query.studyRegistrationAuthZ as string),
           );
         } catch (e) {
-          setStudyRegistrationAuthZ(queryStudyRegistrationAuthZ as string);
+          setStudyRegistrationAuthZ(query.studyRegistrationAuthZ as string);
         }
       }
     }
   }, [router.isReady, router.query]);
 
-  // Validate Existing Requests check for duplicates
+  // Validate existing requests and check for duplicates
   const { data, isLoading, isError } = useUserRequestQuery({});
   useEffect(() => {
     if (!isLoading && isError) {
@@ -85,9 +81,9 @@ export const useStudyRegistration = (
     }
   }, [isLoading, isError, data, studyUID, userInfo?.username]);
 
-  // Form Submission
   const [requestQuery] = useCreateRequestMutation();
 
+  // Handle Form Submission
   const formOnSubmit = async (formValues: FormOnSubmitReturnProps) => {
     const hostname = window.location.hostname;
     try {

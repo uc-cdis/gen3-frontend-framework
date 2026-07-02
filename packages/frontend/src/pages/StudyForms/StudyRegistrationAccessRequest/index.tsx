@@ -6,7 +6,7 @@ import {
   NavPageLayoutProps,
 } from '../../../features/Navigation';
 import { useStudyRegistration } from './useStudyRegistration';
-import { FormContentSwitcher } from './FormContentSwitcher';
+import { FormContentViews } from './FormContentViews';
 
 interface StudyRegistrationAccessRequestFormProps extends NavPageLayoutProps {
   configStudyRegistrationRequestAccessForm: any;
@@ -40,7 +40,7 @@ const StudyRegistrationAccessRequestForm = ({
       <div className="flex justify-items-center w-full">
         <Box className="w-full bg-white rounded-md m-8 p-8 ">
           <div className="max-w-4xl mx-auto">
-            <FormContentSwitcher
+            <FormContentViews
               formOutcome={formOutcome}
               formError={formError}
               studyUID={studyUID}
