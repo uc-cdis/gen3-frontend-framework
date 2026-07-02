@@ -1,7 +1,6 @@
 import { swc } from 'rollup-plugin-swc3';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import executable from 'rollup-plugin-executable';
-import copy from 'rollup-plugin-copy';
 
 export default [
   {
@@ -133,18 +132,5 @@ export default [
     ],
     external: ['path', 'fs', '@next/env', 'node:util'],
     plugins: [peerDepsExternal(), swc()],
-  },
-  {
-    input: './src/noop.js',
-    output: {
-      dir: 'dist',
-    },
-    plugins: [
-      copy({
-        targets: [
-          { src: 'jupyter-workspaces/*.sh', dest: 'dist/jupyter-workspaces' },
-        ],
-      }),
-    ],
   },
 ];

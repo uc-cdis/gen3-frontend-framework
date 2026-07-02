@@ -35,10 +35,6 @@ export default async function handler(
 ) {
   const action = req.query.action?.[0];
 
-  console.log(
-    `[workspace-hatchery] ${action} HTTP=${req.method} id=${req.query.id ?? '(none)'} path=/${req.url}`,
-  );
-
   // Intercept res.send to capture response body for logging
   let capturedBody = '';
   const originalSend = res.send.bind(res) as typeof res.send;
@@ -50,14 +46,6 @@ export default async function handler(
   };
 
   await upstreamHandler(req, res);
-
-  if (action === 'launch' || action === 'status') {
-    const jwt = getAccessToken(req.headers['cookie'] ?? '');
-    const username = jwt ? decodeJwtUsername(jwt) : '<no-token>';
-    console.log(
-      `[workspace-hatchery] ${action} HTTP=${res.statusCode} id=${req.query.id ?? '(none)'} user=${username} body=${capturedBody}`,
-    );
-  }
 }
 
 export const config = { api: { bodyParser: false } };

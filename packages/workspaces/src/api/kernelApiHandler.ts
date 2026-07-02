@@ -71,12 +71,6 @@ export default async function handler(
     }
     return;
   }
-
-  if (isStatusPath) {
-    console.log(
-      `[workspace-kernel] status HTTP=${res.statusCode} path=/${action.join('/')}`,
-    );
-  }
 }
 
 export const config = { api: { bodyParser: false } };

@@ -94,9 +94,13 @@ const MicroContainerReduxPanel = ({
     return (
       <div className={PanelStyle}>
         <div className="text-center">
-          <h2 className="text-lg font-bold text-base-darkest">
-            Launch Workspace
-          </h2>
+          <Icon
+            icon="gen3:run"
+            width={100}
+            height={100}
+            className="text-primary"
+          />
+
           <p className="mt-2 max-w-sm text-sm text-base-darker">
             Start your personal micro compute environment. Use it for light
             analysis — upgrade to a GPU kernel when you need to run large

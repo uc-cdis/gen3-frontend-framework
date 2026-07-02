@@ -24,6 +24,7 @@ const globals = {
   path: 'path',
   glob: 'glob',
   '@gen3/core': 'gen3Core',
+  '@gen3/frontend': 'gen3Frontend',
   'jsonpath-plus': 'jsonpathPlus',
   '@hello-pangea/dnd': '@hello-pangea/dnd',
   '@mantine/notifications': 'mantineNotifications',

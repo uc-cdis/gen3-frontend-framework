@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { showNotification } from '@mantine/notifications';
-import { Button, Center, Stack } from '@mantine/core';
+import { Center, Stack } from '@mantine/core';
 import TexturedSidePanel from '../Layout/TexturedSidePanel';
 import LoginProvidersPanel from './LoginProvidersPanel';
 import CredentialsLogin from './CredentialsLogin';
@@ -92,11 +92,6 @@ const LoginPanel = (loginConfig: LoginConfig) => {
           process.env.NODE_ENV === 'development' && (
             <Stack>
               <CredentialsLogin handleLogin={handleCredentialsLogin} />
-              <div className="flex justify-center">
-                <Button component="a" href="/api/auth/login">
-                  Log in with Fence using client key/secret
-                </Button>
-              </div>
             </Stack>
           )}
         <Center>

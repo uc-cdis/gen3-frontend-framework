@@ -129,7 +129,6 @@ const refreshSession = (
 
   // hitting Fence endpoint refreshes the token
   updateSessionRefreshTimestamp(Date.now());
-  console.log('refreshing session');
   getUserDetails();
 };
 
@@ -175,14 +174,13 @@ export const SessionProvider = ({
   workspaceInactivityTimeLimit = 0,
   logoutInactiveUsers = true,
   monitorWorkspace = true,
-  monitorPayment = true,
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
 
   const { isSuccess: isGetCSRFSuccess, isError: isGetCSRFError } =
     useGetCSRFQuery();
-  useWorkspaceResourceMonitor(monitorWorkspace, monitorPayment); // monitor workspaces if any are running or configured
+  useWorkspaceResourceMonitor(monitorWorkspace); // monitor workspaces if any are running or configured
 
   const [getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
   const userStatus = useCoreSelector((state: CoreState) =>
@@ -300,7 +298,6 @@ export const SessionProvider = ({
       const timestamp = Date.now();
       setMostRecentActivityTimestamp(timestamp);
 
-      console.log('updating user activity');
       if (broadcastChannelRef.current) {
         broadcastChannelRef.current.postMessage({
           type: 'activity-update',
@@ -330,15 +327,10 @@ export const SessionProvider = ({
 
   useInterval(
     () => {
-      console.log(
-        "sessionInfo.status != 'issued'",
-        sessionInfo.status != 'issued',
-      );
       if (sessionInfo.status != 'issued') return; // no need to update session if user is not logged in
       if (isUserOnPage('Login') /* || this.popupShown */) return;
 
       const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
-      console.log('time since last activity', timeSinceLastActivity);
       if (logoutInactiveUsers) {
         if (
           timeSinceLastActivity >= inactiveTimeLimitMilliseconds &&

@@ -111,7 +111,9 @@ const WorkspaceToolbar = ({ toolbarConfiguration }: WorkspaceToolbarProps) => {
         {showStop && (
           <Button
             size="sm"
-            variant="outline"
+            variant={
+              workspaceStatus !== WorkspaceStatus.Running ? 'outline' : 'filled'
+            }
             aria-label="Stop workspace"
             aria-disabled={workspaceStatus !== WorkspaceStatus.Running}
             color={

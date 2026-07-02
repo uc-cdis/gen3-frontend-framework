@@ -93,13 +93,6 @@ export const useJEGWorkspaceResourceMonitor = (
         },
   );
 
-  console.log(
-    'workspaceStatusData',
-    workspaceStatusData,
-    isWorkspaceStatusError,
-    error,
-  );
-
   const [terminateWorkspace] = useTerminateHatcheryWorkspaceMutation();
   const activeStatus = useCoreSelector(selectJEGActiveWorkspaceStatus);
   const requestedStatus = useCoreSelector(selectJEGRequestedWorkspaceStatus); // trigger to start/stop workspaces
@@ -231,7 +224,7 @@ export const useJEGWorkspaceResourceMonitor = (
       if (requestedStatus === RequestedWorkspaceStatus.Launch) {
         // if the workspace becomes idle too long after a Launch request, switch to
         // Unset and NotFound.
-        console.log(
+        console.warn(
           "requested status is Launch, but workspace pod isn't running yet.",
         );
         return;

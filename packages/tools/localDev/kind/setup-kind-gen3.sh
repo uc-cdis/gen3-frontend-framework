@@ -8,7 +8,8 @@
 #   3. Generate mkcert SSL certificates and create K8s secrets
 #   4. Apply ingress configuration
 #   5. Configure CSP headers for workspace/iframe development
-#   6. Patch services with mkcert CA trust (appends CA, does not replace)
+#   6. Configure CoreDNS so pods can resolve the local hostname
+#   7. Patch services with mkcert CA trust (appends CA, does not replace)
 #
 # Usage:
 #   ./setup-kind-gen3.sh --all
@@ -31,6 +32,7 @@ DO_CREATE_CLUSTER=false
 DO_INSTALL_INGRESS=false
 DO_SETUP_SSL=false
 DO_SETUP_CSP=false
+DO_SETUP_COREDNS=false
 DO_ALL=false
 CA_SERVICES=""
 
@@ -60,7 +62,8 @@ Steps (run individually or use --all):
   --install-ingress     Install nginx ingress controller
   --setup-ssl           Generate mkcert certs, create K8s secrets, apply ingress
   --setup-csp           Configure Content-Security-Policy for workspace/iframe dev
-  --all                 Run create-cluster + install-ingress + setup-ssl
+  --setup-coredns       Patch CoreDNS so pods resolve the local hostname via host.docker.internal
+  --all                 Run create-cluster + install-ingress + setup-ssl + setup-coredns
 
 Service CA patching:
   --patch-ca SERVICES   Apply mkcert CA trust to services (comma-separated)
@@ -112,6 +115,7 @@ while [[ $# -gt 0 ]]; do
     --install-ingress) DO_INSTALL_INGRESS=true; shift ;;
     --setup-ssl)       DO_SETUP_SSL=true; shift ;;
     --setup-csp)       DO_SETUP_CSP=true; shift ;;
+    --setup-coredns)   DO_SETUP_COREDNS=true; shift ;;
     --patch-ca)        CA_SERVICES="$2"; shift 2 ;;
     --hostname)        HOSTNAME="$2"; shift 2 ;;
     --cluster-name)    CLUSTER_NAME="$2"; shift 2 ;;
@@ -125,6 +129,7 @@ if $DO_ALL; then
   DO_CREATE_CLUSTER=true
   DO_INSTALL_INGRESS=true
   DO_SETUP_SSL=true
+  DO_SETUP_COREDNS=true
 fi
 
 # ── Prerequisites ────────────────────────────────────────────────────────────
@@ -348,7 +353,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/configuration-snippet: |
-      more_set_headers "Content-Security-Policy: frame-ancestors 'self' https://localhost https://localhost:3010";
+      more_set_headers "Content-Security-Policy: frame-ancestors 'self' https://localhost https://localhost:3010 http://localhost:3000";
 spec:
   tls:
   - hosts:
@@ -371,7 +376,66 @@ EOF
   info "Workspace iframes from https://localhost:3010 are now allowed"
 }
 
-# ── Step 5: Patch Services with CA Trust ─────────────────────────────────────
+# ── Step 5: Configure CoreDNS ────────────────────────────────────────────────
+
+setup_coredns() {
+  section "Step 5: Configuring CoreDNS for Local Hostname Resolution"
+
+  # Resolve host.docker.internal from inside the Kind control-plane node
+  info "Resolving host.docker.internal from Kind node (${CLUSTER_NAME}-control-plane)..."
+  local host_ip
+  host_ip="$(docker exec "${CLUSTER_NAME}-control-plane" \
+    python3 -c "import socket; print(socket.gethostbyname('host.docker.internal'))" 2>/dev/null)" || {
+    error "Failed to resolve host.docker.internal from the Kind node."
+    error "Ensure Docker Desktop is running and the cluster is up."
+    exit 1
+  }
+  info "host.docker.internal -> $host_ip"
+
+  # Fetch the current Corefile
+  local corefile
+  corefile="$(kubectl -n kube-system get configmap coredns -o jsonpath='{.data.Corefile}')"
+
+  # Idempotency: skip if the hostname is already present
+  if echo "$corefile" | grep -qF "$HOSTNAME"; then
+    warn "CoreDNS already contains an entry for $HOSTNAME. Skipping."
+    return 0
+  fi
+
+  # Insert a hosts{} block immediately before the 'prometheus' plugin line
+  local updated_corefile
+  updated_corefile="$(HOST_IP="$host_ip" HOSTNAME_VAL="$HOSTNAME" python3 -c "
+import sys, os
+content = sys.stdin.read()
+host_ip  = os.environ['HOST_IP']
+hostname = os.environ['HOSTNAME_VAL']
+hosts_block = (
+    '    hosts {\n'
+    '        ' + host_ip + ' ' + hostname + '\n'
+    '        fallthrough\n'
+    '    }\n'
+)
+sys.stdout.write(content.replace('    prometheus', hosts_block + '    prometheus', 1))
+" <<< "$corefile")"
+
+  # Encode the updated Corefile as a JSON string and patch the configmap
+  local json_value
+  json_value="$(python3 -c "import sys, json; sys.stdout.write(json.dumps(sys.stdin.read()))" <<< "$updated_corefile")"
+
+  info "Patching CoreDNS configmap..."
+  kubectl -n kube-system patch configmap coredns \
+    --type merge \
+    -p "{\"data\":{\"Corefile\":${json_value}}}"
+
+  # Restart CoreDNS to pick up the change
+  info "Restarting CoreDNS..."
+  kubectl -n kube-system rollout restart deployment coredns
+  kubectl -n kube-system rollout status deployment coredns --timeout=60s
+
+  info "CoreDNS configured: pods will resolve $HOSTNAME -> $host_ip"
+}
+
+# ── Step 6: Patch Services with CA Trust ─────────────────────────────────────
 
 # Determine service type for CA patching strategy
 get_service_type() {
@@ -548,8 +612,12 @@ if $DO_SETUP_CSP; then
   setup_csp
 fi
 
+if $DO_SETUP_COREDNS; then
+  setup_coredns
+fi
+
 if [[ -n "$CA_SERVICES" ]]; then
-  section "Step 5: Patching Services with CA Trust"
+  section "Step 7: Patching Services with CA Trust"
   IFS=',' read -ra services <<< "$CA_SERVICES"
   for svc in "${services[@]}"; do
     svc="$(echo "$svc" | xargs)"  # trim whitespace
