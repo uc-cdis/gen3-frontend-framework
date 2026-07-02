@@ -1,13 +1,21 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-PKG_DIR="$ROOT_DIR/packages/jupyter-workspaces"
-FREE_SRC="$ROOT_DIR/jupyterlite-builds/free-private/site"
-REMOTE_SRC="$ROOT_DIR/jupyterlite-builds/remote-private/site"
+
+BUILD_SRC="${1:-}"
+if [[ -z "$BUILD_SRC" ]]; then
+  usage "set to the output of the juypterlite install"
+fi
+
+PKG_DIR="${2:-jupyter-workspaces}"
+echo "assets directory is: $PKG_DIR"
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+FREE_SRC="$BUILD_SRC/free"
+REMOTE_SRC="$BUILD_SRC/remote"
 FREE_DST="$PKG_DIR/assets/free"
 REMOTE_DST="$PKG_DIR/assets/remote"
-VALIDATE_SCRIPT="$ROOT_DIR/scripts/validate-jupyterlite-assets.sh"
+VALIDATE_SCRIPT="$SCRIPT_DIR/scripts/validate-jupyterlite-assets.sh"
 
 if [[ ! -d "$FREE_SRC" ]]; then
   echo "Missing free JupyterLite build output: $FREE_SRC"

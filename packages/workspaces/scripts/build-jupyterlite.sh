@@ -17,7 +17,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 if [[ "$TIER" == "free" ]]; then
   SRC_DIR="$ROOT_DIR/free-private"
 else
-  SRC_DIR="$ROOT_DIR/jupyterlite-builds/remote-private"
+  SRC_DIR="$ROOT_DIR/remote-private"
 fi
 
 CONFIG_FILE="$SRC_DIR/jupyter_lite_config.json"
