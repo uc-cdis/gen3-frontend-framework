@@ -134,7 +134,9 @@ export async function createProxyRequest({
   if (upRes.status >= 500) {
     const errBody = await upRes.text().catch(() => '');
     console.error(
-      `[proxy] upstream ${upRes.status} from ${targetUrl}:`,
+      '[proxy] upstream %d from %s: %s',
+      upRes.status,
+      targetUrl,
       errBody,
     );
     res.status(502).json({ error: 'Upstream service error.' });

@@ -18,6 +18,8 @@ import nodePath from 'path';
 import fs from 'fs';
 import { getCookie } from 'cookies-next';
 
+const MAX_FILE_SIZE_BYTES = 67108864; // 64 * 1024 * 1024
+
 // ---------- types ----------
 
 export interface WorkspaceAssetsHandlerOptions {
@@ -39,6 +41,8 @@ export interface WorkspaceAssetsHandlerOptions {
 // ---------- constants ----------
 
 const ALLOWED_TIERS = new Set(['free', 'remote']);
+
+const SAFE_SEGMENT_RE = /^[A-Za-z0-9._-]+$/;
 
 const MIME_TYPES: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
@@ -245,6 +249,31 @@ export function createWorkspaceAssetsHandler(
       ? { appName: options.appName, faviconUrl: options.faviconUrl }
       : undefined;
 
+  // Build the allowed-file sets once at factory time (not per-request) to
+  // avoid unbounded I/O on every incoming request (CWE-770).
+  const walkDir = (dir: string, set: Set<string>): void => {
+    try {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = nodePath.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          walkDir(full, set);
+        } else {
+          set.add(full);
+        }
+      }
+    } catch {
+      // Tier directory doesn't exist yet — set remains empty and handler will 404.
+    }
+  };
+
+  const allowedFilesByTier: Record<string, Set<string>> = {
+    free: new Set<string>(),
+    remote: new Set<string>(),
+  };
+  for (const tier of ALLOWED_TIERS) {
+    walkDir(nodePath.resolve(assetRoot, tier), allowedFilesByTier[tier]);
+  }
+
   return function handler(req: NextApiRequest, res: NextApiResponse): void {
     const { tier, path: pathSegments } = req.query;
 
@@ -269,7 +298,6 @@ export function createWorkspaceAssetsHandler(
       return;
     }
 
-    const SAFE_SEGMENT_RE = /^[A-Za-z0-9._-]+$/;
     const safeSegments: string[] = [];
     for (const seg of segments) {
       if (
@@ -284,23 +312,7 @@ export function createWorkspaceAssetsHandler(
       safeSegments.push(nodePath.basename(seg));
     }
 
-    const allowedFiles = new Set<string>();
-    try {
-      const walk = (dir: string): void => {
-        for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-          const full = nodePath.join(dir, entry.name);
-          if (entry.isDirectory()) {
-            walk(full);
-          } else {
-            allowedFiles.add(full);
-          }
-        }
-      };
-      walk(tierRoot);
-    } catch {
-      res.status(404).end('Not found');
-      return;
-    }
+    const allowedFiles = allowedFilesByTier[tier];
 
     const candidatePath = nodePath.resolve(tierRoot, ...safeSegments);
     const candidateIndex = nodePath.join(candidatePath, 'index.html');
@@ -314,8 +326,6 @@ export function createWorkspaceAssetsHandler(
       res.status(404).end('Not found');
       return;
     }
-
-    console.log(`Resolved path: ${filePath}`);
 
     const ext = nodePath.extname(filePath).toLowerCase();
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
@@ -394,6 +404,12 @@ export function createWorkspaceAssetsHandler(
         ? 'public, max-age=31536000, immutable'
         : 'public, max-age=3600, must-revalidate',
     );
+
+    const stat = fs.statSync(filePath);
+    if (stat.size > MAX_FILE_SIZE_BYTES) {
+      res.status(413).end('File too large');
+      return;
+    }
 
     const stream = fs.createReadStream(filePath);
     stream.on('error', () => {
