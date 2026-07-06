@@ -7,10 +7,10 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 const defaultHatcheryUrl = process.env.KUBERNETES_SERVICE_HOST
   ? 'http://hatchery-service.gen3.svc.cluster.local'
-  : undefined;
+  : '/lw-workspace';
 
 const upstreamHandler = createHatcheryProxyHandler({
-  hatcheryUrl: process.env.HATCHERY_URL ?? defaultHatcheryUrl,
+  hatcheryUrl: defaultHatcheryUrl,
   getToken: (req) => getAccessToken(req.headers['cookie'] ?? '') ?? null,
 });
 

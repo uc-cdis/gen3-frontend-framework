@@ -29,7 +29,9 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { decodeJwtClaims, extractTokenFallback } from './utils';
-import { fetchFence } from '@gen3/core';
+import { fetchFence, GEN3_FENCE_SERVICE } from '@gen3/core';
+import { GEN3_FENCE_API } from '@gen3/core/server';
+import { JEG_SERVICE_API } from '../constants';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                               */
@@ -657,6 +659,10 @@ async function handleKernelPassthrough(
 /*  Factory                                                             */
 /* ------------------------------------------------------------------ */
 
+const ALLOWED_FENCE_URLS = [GEN3_FENCE_SERVICE, GEN3_FENCE_API];
+
+const ALLOWED_JEG_URLS = [JEG_SERVICE_API, '/lw-workspace/proxy/jeg-panel'];
+
 export function createKernelProxyHandler(config: KernelLifecycleProxyConfig) {
   const sink = config.billingSink ?? defaultBillingSink;
   const jegEnabled = config.jegEnabled === true;
@@ -669,8 +675,21 @@ export function createKernelProxyHandler(config: KernelLifecycleProxyConfig) {
   ): Promise<void> {
     const { gen3Endpoint, fenceUrl, kernelSpecPolicy } = config;
 
+    if (fenceUrl && !ALLOWED_FENCE_URLS.includes(fenceUrl)) {
+      res.status(503).json({ error: 'Fence service URL is misconfigured.' });
+      return;
+    }
+
+    if (gen3Endpoint && !ALLOWED_JEG_URLS.includes(gen3Endpoint)) {
+      res.status(503).json({ error: 'JEG service URL is misconfigured.' });
+      return;
+    }
+
     // --- Route resolution (done early so /api/status can short-circuit) ---
-    const actionSegments = (req.query.action as string[]) || [];
+    const rawAction = req.query.action;
+    const actionSegments: string[] = Array.isArray(rawAction)
+      ? rawAction.filter((s): s is string => typeof s === 'string')
+      : [];
     const route = resolveKernelRoute(req.method || '', actionSegments);
 
     // GET /api/status is the JEG feature-gate probe — always returns 200 with { enabled }.

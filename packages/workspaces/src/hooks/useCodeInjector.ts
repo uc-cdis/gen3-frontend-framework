@@ -28,7 +28,7 @@ export function useCodeInjector() {
           if (doc) {
             const activeCell = doc.querySelector('.jp-Cell.jp-mod-active');
             if (activeCell) {
-              const cmContent = activeCell.querySelector('.cm-content');
+              const cmContent = activeCell.querySelector('.cm-content') as any;
               const view = cmContent?.cmView?.view;
               if (view) {
                 lastEditorRef.current = view;

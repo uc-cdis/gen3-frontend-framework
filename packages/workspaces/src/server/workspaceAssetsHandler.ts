@@ -259,38 +259,63 @@ export function createWorkspaceAssetsHandler(
         ? [pathSegments]
         : [];
 
-    const tierRoot = nodePath.join(assetRoot, tier);
-    const requestedPath = nodePath.join(tierRoot, ...segments);
-    const resolved = nodePath.normalize(requestedPath);
-
-    // Security: reject any path that escapes the tier root directory
-    if (
-      !resolved.startsWith(tierRoot + nodePath.sep) &&
-      resolved !== tierRoot
-    ) {
-      res.status(403).end('Forbidden');
+    let tierRoot: string;
+    if (tier === 'free') {
+      tierRoot = nodePath.resolve(assetRoot, 'free');
+    } else if (tier === 'remote') {
+      tierRoot = nodePath.resolve(assetRoot, 'remote');
+    } else {
+      res.status(404).end('Not found');
       return;
     }
 
-    let filePath = resolved;
-
-    console.log(`Resolved path: ${filePath}`);
-
-    try {
-      const stat = fs.statSync(filePath);
-      if (stat.isDirectory()) {
-        const indexPath = nodePath.join(filePath, 'index.html');
-        if (fs.existsSync(indexPath)) {
-          filePath = indexPath;
-        } else {
-          res.status(404).end('Not found');
-          return;
-        }
+    const SAFE_SEGMENT_RE = /^[A-Za-z0-9._-]+$/;
+    const safeSegments: string[] = [];
+    for (const seg of segments) {
+      if (
+        typeof seg !== 'string' ||
+        !SAFE_SEGMENT_RE.test(seg) ||
+        seg === '.' ||
+        seg === '..'
+      ) {
+        res.status(403).end('Forbidden');
+        return;
       }
+      safeSegments.push(nodePath.basename(seg));
+    }
+
+    const allowedFiles = new Set<string>();
+    try {
+      const walk = (dir: string): void => {
+        for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+          const full = nodePath.join(dir, entry.name);
+          if (entry.isDirectory()) {
+            walk(full);
+          } else {
+            allowedFiles.add(full);
+          }
+        }
+      };
+      walk(tierRoot);
     } catch {
       res.status(404).end('Not found');
       return;
     }
+
+    const candidatePath = nodePath.resolve(tierRoot, ...safeSegments);
+    const candidateIndex = nodePath.join(candidatePath, 'index.html');
+
+    let filePath: string;
+    if (allowedFiles.has(candidatePath)) {
+      filePath = candidatePath;
+    } else if (allowedFiles.has(candidateIndex)) {
+      filePath = candidateIndex;
+    } else {
+      res.status(404).end('Not found');
+      return;
+    }
+
+    console.log(`Resolved path: ${filePath}`);
 
     const ext = nodePath.extname(filePath).toLowerCase();
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';

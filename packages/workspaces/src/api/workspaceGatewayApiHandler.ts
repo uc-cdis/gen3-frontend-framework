@@ -144,9 +144,23 @@ export default async function handler(
   res.status(upstream.status);
   upstream.headers.forEach((value, key) => {
     const lower = key.toLowerCase();
-    if (lower === 'transfer-encoding') return;
+    if (
+      lower === 'transfer-encoding' ||
+      lower === 'content-type' ||
+      lower === 'content-security-policy'
+    )
+      return;
     res.setHeader(key, value);
   });
+
+  const upstreamContentType = upstream.headers.get('content-type') || '';
+  const safeContentType = /html|xml|svg/i.test(upstreamContentType)
+    ? 'text/plain; charset=utf-8'
+    : upstreamContentType || 'application/octet-stream';
+  res.setHeader('Content-Type', safeContentType);
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Content-Security-Policy', "default-src 'none'; sandbox");
+  res.setHeader('Content-Disposition', 'attachment');
 
   if (upstream.body) {
     const reader = upstream.body.getReader();

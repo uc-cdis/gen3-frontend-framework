@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRouteConfig } from './lib/auth/arboristConfig';
-import {
-  getAccessToken,
-  getLoginStatus,
-  type LoginStatus,
-} from './lib/auth/getLoginStatus';
+import { getLoginStatus, type LoginStatus } from './lib/auth/getLoginStatus';
 import { fetchArboristResources } from './lib/auth/fetchAuthz';
-import { RouteConfig } from '@gen3/frontend/server';
+import { getAccessToken, RouteConfig } from '@gen3/frontend/server';
 
 const WILDCARD_ROUTE_KEY = '*';
 

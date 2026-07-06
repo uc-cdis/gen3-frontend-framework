@@ -27,7 +27,7 @@ export type WorkspaceAuthContext = {
 const WorkspaceCenter = ({
   workspaces,
   landingPage,
-  _tierConfiguration,
+  tierConfiguration,
 }: WorkspacesCenterConfiguration) => {
   // get the workspace tier from the core store allowing persistent state across page reloads and navigation changes
   const workspaceTier = useCoreSelector((state: CoreState) =>
@@ -54,7 +54,7 @@ const WorkspaceCenter = ({
     if (isDevelopment) {
       return {
         username: username || 'dev-local-user',
-        jwt: 'dev-local-token',
+        jwt: process.env.JEG_WORKSPACE_DEV_LOCAL_JWT ?? '',
         rbac: userData?.authz ? Object.keys(userData.authz) : [],
         abac: { devBypass: true },
       };

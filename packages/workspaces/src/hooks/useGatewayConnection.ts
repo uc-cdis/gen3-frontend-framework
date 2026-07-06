@@ -54,7 +54,7 @@ export interface UseGatewayConnectionReturn {
 /*  Session persistence                                                 */
 /* ------------------------------------------------------------------ */
 
-const SESSION_KEY = 'gen3-active-kernel';
+const GEN3_JEG_SESSION_DB = 'gen3-active-kernel';
 
 interface PersistedKernel {
   kernelId: string;
@@ -65,7 +65,7 @@ interface PersistedKernel {
 function persistKernel(kernel: GatewayKernel): void {
   try {
     sessionStorage.setItem(
-      SESSION_KEY,
+      GEN3_JEG_SESSION_DB,
       JSON.stringify({
         kernelId: kernel.id,
         kernelName: kernel.name,
@@ -79,7 +79,7 @@ function persistKernel(kernel: GatewayKernel): void {
 
 function readPersistedKernel(): PersistedKernel | null {
   try {
-    const raw = sessionStorage.getItem(SESSION_KEY);
+    const raw = sessionStorage.getItem(GEN3_JEG_SESSION_DB);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     if (
@@ -95,7 +95,7 @@ function readPersistedKernel(): PersistedKernel | null {
 
 function clearPersistedKernel(): void {
   try {
-    sessionStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(GEN3_JEG_SESSION_DB);
   } catch {
     /* noop */
   }

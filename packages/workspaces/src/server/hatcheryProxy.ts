@@ -65,6 +65,11 @@ function resolveHatcheryRoute(
   return routes[`${method}:${action}`] ?? null;
 }
 
+const ALLOWED_HATCHERY_URLS = [
+  '/lw-workspace',
+  'http://hatchery-service.gen3.svc.cluster.local',
+];
+
 export function createHatcheryProxyHandler(config: HatcheryProxyConfig) {
   return async function hatcheryProxyHandler(
     req: NextApiRequest,
@@ -78,6 +83,12 @@ export function createHatcheryProxyHandler(config: HatcheryProxyConfig) {
       });
       return;
     }
+
+    if (!ALLOWED_HATCHERY_URLS.includes(hatcheryUrl)) {
+      res.status(503).json({ error: 'Hatchery service URL is misconfigured.' });
+      return;
+    }
+
     let parsedHatcheryUrl: URL;
     try {
       parsedHatcheryUrl = new URL(hatcheryUrl);
@@ -99,6 +110,22 @@ export function createHatcheryProxyHandler(config: HatcheryProxyConfig) {
       : extractTokenFallback(req);
     if (!jwt) {
       res.status(401).json({ error: 'Authentication required.' });
+      return;
+    }
+
+    // Validate JWT format to prevent injection attacks
+    // JWT should be three base64url-encoded segments separated by dots
+    const JWT_FORMAT_RE = /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/;
+    if (!JWT_FORMAT_RE.test(jwt)) {
+      console.error('[hatcheryProxy] Invalid JWT format detected');
+      res.status(401).json({ error: 'Invalid authentication token format.' });
+      return;
+    }
+
+    // Additional length check to prevent extremely long tokens
+    if (jwt.length > 8192) {
+      console.error('[hatcheryProxy] JWT exceeds maximum length');
+      res.status(401).json({ error: 'Authentication token too long.' });
       return;
     }
 

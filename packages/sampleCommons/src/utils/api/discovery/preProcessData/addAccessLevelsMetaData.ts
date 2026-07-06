@@ -1,11 +1,6 @@
-import {
-  AuthzResourceResponse,
-  fetchArboristResources,
-  JSONObject,
-  JSONValue,
-} from '@gen3/core';
+import { fetchArboristResources, JSONObject, JSONValue } from '@gen3/core';
 import { AccessLevel } from '@gen3/frontend/utils';
-import { getAccessToken } from '@/lib/auth/getLoginStatus';
+import { getAccessToken } from '@gen3/frontend/server';
 
 const addAccessLevelsMetaData = async (
   data: Array<JSONObject>,

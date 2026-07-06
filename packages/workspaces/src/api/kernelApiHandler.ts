@@ -7,16 +7,16 @@ import { createKernelProxyHandler } from '../server/kernelLifecycleProxy';
 import { getAccessToken } from '@gen3/frontend/server';
 import { GEN3_FENCE_API } from '@gen3/core/server';
 import { JEG_SERVICE_API } from '../constants';
-import { GEN3_API } from '@gen3/core';
+import { GEN3_FENCE_SERVICE } from '@gen3/core';
 
 const inCluster = Boolean(process.env.KUBERNETES_SERVICE_HOST);
-const defaultGen3Endpoint = inCluster ? JEG_SERVICE_API : GEN3_API;
-const defaultFenceUrl = inCluster
-  ? 'http://fence-service.gen3.svc.cluster.local'
-  : GEN3_FENCE_API;
+const defaultGen3Endpoint = inCluster
+  ? JEG_SERVICE_API
+  : '/lw-workspace/proxy/jeg-panel';
+const defaultFenceUrl = inCluster ? GEN3_FENCE_SERVICE : GEN3_FENCE_API;
 
 const gen3Endpoint = process.env.JEG_SERVICE_API ?? defaultGen3Endpoint;
-const fenceUrl = process.env.FENCE_URL ?? defaultFenceUrl;
+const fenceUrl = defaultFenceUrl;
 
 if (!gen3Endpoint) {
   console.warn(
