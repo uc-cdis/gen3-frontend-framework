@@ -1,5 +1,5 @@
 import React from 'react';
-import { Gen3User, LoginStatus, type JWTSessionStatus } from '@gen3/core';
+import { Gen3User, type JWTSessionStatus, LoginStatus } from '@gen3/core';
 
 export interface AuthTokenData {
   issued?: number;
@@ -44,10 +44,14 @@ export interface SessionConfiguration {
   logoutInactiveUsers?: boolean;
 
   /**
-   *  should workspaces be monitored
+   *  should workspaces be monitored?
    */
-
   monitorWorkspace?: boolean;
+
+  /**
+   *  should payments be monitored?
+   */
+  monitorPayment?: boolean;
 }
 
 export interface SessionProviderProps extends SessionConfiguration {

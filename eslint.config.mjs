@@ -21,9 +21,13 @@ export default [
       '**/build/*',
       'packages/core/dist/*',
       'packages/frontend/dist/*',
+      'packages/workspaces/dist/*',
+      'packages/workspaces/jupyterlite-builds/*',
       'packages/frontend/.rollup.cache/*',
       'packages/sampleCommons/.next/*',
       'packages/sampleCommons/public/*',
+      'packages/sampleCommons/jupyter/*',
+      'packages/sampleCommons/workspaces/*',
       'packages/storybook/.next/*',
       'packages/tools/dist/*',
       '**/*.css',
@@ -82,6 +86,29 @@ export default [
               name: '@gen3/frontend',
               message:
                 "Avoid importing from '@gen3/frontend' (root barrel). Use a specific subpath entrypoint instead.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  // Workspaces package: disallow @/ path aliases (not valid in published npm packages)
+  // and allow @gen3/frontend root barrel (needed internally).
+  {
+    files: [
+      'packages/workspaces/**/*.ts',
+      'packages/workspaces/**/*.tsx',
+      'packages/workspaces/**/*.js',
+    ],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@/*'],
+              message:
+                "Use relative imports instead of '@/' path aliases in published packages.",
             },
           ],
         },

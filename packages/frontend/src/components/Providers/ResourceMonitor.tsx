@@ -45,11 +45,13 @@ const notifyUser = (
 // TODO: convert to seconds/minutes for readability
 const WorkspacePollingInterval: Record<WorkspaceStatus, number> = {
   [WorkspaceStatus.NotFound]: 0,
-  [WorkspaceStatus.Launching]: convertSecondsToMilliseconds(5),
-  [WorkspaceStatus.Terminating]: convertSecondsToMilliseconds(5),
+  [WorkspaceStatus.Launching]: convertSecondsToMilliseconds(1),
+  [WorkspaceStatus.Terminating]: convertSecondsToMilliseconds(1),
   [WorkspaceStatus.Running]: convertSecondsToMilliseconds(300),
   [WorkspaceStatus.Stopped]: convertSecondsToMilliseconds(5),
   [WorkspaceStatus.Errored]: convertSecondsToMilliseconds(10),
+  [WorkspaceStatus.LaunchError]: convertSecondsToMilliseconds(10),
+  [WorkspaceStatus.TerminateError]: convertSecondsToMilliseconds(10),
   [WorkspaceStatus.StatusError]: 0,
 };
 
@@ -62,6 +64,8 @@ const PaymentPollingInterval: Record<WorkspaceStatus, number> = {
   Stopped: 0,
   Errored: 0,
   'Status Error': 0,
+  'Launching Error': 0,
+  'Terminating Error': 0,
 };
 
 const workspaceShutdownAlertLimit = 30000; // 5 minutes: 5 * 60 * 1000 TODO Figure how to configure this
@@ -71,7 +75,10 @@ const workspaceShutdownAlertLimit = 30000; // 5 minutes: 5 * 60 * 1000 TODO Figu
  *  Currently, it handles workspace, payment and idle status
  */
 
-export const useWorkspaceResourceMonitor = (monitorWorkspace: boolean) => {
+export const useWorkspaceResourceMonitor = (
+  monitorWorkspace: boolean,
+  monitorPayment: boolean = true,
+) => {
   const [pollingInterval, setPollingInterval] = useState<number>(0);
   const [paymentPollingInterval, setPaymentPollingInterval] =
     useState<number>(0);
@@ -137,12 +144,12 @@ export const useWorkspaceResourceMonitor = (monitorWorkspace: boolean) => {
     }
   }, [requestedStatus]);
   useEffect(() => {
-    if (workspaceStatusData?.status) {
+    if (workspaceStatusData?.status && monitorPayment) {
       setPaymentPollingInterval(
         PaymentPollingInterval[workspaceStatusData.status],
       );
     }
-  }, [workspaceStatusData?.status]);
+  }, [monitorPayment, workspaceStatusData]);
 
   useDeepCompareEffect(() => {
     if (!workspaceStatusData) return;
@@ -224,7 +231,7 @@ export const useWorkspaceResourceMonitor = (monitorWorkspace: boolean) => {
       // either starting up
       // or finally terminated.
       if (requestedStatus === RequestedWorkspaceStatus.Launch) {
-        // if the workspace becomes idle to too long after a Launch request switch to
+        // if the workspace becomes idle too long after a Launch request, switch to
         // Unset and NotFound.
         return;
       } else {

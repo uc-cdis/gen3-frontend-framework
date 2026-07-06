@@ -11,7 +11,7 @@ describe('mergeDefaultTailwindClassnames function', () => {
     const userValues: StylingOverrideWithMergeControl = {
       root: 'bg-blue-600',
       label: 'text-black',
-      mode: 'merge',
+      mergeMode: 'merge',
     };
     expect(mergeDefaultTailwindClassnames(defaultValues, userValues)).toEqual({
       root: 'px-2 mr-8 bg-blue-600',
@@ -34,7 +34,7 @@ describe('mergeDefaultTailwindClassnames function', () => {
     const userValues: StylingOverrideWithMergeControl = {
       root: 'bg-blue-600',
       label: 'text-black',
-      mode: 'replace',
+      mergeMode: 'replace',
     };
     expect(mergeDefaultTailwindClassnames(defaultValues, userValues)).toEqual({
       root: userValues.root,

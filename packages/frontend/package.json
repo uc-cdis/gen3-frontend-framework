@@ -1,6 +1,6 @@
 {
   "name": "@gen3/frontend",
-  "version": "0.12.44",
+  "version": "0.12.45",
   "description": "Gen3 frontend components, content management, and pages",
   "keywords": [],
   "author": "Center for Translational Data Science",
@@ -43,12 +43,12 @@
     "./server": {
       "types": "./dist/server.d.ts",
       "import": "./dist/server/esm/server.js",
-      "require": "./dist/server/cjs/server.cjs"
+      "require": "./dist/server/cjs/server.js"
     },
     "./pages": {
       "types": "./dist/pages.d.ts",
-      "import": "./dist/pages/esm/pages.js",
-      "require": "./dist/pages/cjs/pages.cjs"
+      "import": "./dist/pages/esm/index.js",
+      "require": "./dist/pages/cjs/index.js"
     },
     "./dist/styles.css": "./dist/styles.css"
   },
@@ -62,7 +62,7 @@
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/modifiers": "^9.0.0",
     "@dnd-kit/sortable": "^10.0.0",
-    "@gen3/core": "^0.12.44",
+    "@gen3/core": "^0.12.45",
     "@graphiql/react": "^0.37.4",
     "@hello-pangea/dnd": "^18.0.0",
     "@iconify-icon/react": "^3.0.3",

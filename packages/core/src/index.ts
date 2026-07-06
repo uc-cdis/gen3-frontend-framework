@@ -55,6 +55,7 @@ export * from './features/cart';
 export * from './features/config';
 export * from './features/cohortComparison';
 export * from './features/indexd';
+export * from './features/notifications';
 
 export {
   type CoreState,

@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRouteConfig } from './lib/auth/arboristConfig';
-import {
-  getAccessToken,
-  getLoginStatus,
-  type LoginStatus,
-} from './lib/auth/getLoginStatus';
+import { getLoginStatus, type LoginStatus } from './lib/auth/getLoginStatus';
 import { fetchArboristResources } from './lib/auth/fetchAuthz';
-import { RouteConfig } from '@gen3/frontend/server';
+import { getAccessToken, RouteConfig } from '@gen3/frontend/server';
 
 const WILDCARD_ROUTE_KEY = '*';
 
@@ -39,13 +35,6 @@ export async function proxy(req: NextRequest) {
     return NextResponse.next();
   }
 
-  const needsAuthz = Array.isArray(rule?.authz) && rule?.authz.length > 0;
-
-  // If no authz resources configured, login is enough
-  if (!needsAuthz) {
-    return NextResponse.next();
-  }
-
   // Gen3 login check
   const loginStatus = await getLoginStatus(req.headers.get('Cookie') || '');
   const loggedIn = await isLoggedIn(loginStatus);
@@ -55,6 +44,13 @@ export async function proxy(req: NextRequest) {
     const loginUrl = new URL('/Login', req.url);
     loginUrl.searchParams.set('referer', pathname);
     return NextResponse.redirect(loginUrl);
+  }
+
+  const needsAuthz = Array.isArray(rule?.authz) && rule?.authz.length > 0;
+
+  // If no authz resources configured, login is enough
+  if (!needsAuthz) {
+    return NextResponse.next();
   }
 
   // Authz is enabled AND route has authzResources → check Arborist resources

@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useRef, useState, } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useRouter } from 'next/router';
 import { getCookie, hasCookie } from 'cookies-next';
 import { useDeepCompareMemo } from 'use-deep-compare';
@@ -265,12 +271,12 @@ export const SessionProvider = ({
   }, [getUserDetails, router]);
 
   /**
-   * Checkes if user session has ended
+   * Check if the user session has ended
    */
   const isSessionActive = useThrottledCallback(() => {
     //Check session token, this call updates info
     getUserDetails().then((obj) => {
-      //check to make sure logged out useres are logged out
+      //check to make sure logged-out users are logged out
       if (
         obj?.data?.loginStatus != 'authenticated' &&
         userStatus === 'authenticated'

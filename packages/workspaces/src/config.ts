@@ -1,0 +1,55 @@
+import { JupyterWorkspaceConfig } from './types';
+import { WorkspaceTierInformation } from './workspace/tiers/types';
+
+export const DEFAULT_WORKSPACE_CONFIG: JupyterWorkspaceConfig = {
+  gateway: {
+    upstreamUrl: 'http://localhost:8889',
+    pathPrefix: '/api/workspace/gateway/',
+  },
+  proxyPort: 8890,
+  wsPingIntervalMs: 30000,
+  assetBaseUrl: '/api/workspace-assets',
+  workspaceRoutes: [
+    '/workspaces/jupyter',
+    '/workspaces/jupyter-lite',
+    '/workspaces/jupyter-kernel',
+  ],
+};
+
+export const WORKSPACE_TIER_INFORMATION: Record<
+  string,
+  WorkspaceTierInformation
+> = {
+  free: {
+    tier: 'free',
+    toolbar: {
+      label: 'JupyterLite',
+      description: 'Running via JupyterLite',
+      showStop: false,
+      showStatus: false,
+    },
+    settings: {
+      showKernels: false,
+    },
+    dataAndTools: {
+      enabled: true,
+      tabs: [],
+    },
+  },
+  remote: {
+    tier: 'remote',
+    toolbar: {
+      label: 'Remote Compute Environment',
+      description: 'Running with Remote Kernels',
+      showStop: true,
+      showStatus: true,
+    },
+    settings: {
+      showKernels: true,
+    },
+    dataAndTools: {
+      enabled: true,
+      tabs: [],
+    },
+  },
+};
