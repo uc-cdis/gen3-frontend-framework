@@ -23,7 +23,7 @@ export interface FormProps {
   readonly showResetButton?: boolean; // Determines if the reset button should be visible
   readonly body: FormPropsBody[]; // array of FormContent
   readonly onSubmit: (values: FormOnSubmitReturnProps) => void | Promise<any>; // function to trigger on form submit
-  readonly errorMessage?: string; // error messaage to desplay above submit button
+  readonly errorMessage?: string; // error messaage to display above submit button
 }
 
 /**
