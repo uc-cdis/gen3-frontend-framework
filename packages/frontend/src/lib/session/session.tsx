@@ -24,14 +24,13 @@ import {
   useGetCSRFQuery,
   useLazyFetchUserDetailsQuery,
 } from '@gen3/core';
+import { ACTIVITY_CHANNEL } from './constants';
 
 import { Center, Loader } from '@mantine/core';
 import { useThrottledCallback } from '@mantine/hooks';
 
 import { MinutesToMilliseconds } from '../../utils';
 import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
-
-const ACTIVITY_CHANNEL = 'gen3-user-activity';
 
 export const logoutSession = async () => {
   // logged in using credentials then execute credentials logout first

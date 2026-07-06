@@ -8,11 +8,11 @@ import React, {
 import type { WorkspaceAuthContext } from '../../auth/auth';
 import { generateScopedNotebookPath } from './utils';
 import { Button, Card, Loader, Text } from '@mantine/core';
-import { getCookie } from 'cookies-next';
 import MicroContainerReduxPanel from '../../components/MicroContainerReduxPanel';
 import { useMicroContainerReduxContext } from '../../providers/MicroContainerReduxProvider';
 import { WorkspaceStatus } from '@gen3/core';
 import { type RemoteComputeWorkspaceHandle } from './types';
+import { ACTIVITY_CHANNEL } from '@gen3/frontend';
 
 export type RemoteComputeWorkspaceProps = {
   assetBaseUrl?: string;
@@ -50,6 +50,7 @@ const RemoteComputeWorkspace = React.memo(
       const [retryCount, setRetryCount] = useState(0);
       const [jupyterReady, setJupyterReady] = useState(false);
       const iframeRef = useRef<HTMLIFrameElement | null>(null);
+      const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
       const { status } = useMicroContainerReduxContext();
 
       const normalizedBase = assetBaseUrl.replace(/\/$/, '');
@@ -72,12 +73,73 @@ const RemoteComputeWorkspace = React.memo(
         scopedNotebookPath = `/workspace/${userHash}/${notebookName}.ipynb`;
       }
 
-      let accessToken = undefined;
-      if (process.env.NODE_ENV === 'development') {
-        // NOTE: This cookie can only be accessed from the client side
-        // in development mode. Otherwise, the cookie is set as httpOnly
-        accessToken = getCookie('credentials_token');
-      }
+      // let accessToken = undefined;
+      // if (process.env.NODE_ENV === 'development') {
+      //   // NOTE: This cookie can only be accessed from the client side
+      //   // in development mode. Otherwise, the cookie is set as httpOnly
+      //   accessToken = getCookie('credentials_token');
+      // }
+
+      useEffect(() => {
+        // Initialize BroadcastChannel
+        broadcastChannelRef.current = new BroadcastChannel(ACTIVITY_CHANNEL);
+
+        const updateUserActivity = () => {
+          const timestamp = Date.now();
+          if (broadcastChannelRef.current) {
+            broadcastChannelRef.current.postMessage({
+              type: 'activity-update',
+              timestamp,
+            });
+          }
+        };
+
+        // Listen for user activity events on the iframe
+        const iframe = iframeRef.current;
+        if (iframe?.contentWindow) {
+          try {
+            // Try to access iframe content (will fail for cross-origin)
+            const iframeDoc =
+              iframe.contentDocument || iframe.contentWindow.document;
+
+            if (iframeDoc) {
+              iframeDoc.addEventListener('mousedown', updateUserActivity);
+              iframeDoc.addEventListener('keypress', updateUserActivity);
+              iframeDoc.addEventListener('scroll', updateUserActivity);
+              iframeDoc.addEventListener('click', updateUserActivity);
+              iframeDoc.addEventListener('touchstart', updateUserActivity);
+            }
+          } catch {
+            // Cross-origin iframe - events won't be captured
+            // You may need to add a script inside the iframe itself to handle this
+            console.warn(
+              'Cannot access iframe content - cross-origin restriction',
+            );
+          }
+        }
+
+        return () => {
+          if (iframe?.contentWindow) {
+            try {
+              const iframeDoc =
+                iframe.contentDocument || iframe.contentWindow.document;
+              if (iframeDoc) {
+                iframeDoc.removeEventListener('mousedown', updateUserActivity);
+                iframeDoc.removeEventListener('keypress', updateUserActivity);
+                iframeDoc.removeEventListener('scroll', updateUserActivity);
+                iframeDoc.removeEventListener('click', updateUserActivity);
+                iframeDoc.removeEventListener('touchstart', updateUserActivity);
+              }
+            } catch {
+              // Ignore cleanup errors
+            }
+          }
+
+          if (broadcastChannelRef.current) {
+            broadcastChannelRef.current.close();
+          }
+        };
+      }, []);
 
       /* ---- Wait for JupyterLite app inside the iframe --------------- */
 

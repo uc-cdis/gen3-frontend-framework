@@ -1,5 +1,6 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, Card, LoadingOverlay, Text } from '@mantine/core';
+import { ACTIVITY_CHANNEL } from '@gen3/frontend';
 
 export interface FreeWorkspaceProps {
   assetBaseUrl?: string;
@@ -17,12 +18,73 @@ const FreeWorkspace = ({
   const [loadError, setLoadError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
+
   const url = `${assetBaseUrl}/lab/index.html`;
 
   const handleRetry = useCallback(() => {
     setLoadError(false);
     setLoading(true);
     setRetryCount((n) => n + 1);
+  }, []);
+
+  useEffect(() => {
+    // Initialize BroadcastChannel
+    broadcastChannelRef.current = new BroadcastChannel(ACTIVITY_CHANNEL);
+
+    const updateUserActivity = () => {
+      const timestamp = Date.now();
+      if (broadcastChannelRef.current) {
+        broadcastChannelRef.current.postMessage({
+          type: 'activity-update',
+          timestamp,
+        });
+      }
+    };
+
+    // Listen for user activity events on the iframe
+    const iframe = iframeRef.current;
+    if (iframe?.contentWindow) {
+      try {
+        // Try to access iframe content (will fail for cross-origin)
+        const iframeDoc =
+          iframe.contentDocument || iframe.contentWindow.document;
+
+        if (iframeDoc) {
+          iframeDoc.addEventListener('mousedown', updateUserActivity);
+          iframeDoc.addEventListener('keypress', updateUserActivity);
+          iframeDoc.addEventListener('scroll', updateUserActivity);
+          iframeDoc.addEventListener('click', updateUserActivity);
+          iframeDoc.addEventListener('touchstart', updateUserActivity);
+        }
+      } catch {
+        // Cross-origin iframe - events won't be captured
+        // You may need to add a script inside the iframe itself to handle this
+        console.warn('Cannot access iframe content - cross-origin restriction');
+      }
+    }
+
+    return () => {
+      if (iframe?.contentWindow) {
+        try {
+          const iframeDoc =
+            iframe.contentDocument || iframe.contentWindow.document;
+          if (iframeDoc) {
+            iframeDoc.removeEventListener('mousedown', updateUserActivity);
+            iframeDoc.removeEventListener('keypress', updateUserActivity);
+            iframeDoc.removeEventListener('scroll', updateUserActivity);
+            iframeDoc.removeEventListener('click', updateUserActivity);
+            iframeDoc.removeEventListener('touchstart', updateUserActivity);
+          }
+        } catch {
+          // Ignore cleanup errors
+        }
+      }
+
+      if (broadcastChannelRef.current) {
+        broadcastChannelRef.current.close();
+      }
+    };
   }, []);
 
   if (loadError) {
