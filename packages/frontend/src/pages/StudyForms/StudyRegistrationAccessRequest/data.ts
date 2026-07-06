@@ -2,7 +2,7 @@ import { GetServerSideProps } from 'next';
 import { NavPageLayoutProps } from '../../../features/Navigation';
 import ContentSource from '../../../lib/content';
 import { getNavPageLayoutPropsFromConfig } from '../../../lib/common/staticProps';
-import { ConfigStudyRegistrationAccessRequestFormProps } from './types';
+import { ConfigStudyRegistrationAccessRequestFormProps } from '../../../features/DiscoveryForms/StudyRegistrationAccessRequest/types';
 
 import { GEN3_COMMONS_NAME } from '@gen3/core';
 

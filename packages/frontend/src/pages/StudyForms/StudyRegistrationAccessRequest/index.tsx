@@ -5,29 +5,20 @@ import {
   NavPageLayout,
   NavPageLayoutProps,
 } from '../../../features/Navigation';
-import { useStudyRegistration } from './useStudyRegistration';
-import { FormContentViews } from './FormContentViews';
+import { useStudyRegistration } from '../../../features/DiscoveryForms/StudyRegistrationAccessRequest/useStudyRegistration';
+import { FormContentViews } from '../../../features/DiscoveryForms/StudyRegistrationAccessRequest/FormContentViews';
+import StudyRegistrationAccessRequestForm from '../../../features/DiscoveryForms/StudyRegistrationAccessRequest';
 
-interface StudyRegistrationAccessRequestFormProps extends NavPageLayoutProps {
+interface StudyRegistrationAccessRequestFormPageProps extends NavPageLayoutProps {
   configStudyRegistrationRequestAccessForm: any;
   studyName: string;
 }
 
-const StudyRegistrationAccessRequestForm = ({
+const StudyRegistrationAccessRequestFormPage = ({
   headerProps,
   footerProps,
   configStudyRegistrationRequestAccessForm,
-}: StudyRegistrationAccessRequestFormProps) => {
-  // Get everything needed from Hook
-  const {
-    formOutcome,
-    formError,
-    studyUID,
-    formBody,
-    formOnSubmit,
-    isLoading,
-  } = useStudyRegistration(configStudyRegistrationRequestAccessForm);
-
+}: StudyRegistrationAccessRequestFormPageProps) => {
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
@@ -37,28 +28,13 @@ const StudyRegistrationAccessRequestForm = ({
         key: 'gen3-theme-page',
       }}
     >
-      <div className="flex justify-items-center w-full">
-        <Box className="w-full bg-white rounded-md m-8 p-8 ">
-          <div className="max-w-4xl mx-auto">
-            <FormContentViews
-              formOutcome={formOutcome}
-              formError={formError}
-              studyUID={studyUID}
-              formBody={formBody}
-              config={configStudyRegistrationRequestAccessForm}
-              onSubmit={formOnSubmit}
-              isLoading={isLoading}
-            />
-          </div>
-          <div className="mt-12 pt-4 border-t border-neutral-100 max-w-4xl mx-auto">
-            <Text className="text-xs text-neutral-500 leading-relaxed">
-              {configStudyRegistrationRequestAccessForm.disclaimer}
-            </Text>
-          </div>
-        </Box>
-      </div>
+      <StudyRegistrationAccessRequestForm
+        configStudyRegistrationRequestAccessForm={
+          configStudyRegistrationRequestAccessForm
+        }
+      />
     </NavPageLayout>
   );
 };
 
-export default StudyRegistrationAccessRequestForm;
+export default StudyRegistrationAccessRequestFormPage;
