@@ -1,23 +1,34 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   GEN3_WORKSPACE_API,
   selectActiveWorkspaceStatus,
   useCoreSelector,
-  WorkspaceStatus,
 } from '@gen3/core';
 import { ACTIVITY_CHANNEL } from './../../lib/session/constants';
 
 const WorkspaceNotebook = () => {
   const currentWorkspaceStatus = useCoreSelector(selectActiveWorkspaceStatus);
-
+  const [jupyterReady, setJupyterReady] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
 
+  // set up BroadcastChannel
   useEffect(() => {
-    if (currentWorkspaceStatus !== WorkspaceStatus.Running) return;
+    if (!broadcastChannelRef?.current) {
+      broadcastChannelRef.current = new BroadcastChannel(ACTIVITY_CHANNEL);
+    }
 
-    // Initialize BroadcastChannel
-    broadcastChannelRef.current = new BroadcastChannel(ACTIVITY_CHANNEL);
+    return () => {
+      if (broadcastChannelRef.current) {
+        broadcastChannelRef.current.close();
+        broadcastChannelRef.current = null;
+      }
+    };
+  }, []);
+
+  // Handle setting up iframe event listeners
+  useEffect(() => {
+    if (!jupyterReady) return;
 
     const updateUserActivity = () => {
       const timestamp = Date.now();
@@ -29,26 +40,26 @@ const WorkspaceNotebook = () => {
       }
     };
 
-    // Listen for user activity events on the iframe
     const iframe = iframeRef.current;
-    if (iframe?.contentWindow) {
-      try {
-        // Try to access iframe content (will fail for cross-origin)
-        const iframeDoc =
-          iframe.contentDocument || iframe.contentWindow.document;
+    if (!iframe?.contentWindow) {
+      return;
+    }
 
-        if (iframeDoc) {
-          iframeDoc.addEventListener('mousedown', updateUserActivity);
-          iframeDoc.addEventListener('keypress', updateUserActivity);
-          iframeDoc.addEventListener('scroll', updateUserActivity);
-          iframeDoc.addEventListener('click', updateUserActivity);
-          iframeDoc.addEventListener('touchstart', updateUserActivity);
-        }
-      } catch {
-        // Cross-origin iframe - events won't be captured
-        // You may need to add a script inside the iframe itself to handle this
-        console.warn('Cannot access iframe content - cross-origin restriction');
+    try {
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+      if (iframeDoc) {
+        iframeDoc.addEventListener('mousedown', updateUserActivity);
+        iframeDoc.addEventListener('keypress', updateUserActivity);
+        iframeDoc.addEventListener('scroll', updateUserActivity);
+        iframeDoc.addEventListener('click', updateUserActivity);
+        iframeDoc.addEventListener('touchstart', updateUserActivity);
       }
+    } catch (error) {
+      console.warn(
+        'Cannot access iframe content - cross-origin restriction',
+        error,
+      );
     }
 
     return () => {
@@ -67,12 +78,8 @@ const WorkspaceNotebook = () => {
           // Ignore cleanup errors
         }
       }
-
-      if (broadcastChannelRef.current) {
-        broadcastChannelRef.current.close();
-      }
     };
-  }, [currentWorkspaceStatus]);
+  }, [jupyterReady]);
 
   return (
     <React.Fragment>
@@ -81,6 +88,9 @@ const WorkspaceNotebook = () => {
           className="w-full h-full border-8"
           title="Workspace"
           src={`${GEN3_WORKSPACE_API}/proxy/`}
+          onLoad={() => {
+            setJupyterReady(true);
+          }}
         />
       </div>
     </React.Fragment>

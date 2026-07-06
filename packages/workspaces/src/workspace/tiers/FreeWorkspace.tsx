@@ -17,6 +17,7 @@ const FreeWorkspace = ({
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
+  const [jupyterReady, setJupyterReady] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
 
@@ -28,9 +29,23 @@ const FreeWorkspace = ({
     setRetryCount((n) => n + 1);
   }, []);
 
+  // set up BroadcastChannel
   useEffect(() => {
-    // Initialize BroadcastChannel
-    broadcastChannelRef.current = new BroadcastChannel(ACTIVITY_CHANNEL);
+    if (!broadcastChannelRef?.current) {
+      broadcastChannelRef.current = new BroadcastChannel(ACTIVITY_CHANNEL);
+    }
+
+    return () => {
+      if (broadcastChannelRef.current) {
+        broadcastChannelRef.current.close();
+        broadcastChannelRef.current = null;
+      }
+    };
+  }, []);
+
+  // Handle setting up iframe event listeners
+  useEffect(() => {
+    if (!jupyterReady) return;
 
     const updateUserActivity = () => {
       const timestamp = Date.now();
@@ -42,26 +57,26 @@ const FreeWorkspace = ({
       }
     };
 
-    // Listen for user activity events on the iframe
     const iframe = iframeRef.current;
-    if (iframe?.contentWindow) {
-      try {
-        // Try to access iframe content (will fail for cross-origin)
-        const iframeDoc =
-          iframe.contentDocument || iframe.contentWindow.document;
+    if (!iframe?.contentWindow) {
+      return;
+    }
 
-        if (iframeDoc) {
-          iframeDoc.addEventListener('mousedown', updateUserActivity);
-          iframeDoc.addEventListener('keypress', updateUserActivity);
-          iframeDoc.addEventListener('scroll', updateUserActivity);
-          iframeDoc.addEventListener('click', updateUserActivity);
-          iframeDoc.addEventListener('touchstart', updateUserActivity);
-        }
-      } catch {
-        // Cross-origin iframe - events won't be captured
-        // You may need to add a script inside the iframe itself to handle this
-        console.warn('Cannot access iframe content - cross-origin restriction');
+    try {
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+      if (iframeDoc) {
+        iframeDoc.addEventListener('mousedown', updateUserActivity);
+        iframeDoc.addEventListener('keypress', updateUserActivity);
+        iframeDoc.addEventListener('scroll', updateUserActivity);
+        iframeDoc.addEventListener('click', updateUserActivity);
+        iframeDoc.addEventListener('touchstart', updateUserActivity);
       }
+    } catch (error) {
+      console.warn(
+        'Cannot access iframe content - cross-origin restriction',
+        error,
+      );
     }
 
     return () => {
@@ -80,12 +95,8 @@ const FreeWorkspace = ({
           // Ignore cleanup errors
         }
       }
-
-      if (broadcastChannelRef.current) {
-        broadcastChannelRef.current.close();
-      }
     };
-  }, []);
+  }, [jupyterReady]);
 
   if (loadError) {
     return (
@@ -121,6 +132,7 @@ const FreeWorkspace = ({
         className="min-h-0 flex-1 border-0"
         onLoad={() => {
           setLoading(false);
+          setJupyterReady(true);
           onReady?.();
         }}
         onError={() => {

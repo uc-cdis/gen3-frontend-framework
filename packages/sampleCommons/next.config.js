@@ -86,35 +86,16 @@ const nextConfig = {
     };
 
     if (isDev) {
-      // More aggressive caching
-      config.cache = {
-        type: 'filesystem',
-        buildDependencies: {
-          config: [__filename],
-        },
-      };
-
       config.watchOptions = {
         ...(config.watchOptions || {}),
-        ignored: [
-          '**/.next/**',
-          '**/dist/**',
-          '**/.swc/**',
-          '**/node_modules/**',
-          '**/.git/**',
-          '**/coverage/**',
-          '**/.storybook/**',
-          '**/storybook-static/**',
-          '**/*.test.ts',
-          '**/*.test.tsx',
-          '**/*.spec.ts',
-          '**/*.spec.tsx',
-        ],
+        // Exclude @gen3 local packages so file-level changes trigger HMR
+        ignored: /node_modules[/\\](?!@gen3[/\\])/,
       };
 
-      // Reduce module resolution work
+      // Exclude local @gen3 packages from managed-path snapshotting so webpack
+      // watches individual file changes instead of package.json version bumps.
       config.snapshot = {
-        managedPaths: [/^(.+?[\\/]node_modules[\\/])/],
+        managedPaths: [/^(.+?[\\/]node_modules[\\/])(?!@gen3[\\/])/],
         immutablePaths: [],
       };
     }
