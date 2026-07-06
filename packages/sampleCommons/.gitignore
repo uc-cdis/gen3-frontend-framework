@@ -43,4 +43,3 @@ next-env.d.ts
 
 # generated files
 *middleware.ts
-*proxy.ts
