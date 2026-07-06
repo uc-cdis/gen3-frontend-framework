@@ -26,6 +26,8 @@ export const FormContentViews = ({
   onSubmit,
   isLoading,
 }: FormContentViewsProps) => {
+  console.log('formBody', formBody);
+  console.log('config', config);
   if (isLoading) {
     return (
       <Center h="50vh">
