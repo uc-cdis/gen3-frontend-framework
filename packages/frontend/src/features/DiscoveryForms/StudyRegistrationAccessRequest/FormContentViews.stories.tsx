@@ -1,6 +1,6 @@
 // FormContentViews.stories.tsx
 import React from 'react';
-import type { Meta } from '@storybook/react';
+import type { Meta } from '@storybook/nextjs';
 import { FormContentViews } from './FormContentViews';
 import { FormOutcome } from './types';
 
