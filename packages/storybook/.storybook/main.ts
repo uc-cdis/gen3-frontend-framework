@@ -1,13 +1,21 @@
 // This file has been automatically migrated to valid ESM format by Storybook.
-import { fileURLToPath } from "node:url";
-import { createRequire } from "node:module";
-import { dirname } from "node:path";
+import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
+import { dirname } from 'node:path';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 import path from 'path';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 import webpack from 'webpack';
 import type { StorybookConfig } from '@storybook/nextjs';
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 const require = createRequire(import.meta.url);
 
 const config: StorybookConfig = {
@@ -15,6 +23,7 @@ const config: StorybookConfig = {
     '../../frontend/src/components/**/*.stories.@(js|jsx|mjs|ts|tsx)',
     '../../frontend/src/features/**/*.stories.@(js|jsx|mjs|ts|tsx)',
     '../../frontend/src/pages/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+    '../../workspaces/src/components/**/*.stories.@(js|jsx|mjs|ts|tsx)',
   ],
   addons: [
     getAbsolutePath('@storybook/addon-onboarding'),
@@ -59,11 +68,25 @@ const config: StorybookConfig = {
       use: ['@svgr/webpack'],
     });
 
+    // @storybook/nextjs aliases react to next/dist/compiled/react (a canary build).
+    // Remove the non-exact prefix aliases so they don't shadow our explicit overrides below.
+    if (config.resolve?.alias && !Array.isArray(config.resolve.alias)) {
+      delete (config.resolve.alias as Record<string, string>)['react'];
+      delete (config.resolve.alias as Record<string, string>)['react-dom'];
+    }
+
     config.resolve = {
       ...config.resolve,
       alias: {
         ...config.resolve?.alias,
         'next/router': 'next-router-mock',
+        // Pin all react/react-dom imports to the project's installed versions (19.2.6),
+        // not the canary build bundled with Next.js.
+        react$: require.resolve('react'),
+        'react/jsx-runtime': require.resolve('react/jsx-runtime'),
+        'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime'),
+        'react-dom$': require.resolve('react-dom'),
+        'react-dom/client': require.resolve('react-dom/client'),
       },
     };
 

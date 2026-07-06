@@ -10,6 +10,8 @@ packages/sampleCommons/node_modules
 packages/sampleCommons/.next
 packages/sampleCommons/.swc
 packages/storybook
+packages/workspaces/node_modules
+packages/workspaces/dist
 .git
 .nx
 docs

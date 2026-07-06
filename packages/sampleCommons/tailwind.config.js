@@ -14,6 +14,7 @@ module.exports = {
     './src/components/**/*.{js,ts,jsx,tsx}',
     './src/features/**/*.{js,ts,jsx,tsx}',
     '../frontend/src/**/*.{js,ts,jsx,tsx}',
+    '../workspaces/src/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {

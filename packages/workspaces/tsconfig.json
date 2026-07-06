@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist/dts",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "emitDeclarationOnly": false,
+    "allowJs": true,
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "resolveJsonModule": true,
+    "incremental": true,
+    "noEmitOnError": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "ESNext",
+      "moduleResolution": "Node",
+      "sourceMap": true
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}

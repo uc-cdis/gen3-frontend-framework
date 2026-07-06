@@ -6,7 +6,7 @@ import { getWebTokenErrorResponse } from './errorHandler';
 import { fetchJWTKey } from '../../lib/auth/utils';
 
 /**
- * Credentials login set up a access_token cookie. This is used to authenticate the user
+ * Credentials login set up an access_token cookie. This is used to authenticate the user
  * Note that in development mode, the access token is stored in a cookie but in production
  * it should be stored in a secure httpOnly cookie.
  * @param req - NextApiRequest

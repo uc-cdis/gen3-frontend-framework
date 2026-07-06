@@ -1,8 +1,5 @@
 import { ReactElement } from 'react';
-import {
-  StylingMergeMode,
-  StylingOverrideWithMergeControl,
-} from '../../../types';
+import { StylingOverrideWithMergeControl } from '../../../types';
 
 export interface ColumnLinks {
   heading: string;
@@ -78,4 +75,5 @@ export interface FooterProps {
   leftSection?: FooterSectionProps;
   classNames?: StylingOverrideWithMergeControl;
   customFooter?: ReactElement;
+  hideFooter?: boolean;
 }
