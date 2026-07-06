@@ -11,7 +11,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 export function useCodeInjector() {
   const [iframeReady, setIframeReady] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
-  const lastEditorRef = useRef<any>(null);
+  const lastEditorRef = useRef<HTMLElement | null>(null);
 
   // Poll for the JupyterLab iframe and cache the active editor view
   useEffect(() => {
@@ -28,9 +28,11 @@ export function useCodeInjector() {
           if (doc) {
             const activeCell = doc.querySelector('.jp-Cell.jp-mod-active');
             if (activeCell) {
-              const cmContent = activeCell.querySelector('.cm-content') as any;
+              const cmContent = activeCell.querySelector('.cm-content');
               const view = cmContent?.cmView?.view;
-              if (view) lastEditorRef.current = view;
+              if (view) {
+                lastEditorRef.current = view;
+              }
             }
           }
         } catch {
@@ -48,19 +50,21 @@ export function useCodeInjector() {
 
   const insertCode = useCallback((code: string): boolean => {
     // Re-acquire iframe if the cached reference is detached
-    const iframe =
-      iframeRef.current?.isConnected
-        ? iframeRef.current
-        : document.querySelector<HTMLIFrameElement>('iframe[src*="/lab"]');
+    const iframe = iframeRef.current?.isConnected
+      ? iframeRef.current
+      : document.querySelector<HTMLIFrameElement>('iframe[src*="/lab"]');
     if (!iframe) return false;
 
     try {
-      const iframeDoc = iframe.contentDocument ?? iframe.contentWindow?.document;
+      const iframeDoc =
+        iframe.contentDocument ?? iframe.contentWindow?.document;
       if (!iframeDoc) return false;
 
       // Strategy 1: Find active cell's CodeMirror 6 editor view
       const activeCell = iframeDoc.querySelector('.jp-Cell.jp-mod-active');
-      const cmContent = (activeCell ?? iframeDoc).querySelector('.cm-content') as HTMLElement | null;
+      const cmContent = (activeCell ?? iframeDoc).querySelector(
+        '.cm-content',
+      ) as HTMLElement | null;
 
       let cmView: any = null;
       if (cmContent) {
@@ -105,10 +109,13 @@ export function useCodeInjector() {
       }
 
       // Strategy 2: Find any focused textarea (JupyterLite or classic notebook)
-      const textarea = iframeDoc.querySelector('textarea:focus') as HTMLTextAreaElement | null;
+      const textarea = iframeDoc.querySelector(
+        'textarea:focus',
+      ) as HTMLTextAreaElement | null;
       if (textarea) {
         const start = textarea.selectionStart ?? textarea.value.length;
-        textarea.value = textarea.value.slice(0, start) + code + textarea.value.slice(start);
+        textarea.value =
+          textarea.value.slice(0, start) + code + textarea.value.slice(start);
         textarea.selectionStart = textarea.selectionEnd = start + code.length;
         textarea.dispatchEvent(new Event('input', { bubbles: true }));
         return true;

@@ -29,7 +29,7 @@ export const jegGatewayApi = GatewayWithTags.injectEndpoints({
     }),
     jegGatewayStatus: builder.query<boolean, void>({
       query: () => `${GEN3_JEG_GATEWAY_API}/status`,
-      transformResponse: (response: Record<string, any>, _meta, tag) => {
+      transformResponse: (response: Record<string, unknown>, _meta) => {
         const data = response as { enabled?: boolean };
         return data?.enabled ?? false;
       },

@@ -20,11 +20,7 @@ interface WorkspaceLayoutProps {
   toolbarExtra?: ReactNode;
 }
 
-const WorkspaceLayout = ({
-  children,
-  className, // TODO: add support for className
-  toolbarExtra,
-}: WorkspaceLayoutProps) => {
+const WorkspaceLayout = ({ children }: WorkspaceLayoutProps) => {
   const workspaceTier = useCoreSelector(
     (state: CoreState) => selectWorkspaceTier(state) as WorkspaceTier | null,
   );

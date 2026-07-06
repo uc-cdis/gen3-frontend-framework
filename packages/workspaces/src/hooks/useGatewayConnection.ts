@@ -344,7 +344,7 @@ export function useGatewayConnection({
 
     void restoreFromGateway();
     return () => restoreController.abort();
-  }, []);
+  }, []); // only on mount
 
   /* ── Visibility-change handler ──────────────────────────────────── */
 

@@ -123,6 +123,11 @@ export const useJEGWorkspaceResourceMonitor = (
   }, [requestedStatus]);
 
   useDeepCompareEffect(() => {
+    // TODO: add better error logging
+    console.log('useJEGWorkspaceResourceMonitor', error);
+  }, [error]);
+
+  useDeepCompareEffect(() => {
     if (!workspaceStatusData) return;
     // LaunchError is set client-side by the launch() call and cleared by the
     // auto-reset timer in the panel.  Polling data must not override it or the
@@ -264,5 +269,6 @@ export const useJEGWorkspaceResourceMonitor = (
     dispatch,
     workspaceStatusData,
     workspaceId,
+    terminateWorkspace,
   ]);
 };

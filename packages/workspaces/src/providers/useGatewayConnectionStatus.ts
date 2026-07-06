@@ -27,7 +27,6 @@ export function useGatewayConnectionStatus() {
     data: gatewayStatusData,
     isFetching: isGatewayFetching,
     isError,
-    error: gatewayError,
   } = useJegGatewayStatusQuery();
 
   const gatewayServiceStatus = useMemo(() => {

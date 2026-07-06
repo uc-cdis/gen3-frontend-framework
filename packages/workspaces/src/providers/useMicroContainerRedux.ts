@@ -114,6 +114,11 @@ export function useMicroContainerRedux(
           : 'Error stopping workspace',
       );
 
+      console.error(
+        'useMicroContainerRedux (workspace launch or terminate)',
+        errorMessage,
+      );
+
       if (isWorkspaceLaunchError) {
         coreDispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.LaunchError));
       } else {
@@ -151,6 +156,7 @@ export function useMicroContainerRedux(
           setJEGActiveWorkspaceId({ id: containerHash ?? 'default' }),
         );
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error: unknown) {
       coreDispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.LaunchError));
     }

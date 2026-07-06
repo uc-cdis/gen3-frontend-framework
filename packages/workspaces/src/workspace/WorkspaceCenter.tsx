@@ -27,7 +27,7 @@ export type WorkspaceAuthContext = {
 const WorkspaceCenter = ({
   workspaces,
   landingPage,
-  tierConfiguration,
+  _tierConfiguration,
 }: WorkspacesCenterConfiguration) => {
   // get the workspace tier from the core store allowing persistent state across page reloads and navigation changes
   const workspaceTier = useCoreSelector((state: CoreState) =>
@@ -40,12 +40,7 @@ const WorkspaceCenter = ({
     coreDispatch(setWorkspaceTier(tier));
   };
 
-  const {
-    data: userData,
-    isFetching,
-    isUninitialized,
-    loginStatus,
-  } = useUserAuth(false);
+  const { data: userData } = useUserAuth(false);
 
   const isDevelopment = process.env.NODE_ENV !== 'production';
 
