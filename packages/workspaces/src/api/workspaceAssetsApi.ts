@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { createWorkspaceAssetsHandler } from '../server';
+import { createWorkspaceAssetsHandler } from '../server/workspaceAssetsHandler';
 import { GEN3_COMMONS_NAME } from '@gen3/core';
 
 const upstreamHandler = createWorkspaceAssetsHandler({

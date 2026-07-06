@@ -66,7 +66,11 @@ const external = [
   'next/link',
   'next/image',
   '@gen3/core/server',
+  '@gen3/frontend/server',
   '@tanstack/react-table',
+  'react-icons/md',
+  'react-icons/io5',
+  'react-icons/bs',
 ];
 
 const jsBundle = (input, baseName, additionalExternal) => ({
