@@ -124,7 +124,9 @@ export const useJEGWorkspaceResourceMonitor = (
 
   useDeepCompareEffect(() => {
     // TODO: add better error logging
-    console.log('useJEGWorkspaceResourceMonitor', error);
+    if (error) {
+      console.log('useJEGWorkspaceResourceMonitor', error);
+    }
   }, [error]);
 
   useDeepCompareEffect(() => {

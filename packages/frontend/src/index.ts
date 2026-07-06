@@ -141,6 +141,7 @@ import PanelErrorBoundary from './components/PanelErrorBoundary';
 import NavigationRail, {
   NavigationRailItem,
 } from './components/NavigationRail';
+import { ACTIVITY_CHANNEL } from './lib/session/constants';
 
 export * from './components/Profile';
 export * from './components/Login';
@@ -194,7 +195,7 @@ export {
   NavigationRail,
   type InfoRolloverButtonProps,
   InfoRolloverButton,
-
+  ACTIVITY_CHANNEL,
   // Pages
   type QueryConfiguration,
   type QueryPageLayoutProps,
