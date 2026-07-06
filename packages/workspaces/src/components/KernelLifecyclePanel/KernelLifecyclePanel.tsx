@@ -92,14 +92,8 @@ const KernelLifecyclePanel = ({
   } = useKernalSpecsQuery();
 
   // get the function to launch kernels
-  const [
-    launchKernel,
-    {
-      isLoading: isLaunchingLoading,
-      isError: isLaunchingError,
-      isSuccess: isLaunchingSuccess,
-    },
-  ] = useLaunchKernelMutation();
+  const [launchKernel, { isLoading: isLaunchingLoading }] =
+    useLaunchKernelMutation();
 
   const handleLaunchKernel = async (kernelName: string) => {
     try {

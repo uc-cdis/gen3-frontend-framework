@@ -77,7 +77,7 @@ const REMOTE_DISABLED_EXTENSIONS = [
 // ---------- helpers ----------
 
 const ASSETS_ROOT_PATH =
-  process.env.JUPYTER_ASSETS_ROOT_PATH || '/gen3/workspaces/assets';
+  process.env.JUPYTER_ASSETS_ROOT_PATH || '/gen3/jupyter-workspaces/assets';
 
 function defaultAssetRoot(): string {
   return ASSETS_ROOT_PATH.startsWith('/')
