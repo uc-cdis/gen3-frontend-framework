@@ -14,11 +14,7 @@ import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwind
 import { useSession } from '../../lib/session/session';
 import { useProtectedRoutesContext } from '../../components/AuthorizedRoutes/ProtectedRoutesProvider';
 import { useGetAuthzResourcesQuery } from '@gen3/core';
-import {
-  useDeepCompareCallback,
-  useDeepCompareEffect,
-  useDeepCompareMemo,
-} from 'use-deep-compare';
+import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
 
 interface NavigationBarItemProps {
   item: NavigationButtonProps;
@@ -109,22 +105,18 @@ const useNavigationItems = (
   authState: ReturnType<typeof useAuthorizationState>,
   current: string,
 ) => {
-  const {
-    loggedIn,
-    pending,
-    resources,
-    routesConfig,
-    isAuthzResourcesFetching,
-  } = authState;
+  const { loggedIn, pending, resources, routesConfig } = authState;
 
-  const createNavigationItems = useDeepCompareCallback(() => {
+  // Exclude isAuthzResourcesFetching from deps: nav items should only rebuild
+  // when actual auth data changes (resources, loggedIn), not on every fetch cycle.
+  return useDeepCompareMemo(() => {
     return items.map((item, index) => {
       const linkAuthStatus = checkRouteAccess(
         item.href,
         resources,
         routesConfig,
         loggedIn,
-        pending || isAuthzResourcesFetching,
+        pending,
       );
 
       if (
@@ -148,7 +140,6 @@ const useNavigationItems = (
   }, [
     current,
     hideUnauthorizedLinks,
-    isAuthzResourcesFetching,
     items,
     loggedIn,
     mergedClassnames,
@@ -156,16 +147,6 @@ const useNavigationItems = (
     resources,
     routesConfig,
   ]);
-
-  const [navigationItems, setNavigationItems] = useState(createNavigationItems);
-
-  useDeepCompareEffect(() => {
-    if (authState.isAuthzResourcesSuccess) {
-      setNavigationItems(createNavigationItems());
-    }
-  }, [authState.isAuthzResourcesSuccess, authState.loggedIn]);
-
-  return navigationItems;
 };
 
 const NavigationBar = ({
