@@ -7,6 +7,7 @@ type OverflowTooltippedLabelProps = {
   className?: string;
   color?: string;
   tooltipClassNames?: typeof DEFAULT_TOOLTIP_CLASSNAMES;
+  noTruncate?: boolean;
 };
 
 const DEFAULT_TOOLTIP_CLASSNAMES = {
@@ -20,6 +21,7 @@ const OverflowTooltippedLabel = ({
   label,
   className = 'flex-grow font-heading text-md pt-0.5',
   color = 'base-min',
+  noTruncate = false,
 }: OverflowTooltippedLabelProps): JSX.Element => {
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -47,7 +49,7 @@ const OverflowTooltippedLabel = ({
       }}
     >
       <div
-        className={`${className} truncate ... `}
+        className={`${className} ${noTruncate ? '' : 'truncate ...'}`}
         ref={(el) => {
           if (el) {
             if (el.clientWidth < el.scrollWidth) {
