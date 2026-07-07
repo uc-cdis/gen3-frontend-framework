@@ -135,17 +135,13 @@ const FormContent = ({
           label={label}
           description={description}
           required={required}
+          disabled={disabled || form.submitting}
           key={form.key(keyString)}
           {...form.getInputProps(keyString)}
         >
           <Stack mt="xs" gap="xs">
             {radioOptions.map((option) => (
-              <Radio
-                key={option}
-                value={option}
-                label={option}
-                disabled={disabled || form.submitting}
-              />
+              <Radio key={option} value={option} label={option} />
             ))}
           </Stack>
         </Radio.Group>
