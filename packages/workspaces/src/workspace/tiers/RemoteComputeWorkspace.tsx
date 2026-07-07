@@ -8,11 +8,11 @@ import React, {
 import type { WorkspaceAuthContext } from '../../auth/auth';
 import { generateScopedNotebookPath } from './utils';
 import { Button, Card, Loader, Text } from '@mantine/core';
-import { getCookie } from 'cookies-next';
 import MicroContainerReduxPanel from '../../components/MicroContainerReduxPanel';
 import { useMicroContainerReduxContext } from '../../providers/MicroContainerReduxProvider';
 import { WorkspaceStatus } from '@gen3/core';
 import { type RemoteComputeWorkspaceHandle } from './types';
+import { ACTIVITY_CHANNEL } from '@gen3/frontend';
 
 export type RemoteComputeWorkspaceProps = {
   assetBaseUrl?: string;
@@ -50,6 +50,7 @@ const RemoteComputeWorkspace = React.memo(
       const [retryCount, setRetryCount] = useState(0);
       const [jupyterReady, setJupyterReady] = useState(false);
       const iframeRef = useRef<HTMLIFrameElement | null>(null);
+      const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
       const { status } = useMicroContainerReduxContext();
 
       const normalizedBase = assetBaseUrl.replace(/\/$/, '');
@@ -72,13 +73,82 @@ const RemoteComputeWorkspace = React.memo(
         scopedNotebookPath = `/workspace/${userHash}/${notebookName}.ipynb`;
       }
 
-      let accessToken = undefined;
-      if (process.env.NODE_ENV === 'development') {
-        // NOTE: This cookie can only be accessed from the client side
-        // in development mode. Otherwise, the cookie is set as httpOnly
-        accessToken = getCookie('credentials_token');
-      }
+      // let accessToken = undefined;
+      // if (process.env.NODE_ENV === 'development') {
+      //   // NOTE: This cookie can only be accessed from the client side
+      //   // in development mode. Otherwise, the cookie is set as httpOnly
+      //   accessToken = getCookie('credentials_token');
+      // }
 
+      // set up BroadcastChannel
+      useEffect(() => {
+        if (!broadcastChannelRef?.current) {
+          broadcastChannelRef.current = new BroadcastChannel(ACTIVITY_CHANNEL);
+        }
+
+        return () => {
+          if (broadcastChannelRef.current) {
+            broadcastChannelRef.current.close();
+            broadcastChannelRef.current = null;
+          }
+        };
+      }, []);
+
+      // Handle setting up iframe event listeners
+      useEffect(() => {
+        if (!jupyterReady) return;
+
+        const updateUserActivity = () => {
+          const timestamp = Date.now();
+          if (broadcastChannelRef.current) {
+            broadcastChannelRef.current.postMessage({
+              type: 'activity-update',
+              timestamp,
+            });
+          }
+        };
+
+        const iframe = iframeRef.current;
+        if (!iframe?.contentWindow) {
+          return;
+        }
+
+        try {
+          const iframeDoc =
+            iframe.contentDocument || iframe.contentWindow.document;
+
+          if (iframeDoc) {
+            iframeDoc.addEventListener('mousedown', updateUserActivity);
+            iframeDoc.addEventListener('keypress', updateUserActivity);
+            iframeDoc.addEventListener('scroll', updateUserActivity);
+            iframeDoc.addEventListener('click', updateUserActivity);
+            iframeDoc.addEventListener('touchstart', updateUserActivity);
+          }
+        } catch (error) {
+          console.warn(
+            'Cannot access iframe content - cross-origin restriction',
+            error,
+          );
+        }
+
+        return () => {
+          if (iframe?.contentWindow) {
+            try {
+              const iframeDoc =
+                iframe.contentDocument || iframe.contentWindow.document;
+              if (iframeDoc) {
+                iframeDoc.removeEventListener('mousedown', updateUserActivity);
+                iframeDoc.removeEventListener('keypress', updateUserActivity);
+                iframeDoc.removeEventListener('scroll', updateUserActivity);
+                iframeDoc.removeEventListener('click', updateUserActivity);
+                iframeDoc.removeEventListener('touchstart', updateUserActivity);
+              }
+            } catch {
+              // Ignore cleanup errors
+            }
+          }
+        };
+      }, [jupyterReady]);
       /* ---- Wait for JupyterLite app inside the iframe --------------- */
 
       useEffect(() => {
@@ -279,6 +349,7 @@ const RemoteComputeWorkspace = React.memo(
               className="min-h-0 flex-1 border-0"
               onLoad={() => {
                 setLoading(false);
+                setJupyterReady(true);
               }}
               onError={() => {
                 setLoadError(true);

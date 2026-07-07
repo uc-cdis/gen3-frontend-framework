@@ -42,7 +42,7 @@ export interface WorkspaceAssetsHandlerOptions {
 
 const ALLOWED_TIERS = new Set(['free', 'remote']);
 
-const SAFE_SEGMENT_RE = /^[A-Za-z0-9._-]+$/;
+const SAFE_SEGMENT_RE = /^@?[A-Za-z0-9._-]+$/;
 
 const MIME_TYPES: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
@@ -207,8 +207,13 @@ function injectBranding(html: string, branding: BrandingConfig): string {
       let existing: Record<string, unknown> = {};
       try {
         existing = JSON.parse(existingJson);
-      } catch {
+      } catch (error: unknown) {
         // empty or malformed — start fresh
+        if (error instanceof Error) {
+          console.log('Failed to parse existing JSON', error.message);
+        } else {
+          console.log('Failed to parse existing JSON', error);
+        }
       }
       if (branding.appName) existing.appName = branding.appName;
       if (branding.faviconUrl) existing.faviconUrl = branding.faviconUrl;
@@ -306,6 +311,7 @@ export function createWorkspaceAssetsHandler(
         seg === '.' ||
         seg === '..'
       ) {
+        console.log(`Forbidden segment: ${seg}`);
         res.status(403).end('Forbidden');
         return;
       }
