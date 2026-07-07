@@ -127,8 +127,8 @@ const FormContent = ({
       const radioOptions = Array.isArray(text) ? text : text ? [text] : [];
       const RadioGroupElement = (
         <Radio.Group
-          className={className}
           classNames={{
+            root: className,
             label: 'text-sm font-bold',
             description: 'text-sm text-[var(--mantine-color-text)]',
           }}
