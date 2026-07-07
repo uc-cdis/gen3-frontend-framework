@@ -93,6 +93,7 @@ const NavigationBar = ({
     data: resources,
     error: authzResourceError,
     isFetching: isAuthzResourcesFetching,
+    isSuccess: isAuthzResourcesSuccess,
     isError: isAuthzResourcesError,
     refetch,
   } = useGetAuthzResourcesQuery();
@@ -133,14 +134,14 @@ const NavigationBar = ({
         />
       );
     });
-  }
+  };
 
   const [itemsToRender, setItemsToRender] = useState(itemsToRenderSetup);
-  useEffect(() => {
-    if (!isAuthzResourcesFetching) {
+  useDeepCompareEffect(() => {
+    if (isAuthzResourcesSuccess) {
       setItemsToRender(itemsToRenderSetup());
     }
-  }, [isAuthzResourcesFetching]);
+  }, [isAuthzResourcesSuccess, itemsToRenderSetup, status]);
 
   return (
     <div
@@ -158,6 +159,7 @@ const NavigationBar = ({
           mergedClassnames,
         )}`}
       >
+        <LoadingOverlay visible={isAuthzResourcesFetching} />
         {itemsToRender}
       </div>
     </div>

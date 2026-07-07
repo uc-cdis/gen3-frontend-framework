@@ -4,23 +4,31 @@
 FROM --platform=$BUILDPLATFORM node:24.15.0-alpine3.23 AS builder
 WORKDIR /gen3
 
-WORKDIR /gen3
-
-# 1. Install only what is needed for dependency installation & build
-# Copy only package manifests first to maximize Docker cache
+# Copy root manifests first to maximize npm install cache hits
 COPY package.json package-lock.json lerna.json ./
+
+# Copy only package manifests (not source) from each workspace so that
+# npm ci is only re-run when dependencies change, not on source changes
+COPY packages/core/package.json        packages/core/
+COPY packages/frontend/package.json    packages/frontend/
+COPY packages/tools/package.json       packages/tools/
+COPY packages/sampleCommons/package.json packages/sampleCommons/
+COPY packages/workspaces/package.json  packages/workspaces/
+
+# Install dependencies using the locked versions from package-lock.json.
+# lerna is in devDependencies so no global install is needed.
+# Cache mount avoids re-downloading packages on repeated builds.
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --include=optional
+
+# Copy source after install so the install layer stays cached on source-only changes
 COPY packages ./packages
 
-# Install lerna globally and dependencies (using CI-friendly, deterministic install)
-RUN npm install --location=global lerna@^9.0.7 \
-    && npm ci --include=optional
-
-# Build monorepo (including sampleCommons)
-RUN NODE_OPTIONS="--max-old-space-size=4096" lerna run build
-
-# If start.sh is needed only at runtime, don't keep it here.
-# If you need it for build, copy it here and later again to runtime:
-COPY start.sh ./start.sh
+# Build only sampleCommons and its dependencies — storybook/workspaces are not needed
+RUN NODE_OPTIONS="--max-old-space-size=4096" \
+    ./node_modules/.bin/lerna run build \
+    --scope=@gen3/samplecommons \
+    --include-dependencies
 
 # ─────────────────────────────────────────────
 # Production stage
@@ -43,8 +51,8 @@ COPY --from=builder --chown=nextjs:nextjs /gen3/packages/sampleCommons/.next/sta
   ./packages/sampleCommons/.next/static
 COPY --from=builder --chown=nextjs:nextjs /gen3/packages/sampleCommons/config ./packages/sampleCommons/config
 COPY --from=builder --chown=nextjs:nextjs /gen3/packages/sampleCommons/public ./packages/sampleCommons/public
-# only copy if exist
-# Copy jupyter assets only if they exist in the builder stage.
+
+# Copy jupyter assets only if they exist in the builder stage
 RUN --mount=from=builder,source=/gen3/packages/sampleCommons,target=/tmp/sampleCommons,readonly \
     if [ -d /tmp/sampleCommons/workspaces ]; then \
       mkdir -p ./packages/sampleCommons; \
@@ -52,8 +60,8 @@ RUN --mount=from=builder,source=/gen3/packages/sampleCommons,target=/tmp/sampleC
       chown -R nextjs:nextjs ./packages/sampleCommons/workspaces; \
     fi
 
-# Copy runtime script
-COPY --from=builder --chown=nextjs:nextjs /gen3/start.sh ./start.sh
+# Copy runtime script directly from build context (no need to stage through builder)
+COPY --chown=nextjs:nextjs start.sh ./start.sh
 
 # Prepare mount points for config and public assets
 #VOLUME /gen3/config
