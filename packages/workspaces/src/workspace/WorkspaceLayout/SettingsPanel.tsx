@@ -36,7 +36,7 @@ export const SettingsPanel = ({
       expanded={expanded}
       setExpanded={setExpanded}
       rightSide
-      expandedWidth={400}
+      expandedWidth={380}
     >
       <Stack gap="sm" className={PanelStyle}>
         {showKernels && <KernelLifecyclePanel />}

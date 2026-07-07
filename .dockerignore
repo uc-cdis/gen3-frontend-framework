@@ -16,3 +16,9 @@ packages/workspaces/dist
 .nx
 docs
 .npmrc
+*.log
+*.md
+.github
+**/__tests__
+**/*.test.ts
+**/*.spec.ts

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { NameAndIcon } from '../types';
 import { NextRouter, useRouter } from 'next/router';
 import { usePathname } from 'next/navigation';
@@ -19,9 +19,18 @@ const handleSelected = async (
   endSession?: () => void,
   externalLoginUrl?: string,
 ) => {
-  if (!isAuthenticated)
-    await router.push(externalLoginUrl || `/Login?redirect=${referrer}`);
-  else {
+  if (!isAuthenticated) {
+    const redirect = referrer === '/Login' ? '/' : referrer;
+    const targetUrl = externalLoginUrl || `/Login?redirect=${redirect}`;
+
+    // Check if we're already on the target URL (or on /Login page)
+    const currentPath = router.asPath;
+    if (currentPath === targetUrl || referrer === '/Login') {
+      return;
+    }
+
+    await router.push(targetUrl);
+  } else {
     if (endSession) endSession();
   }
 };
@@ -58,7 +67,7 @@ export const LoginButton = ({
 
   useEffect(() => {
     if (userStatus === 'pending') {
-      return
+      return;
     }
     const tempIsAuth = isAuthenticated(userStatus);
     if (tempIsAuth != authenticated) {

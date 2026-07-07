@@ -311,7 +311,6 @@ export function createWorkspaceAssetsHandler(
         seg === '.' ||
         seg === '..'
       ) {
-        console.log(`Forbidden segment: ${seg}`);
         res.status(403).end('Forbidden');
         return;
       }

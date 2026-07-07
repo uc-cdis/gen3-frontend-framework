@@ -206,7 +206,7 @@ const RemoteComputeWorkspace = React.memo(
             if (app?.status === 'ready' || app?.started) {
               setJupyterReady(true);
               onReady?.();
-              console.log('JupyterLite app is ready');
+              console.log('Remote kernel JupyterLite app is ready');
               return;
             }
           } catch (error: unknown) {
