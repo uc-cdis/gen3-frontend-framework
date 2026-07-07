@@ -14,7 +14,11 @@ import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwind
 import { useSession } from '../../lib/session/session';
 import { useProtectedRoutesContext } from '../../components/AuthorizedRoutes/ProtectedRoutesProvider';
 import { useGetAuthzResourcesQuery } from '@gen3/core';
-import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
+import {
+  useDeepCompareCallback,
+  useDeepCompareEffect,
+  useDeepCompareMemo,
+} from 'use-deep-compare';
 
 interface NavigationBarItemProps {
   item: NavigationButtonProps;
@@ -63,38 +67,24 @@ const NavigationBarItem = ({
  * @param {boolean} hideUnauthorizedLinks - Hist navigation items that the user is not authorized to access. Defaults to false.
  * @returns {ReactElement} The rendered NavigationBar component
  */
-const NavigationBar = ({
-  logo = undefined,
-  title = undefined,
-  items = [],
-  classNames = {},
-  hideUnauthorizedLinks = false,
-}: NavigationProps): ReactElement => {
-  const classNamesDefaults = {
-    root: 'flex bg-base-max border-b-1 border-base-dark',
-    navigationPanel: 'font-heading',
-    logoAndTitlePanel: 'flex justify-center items-center align-middle',
-    buttons: '',
-    login:
-      'pl-1 mr-6 bg-base-max text-base-contrast opacity-80 hover:opacity-100',
-  };
+const DEFAULT_CLASSNAMES = {
+  root: 'flex bg-base-max border-b-1 border-base-dark',
+  navigationPanel: 'font-heading',
+  logoAndTitlePanel: 'flex justify-center items-center align-middle',
+  buttons: '',
+  login:
+    'pl-1 mr-6 bg-base-max text-base-contrast opacity-80 hover:opacity-100',
+};
 
-  const mergedClassnames = mergeDefaultTailwindClassnames(
-    classNamesDefaults,
-    classNames,
-  );
-
-  const { status, pending } = useSession(false); // no redirect side-effects here
-  const loggedIn = useDeepCompareMemo(() => {
-    return status === 'issued';
-  }, [status]);
+const useAuthorizationState = () => {
+  const { status, pending } = useSession(false);
+  const loggedIn = useDeepCompareMemo(() => status === 'issued', [status]);
   const routesConfig = useProtectedRoutesContext();
+
   const {
     data: resources,
-    error: authzResourceError,
     isFetching: isAuthzResourcesFetching,
     isSuccess: isAuthzResourcesSuccess,
-    isError: isAuthzResourcesError,
     refetch,
   } = useGetAuthzResourcesQuery();
 
@@ -102,31 +92,52 @@ const NavigationBar = ({
     if (!pending) refetch();
   }, [status, pending]);
 
-  const router = useRouter();
-  const [current, setCurrent] = useState(router.pathname);
-  useEffect(() => {
-    setCurrent(router.asPath);
-  }, [router.asPath]);
+  return {
+    loggedIn,
+    pending,
+    resources: resources?.resources ?? [],
+    routesConfig,
+    isAuthzResourcesFetching,
+    isAuthzResourcesSuccess,
+  };
+};
 
-  const itemsToRenderSetup = () => {
-    return items.map((x, index) => {
+const useNavigationItems = (
+  items: NavigationButtonProps[],
+  hideUnauthorizedLinks: boolean,
+  mergedClassnames: Record<string, string>,
+  authState: ReturnType<typeof useAuthorizationState>,
+  current: string,
+) => {
+  const {
+    loggedIn,
+    pending,
+    resources,
+    routesConfig,
+    isAuthzResourcesFetching,
+  } = authState;
+
+  const createNavigationItems = useDeepCompareCallback(() => {
+    return items.map((item, index) => {
       const linkAuthStatus = checkRouteAccess(
-        x.href,
-        resources?.resources ?? [],
+        item.href,
+        resources,
         routesConfig,
         loggedIn,
         pending || isAuthzResourcesFetching,
       );
+
       if (
         hideUnauthorizedLinks &&
         linkAuthStatus !== LinkAuthStatus.Authorized
       ) {
         return null;
       }
+
       return (
         <NavigationBarItem
-          key={`${x.name}-${index}`}
-          item={x}
+          key={`${item.name}-${index}`}
+          item={item}
           index={index}
           current={current}
           mergedClassnames={mergedClassnames}
@@ -134,14 +145,57 @@ const NavigationBar = ({
         />
       );
     });
-  };
+  }, [
+    current,
+    hideUnauthorizedLinks,
+    isAuthzResourcesFetching,
+    items,
+    loggedIn,
+    mergedClassnames,
+    pending,
+    resources,
+    routesConfig,
+  ]);
 
-  const [itemsToRender, setItemsToRender] = useState(itemsToRenderSetup);
+  const [navigationItems, setNavigationItems] = useState(createNavigationItems);
+
   useDeepCompareEffect(() => {
-    if (isAuthzResourcesSuccess) {
-      setItemsToRender(itemsToRenderSetup());
+    if (authState.isAuthzResourcesSuccess) {
+      setNavigationItems(createNavigationItems());
     }
-  }, [isAuthzResourcesSuccess, itemsToRenderSetup, status]);
+  }, [authState.isAuthzResourcesSuccess, authState.loggedIn]);
+
+  return navigationItems;
+};
+
+const NavigationBar = ({
+  logo = undefined,
+  title = undefined,
+  items = [],
+  classNames = {},
+  hideUnauthorizedLinks = false,
+}: NavigationProps): ReactElement => {
+  const mergedClassnames = mergeDefaultTailwindClassnames(
+    DEFAULT_CLASSNAMES,
+    classNames,
+  );
+
+  const authState = useAuthorizationState();
+
+  const router = useRouter();
+  const [current, setCurrent] = useState(router.pathname);
+
+  useEffect(() => {
+    setCurrent(router.asPath);
+  }, [router.asPath]);
+
+  const navigationItems = useNavigationItems(
+    items,
+    hideUnauthorizedLinks,
+    mergedClassnames,
+    authState,
+    current,
+  );
 
   return (
     <div
@@ -159,8 +213,7 @@ const NavigationBar = ({
           mergedClassnames,
         )}`}
       >
-        <LoadingOverlay visible={isAuthzResourcesFetching} />
-        {itemsToRender}
+        {navigationItems}
       </div>
     </div>
   );
