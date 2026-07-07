@@ -112,7 +112,6 @@ const Form = ({
       {showResetButton && (
         <Button
           className="ml-2"
-          type="button"
           variant="outline"
           onClick={form.reset}
           disabled={form.submitting}
