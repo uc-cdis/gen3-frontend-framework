@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import {
   LinkAuthStatus,
@@ -14,7 +14,6 @@ import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwind
 import { useSession } from '../../lib/session/session';
 import { useProtectedRoutesContext } from '../../components/AuthorizedRoutes/ProtectedRoutesProvider';
 import { useGetAuthzResourcesQuery } from '@gen3/core';
-import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
 
 interface NavigationBarItemProps {
   item: NavigationButtonProps;
@@ -74,7 +73,7 @@ const DEFAULT_CLASSNAMES = {
 
 const useAuthorizationState = () => {
   const { status, pending } = useSession(false);
-  const loggedIn = useDeepCompareMemo(() => status === 'issued', [status]);
+  const loggedIn = status === 'issued';
   const routesConfig = useProtectedRoutesContext();
 
   const {
@@ -84,9 +83,9 @@ const useAuthorizationState = () => {
     refetch,
   } = useGetAuthzResourcesQuery();
 
-  useDeepCompareEffect(() => {
+  useEffect(() => {
     if (!pending) refetch();
-  }, [status, pending]);
+  }, [status, pending, refetch]);
 
   return {
     loggedIn,
@@ -98,18 +97,29 @@ const useAuthorizationState = () => {
   };
 };
 
-const useNavigationItems = (
-  items: NavigationButtonProps[],
-  hideUnauthorizedLinks: boolean,
-  mergedClassnames: Record<string, string>,
-  authState: ReturnType<typeof useAuthorizationState>,
-  current: string,
-) => {
-  const { loggedIn, pending, resources, routesConfig } = authState;
+const NavigationBar = ({
+  logo = undefined,
+  title = undefined,
+  items = [],
+  classNames = {},
+  hideUnauthorizedLinks = false,
+}: NavigationProps): ReactElement => {
+  const mergedClassnames = mergeDefaultTailwindClassnames(
+    DEFAULT_CLASSNAMES,
+    classNames,
+  );
 
-  // Exclude isAuthzResourcesFetching from deps: nav items should only rebuild
-  // when actual auth data changes (resources, loggedIn), not on every fetch cycle.
-  return useDeepCompareMemo(() => {
+  const { loggedIn, pending, resources, routesConfig } =
+    useAuthorizationState();
+
+  const router = useRouter();
+  const [current, setCurrent] = useState(router.pathname);
+
+  useEffect(() => {
+    setCurrent(router.asPath);
+  }, [router.asPath]);
+
+  const navigationItems = useMemo(() => {
     return items.map((item, index) => {
       const linkAuthStatus = checkRouteAccess(
         item.href,
@@ -147,36 +157,6 @@ const useNavigationItems = (
     resources,
     routesConfig,
   ]);
-};
-
-const NavigationBar = ({
-  logo = undefined,
-  title = undefined,
-  items = [],
-  classNames = {},
-  hideUnauthorizedLinks = false,
-}: NavigationProps): ReactElement => {
-  const mergedClassnames = mergeDefaultTailwindClassnames(
-    DEFAULT_CLASSNAMES,
-    classNames,
-  );
-
-  const authState = useAuthorizationState();
-
-  const router = useRouter();
-  const [current, setCurrent] = useState(router.pathname);
-
-  useEffect(() => {
-    setCurrent(router.asPath);
-  }, [router.asPath]);
-
-  const navigationItems = useNavigationItems(
-    items,
-    hideUnauthorizedLinks,
-    mergedClassnames,
-    authState,
-    current,
-  );
 
   return (
     <div

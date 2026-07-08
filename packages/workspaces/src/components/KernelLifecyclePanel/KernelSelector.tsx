@@ -90,7 +90,7 @@ const KernelSelector = ({
             id="klp-kernel-spec"
             value={selectedKernelName}
             onChange={(value) => setSelectedKernelName(value as string)}
-            disabled={disabled}
+            disabled={disabled || isError}
             data={
               kernelSpecs?.length === 0
                 ? [{ value: 'python3', label: 'python3' }]
@@ -145,7 +145,7 @@ const KernelSelector = ({
           onClick={() => handleLaunchKernel(selectedKernelName || 'python3')}
           loading={isLaunchingLoading}
           fullWidth
-          disabled={disabled}
+          disabled={disabled || isError}
         >
           {isLaunchingLoading ? 'Working...' : 'Launch Kernel'}
         </Button>
