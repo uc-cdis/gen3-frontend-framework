@@ -78,6 +78,33 @@ jest.mock('../../../components/Providers/ResourceMonitor', () => ({
   useWorkspaceResourceMonitor: jest.fn(),
 }));
 
+jest.mock('../../../components/Modals/SessionExpiringModal', () => ({
+  SessionExpiringModal: jest.fn(
+    ({
+      openModal,
+      onRenew,
+      onLogout,
+      minutesRemaining,
+    }: {
+      openModal: boolean;
+      onRenew: () => void;
+      onLogout: () => void;
+      minutesRemaining: number;
+    }) =>
+      openModal ? (
+        <div data-testid="session-expiring-modal">
+          <span data-testid="expiry-minutes">{minutesRemaining}</span>
+          <button data-testid="renew-button" onClick={onRenew}>
+            Renew
+          </button>
+          <button data-testid="logout-button" onClick={onLogout}>
+            Log out
+          </button>
+        </div>
+      ) : null,
+  ),
+}));
+
 // Mock useManageSession so we can control sessionInfo.status directly
 // without pulling in the jose / JWT dependencies from hooks.ts
 jest.mock('../hooks', () => ({
@@ -133,6 +160,11 @@ const setupDefaultCoreMocks = (
   coreMock.useLazyFetchUserDetailsQuery.mockReturnValue([getUserDetails]);
   coreMock.useCoreSelector.mockReturnValue('unauthenticated');
   coreMock.useCoreDispatch.mockReturnValue(jest.fn());
+  // Default: session token is 'not present' — no expiry timers are scheduled
+  global.fetch = jest.fn().mockResolvedValue({
+    status: 200,
+    json: jest.fn().mockResolvedValue({ status: 'not present' }),
+  });
   return getUserDetails;
 };
 
@@ -643,5 +675,469 @@ describe('SessionProvider – online / offline interval control', () => {
       get: () => true,
       configurable: true,
     });
+  });
+});
+
+// ===========================================================================
+// SessionProvider – expiry timer scheduling
+// ===========================================================================
+
+describe('SessionProvider – expiry timer scheduling', () => {
+  let mockDispatch: jest.Mock;
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+    Object.defineProperty(navigator, 'onLine', {
+      get: () => true,
+      configurable: true,
+    });
+    mockDispatch = jest.fn();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  /**
+   * Wire up all core mocks for an authenticated user whose session token
+   * returns the given response from /api/auth/sessionToken.
+   */
+  const setupTimerMocks = (sessionTokenResponse: Record<string, unknown>) => {
+    const getUserDetails = jest.fn().mockResolvedValue({});
+    coreMock.useGetCSRFQuery.mockReturnValue({
+      isSuccess: true,
+      isError: false,
+    });
+    coreMock.useLazyFetchUserDetailsQuery.mockReturnValue([getUserDetails]);
+    coreMock.useCoreSelector.mockReturnValue('authenticated');
+    coreMock.useCoreDispatch.mockReturnValue(mockDispatch);
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+    global.fetch = jest.fn().mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue(sessionTokenResponse),
+    });
+    return { getUserDetails };
+  };
+
+  /**
+   * Flush the async chain that runs after mount:
+   *   getUserDetails() → checkAndScheduleSession() → getSession() → fetch() → json()
+   * Each await Promise.resolve() drains one layer of the microtask queue.
+   */
+  const flushAsync = async () => {
+    await act(async () => {
+      await Promise.resolve();
+      await Promise.resolve();
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+  };
+
+  it('shows the warning modal when the warning timer fires', async () => {
+    // Token expires in 7 minutes; warning fires at 7 - 5 = 2 minutes from now
+    const futureExpiry = Math.floor((Date.now() + 7 * 60 * 1000) / 1000);
+    setupTimerMocks({ status: 'issued', expires: futureExpiry });
+
+    render(
+      <SessionProvider expiryWarningMinutes={5} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+    await flushAsync();
+
+    expect(
+      screen.queryByTestId('session-expiring-modal'),
+    ).not.toBeInTheDocument();
+
+    await act(async () => {
+      jest.advanceTimersByTime(2 * 60 * 1000 + 100);
+    });
+
+    expect(screen.getByTestId('session-expiring-modal')).toBeInTheDocument();
+    expect(screen.getByTestId('expiry-minutes')).toHaveTextContent('5');
+  });
+
+  it('shows the warning modal immediately when token is within the warning window', async () => {
+    // Token expires in 3 minutes — already inside the 5-minute warning window
+    const nearExpiry = Math.floor((Date.now() + 3 * 60 * 1000) / 1000);
+    setupTimerMocks({ status: 'issued', expires: nearExpiry });
+
+    render(
+      <SessionProvider expiryWarningMinutes={5} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+    await flushAsync();
+
+    expect(screen.getByTestId('session-expiring-modal')).toBeInTheDocument();
+  });
+
+  it('dispatches SessionExpireModal when the expiry timer fires', async () => {
+    // Token expires in 3 minutes (warning shows immediately, expiry fires at 3 min)
+    const futureExpiry = Math.floor((Date.now() + 3 * 60 * 1000) / 1000);
+    setupTimerMocks({ status: 'issued', expires: futureExpiry });
+
+    render(
+      <SessionProvider expiryWarningMinutes={5} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+    await flushAsync();
+    mockDispatch.mockClear();
+
+    await act(async () => {
+      jest.advanceTimersByTime(3 * 60 * 1000 + 100);
+    });
+
+    expect(mockDispatch).toHaveBeenCalledWith(
+      expect.objectContaining({ payload: { modal: 'SessionExpireModal' } }),
+    );
+  });
+
+  it('dispatches SessionExpireModal immediately when token is already expired on mount', async () => {
+    setupTimerMocks({ status: 'expired' });
+
+    render(
+      <SessionProvider logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+    await flushAsync();
+
+    expect(mockDispatch).toHaveBeenCalledWith(
+      expect.objectContaining({ payload: { modal: 'SessionExpireModal' } }),
+    );
+  });
+
+  it('clears timers on unmount so they do not fire after the component is gone', async () => {
+    const futureExpiry = Math.floor((Date.now() + 7 * 60 * 1000) / 1000);
+    setupTimerMocks({ status: 'issued', expires: futureExpiry });
+
+    const { unmount } = render(
+      <SessionProvider expiryWarningMinutes={5} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+    await flushAsync();
+
+    unmount();
+    mockDispatch.mockClear();
+
+    await act(async () => {
+      jest.advanceTimersByTime(10 * 60 * 1000);
+    });
+
+    expect(mockDispatch).not.toHaveBeenCalled();
+  });
+
+  it('calls getSession again after a polling refresh to reschedule expiry timers', async () => {
+    const futureExpiry = Math.floor((Date.now() + 7 * 60 * 1000) / 1000);
+    setupTimerMocks({ status: 'issued', expires: futureExpiry });
+
+    render(
+      <SessionProvider
+        updateSessionTime={1}
+        expiryWarningMinutes={5}
+        logoutInactiveUsers={false}
+      >
+        <div />
+      </SessionProvider>,
+    );
+    await flushAsync();
+
+    const fetchCallsAfterMount = (global.fetch as jest.Mock).mock.calls.length;
+
+    // Advance past UPDATE_SESSION_LIMIT (5 min) + the 1-minute poll interval
+    await act(async () => {
+      jest.advanceTimersByTime(6 * 60 * 1000);
+    });
+    await flushAsync();
+
+    expect((global.fetch as jest.Mock).mock.calls.length).toBeGreaterThan(
+      fetchCallsAfterMount,
+    );
+  });
+
+  it('dismisses the warning modal and refreshes the session when onRenew is clicked', async () => {
+    const nearExpiry = Math.floor((Date.now() + 3 * 60 * 1000) / 1000);
+    // Fresh token issued after renewal — far enough away that no warning fires
+    const renewedExpiry = Math.floor((Date.now() + 20 * 60 * 1000) / 1000);
+
+    const { getUserDetails } = setupTimerMocks({
+      status: 'issued',
+      expires: nearExpiry,
+    });
+
+    render(
+      <SessionProvider expiryWarningMinutes={5} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+    await flushAsync();
+
+    expect(screen.getByTestId('session-expiring-modal')).toBeInTheDocument();
+    getUserDetails.mockClear();
+
+    // Simulate Fence issuing a new token after getUserDetails() is called
+    global.fetch = jest.fn().mockResolvedValue({
+      status: 200,
+      json: jest
+        .fn()
+        .mockResolvedValue({ status: 'issued', expires: renewedExpiry }),
+    });
+
+    await act(async () => {
+      screen.getByTestId('renew-button').click();
+    });
+    await flushAsync();
+
+    expect(
+      screen.queryByTestId('session-expiring-modal'),
+    ).not.toBeInTheDocument();
+    expect(getUserDetails).toHaveBeenCalled();
+  });
+
+  it('dismisses the warning modal and ends the session when onLogout is clicked', async () => {
+    const nearExpiry = Math.floor((Date.now() + 3 * 60 * 1000) / 1000);
+    const { hasCookie } = jest.requireMock('cookies-next') as {
+      hasCookie: jest.Mock;
+    };
+    hasCookie.mockResolvedValue(false);
+    setupTimerMocks({ status: 'issued', expires: nearExpiry });
+
+    render(
+      <SessionProvider expiryWarningMinutes={5} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+    await flushAsync();
+
+    expect(screen.getByTestId('session-expiring-modal')).toBeInTheDocument();
+
+    await act(async () => {
+      screen.getByTestId('logout-button').click();
+    });
+    await flushAsync();
+
+    expect(
+      screen.queryByTestId('session-expiring-modal'),
+    ).not.toBeInTheDocument();
+    expect(mockRouterPush).toHaveBeenCalled();
+  });
+});
+
+// ===========================================================================
+// SessionProvider – visibilitychange listener (conditional refresh)
+// Refresh only fires when: token is near expiry OR user has been inactive 5+ min.
+// ===========================================================================
+
+describe('SessionProvider – visibilitychange listener', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+    Object.defineProperty(navigator, 'onLine', {
+      get: () => true,
+      configurable: true,
+    });
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+    Object.defineProperty(document, 'visibilityState', {
+      get: () => 'visible',
+      configurable: true,
+    });
+  });
+
+  const setupVisibilityMocks = (
+    sessionTokenResponse: Record<string, unknown>,
+  ) => {
+    const getUserDetails = jest.fn().mockResolvedValue({});
+    coreMock.useGetCSRFQuery.mockReturnValue({
+      isSuccess: true,
+      isError: false,
+    });
+    coreMock.useLazyFetchUserDetailsQuery.mockReturnValue([getUserDetails]);
+    coreMock.useCoreSelector.mockReturnValue('authenticated');
+    coreMock.useCoreDispatch.mockReturnValue(jest.fn());
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+    global.fetch = jest.fn().mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue(sessionTokenResponse),
+    });
+    return { getUserDetails };
+  };
+
+  const flushAsync = async () => {
+    await act(async () => {
+      await Promise.resolve();
+      await Promise.resolve();
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+  };
+
+  it('calls getUserDetails when tab becomes visible after 5+ minutes of inactivity', async () => {
+    const farExpiry = Math.floor((Date.now() + 20 * 60 * 1000) / 1000);
+    const { getUserDetails } = setupVisibilityMocks({
+      status: 'issued',
+      expires: farExpiry,
+    });
+
+    // updateSessionTime={0} disables the polling interval so advancing time
+    // only affects the expiry/warning timers and the inactivity check, not a poll.
+    render(
+      <SessionProvider
+        updateSessionTime={0}
+        expiryWarningMinutes={5}
+        logoutInactiveUsers={false}
+      >
+        <div />
+      </SessionProvider>,
+    );
+    await flushAsync();
+    getUserDetails.mockClear();
+
+    // Simulate 6 minutes of inactivity (no user events fired, just time passing)
+    await act(async () => {
+      jest.advanceTimersByTime(6 * 60 * 1000);
+    });
+
+    Object.defineProperty(document, 'visibilityState', {
+      get: () => 'visible',
+      configurable: true,
+    });
+    await act(async () => {
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+
+    expect(getUserDetails).toHaveBeenCalledTimes(1);
+  });
+
+  it('does NOT call getUserDetails when recently active and token is not near expiry', async () => {
+    const farExpiry = Math.floor((Date.now() + 20 * 60 * 1000) / 1000);
+    const { getUserDetails } = setupVisibilityMocks({
+      status: 'issued',
+      expires: farExpiry,
+    });
+
+    render(
+      <SessionProvider expiryWarningMinutes={5} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+    await flushAsync();
+    getUserDetails.mockClear();
+
+    // Only 1 minute since mount — still within the 5-minute activity window
+    await act(async () => {
+      jest.advanceTimersByTime(60 * 1000);
+    });
+
+    Object.defineProperty(document, 'visibilityState', {
+      get: () => 'visible',
+      configurable: true,
+    });
+    await act(async () => {
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+
+    expect(getUserDetails).not.toHaveBeenCalled();
+  });
+
+  it('calls getUserDetails when tab becomes visible and token is near expiry', async () => {
+    // 3 min left — within the 5-minute warning window
+    const nearExpiry = Math.floor((Date.now() + 3 * 60 * 1000) / 1000);
+    const { getUserDetails } = setupVisibilityMocks({
+      status: 'issued',
+      expires: nearExpiry,
+    });
+
+    render(
+      <SessionProvider expiryWarningMinutes={5} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+    await flushAsync();
+    getUserDetails.mockClear();
+
+    // User was recently active — inactivity alone would NOT trigger; expiry does
+    Object.defineProperty(document, 'visibilityState', {
+      get: () => 'visible',
+      configurable: true,
+    });
+    await act(async () => {
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+
+    expect(getUserDetails).toHaveBeenCalledTimes(1);
+  });
+
+  it('does NOT call getUserDetails when user is not authenticated', async () => {
+    const getUserDetails = setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'not present',
+      pending: true,
+    });
+
+    render(
+      <SessionProvider>
+        <div />
+      </SessionProvider>,
+    );
+    await act(async () => {
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+    getUserDetails.mockClear();
+
+    Object.defineProperty(document, 'visibilityState', {
+      get: () => 'visible',
+      configurable: true,
+    });
+    await act(async () => {
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+
+    expect(getUserDetails).not.toHaveBeenCalled();
+  });
+
+  it('does NOT call getUserDetails when the tab is hidden', async () => {
+    const farExpiry = Math.floor((Date.now() + 20 * 60 * 1000) / 1000);
+    const { getUserDetails } = setupVisibilityMocks({
+      status: 'issued',
+      expires: farExpiry,
+    });
+
+    render(
+      <SessionProvider
+        updateSessionTime={0}
+        expiryWarningMinutes={5}
+        logoutInactiveUsers={false}
+      >
+        <div />
+      </SessionProvider>,
+    );
+    await flushAsync();
+    await act(async () => {
+      jest.advanceTimersByTime(6 * 60 * 1000);
+    });
+    getUserDetails.mockClear();
+
+    // Tab goes hidden — should never trigger refresh
+    Object.defineProperty(document, 'visibilityState', {
+      get: () => 'hidden',
+      configurable: true,
+    });
+    await act(async () => {
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+
+    expect(getUserDetails).not.toHaveBeenCalled();
   });
 });

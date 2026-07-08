@@ -46,6 +46,12 @@ export interface SessionConfiguration {
    *  should payments be monitored?
    */
   monitorPayment?: boolean;
+
+  /**
+   * Number of minutes before token expiry to show the session expiring warning modal.
+   * Defaults to 5 minutes.
+   */
+  expiryWarningMinutes?: number;
 }
 
 export interface SessionProviderProps extends SessionConfiguration {

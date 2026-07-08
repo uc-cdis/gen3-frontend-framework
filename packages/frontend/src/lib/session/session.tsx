@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { SessionExpiringModal } from '../../components/Modals/SessionExpiringModal';
 import { useRouter } from 'next/router';
 import { getCookie, hasCookie } from 'cookies-next';
 import { useDeepCompareMemo } from 'use-deep-compare';
@@ -173,6 +174,7 @@ export const SessionProvider = ({
   workspaceInactivityTimeLimit = 0,
   logoutInactiveUsers = true,
   monitorWorkspace = true,
+  expiryWarningMinutes = 5,
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
@@ -227,6 +229,19 @@ export const SessionProvider = ({
     setMostRecentSessionRefreshTimestamp,
   ] = useState(Date.now());
 
+  const [showExpiryWarning, setShowExpiryWarning] = useState(false);
+  const warningTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const expiryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Refs so the visibilitychange handler always sees the latest values
+  // without needing to add high-frequency state to its dependency array.
+  const mostRecentActivityTimestampRef = useRef(mostRecentActivityTimestamp);
+  const sessionExpiryMsRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    mostRecentActivityTimestampRef.current = mostRecentActivityTimestamp;
+  }, [mostRecentActivityTimestamp]);
+
   const inactiveTimeLimitMilliseconds =
     MinutesToMilliseconds(inactiveTimeLimit);
 
@@ -253,6 +268,9 @@ export const SessionProvider = ({
     const isCredentialLogin = await hasCookie('credentials_token')!;
 
     logoutSession()
+      .then(() => {
+        getUserDetails();
+      })
       .catch((e) => {
         showNotification({
           title: 'Logout Error',
@@ -265,7 +283,69 @@ export const SessionProvider = ({
         } else
           router.push(`${GEN3_FENCE_API}/logout?next=${GEN3_REDIRECT_URL}`);
       });
-  }, [router]);
+  }, [getUserDetails, router]);
+
+  const clearExpiryTimers = useCallback(() => {
+    if (warningTimerRef.current) {
+      clearTimeout(warningTimerRef.current);
+      warningTimerRef.current = null;
+    }
+    if (expiryTimerRef.current) {
+      clearTimeout(expiryTimerRef.current);
+      expiryTimerRef.current = null;
+    }
+  }, []);
+
+  const scheduleExpiryTimers = useCallback(
+    (expiresUnixSec: number) => {
+      clearExpiryTimers();
+      const now = Date.now();
+      const expiresMs = expiresUnixSec * 1000;
+      sessionExpiryMsRef.current = expiresMs;
+      const warningMs = expiresMs - expiryWarningMinutes * 60 * 1000;
+      const expiryDelay = expiresMs - now;
+
+      if (expiryDelay <= 0) {
+        coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
+        return;
+      }
+
+      if (warningMs - now > 0) {
+        warningTimerRef.current = setTimeout(() => {
+          setShowExpiryWarning(true);
+        }, warningMs - now);
+      } else {
+        // Warning window already passed but token still valid — show immediately
+        setShowExpiryWarning(true);
+      }
+
+      expiryTimerRef.current = setTimeout(() => {
+        setShowExpiryWarning(false);
+        coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
+      }, expiryDelay);
+    },
+    [clearExpiryTimers, coreDispatch, expiryWarningMinutes],
+  );
+
+  const checkAndScheduleSession = useCallback(async () => {
+    const session = await getSession();
+    if (!session) return;
+
+    if (session.status === 'expired') {
+      clearExpiryTimers();
+      coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
+      return;
+    }
+
+    if (session.status === 'issued' && session.expires) {
+      scheduleExpiryTimers(session.expires);
+    }
+  }, [clearExpiryTimers, coreDispatch, scheduleExpiryTimers]);
+
+  // Clean up timers on unmount
+  useEffect(() => {
+    return () => clearExpiryTimers();
+  }, [clearExpiryTimers]);
 
   /**
    * Check if the user session has ended
@@ -296,10 +376,9 @@ export const SessionProvider = ({
     if (sessionInfo.status === 'issued') isSessionActive();
   }, [isSessionActive, sessionInfo]);
 
-  // Fetch session once on mount to establish initial auth state
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // Fetch session once on mount to establish initial auth state, then schedule expiry timers
   useEffect(() => {
-    updateSession();
+    getUserDetails().then(() => checkAndScheduleSession());
   }, []);
 
   // Activity monitoring — only active while the user is logged in.
@@ -330,6 +409,37 @@ export const SessionProvider = ({
     updateSessionIntervalMilliseconds,
   ]);
 
+  // On tab focus, refresh only when warranted: token is near expiry OR the user
+  // has been inactive for more than 5 minutes.  Using refs for the two
+  // high-frequency values avoids re-registering the listener on every activity event.
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState !== 'visible') return;
+      if (sessionInfo.status !== 'issued') return;
+
+      const timeSinceLastActivity =
+        Date.now() - mostRecentActivityTimestampRef.current;
+      const isNearExpiry =
+        sessionExpiryMsRef.current !== null &&
+        sessionExpiryMsRef.current - Date.now() <=
+          expiryWarningMinutes * 60 * 1000;
+      const wasInactive = timeSinceLastActivity >= MinutesToMilliseconds(5);
+
+      if (isNearExpiry || wasInactive) {
+        getUserDetails().then(() => checkAndScheduleSession());
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () =>
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [
+    sessionInfo.status,
+    expiryWarningMinutes,
+    getUserDetails,
+    checkAndScheduleSession,
+  ]);
+
   useInterval(
     () => {
       if (sessionInfo.status != 'issued') return; // no need to update session if user is not logged in
@@ -356,8 +466,12 @@ export const SessionProvider = ({
         }
       }
       // fetching a userState will renew the session (rate-limited by refreshSession)
+      // after refresh, re-fetch expiry and reschedule timers
       refreshSession(
-        getUserDetails,
+        async () => {
+          await getUserDetails();
+          checkAndScheduleSession();
+        },
         mostRecentSessionRefreshTimestamp,
         (ts: number) => setMostRecentSessionRefreshTimestamp(ts),
       );
@@ -386,6 +500,20 @@ export const SessionProvider = ({
   if (isGetCSRFSuccess)
     return (
       <SessionContext.Provider value={value}>
+        <SessionExpiringModal
+          openModal={showExpiryWarning}
+          minutesRemaining={expiryWarningMinutes}
+          onRenew={() => {
+            setShowExpiryWarning(false);
+            clearExpiryTimers();
+            getUserDetails().then(() => checkAndScheduleSession());
+          }}
+          onLogout={() => {
+            setShowExpiryWarning(false);
+            clearExpiryTimers();
+            endSession();
+          }}
+        />
         {children}
       </SessionContext.Provider>
     );
