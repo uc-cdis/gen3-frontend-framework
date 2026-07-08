@@ -33,12 +33,6 @@ export interface SessionConfiguration {
    */
   workspaceInactivityTimeLimit?: number;
   /**
-   * `SessionProvider` automatically fetches the session when the user switches between windows.
-   * This option activates this behaviour if set to `true` (default).
-   */
-  refetchOnWindowFocus?: boolean;
-
-  /**
    * logout the user if the session is inactive for the specified time defined by 'inactiveTimeLimit'.
    */
   logoutInactiveUsers?: boolean;
@@ -52,6 +46,12 @@ export interface SessionConfiguration {
    *  should payments be monitored?
    */
   monitorPayment?: boolean;
+
+  /**
+   * Number of minutes before token expiry to show the session expiring warning modal.
+   * Defaults to 5 minutes.
+   */
+  expiryWarningMinutes?: number;
 }
 
 export interface SessionProviderProps extends SessionConfiguration {

@@ -22,6 +22,7 @@ export const SettingsPanel = ({
   showKernels,
   expanded,
   setExpanded,
+  width = 380,
 }: SettingsPanelProps) => {
   const currentTier = useCoreSelector(selectWorkspaceTier);
   const coreDispatch = useCoreDispatch();
@@ -36,7 +37,7 @@ export const SettingsPanel = ({
       expanded={expanded}
       setExpanded={setExpanded}
       rightSide
-      expandedWidth={380}
+      expandedWidth={width}
     >
       <Stack gap="sm" className={PanelStyle}>
         {showKernels && <KernelLifecyclePanel />}

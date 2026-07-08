@@ -1,6 +1,6 @@
 {
   "name": "@gen3/storybook",
-  "version": "0.12.47",
+  "version": "0.12.48",
   "private": true,
   "description": "Storybook for testing and CI/CD",
   "keywords": [
@@ -44,7 +44,8 @@
     "postcss-import": "^16.1.0",
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
-    "storybook-addon-deep-controls": "^0.10.0"
+    "storybook-addon-deep-controls": "^0.10.0",
+    "unplugin": "^2.3.5"
   },
   "peerDependencies": {
     "tailwindcss": "^3.4.18",

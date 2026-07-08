@@ -241,8 +241,6 @@ export function createWorkspaceAssetsHandler(
     process.env.JUPYTER_GATEWAY_BASE_URL ??
     '/api/workspace/gateway/';
 
-  console.log('' + 'gatewayBaseUrl:', gatewayBaseUrl);
-
   const assetRoot = options?.assetRoot ?? defaultAssetRoot();
 
   const disabledExtensions = options?.additionalDisabledExtensions
