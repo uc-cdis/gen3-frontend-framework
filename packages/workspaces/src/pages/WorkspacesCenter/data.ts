@@ -18,11 +18,50 @@ const DEFAULT_WORKSPACES_CONFIGURATION: WorkspacesCenterPageConfiguration = {
       baseUrl:
         process.env.FREE_WORKSPACE_ASSETS_BASE_URL ??
         '/api/workspace-assets/free',
+      toolbar: {
+        label: 'JupyterLite',
+        description: 'Running via JupyterLite',
+        showStop: false,
+        showStatus: false,
+      },
+      settings: {
+        showKernels: false,
+      },
+      dataAndTools: {
+        enabled: true,
+        tabs: [
+          {
+            label: 'Dictionary',
+            description: 'Data Dictionary',
+            app: 'dictionary',
+          },
+        ],
+        width: 300,
+      },
     },
     remote: {
       baseUrl:
         process.env.REMOTE_COMPUTE_WORKSPACE_ASSETS_BASE_URL ??
         '/api/workspace-assets/remote',
+      toolbar: {
+        label: 'Remote Compute Environment',
+        description: 'Running with Remote Kernels',
+        showStop: true,
+        showStatus: true,
+      },
+      settings: {
+        showKernels: true,
+      },
+      dataAndTools: {
+        enabled: true,
+        tabs: [
+          {
+            label: 'Dictionary',
+            description: 'Data Dictionary',
+            app: 'dictionary',
+          },
+        ],
+      },
     },
   } as Record<
     WorkspaceTier,

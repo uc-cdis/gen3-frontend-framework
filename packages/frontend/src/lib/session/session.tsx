@@ -66,7 +66,7 @@ export const SessionContext = React.createContext<Session | undefined>(
 );
 
 /**
- *  Wwe eventually want to use the session token to determine if the user is logged in
+ *  We eventually want to use the session token to determine if the user is logged in
  *  as opposed to the user status since that check will happen on the server using httpOnly cookies
  *  and verification of the session token
  */
@@ -98,7 +98,7 @@ export const useSession = (
       onUnauthenticated();
     } else {
       if (typeof window === 'undefined')
-        // route not available on SSR
+        // route is not available on SSR
         return session;
       router.push('Login');
     }
@@ -180,6 +180,7 @@ export const SessionProvider = ({
   const { isSuccess: isGetCSRFSuccess, isError: isGetCSRFError } =
     useGetCSRFQuery();
   useWorkspaceResourceMonitor(monitorWorkspace); // monitor workspaces if any are running or configured
+  const isOnline = useOnline();
 
   const [getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
   const userStatus = useCoreSelector((state: CoreState) =>
@@ -252,13 +253,10 @@ export const SessionProvider = ({
     const isCredentialLogin = await hasCookie('credentials_token')!;
 
     logoutSession()
-      .then(() => {
-        getUserDetails();
-      })
       .catch((e) => {
         showNotification({
           title: 'Logout Error',
-          message: `error logging in ${e.message}`,
+          message: `error logging out ${e.message}`,
         });
       })
       .finally(() => {
@@ -267,7 +265,7 @@ export const SessionProvider = ({
         } else
           router.push(`${GEN3_FENCE_API}/logout?next=${GEN3_REDIRECT_URL}`);
       });
-  }, [getUserDetails, router]);
+  }, [router]);
 
   /**
    * Check if the user session has ended
@@ -285,27 +283,31 @@ export const SessionProvider = ({
     });
   }, 5000); // set the time between api calls
 
-  /**
-   * Update session value every updateSessionInterval seconds
-   */
+  const updateUserActivity = useCallback(() => {
+    const timestamp = Date.now();
+    setMostRecentActivityTimestamp(timestamp);
+
+    if (broadcastChannelRef.current) {
+      broadcastChannelRef.current.postMessage({
+        type: 'activity-update',
+        timestamp,
+      });
+    }
+    if (sessionInfo.status === 'issued') isSessionActive();
+  }, [isSessionActive, sessionInfo]);
+
+  // Fetch session once on mount to establish initial auth state
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     updateSession();
+  }, []);
 
-    if (updateSessionIntervalMilliseconds <= 0) return; // do not poll if updateSessionInterval is 0
-
-    const updateUserActivity = () => {
-      const timestamp = Date.now();
-      setMostRecentActivityTimestamp(timestamp);
-
-      if (broadcastChannelRef.current) {
-        broadcastChannelRef.current.postMessage({
-          type: 'activity-update',
-          timestamp,
-        });
-      }
-      // check session token to keep this in sync
-      isSessionActive();
-    };
+  // Activity monitoring — only active while the user is logged in.
+  // Re-registers listeners whenever login state or the handler reference changes,
+  // which also fixes the stale closure bug (updateUserActivity captures sessionInfo).
+  useEffect(() => {
+    if (updateSessionIntervalMilliseconds <= 0) return;
+    if (sessionInfo.status !== 'issued') return;
 
     window.addEventListener('mousedown', updateUserActivity);
     window.addEventListener('keypress', updateUserActivity);
@@ -322,7 +324,11 @@ export const SessionProvider = ({
       window.removeEventListener('click', updateUserActivity);
       window.removeEventListener('touchstart', updateUserActivity);
     };
-  }, []); // only call on mount/dismount
+  }, [
+    sessionInfo.status,
+    updateUserActivity,
+    updateSessionIntervalMilliseconds,
+  ]);
 
   useInterval(
     () => {
@@ -349,15 +355,14 @@ export const SessionProvider = ({
           return;
         }
       }
-      // fetching a userState will renew the session
+      // fetching a userState will renew the session (rate-limited by refreshSession)
       refreshSession(
         getUserDetails,
         mostRecentSessionRefreshTimestamp,
         (ts: number) => setMostRecentSessionRefreshTimestamp(ts),
       );
-      updateSession();
     },
-    updateSessionIntervalMilliseconds > 0
+    isOnline && updateSessionIntervalMilliseconds > 0
       ? updateSessionIntervalMilliseconds
       : null,
   );

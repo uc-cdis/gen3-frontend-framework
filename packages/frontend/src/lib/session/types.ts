@@ -33,12 +33,6 @@ export interface SessionConfiguration {
    */
   workspaceInactivityTimeLimit?: number;
   /**
-   * `SessionProvider` automatically fetches the session when the user switches between windows.
-   * This option activates this behaviour if set to `true` (default).
-   */
-  refetchOnWindowFocus?: boolean;
-
-  /**
    * logout the user if the session is inactive for the specified time defined by 'inactiveTimeLimit'.
    */
   logoutInactiveUsers?: boolean;

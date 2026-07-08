@@ -84,7 +84,7 @@ const WorkspaceCenter = ({
 
   if (workspaceTier === 'free') {
     return (
-      <WorkspaceLayout>
+      <WorkspaceLayout tierConfiguration={tierConfiguration.free}>
         <FreeWorkspace />
       </WorkspaceLayout>
     );
@@ -94,7 +94,7 @@ const WorkspaceCenter = ({
     return (
       <ProtectedContent>
         <MicroContainerReduxProvider enabled={true}>
-          <WorkspaceLayout>
+          <WorkspaceLayout tierConfiguration={tierConfiguration.remote}>
             <RemoteWorkspace
               tenantId={authContext?.tenantId || 'default'}
               workspaceId={authContext?.workspaceId || 'workspace-default'}

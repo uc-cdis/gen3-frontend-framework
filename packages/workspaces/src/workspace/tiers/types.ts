@@ -3,6 +3,7 @@ import { WorkspaceTier } from '../../types';
 interface LabelAndDescription {
   label: string;
   description: string;
+  app?: string;
 }
 
 export interface TierToolbarConfiguration extends LabelAndDescription {
@@ -12,15 +13,16 @@ export interface TierToolbarConfiguration extends LabelAndDescription {
 
 export interface SettingsPanelConfiguration {
   showKernels: boolean; // do we need to show the kernel panel?
+  width?: number;
 }
 
 export interface DataAndToolsPanelConfiguration {
   enabled: boolean;
-  tabs?: LabelAndDescription[]; // TODO: add support for tabs
+  tabs?: LabelAndDescription[];
+  width?: number;
 }
 
 export interface WorkspaceTierInformation {
-  tier: WorkspaceTier;
   toolbar: TierToolbarConfiguration;
   dataAndTools: DataAndToolsPanelConfiguration;
   settings: SettingsPanelConfiguration;
@@ -32,8 +34,8 @@ export interface FreeWorkspaceTierConfiguration extends WorkspaceTierInformation
 }
 
 export interface RemoteComputeWorkspaceTierConfiguration extends WorkspaceTierInformation {
-  type: Extract<WorkspaceTier, 'remote'>;
   baseUrl?: string;
+  type: Extract<WorkspaceTier, 'remote'>;
 }
 
 export type RemoteComputeWorkspaceHandle = {

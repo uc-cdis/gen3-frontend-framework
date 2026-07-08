@@ -2,7 +2,6 @@ import React, { ReactNode } from 'react';
 
 import SettingsPanel from '../../workspace/WorkspaceLayout/SettingsPanel';
 import WorkspaceToolbar from './WorkspaceToolbar';
-import { WORKSPACE_TIER_INFORMATION } from '../../config';
 import { useDisclosure } from '@mantine/hooks';
 import {
   CoreState,
@@ -12,15 +11,25 @@ import {
 } from '@gen3/core';
 import { WorkspaceTier } from '../../types';
 import ToolsPanel from './ToolsPanel';
+import {
+  FreeWorkspaceTierConfiguration,
+  RemoteComputeWorkspaceTierConfiguration,
+} from '../tiers/types';
 
 interface WorkspaceLayoutProps {
   children: ReactNode;
   className?: string;
   /** Extra content rendered in the toolbar row, between fullscreen and Hide Tools. */
   toolbarExtra?: ReactNode;
+  tierConfiguration:
+    | FreeWorkspaceTierConfiguration
+    | RemoteComputeWorkspaceTierConfiguration;
 }
 
-const WorkspaceLayout = ({ children }: WorkspaceLayoutProps) => {
+const WorkspaceLayout = ({
+  children,
+  tierConfiguration,
+}: WorkspaceLayoutProps) => {
   const workspaceTier = useCoreSelector(
     (state: CoreState) => selectWorkspaceTier(state) as WorkspaceTier | null,
   );
@@ -35,23 +44,21 @@ const WorkspaceLayout = ({ children }: WorkspaceLayoutProps) => {
 
   return (
     <div className="flex flex-col w-full grow">
-      <WorkspaceToolbar
-        toolbarConfiguration={WORKSPACE_TIER_INFORMATION[workspaceTier].toolbar}
-      />
+      <WorkspaceToolbar toolbarConfiguration={tierConfiguration.toolbar} />
       <div className="flex w-full grow">
-        {WORKSPACE_TIER_INFORMATION[workspaceTier].dataAndTools.enabled && (
+        {tierConfiguration.dataAndTools.enabled && (
           <ToolsPanel
             expanded={toolsExpanded && !isFullScreen}
             setExpanded={setToolsExpanded}
+            width={tierConfiguration.dataAndTools.width}
           />
         )}
         {children}
         <SettingsPanel
-          showKernels={
-            WORKSPACE_TIER_INFORMATION[workspaceTier].settings.showKernels
-          }
+          showKernels={tierConfiguration.settings.showKernels}
           expanded={settingsExpanded && !isFullScreen}
           setExpanded={setSettingsExpanded}
+          width={tierConfiguration.settings.width}
         />
       </div>
     </div>
