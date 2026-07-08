@@ -14,6 +14,8 @@ const WorkspacesCenterPage = ({
     selectWorkspaceFullscreen(state),
   );
 
+  console.log('configuration', configuration);
+
   return (
     <NavPageLayout
       headerProps={headerProps}

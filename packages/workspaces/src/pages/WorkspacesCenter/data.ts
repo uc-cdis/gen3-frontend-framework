@@ -1,4 +1,5 @@
 import { GetServerSideProps } from 'next';
+import { merge } from 'lodash';
 import { ContentSource, getNavPageLayoutPropsFromConfig } from '@gen3/frontend';
 import {
   WorkspacesCenterPageConfiguration,
@@ -78,12 +79,16 @@ export const WorkspacesCenterPageGetServerSideProps: GetServerSideProps<
         `${GEN3_COMMONS_NAME}/workspaces.json`,
       );
 
+    const mergedConfiguration = merge(
+      {},
+      DEFAULT_WORKSPACES_CONFIGURATION,
+      workspacesCenterConfiguration,
+    );
+
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
-        configuration: {
-          ...workspacesCenterConfiguration,
-        },
+        configuration: mergedConfiguration,
       },
     };
   } catch (error: unknown) {
