@@ -67,8 +67,6 @@ const WorkspaceCenter = ({
     };
   }, [isDevelopment, userData, username]);
 
-  console.log('tierConfiguration', tierConfiguration);
-
   if (!workspaceTier) {
     return (
       <div className="w-full bg-base-lightest ">
