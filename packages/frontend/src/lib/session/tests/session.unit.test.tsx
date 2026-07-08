@@ -144,12 +144,14 @@ const makeSession = (status: Session['status'], pending: boolean): Session => ({
 });
 
 /** Wrap a hook in the SessionContext so it can call useSession */
-const sessionWrapper =
-  (session: Session) =>
-  ({ children }: { children: React.ReactNode }) => (
-    <SessionContext.Provider value={session}>
-      {children}
-    </SessionContext.Provider>
+const sessionWrapper = (session: Session) =>
+  Object.assign(
+    ({ children }: { children: React.ReactNode }) => (
+      <SessionContext.Provider value={session}>
+        {children}
+      </SessionContext.Provider>
+    ),
+    { displayName: 'SessionWrapper' },
   );
 
 /** Standard successful CSRF + getUserDetails default */
