@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 import CompactDictionaryPanel from './CompactDictionaryPanel';
 import { SchemaNode } from '../../lib/ragContext';
 import { GEN3_SUBMISSION_API } from '@gen3/core';
+import largeDictionary from './data/large_dictionary';
 
 const nodes: SchemaNode[] = [
   {
@@ -240,6 +241,8 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+console.log('large', largeDictionary);
+
 export const Default: Story = {
   args: {
     schemaUrl: '/',
@@ -248,7 +251,10 @@ export const Default: Story = {
     msw: {
       handlers: [
         http.get(`${GEN3_SUBMISSION_API}/`, () => {
-          return HttpResponse.json(nodes);
+          return HttpResponse.json(largeDictionary);
+        }),
+        http.get(`${GEN3_SUBMISSION_API}/large`, () => {
+          return HttpResponse.json(largeDictionary);
         }),
       ],
     },
