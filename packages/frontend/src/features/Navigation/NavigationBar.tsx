@@ -9,10 +9,13 @@ import NavigationLogo from './NavigationLogo';
 import NavigationBarButton from './NavigationBarButton';
 import { checkRouteAccess, extractClassName } from './utils';
 import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
-
-import { useSession } from '../../lib/session/session';
 import { useProtectedRoutesContext } from '../../components/AuthorizedRoutes/ProtectedRoutesProvider';
-import { useGetAuthzResourcesQuery } from '@gen3/core';
+import {
+  type LoginStatus,
+  selectUserAuthStatus,
+  useCoreSelector,
+  useGetAuthzResourcesQuery,
+} from '@gen3/core';
 
 interface NavigationBarItemProps {
   item: NavigationButtonProps;
@@ -71,8 +74,11 @@ const DEFAULT_CLASSNAMES = {
 };
 
 const useAuthorizationState = () => {
-  const { status, pending } = useSession(false);
-  const loggedIn = status === 'issued';
+  const loginStatus: LoginStatus = useCoreSelector((state) =>
+    selectUserAuthStatus(state),
+  );
+
+  const loggedIn = loginStatus === 'authenticated';
   const routesConfig = useProtectedRoutesContext();
 
   const {
@@ -83,12 +89,14 @@ const useAuthorizationState = () => {
   } = useGetAuthzResourcesQuery();
 
   useEffect(() => {
-    if (!pending) refetch();
-  }, [status, pending, refetch]);
+    if (loginStatus && loginStatus !== 'pending') {
+      refetch();
+    }
+  }, [loginStatus, refetch]);
 
   return {
     loggedIn,
-    pending,
+    pending: loginStatus === 'pending',
     resources: resources?.resources ?? [],
     routesConfig,
     isAuthzResourcesFetching,

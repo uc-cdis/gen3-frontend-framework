@@ -275,7 +275,8 @@ export const SessionProvider = ({
    */
   const isSessionActive = useThrottledCallback(() => {
     //Check session token, this call updates info
-    getUserDetails().then((obj) => {
+    getUserDetails(undefined, true).then((obj) => {
+      // use cache value to prevent excessive calls to /user/user
       //check to make sure logged-out users are logged out
       if (
         obj?.data?.loginStatus != 'authenticated' &&
