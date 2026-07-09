@@ -51,7 +51,7 @@ export const useStudyRegistration = (
       if (query.studyUID) setStudyUID(query.studyUID as string);
       if (query.studyName) setStudyName(toString(query.studyName));
       if (query.studyProjectNumber)
-        setStudyProjectNumber(query.studyProjectNumber);
+        setStudyProjectNumber(query.studyProjectNumber as string);
       if (query.studyRegistrationAuthZ) {
         try {
           setStudyRegistrationAuthZ(
