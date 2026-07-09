@@ -1,8 +1,8 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 
 import SettingsPanel from '../../workspace/WorkspaceLayout/SettingsPanel';
 import WorkspaceToolbar from './WorkspaceToolbar';
-import { useDisclosure } from '@mantine/hooks';
+import { useDisclosure, useResizeObserver } from '@mantine/hooks';
 import {
   CoreState,
   selectWorkspaceFullscreen,
@@ -35,20 +35,39 @@ const WorkspaceLayout = ({
   );
   const [toolsExpanded, { set: setToolsExpanded }] = useDisclosure(true);
   const [settingsExpanded, { set: setSettingsExpanded }] = useDisclosure(true);
+  const [toolbarRef, toolbarRect] = useResizeObserver<HTMLDivElement>();
 
   const isFullScreen = useCoreSelector((state) =>
     selectWorkspaceFullscreen(state),
   );
 
+  useEffect(() => {
+    if (isFullScreen) {
+      setToolsExpanded(false);
+      setSettingsExpanded(false);
+    } else {
+      setToolsExpanded(true);
+      setSettingsExpanded(true);
+    }
+  }, [isFullScreen, setSettingsExpanded, setToolsExpanded]);
+
   if (!workspaceTier) return null;
 
   return (
     <div className="flex flex-col w-full grow">
-      <WorkspaceToolbar toolbarConfiguration={tierConfiguration.toolbar} />
-      <div className="flex w-full grow">
+      <WorkspaceToolbar
+        toolbarConfiguration={tierConfiguration.toolbar}
+        ref={toolbarRef}
+      />
+      <div
+        className="flex w-full nowrap"
+        style={{
+          height: `calc(100% - ${toolbarRect?.height ?? 0}px`,
+        }}
+      >
         {tierConfiguration.dataAndTools.enabled && (
           <ToolsPanel
-            expanded={toolsExpanded && !isFullScreen}
+            expanded={toolsExpanded}
             setExpanded={setToolsExpanded}
             width={tierConfiguration.dataAndTools.width}
           />
@@ -56,7 +75,7 @@ const WorkspaceLayout = ({
         {children}
         <SettingsPanel
           showKernels={tierConfiguration.settings.showKernels}
-          expanded={settingsExpanded && !isFullScreen}
+          expanded={settingsExpanded}
           setExpanded={setSettingsExpanded}
           width={tierConfiguration.settings.width}
         />

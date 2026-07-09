@@ -72,7 +72,7 @@ const CompactDictionaryPanel = ({
   return (
     <div
       ref={ref}
-      className="relative flex h-full flex-col gap-2 overflow-hidden bg-base-lightest p-2"
+      className="relative flex flex-col gap-2 bg-base-lightest p-2 h-full"
     >
       <LoadingOverlay visible={isFetching} />
       <TextInput
@@ -85,7 +85,7 @@ const CompactDictionaryPanel = ({
         {search && ` matching "${search}"`}
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto">
+      <div className="flex h-full flex-1 flex-col gap-0.5 overflow-y-auto">
         {filtered.map((node) => {
           const isExpanded = expandedId === node.id;
           const propCount = Object.keys(node.properties).length;
@@ -132,10 +132,6 @@ const CompactDictionaryPanel = ({
                         {node.category}
                       </span>
                     )}
-                    <FieldLinkCountBadge
-                      fieldsCount={propCount}
-                      linksCount={linkCount}
-                    />
                   </div>
                 )}
               </button>

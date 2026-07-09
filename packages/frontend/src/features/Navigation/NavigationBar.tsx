@@ -1,19 +1,21 @@
-import React, { ReactElement, useEffect, useMemo, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import {
   LinkAuthStatus,
   NavigationButtonProps,
   NavigationProps,
 } from './types';
-import { LoadingOverlay } from '@mantine/core';
 import NavigationLogo from './NavigationLogo';
 import NavigationBarButton from './NavigationBarButton';
 import { checkRouteAccess, extractClassName } from './utils';
 import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
-
-import { useSession } from '../../lib/session/session';
 import { useProtectedRoutesContext } from '../../components/AuthorizedRoutes/ProtectedRoutesProvider';
-import { useGetAuthzResourcesQuery } from '@gen3/core';
+import {
+  type LoginStatus,
+  selectUserAuthStatus,
+  useCoreSelector,
+  useGetAuthzResourcesQuery,
+} from '@gen3/core';
 
 interface NavigationBarItemProps {
   item: NavigationButtonProps;
@@ -39,7 +41,7 @@ const NavigationBarItem = ({
         mergedClassnames,
       )}`}
     >
-      <LoadingOverlay visible={authStatus === LinkAuthStatus.Pending} />
+      {/*<LoadingOverlay visible={authStatus === LinkAuthStatus.Pending} />*/}
       <NavigationBarButton
         tooltip={item.tooltip}
         icon={item.icon}
@@ -72,8 +74,11 @@ const DEFAULT_CLASSNAMES = {
 };
 
 const useAuthorizationState = () => {
-  const { status, pending } = useSession(false);
-  const loggedIn = status === 'issued';
+  const loginStatus: LoginStatus = useCoreSelector((state) =>
+    selectUserAuthStatus(state),
+  );
+
+  const loggedIn = loginStatus === 'authenticated';
   const routesConfig = useProtectedRoutesContext();
 
   const {
@@ -84,12 +89,14 @@ const useAuthorizationState = () => {
   } = useGetAuthzResourcesQuery();
 
   useEffect(() => {
-    if (!pending) refetch();
-  }, [status, pending, refetch]);
+    if (loginStatus && loginStatus !== 'pending') {
+      refetch();
+    }
+  }, [loginStatus, refetch]);
 
   return {
     loggedIn,
-    pending,
+    pending: loginStatus === 'pending',
     resources: resources?.resources ?? [],
     routesConfig,
     isAuthzResourcesFetching,
@@ -119,44 +126,30 @@ const NavigationBar = ({
     setCurrent(router.asPath);
   }, [router.asPath]);
 
-  const navigationItems = useMemo(() => {
-    return items.map((item, index) => {
-      const linkAuthStatus = checkRouteAccess(
-        item.href,
-        resources,
-        routesConfig,
-        loggedIn,
-        pending,
-      );
+  const navigationItems = items.map((item, index) => {
+    const linkAuthStatus = checkRouteAccess(
+      item.href,
+      resources,
+      routesConfig,
+      loggedIn,
+      pending,
+    );
 
-      if (
-        hideUnauthorizedLinks &&
-        linkAuthStatus !== LinkAuthStatus.Authorized
-      ) {
-        return null;
-      }
+    if (hideUnauthorizedLinks && linkAuthStatus !== LinkAuthStatus.Authorized) {
+      return null;
+    }
 
-      return (
-        <NavigationBarItem
-          key={`${item.name}-${index}`}
-          item={item}
-          index={index}
-          current={current}
-          mergedClassnames={mergedClassnames}
-          authStatus={linkAuthStatus}
-        />
-      );
-    });
-  }, [
-    current,
-    hideUnauthorizedLinks,
-    items,
-    loggedIn,
-    mergedClassnames,
-    pending,
-    resources,
-    routesConfig,
-  ]);
+    return (
+      <NavigationBarItem
+        key={`${item.name}-${index}`}
+        item={item}
+        index={index}
+        current={current}
+        mergedClassnames={mergedClassnames}
+        authStatus={linkAuthStatus}
+      />
+    );
+  });
 
   return (
     <div
