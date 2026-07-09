@@ -33,6 +33,7 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   const studyUID = toString(studyDetails[index]);
   const studyName = studyDetails?.study_metadata?.minimal_info?.study_name;
   const studyRegistrationAuthZ = studyDetails.registration_authz;
+  const studyProjectNumber = studyDetails?.project_number;
   const showSubmitButton = config.detailView?.showSubmitButton;
   const router = useRouter();
 
@@ -47,6 +48,7 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
             studyUID: studyUID,
             studyName: studyName,
             studyRegistrationAuthZ: studyRegistrationAuthZ,
+            studyProjectNumber: studyProjectNumber,
           },
         },
         '/study-reg/request-access',

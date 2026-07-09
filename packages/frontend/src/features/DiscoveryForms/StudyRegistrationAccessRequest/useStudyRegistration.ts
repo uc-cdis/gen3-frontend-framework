@@ -32,6 +32,9 @@ export const useStudyRegistration = (
   const [formOutcome, setFormOutcome] = useState(FormOutcome.pending);
   const [studyUID, setStudyUID] = useState<string | null>(null);
   const [studyName, setStudyName] = useState<string | null>(null);
+  const [studyProjectNumber, setStudyProjectNumber] = useState<string | null>(
+    null,
+  );
   const [studyRegistrationAuthZ, setStudyRegistrationAuthZ] = useState<
     string | null
   >(null);
@@ -47,6 +50,8 @@ export const useStudyRegistration = (
       const { query } = router;
       if (query.studyUID) setStudyUID(query.studyUID as string);
       if (query.studyName) setStudyName(toString(query.studyName));
+      if (query.studyProjectNumber)
+        setStudyProjectNumber(query.studyProjectNumber);
       if (query.studyRegistrationAuthZ) {
         try {
           setStudyRegistrationAuthZ(
@@ -106,7 +111,7 @@ export const useStudyRegistration = (
         subject: `Study registration access request for ${studyUID} ${studyName}`,
         fullName: `${userInfo?.email}`,
         email: `${userInfo?.email}`,
-        contents: `Request ID: ${request.request_id}\nGrant Number: ${studyUID}\nStudy Name: ${studyName}\nEnvironment: ${hostname}\nForm Values: ${printFormValuesArr.join('\n\n')}`,
+        contents: `Request ID: ${request.request_id}\nGrant Number: ${studyProjectNumber}\nStudy Name: ${studyName}\nEnvironment: ${hostname}\nForm Values: ${printFormValuesArr.join('\n\n')}`,
       };
 
       const zendeskRequestAction =
