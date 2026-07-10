@@ -243,6 +243,9 @@ export function createWorkspaceAssetsHandler(
 
   const assetRoot = options?.assetRoot ?? defaultAssetRoot();
 
+  // Keep this in for logging purposes
+  console.log('jupyterlite assets root:', assetRoot);
+
   const disabledExtensions = options?.additionalDisabledExtensions
     ? [...REMOTE_DISABLED_EXTENSIONS, ...options.additionalDisabledExtensions]
     : REMOTE_DISABLED_EXTENSIONS;
@@ -319,6 +322,8 @@ export function createWorkspaceAssetsHandler(
 
     const candidatePath = nodePath.resolve(tierRoot, ...safeSegments);
     const candidateIndex = nodePath.join(candidatePath, 'index.html');
+
+    console.log('serving jupyterlite asset from', candidatePath);
 
     let filePath: string;
     if (allowedFiles.has(candidatePath)) {

@@ -19,6 +19,8 @@ export async function proxy(req: NextRequest) {
   const { routes: routeConfig } = await getRouteConfig();
   let rule = getRouteRuleForPath(pathname, routeConfig);
 
+  console.log('serving route', pathname, 'with rule', rule);
+
   // check if there is a wildcard route
   if (!rule) {
     rule = getRouteRuleForPath('*', routeConfig);
@@ -38,6 +40,8 @@ export async function proxy(req: NextRequest) {
   // Gen3 login check
   const loginStatus = await getLoginStatus(req.headers.get('Cookie') || '');
   const loggedIn = await isLoggedIn(loginStatus);
+
+  console.log('loginStatus', loginStatus);
 
   // Enforce login if required
   if (!loggedIn) {
