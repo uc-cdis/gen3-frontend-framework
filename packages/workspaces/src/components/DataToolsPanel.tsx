@@ -45,7 +45,7 @@ const DataToolsPanel = ({
       <Tabs
         defaultValue="dictionary"
         variant="outline"
-        classNames={{ root: 'flex flex-col p-2' }}
+        classNames={{ root: 'flex flex-col p-2 h-full' }}
         keepMounted
       >
         {/* Tab bar */}
@@ -59,7 +59,7 @@ const DataToolsPanel = ({
         {/* Tab content */}
         <div className="flex-1 min-h-0 h-full pt-4">
           <PanelErrorBoundary>
-            <Tabs.Panel value="dictionary">
+            <Tabs.Panel value="dictionary" className="h-full">
               <CompactDictionaryPanel schemaUrl={schemaUrl} />
             </Tabs.Panel>
             <Tabs.Panel value="assistant">

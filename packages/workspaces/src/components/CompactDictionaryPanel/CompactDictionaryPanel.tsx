@@ -85,7 +85,7 @@ const CompactDictionaryPanel = ({
         {search && ` matching "${search}"`}
       </div>
 
-      <div className="flex h-full flex-1 flex-col gap-0.5 overflow-y-auto">
+      <div className="flex h-full flex-1 flex-col gap-0.5 overflow-y-scroll">
         {filtered.map((node) => {
           const isExpanded = expandedId === node.id;
           const propCount = Object.keys(node.properties).length;

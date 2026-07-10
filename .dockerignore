@@ -9,6 +9,9 @@ packages/tools/dist
 packages/sampleCommons/node_modules
 packages/sampleCommons/.next
 packages/sampleCommons/.swc
+packages/sampleCommons/builds
+packages/sampleCommons/.cockle_temp
+packages/sampleCommons/cockle_wasm_env
 packages/storybook
 packages/workspaces/node_modules
 packages/workspaces/dist

@@ -105,7 +105,7 @@ export const hatcheryApi = HatcheryWithTags.injectEndpoints({
         responseHandler: async (response) => {
           if (!response.ok) {
             // If the server errored (4xx/5xx), parse the error body as JSON
-            return response.json();
+            return response.text();
           }
           // If the server succeeded (2xx), parse the body as plain text
           return response.text();

@@ -67,6 +67,8 @@ const MicroContainerReduxPanel = ({
     return () => clearInterval(t);
   }, [requestedStatusTimestamp, status]);
 
+  console.log('MicroContainerReduxPanel: status', status);
+
   /* ── Auto-reset after 15 s in launch-error state ── */
   useEffect(() => {
     if (status !== WorkspaceStatus.LaunchError) return;

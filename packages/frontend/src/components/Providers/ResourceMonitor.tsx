@@ -152,6 +152,7 @@ export const useWorkspaceResourceMonitor = (
   }, [monitorPayment, workspaceStatusData]);
 
   useDeepCompareEffect(() => {
+    if (!monitorWorkspace) return; // no need to monitor workspace
     if (!workspaceStatusData) return;
 
     // Check if the workspace is running.

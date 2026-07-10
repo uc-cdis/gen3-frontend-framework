@@ -54,10 +54,10 @@ COPY --from=builder --chown=nextjs:nextjs /gen3/packages/sampleCommons/public ./
 
 # Copy jupyter assets only if they exist in the builder stage
 RUN --mount=from=builder,source=/gen3/packages/sampleCommons,target=/tmp/sampleCommons,readonly \
-    if [ -d /tmp/sampleCommons/workspaces ]; then \
+    if [ -d /tmp/sampleCommons/jupyter-workspaces ]; then \
       mkdir -p ./packages/sampleCommons; \
-      cp -a /tmp/sampleCommons/workspaces ./packages/sampleCommons/workspaces; \
-      chown -R nextjs:nextjs ./packages/sampleCommons/workspaces; \
+      cp -a /tmp/sampleCommons/jupyter-workspaces ./packages/sampleCommons/jupyter-workspaces; \
+      chown -R nextjs:nextjs ./packages/sampleCommons/jupyter-workspaces; \
     fi
 
 # Copy runtime script directly from build context (no need to stage through builder)
