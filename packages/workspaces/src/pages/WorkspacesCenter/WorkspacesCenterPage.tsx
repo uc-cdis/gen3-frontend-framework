@@ -1,6 +1,6 @@
 import { WorkspacesPageLayoutProps } from './types';
 import React, { JSX } from 'react';
-import { NavPageLayout } from '@gen3/frontend';
+import { FixedNavPageLayout } from '@gen3/frontend';
 import WorkspaceCenter from '../../workspace/WorkspaceCenter';
 
 import { selectWorkspaceFullscreen, useCoreSelector } from '@gen3/core';
@@ -15,7 +15,7 @@ const WorkspacesCenterPage = ({
   );
 
   return (
-    <NavPageLayout
+    <FixedNavPageLayout
       headerProps={headerProps}
       footerProps={{ ...footerProps, hideFooter: isFullScreen }}
       headerMetadata={{
@@ -26,7 +26,7 @@ const WorkspacesCenterPage = ({
       }}
     >
       <WorkspaceCenter {...configuration} />
-    </NavPageLayout>
+    </FixedNavPageLayout>
   );
 };
 

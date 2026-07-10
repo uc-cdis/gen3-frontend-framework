@@ -82,8 +82,6 @@ export const useWorkspaceResourceMonitor = (
   const [pollingInterval, setPollingInterval] = useState<number>(0);
   const [paymentPollingInterval, setPaymentPollingInterval] =
     useState<number>(0);
-
-  console.log('monitorWorkspace', monitorWorkspace);
   const {
     data: workspaceStatusData,
     isError: isWorkspaceStatusError,
@@ -154,7 +152,7 @@ export const useWorkspaceResourceMonitor = (
   }, [monitorPayment, workspaceStatusData]);
 
   useDeepCompareEffect(() => {
-    if (!monitorWorkspace) return;
+    if (!monitorWorkspace) return; // no need to monitor workspace
     if (!workspaceStatusData) return;
 
     // Check if the workspace is running.

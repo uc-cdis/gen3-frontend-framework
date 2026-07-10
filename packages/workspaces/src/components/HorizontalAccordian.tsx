@@ -66,7 +66,7 @@ export function HorizontalAccordion({
         transition: `width ${TRANSITION_MS}ms ease`,
       }}
     >
-      <div className="flex flex-col no-wrap">
+      <div className="flex flex-col no-wrap h-full overflow-hidden">
         <div className="flex items-center justify-between px-1 py-1 bg-base-max">
           <Text
             fw={600}
@@ -94,7 +94,7 @@ export function HorizontalAccordion({
         </div>
 
         <div
-          className="overflow-hidden shrink-0 px-2"
+          className="overflow-hidden h-full shrink-0 px-2"
           style={{
             opacity: expanded ? 1 : 0,
             pointerEvents: expanded ? 'auto' : 'none',
