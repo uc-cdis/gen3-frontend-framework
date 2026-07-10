@@ -10,14 +10,14 @@ import { FormContentViews } from '../../../features/DiscoveryForms/StudyRegistra
 import StudyRegistrationForm from '../../../features/DiscoveryForms/StudyRegistration';
 
 interface StudyRegistrationAccessRequestFormPageProps extends NavPageLayoutProps {
-  configStudyRegistrationRequestAccessForm: any;
+  configStudyRegistrationForm: any;
   studyName: string;
 }
 
 const StudyRegistrationPage = ({
   headerProps,
   footerProps,
-  configStudyRegistrationRequestAccessForm,
+  configStudyRegistrationForm,
 }: StudyRegistrationAccessRequestFormPageProps) => {
   return (
     <NavPageLayout
@@ -29,9 +29,7 @@ const StudyRegistrationPage = ({
       }}
     >
       <StudyRegistrationForm
-        configStudyRegistrationRequestAccessForm={
-          configStudyRegistrationRequestAccessForm
-        }
+        configStudyRegistrationForm={configStudyRegistrationForm}
       />
     </NavPageLayout>
   );
