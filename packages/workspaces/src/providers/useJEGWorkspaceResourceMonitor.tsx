@@ -73,7 +73,10 @@ export const useJEGWorkspaceResourceMonitor = (
   workspaceId: string | null = null,
   monitorWorkspace: boolean,
 ) => {
-  const [pollingInterval, setPollingInterval] = useState<number>(0);
+  // start with default polling interval of 1 second
+  const [pollingInterval, setPollingInterval] = useState<number>(
+    convertSecondsToMilliseconds(1),
+  );
   const [error, setError] = useState<string | null>(null);
 
   const {
