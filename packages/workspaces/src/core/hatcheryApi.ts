@@ -13,7 +13,8 @@ const HatcheryWithTags = gen3Api.enhanceEndpoints({
 });
 
 const StatusStringToHatcheryServiceStatus: Record<string, Array<string>> = {
-  running: ['launching', 'pending', 'starting', 'running', 'ready'],
+  launching: ['launching', 'pending'],
+  running: ['starting', 'running', 'ready'],
   stopped: ['not-running', 'stopped', 'terminated'],
   terminated: ['terminating', 'stopping'],
 };
@@ -72,10 +73,16 @@ export const hatcheryApi = HatcheryWithTags.injectEndpoints({
       },
       transformResponse: (response: HatcheryStatusResponse) => {
         const results = (response.status || 'unknown').toLowerCase();
+
+        console.log('hatcheryApi: transformResponse: results', results);
         let hatcheryStatus = HatcheryServiceState.unknown;
 
         if (results === 'not found' || results === 'unknown')
           hatcheryStatus = HatcheryServiceState.unknown;
+
+        if (StatusStringToHatcheryServiceStatus.launching.includes(results)) {
+          hatcheryStatus = HatcheryServiceState.launching;
+        }
 
         if (StatusStringToHatcheryServiceStatus.running.includes(results)) {
           hatcheryStatus = HatcheryServiceState.running;

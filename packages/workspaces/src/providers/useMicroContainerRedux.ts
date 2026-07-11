@@ -88,7 +88,7 @@ export function useMicroContainerRedux(
   const [containerHash, setContainerHash] = useState<string | null>(null);
   const coreDispatch = useCoreDispatch();
 
-  // get the options for the workspace could move to parent since
+  // get the options for the workspace could move to parent
   const { data: optionData, error: optionsError } =
     useDoesHatcheryOptionExistsQuery(tag, { skip: containerHash !== null });
 

@@ -73,8 +73,13 @@ export const useJEGWorkspaceResourceMonitor = (
   workspaceId: string | null = null,
   monitorWorkspace: boolean,
 ) => {
-  const [pollingInterval, setPollingInterval] = useState<number>(0);
+  // start with default polling interval of 1 second
+  const [pollingInterval, setPollingInterval] = useState<number>(
+    convertSecondsToMilliseconds(1),
+  );
   const [error, setError] = useState<string | null>(null);
+
+  console.log('useJEGWorkspaceResourceMonitor: workspaceId', workspaceId);
 
   const {
     data: workspaceStatusData,
@@ -82,7 +87,7 @@ export const useJEGWorkspaceResourceMonitor = (
     error: workspaceStatusError,
   } = useHatcheryStatusQuery(
     workspaceId,
-    monitorWorkspace
+    monitorWorkspace && workspaceId // TODO check to see if this is needed
       ? {
           pollingInterval: pollingInterval,
           refetchOnMountOrArgChange: 1800,
@@ -130,6 +135,11 @@ export const useJEGWorkspaceResourceMonitor = (
   }, [error]);
 
   useDeepCompareEffect(() => {
+    console.log(
+      'useJEGWorkspaceResourceMonitor: current workspaceQueryStatus',
+      workspaceStatusData,
+    );
+
     if (!workspaceStatusData) return;
     // LaunchError is set client-side by the launch() call and cleared by the
     // auto-reset timer in the panel.  Polling data must not override it or the
@@ -218,6 +228,11 @@ export const useJEGWorkspaceResourceMonitor = (
       if (requestedStatus === RequestedWorkspaceStatus.Terminate) {
         return;
       }
+
+      console.log(
+        'useJEGWorkspaceResourceMonitor: setting workspaceQueryStatus',
+        workspaceQueryStatus,
+      );
 
       dispatch(setJEGActiveWorkspaceStatus(workspaceQueryStatus));
       setPollingInterval(WorkspacePollingInterval[workspaceQueryStatus]);
