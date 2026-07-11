@@ -73,8 +73,6 @@ export const hatcheryApi = HatcheryWithTags.injectEndpoints({
       },
       transformResponse: (response: HatcheryStatusResponse) => {
         const results = (response.status || 'unknown').toLowerCase();
-
-        console.log('hatcheryApi: transformResponse: results', results);
         let hatcheryStatus = HatcheryServiceState.unknown;
 
         if (results === 'not found' || results === 'unknown')
