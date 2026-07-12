@@ -52,10 +52,10 @@ const notifyUser = (
 // TODO: convert to seconds/minutes for readability
 const WorkspacePollingInterval: Record<WorkspaceStatus, number> = {
   [WorkspaceStatus.NotFound]: 0,
-  [WorkspaceStatus.Launching]: convertSecondsToMilliseconds(1),
-  [WorkspaceStatus.Terminating]: convertSecondsToMilliseconds(1),
-  [WorkspaceStatus.Running]: convertSecondsToMilliseconds(300),
-  [WorkspaceStatus.Stopped]: convertSecondsToMilliseconds(5),
+  [WorkspaceStatus.Launching]: convertSecondsToMilliseconds(5),
+  [WorkspaceStatus.Terminating]: convertSecondsToMilliseconds(5),
+  [WorkspaceStatus.Running]: convertSecondsToMilliseconds(60),
+  [WorkspaceStatus.Stopped]: convertSecondsToMilliseconds(60),
   [WorkspaceStatus.Errored]: convertSecondsToMilliseconds(10),
   [WorkspaceStatus.LaunchError]: convertSecondsToMilliseconds(10),
   [WorkspaceStatus.TerminateError]: convertSecondsToMilliseconds(10),
@@ -210,13 +210,14 @@ export const useJEGWorkspaceResourceMonitor = (
           dispatch(
             setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Unset),
           );
-          dispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.NotFound));
+          dispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.LaunchError));
           return;
         }
         // if the workspace is running then requested status has been met
         dispatch(
           setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Unset),
         );
+        return;
       }
       if (requestedStatus === RequestedWorkspaceStatus.Terminate) {
         return;

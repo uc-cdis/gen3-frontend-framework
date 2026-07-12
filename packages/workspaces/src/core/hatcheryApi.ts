@@ -13,8 +13,8 @@ const HatcheryWithTags = gen3Api.enhanceEndpoints({
 });
 
 const StatusStringToHatcheryServiceStatus: Record<string, Array<string>> = {
-  launching: ['launching', 'pending'],
-  running: ['starting', 'running', 'ready'],
+  launching: ['launching', 'pending', 'starting'],
+  running: ['running', 'ready'],
   stopped: ['not-running', 'stopped', 'terminated'],
   terminated: ['terminating', 'stopping'],
 };
