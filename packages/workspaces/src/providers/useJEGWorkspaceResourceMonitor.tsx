@@ -133,20 +133,45 @@ export const useJEGWorkspaceResourceMonitor = (
   }, [error]);
 
   useDeepCompareEffect(() => {
+    // No status data means we are not polling
     if (!workspaceStatusData) return;
-    // LaunchError is set client-side by the launch() call and cleared by the
+    // LaunchError is set client-side by the launch() call from useMicroContainerRedux and cleared by the
     // auto-reset timer in the panel.  Polling data must not override it or the
-    // timer will be cancelled before it fires.
+    // timer will be canceled before it fires.
     if (activeStatus === WorkspaceStatus.LaunchError) return;
     const workspaceQueryStatus = hatcheryStateToWorkspaceStatus(
       workspaceStatusData?.status,
     );
 
+    // handle cases of unknown, running, terminating, or launching
+    if (workspaceStatusData.status === HatcheryServiceState.unknown) {
+      // check for unknown state
+      // NotFound means pod is not running
+      // either starting up
+      // or finally terminated.
+      if (requestedStatus === RequestedWorkspaceStatus.Launch) {
+        // if the workspace becomes idle too long after a Launch request, switch to
+        // Unset and NotFound.
+        console.warn(
+          "requested status is Launch, but workspace pod isn't running yet.",
+        );
+        return;
+      }
+      // both requested status and workspace pod status are the same, so stop all polling
+      setPollingInterval(WorkspacePollingInterval[WorkspaceStatus.NotFound]);
+      dispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.NotFound));
+      if (requestedStatus === RequestedWorkspaceStatus.Terminate) {
+        // Cleanup termination after terminated
+        dispatch(
+          setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Unset),
+        );
+      }
+      return;
+    }
+
     // Check if the workspace is running.
     // If so: need to check workspace idle if set
-    // and ensure the pay model is queried
     if (workspaceStatusData.status === HatcheryServiceState.running) {
-      //  const { idleTimeLimit, lastActivityTime } = workspaceStatusData;
       // in some state other than idle
       if (!idleTimeLimit || idleTimeLimit <= 0) {
         // Workspace is running, but no idle limit set.
@@ -159,6 +184,7 @@ export const useJEGWorkspaceResourceMonitor = (
         return;
       }
 
+      // handle if idle time is defined
       if (
         idleTimeLimit &&
         idleTimeLimit > 0 &&
@@ -173,7 +199,10 @@ export const useJEGWorkspaceResourceMonitor = (
           // so terminate
           (async () => {
             try {
-              if (workspaceId) await terminateWorkspace(workspaceId).unwrap();
+              if (workspaceId)
+                await terminateWorkspace(
+                  encodeURIComponent(workspaceId),
+                ).unwrap();
             } catch (error) {
               const errorMessage =
                 (error as Error).message || 'Unknown error occurred';
@@ -203,69 +232,85 @@ export const useJEGWorkspaceResourceMonitor = (
           setError('Workspace has been idle for too long. Will shutdown soon');
         }
       }
+    }
 
-      if (requestedStatus === RequestedWorkspaceStatus.Launch) {
-        // if we have a launch error then requested status has not been met
-        if (workspaceQueryStatus === WorkspaceStatus.LaunchError) {
-          dispatch(
-            setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Unset),
+    // Stopped means the pod is in a failed state — auto-terminate it
+    if (workspaceStatusData.status === HatcheryServiceState.stopped) {
+      (async () => {
+        try {
+          if (workspaceId)
+            await terminateWorkspace(encodeURIComponent(workspaceId)).unwrap();
+        } catch (error) {
+          const errorMessage =
+            (error as Error).message || 'Unknown error occurred';
+          console.error(
+            'Workspace termination of stopped pod failed: ',
+            errorMessage,
           );
-          dispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.LaunchError));
-          return;
+          notifyUser(
+            'Workspace Error',
+            `Failed to terminate stopped workspace: ${errorMessage}`,
+            NotificationStatus.Error,
+          );
         }
-        // if the workspace is running then requested status has been met
+      })();
+      dispatch(
+        setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate),
+      );
+      dispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.Terminating));
+      setPollingInterval(WorkspacePollingInterval[WorkspaceStatus.Terminating]);
+      notifyUser(
+        'Workspace Stopped',
+        'Workspace entered a failed state and is being terminated',
+        NotificationStatus.Error,
+      );
+      return;
+    }
+
+    if (requestedStatus === RequestedWorkspaceStatus.Launch) {
+      // if we have a launch error then requested status has not been met
+      if (workspaceQueryStatus === WorkspaceStatus.LaunchError) {
         dispatch(
           setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Unset),
         );
+        dispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.LaunchError));
         return;
       }
-      if (requestedStatus === RequestedWorkspaceStatus.Terminate) {
-        return;
+      if (workspaceQueryStatus === WorkspaceStatus.NotFound) {
+        return; // pod not yet created, keep waiting
       }
-
-      dispatch(setJEGActiveWorkspaceStatus(workspaceQueryStatus));
-      setPollingInterval(WorkspacePollingInterval[workspaceQueryStatus]);
-      return;
-    }
-
-    if (workspaceStatusData.status === HatcheryServiceState.unknown) {
-      // NotFound means pod is not running
-      // either starting up
-      // or finally terminated.
-      if (requestedStatus === RequestedWorkspaceStatus.Launch) {
-        // if the workspace becomes idle too long after a Launch request, switch to
-        // Unset and NotFound.
-        console.warn(
-          "requested status is Launch, but workspace pod isn't running yet.",
+      if (workspaceQueryStatus === WorkspaceStatus.Running) {
+        // workspace is running — requested status has been met
+        dispatch(
+          setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Unset),
         );
+        dispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.Running));
         return;
-      } else {
-        // both requested status and workspace pod status are the same, so stop all polling
-        setPollingInterval(WorkspacePollingInterval[WorkspaceStatus.NotFound]);
-        dispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.NotFound));
-        if (requestedStatus === RequestedWorkspaceStatus.Terminate) {
-          // Cleanup termination after terminated
-          dispatch(
-            setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Unset),
-          );
-        }
       }
+      // still launching — update active status but keep requestedStatus as Launch
+      dispatch(setJEGActiveWorkspaceStatus(workspaceQueryStatus));
       return;
     }
 
-    // if here, update active workspace status and polling interval
+    if (requestedStatus === RequestedWorkspaceStatus.Terminate) {
+      return;
+    }
+
+    // if here, update active workspace status and polling for other states
     dispatch(setJEGActiveWorkspaceStatus(workspaceQueryStatus));
     setPollingInterval(WorkspacePollingInterval[workspaceQueryStatus]);
   }, [dispatch, workspaceStatusData, requestedStatus, activeStatus]);
 
   useEffect(() => {
+    // time out if exceeding maximum start timee
     if (
       requestedStatus === RequestedWorkspaceStatus.Launch &&
       isTimeGreaterThan(requestedStatusTimestamp, MAXIMUM_START_TIME_IN_MINUTES)
     ) {
-      if (workspaceId) terminateWorkspace(workspaceId);
+      if (workspaceId) terminateWorkspace(encodeURIComponent(workspaceId));
       dispatch(
         setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate),
+        // no need to set as it will get set above
       );
       setError('Workspace failed to start. Shutting down');
     }

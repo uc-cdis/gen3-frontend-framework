@@ -101,7 +101,7 @@ then add to `.env.development.local`:
 
 ```bash
 FENCE_CLIENT_ID=<<fence client id>>
-FENCE_CLIENT_SECRET=<<fence client secret>>
+FENCE_CLIENT_SECRET=<<fence client secret>> # pragma: allowlist secret
 FENCE_REDIRECT_URI=http://gen3dev.local.io:3000/api/auth/callback
 ```
 
@@ -120,7 +120,7 @@ edit the coredns configmap, adding the ip address to the hosts section
 ```
 
 ```yaml
-.:53 {
+.: 53{
     errors
     health
     ready

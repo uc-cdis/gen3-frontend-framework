@@ -71,3 +71,7 @@ export const {
   useJegGatewayStatusQuery,
   useReapKernelsMutation,
 } = jegGatewayApi;
+
+// select active kernels
+export const selectActiveKernels =
+  jegGatewayApi.endpoints.activeKernels.select();
