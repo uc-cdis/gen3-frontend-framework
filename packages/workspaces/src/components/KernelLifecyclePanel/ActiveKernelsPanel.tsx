@@ -22,6 +22,8 @@ export const ActiveKernelsPanel = () => {
     error,
   } = useActiveKernelsQuery(undefined, {
     pollingInterval: 10000,
+    refetchOnMountOrArgChange: 1800,
+    refetchOnFocus: true,
     selectFromResult: ({ data, isLoading, isError, error }) => ({
       data,
       isLoading,

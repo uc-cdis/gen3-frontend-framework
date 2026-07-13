@@ -210,9 +210,9 @@ function injectBranding(html: string, branding: BrandingConfig): string {
       } catch (error: unknown) {
         // empty or malformed — start fresh
         if (error instanceof Error) {
-          console.log('Failed to parse existing JSON', error.message);
+          console.warn('Failed to parse existing JSON', error.message);
         } else {
-          console.log('Failed to parse existing JSON', error);
+          console.warn('Failed to parse existing JSON', error);
         }
       }
       if (branding.appName) existing.appName = branding.appName;

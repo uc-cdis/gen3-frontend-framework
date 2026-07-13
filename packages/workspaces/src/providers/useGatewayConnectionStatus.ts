@@ -27,7 +27,11 @@ export function useGatewayConnectionStatus() {
     data: gatewayStatusData,
     isFetching: isGatewayFetching,
     isError,
-  } = useJegGatewayStatusQuery();
+  } = useJegGatewayStatusQuery(undefined, {
+    pollingInterval: 10000,
+    refetchOnMountOrArgChange: 1800,
+    refetchOnFocus: true,
+  });
 
   const gatewayServiceStatus = useMemo(() => {
     if (isGatewayFetching) return 'fetching';

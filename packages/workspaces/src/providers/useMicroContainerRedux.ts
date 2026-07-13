@@ -88,7 +88,7 @@ export function useMicroContainerRedux(
   const [containerHash, setContainerHash] = useState<string | null>(null);
   const coreDispatch = useCoreDispatch();
 
-  // get the options for the workspace could move to parent since
+  // get the options for the workspace could move to parent
   const { data: optionData, error: optionsError } =
     useDoesHatcheryOptionExistsQuery(tag, { skip: containerHash !== null });
 
@@ -151,7 +151,8 @@ export function useMicroContainerRedux(
         // launch error, will show error message and then reset
         coreDispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.LaunchError));
       } else {
-        coreDispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.Running));
+        // Keep status as Launching — the monitor will promote to Running
+        // once the pod actually reports running status
         coreDispatch(
           setJEGActiveWorkspaceId({ id: containerHash ?? 'default' }),
         );
@@ -173,22 +174,13 @@ export function useMicroContainerRedux(
     if (!enabled || workspaceContainerStatus === WorkspaceStatus.Terminating)
       return; // skip if already terminating
 
-    // coreDispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.Running));
     const containerId = containerHash ? encodeURIComponent(containerHash) : '';
-    try {
-      //
-      // const status = await terminateWorkspace(containerId).unwrap();
-      terminateWorkspace(containerId);
-      coreDispatch(
-        setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate),
-      );
-      coreDispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.Terminating));
-    } catch (_error: unknown) {
-      coreDispatch(
-        setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate),
-      );
-      coreDispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.Terminating));
-    }
+    // Fire-and-forget: errors are handled by the useDeepCompareEffect watching isTerminateError
+    terminateWorkspace(containerId);
+    coreDispatch(
+      setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate),
+    );
+    coreDispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.Terminating));
   }, [
     enabled,
     workspaceContainerStatus,
