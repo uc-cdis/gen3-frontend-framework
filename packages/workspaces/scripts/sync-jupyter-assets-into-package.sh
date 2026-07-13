@@ -35,6 +35,7 @@ rm -rf "$FREE_DST" "$REMOTE_DST"
 mkdir -p "$PKG_DIR/assets"
 cp -R "$FREE_SRC" "$FREE_DST"
 cp -R "$REMOTE_SRC" "$REMOTE_DST"
+bash "$SCRIPT_DIR/scripts/patch-remote-jupyterlite-config.sh" --remote-dir "$REMOTE_DST"
 
 bash "$VALIDATE_SCRIPT" --free-dir "$FREE_DST" --remote-dir "$REMOTE_DST"
 

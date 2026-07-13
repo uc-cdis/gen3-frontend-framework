@@ -210,9 +210,9 @@ function injectBranding(html: string, branding: BrandingConfig): string {
       } catch (error: unknown) {
         // empty or malformed — start fresh
         if (error instanceof Error) {
-          console.log('Failed to parse existing JSON', error.message);
+          console.warn('Failed to parse existing JSON', error.message);
         } else {
-          console.log('Failed to parse existing JSON', error);
+          console.warn('Failed to parse existing JSON', error);
         }
       }
       if (branding.appName) existing.appName = branding.appName;
@@ -242,6 +242,9 @@ export function createWorkspaceAssetsHandler(
     '/api/workspace/gateway/';
 
   const assetRoot = options?.assetRoot ?? defaultAssetRoot();
+
+  // Keep this in for logging purposes
+  console.log('jupyterlite assets root:', assetRoot);
 
   const disabledExtensions = options?.additionalDisabledExtensions
     ? [...REMOTE_DISABLED_EXTENSIONS, ...options.additionalDisabledExtensions]
@@ -319,6 +322,8 @@ export function createWorkspaceAssetsHandler(
 
     const candidatePath = nodePath.resolve(tierRoot, ...safeSegments);
     const candidateIndex = nodePath.join(candidatePath, 'index.html');
+
+    console.log('serving jupyterlite asset from', candidatePath);
 
     let filePath: string;
     if (allowedFiles.has(candidatePath)) {

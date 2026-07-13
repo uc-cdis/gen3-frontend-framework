@@ -12,10 +12,22 @@ const HatcheryWithTags = gen3Api.enhanceEndpoints({
   addTagTypes: ['Hatchery'],
 });
 
+/*
+ *  Hatchery states:
+ *
+ * `Terminating` - The workspace is shutting down
+ * `Launching` - The workspace is starting up
+ * `Stopped` - The workspace is in a failed state and must be terminated
+ * `Running` - The workspace is running and ready to be used
+ * `Not Found` - The workspace could not be found
+ */
+
 const StatusStringToHatcheryServiceStatus: Record<string, Array<string>> = {
-  running: ['launching', 'pending', 'starting', 'running', 'ready'],
-  stopped: ['not-running', 'stopped', 'terminated'],
-  terminated: ['terminating', 'stopping'],
+  launching: ['launching', 'pending', 'starting'],
+  running: ['running', 'ready'],
+  stopped: ['stopped'],
+  terminating: ['terminating', 'stopping'],
+  unknown: ['not found', 'unknown'],
 };
 
 interface HatcheryItem {
@@ -74,8 +86,13 @@ export const hatcheryApi = HatcheryWithTags.injectEndpoints({
         const results = (response.status || 'unknown').toLowerCase();
         let hatcheryStatus = HatcheryServiceState.unknown;
 
-        if (results === 'not found' || results === 'unknown')
+        if (StatusStringToHatcheryServiceStatus.unknown.includes(results)) {
           hatcheryStatus = HatcheryServiceState.unknown;
+        }
+
+        if (StatusStringToHatcheryServiceStatus.launching.includes(results)) {
+          hatcheryStatus = HatcheryServiceState.launching;
+        }
 
         if (StatusStringToHatcheryServiceStatus.running.includes(results)) {
           hatcheryStatus = HatcheryServiceState.running;
@@ -85,11 +102,11 @@ export const hatcheryApi = HatcheryWithTags.injectEndpoints({
           hatcheryStatus = HatcheryServiceState.stopped;
         }
 
-        if (StatusStringToHatcheryServiceStatus.terminated.includes(results)) {
+        if (StatusStringToHatcheryServiceStatus.terminating.includes(results)) {
           hatcheryStatus = HatcheryServiceState.terminating;
         }
 
-        // return other status
+        // return other stats from the hatchery response
         return {
           status: hatcheryStatus,
           idleTimeLimit: response.idleTimeLimit,
@@ -105,7 +122,7 @@ export const hatcheryApi = HatcheryWithTags.injectEndpoints({
         responseHandler: async (response) => {
           if (!response.ok) {
             // If the server errored (4xx/5xx), parse the error body as JSON
-            return response.json();
+            return response.text();
           }
           // If the server succeeded (2xx), parse the body as plain text
           return response.text();

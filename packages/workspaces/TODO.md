@@ -50,13 +50,13 @@
 docker pull --platform linux/amd64 quay.io/cdis/gen3-vectis:qa-jegv2
 docker pull --platform linux/amd64 quay.io/cdis/gen3-vectis:gen3-vectisv6
 docker pull --platform linux/amd64 quay.io/cdis/gen3-vectis:qa-goproxy
-docker pull --platform linux/amd64 quay.io/cdis/multihead-workspace-proxy:feat_init-jeg-user-ownership-fix
+docker pull --platform linux/amd64 quay.io/cdis/multihead-workspace-proxy:feat_init
 ```
 
 kind load docker-image quay.io/cdis/gen3-vectis:qa-jegv2 --name kind-multi-node
 kind load docker-image quay.io/cdis/gen3-vectis:gen3-vectisv6 --name kind-multi-node
 kind load docker-image quay.io/cdis/gen3-vectis:qa-goproxy --name kind-multi-node
-kind load docker-image quay.io/cdis/multihead-workspace-proxy:feat_init-jeg-user-ownership-fix --name kind-multi-node
+kind load docker-image quay.io/cdis/multihead-workspace-proxy:feat_init --name kind-multi-node
 
 # load local frontend image
 
@@ -101,7 +101,7 @@ then add to `.env.development.local`:
 
 ```bash
 FENCE_CLIENT_ID=<<fence client id>>
-FENCE_CLIENT_SECRET=<<fence client secret>>
+FENCE_CLIENT_SECRET=<<fence client secret>> # pragma: allowlist secret
 FENCE_REDIRECT_URI=http://gen3dev.local.io:3000/api/auth/callback
 ```
 
@@ -120,7 +120,7 @@ edit the coredns configmap, adding the ip address to the hosts section
 ```
 
 ```yaml
-.:53 {
+.: 53{
     errors
     health
     ready
