@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Alert, Button, Loader } from '@mantine/core';
+import { useInterval } from '@mantine/hooks';
 import {
   selectJEGActiveWorkspaceStatus,
   selectJEGRequestedWorkspaceStatusTimestamp,
@@ -52,20 +53,23 @@ const MicroContainerReduxPanel = ({
 
   /* ── Elapsed timer for launching state ── */
   const [elapsedSec, setElapsedSec] = useState(0);
-  useEffect(() => {
-    if (status !== WorkspaceStatus.Launching) {
-      setElapsedSec(0);
-      return;
-    }
-    const interval = Math.floor(
+
+  const interval = useInterval(() => {
+    const elapsed = Math.floor(
       (Date.now() - (requestedStatusTimestamp as number)) / 1000,
     );
+    setElapsedSec(elapsed);
+  }, 1000);
 
-    const t = setInterval(() => {
-      setElapsedSec(interval);
-    }, 1000);
-    return () => clearInterval(t);
-  }, [requestedStatusTimestamp, status]);
+  useEffect(() => {
+    if (status === WorkspaceStatus.Launching) {
+      interval.start();
+    } else {
+      setElapsedSec(0);
+      interval.stop();
+    }
+    return interval.stop;
+  }, [status, interval]);
 
   /* ── Auto-reset after 15 s in launch-error state ── */
   useEffect(() => {
@@ -119,10 +123,6 @@ const MicroContainerReduxPanel = ({
 
   /* ── launching ── */
   if (status === WorkspaceStatus.Launching) {
-    const mins = Math.floor(elapsedSec / 60);
-    const secs = elapsedSec % 60;
-    const elapsed = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
-
     return (
       <div role="status" className={PanelStyle}>
         <Loader size={48} />
@@ -131,7 +131,9 @@ const MicroContainerReduxPanel = ({
           <p className="text-base font-bold text-base-darkest">
             Starting your workspace…
           </p>
-          <p className="mt-1 text-sm text-base-darker">Elapsed: {elapsed}</p>
+          <p className="mt-1 text-sm text-base-darker">
+            Elapsed: {elapsedSec} {elapsedSec === 1 ? 'second' : 'seconds'}
+          </p>
           <p className="mt-1 text-xs text-base-dark">
             Usually takes 30–90 seconds on a cold start.
           </p>

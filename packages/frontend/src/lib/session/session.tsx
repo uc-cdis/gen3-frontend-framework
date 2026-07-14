@@ -31,7 +31,7 @@ import { useThrottledCallback } from '@mantine/hooks';
 import { MinutesToMilliseconds } from '../../utils';
 import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
 
-const ACTIVITY_THROTTLE_TIMEOUT = 20000;
+const ACTIVITY_THROTTLE_TIMEOUT = 7000;
 
 export const logoutSession = async () => {
   // logged in using credentials then execute credentials logout first
@@ -123,6 +123,7 @@ const refreshSession = (
   const timeSinceLastSessionUpdate =
     Date.now() - mostRecentSessionRefreshTimestamp;
   // don't hit Fence to refresh tokens too frequently
+
   if (timeSinceLastSessionUpdate < UPDATE_SESSION_LIMIT) {
     return;
   }
@@ -154,7 +155,7 @@ const useInterval = (callback: IntervalFunction, delay: number | null) => {
   }, [delay]);
 };
 
-const UPDATE_SESSION_LIMIT = MinutesToMilliseconds(5);
+const UPDATE_SESSION_LIMIT = MinutesToMilliseconds(1);
 
 /**
  * SessionProvider creates a React context which keeps track of wether the user is authenticated
@@ -182,7 +183,6 @@ export const SessionProvider = ({
   const { isSuccess: isGetCSRFSuccess, isError: isGetCSRFError } =
     useGetCSRFQuery();
   useWorkspaceResourceMonitor(monitorWorkspace); // monitor workspaces if any are running or configured
-  const isOnline = useOnline();
 
   const [getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
   const userStatus = useCoreSelector((state: CoreState) =>
@@ -246,6 +246,7 @@ export const SessionProvider = ({
   const updateSession = useCallback(() => {
     const updateSessionWithUserStatus = async () => {
       await getUserDetails();
+      setMostRecentSessionRefreshTimestamp(Date.now());
     };
 
     updateSessionWithUserStatus();
@@ -339,6 +340,7 @@ export const SessionProvider = ({
       if (isUserOnPage('Login') /* || this.popupShown */) return;
 
       const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
+
       if (logoutInactiveUsers) {
         if (
           timeSinceLastActivity >= inactiveTimeLimitMilliseconds &&
@@ -367,7 +369,7 @@ export const SessionProvider = ({
         (ts: number) => setMostRecentSessionRefreshTimestamp(ts),
       );
     },
-    isOnline && updateSessionIntervalMilliseconds > 0
+    updateSessionIntervalMilliseconds > 0
       ? updateSessionIntervalMilliseconds
       : null,
   );

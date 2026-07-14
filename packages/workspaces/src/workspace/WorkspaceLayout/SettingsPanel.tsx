@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { Stack } from '@mantine/core';
 import { SettingsPanelConfiguration } from '../tiers/types';
 import KernelLifecyclePanel from '../../components/KernelLifecyclePanel/KernelLifecyclePanel';
 import { PanelStyle } from './styling';
@@ -39,7 +38,7 @@ export const SettingsPanel = ({
       rightSide
       expandedWidth={width}
     >
-      <Stack gap="sm" className={PanelStyle}>
+      <div className={`${PanelStyle} overflow-y-scroll`}>
         {showKernels && <KernelLifecyclePanel />}
         <UpgradeActionsPanel
           currentTier={
@@ -47,7 +46,7 @@ export const SettingsPanel = ({
           }
           onUpgradeToRemote={onUpgradeToRemote}
         />
-      </Stack>
+      </div>
     </HorizontalAccordion>
   );
 };
