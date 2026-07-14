@@ -60,7 +60,7 @@ export function HorizontalAccordion({
 
   return (
     <div
-      className={`overflow-hidden shrink-0 ${mergedClassNames.root}`}
+      className={`${mergedClassNames.root}`}
       style={{
         width: expanded ? expandedWidth : collapsedWidth,
         transition: `width ${TRANSITION_MS}ms ease`,
@@ -94,7 +94,7 @@ export function HorizontalAccordion({
         </div>
 
         <div
-          className="overflow-hidden h-full shrink-0 px-2"
+          className="overflow-hidden px-2"
           style={{
             opacity: expanded ? 1 : 0,
             pointerEvents: expanded ? 'auto' : 'none',
