@@ -4,6 +4,7 @@ import TextContent, { TextContentProps, ContentType } from './TextContent';
 import {
   Checkbox,
   Radio,
+  Select,
   Stack,
   TextInput,
   Textarea,
@@ -22,6 +23,7 @@ export enum FormContentType {
   Checkbox = 'Checkbox', // mantine Checkbox
   Textarea = 'Textarea', // mantine Textarea
   RadioGroup = 'RadioGroup', // mantine Radio.Group
+  Select = 'Select', // mantine Select
 }
 
 /**
@@ -152,6 +154,17 @@ const FormContent = ({
         return inputContainer(RadioGroupElement);
       }
       return RadioGroupElement;
+    }
+    case FormContentType.Select: {
+      return (
+        <Select
+          className={className}
+          data={['React', 'Angular', 'Vue', 'Svelte']}
+          defaultValue="React"
+          label={label}
+          required={required}
+        />
+      );
     }
     case FormContentType.Textarea: {
       return (
