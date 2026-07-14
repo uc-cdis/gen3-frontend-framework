@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Button, CopyButton } from '@mantine/core';
 import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
 import { FiLogIn as LoginIcon } from 'react-icons/fi';
-import { useIsUserLoggedIn } from '@gen3/core';
+import {
+  CoreState,
+  selectUserDetails,
+  useCoreSelector,
+  UserProfile,
+} from '@gen3/core';
 import { useDiscoveryContext } from '../../Discovery/DiscoveryProvider';
+import { useRouter } from 'next/router';
+import { useStudyContext } from '../StudyProvider';
+import { toString } from 'lodash';
 
 interface StudyDetailsHeaderButtonsProps {
   onClose: () => void;
@@ -13,9 +21,47 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   onClose,
   permalink,
 }) => {
-  const requiresLogin = !useIsUserLoggedIn();
+  type ActiveUser = Partial<UserProfile> & { active: boolean };
+  const userInfo = useCoreSelector(
+    (state: CoreState) => selectUserDetails(state) as ActiveUser,
+  );
+  const requiresLogin = !userInfo.active;
+
   const { discoveryConfig: config } = useDiscoveryContext();
+  const index = config?.minimalFieldMapping?.uid ?? 'unknown';
+  const { studyDetails, setStudyDetails } = useStudyContext();
+  const studyUID = toString(studyDetails[index]);
+  const studyName = studyDetails?.study_metadata?.minimal_info?.study_name;
+  const studyRegistrationAuthZ = studyDetails.registration_authz;
+  const studyProjectNumber = studyDetails?.project_number;
   const showSubmitButton = config.detailView?.showSubmitButton;
+  const router = useRouter();
+
+  const handleRegisterButtonClick = () => {
+    if (requiresLogin) {
+      router.push('/Login');
+    } else {
+      router.push(
+        {
+          pathname: '/study-reg/request-access',
+          query: {
+            studyUID: studyUID,
+            studyName: studyName,
+            studyRegistrationAuthZ: studyRegistrationAuthZ,
+            studyProjectNumber: studyProjectNumber,
+          },
+        },
+        '/study-reg/request-access',
+      );
+    }
+  };
+
+  const submitButtonText = useMemo(() => {
+    if (requiresLogin) {
+      return 'Login to Register This Study';
+    }
+    return `Request Access to Register this Study`;
+  }, [requiresLogin, studyUID]);
 
   return (
     <>
@@ -28,10 +74,9 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
           variant="subtle"
           color="black"
           size="xs"
+          onClick={handleRegisterButtonClick}
         >
-          {requiresLogin
-            ? 'Login to submit variable level metadata'
-            : 'Request Access to Submit Variable-level Metadata'}
+          {submitButtonText}
         </Button>
       )}
       <CopyButton value={permalink}>
