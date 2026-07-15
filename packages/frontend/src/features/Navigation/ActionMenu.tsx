@@ -3,7 +3,6 @@ import { Menu, Text, Tooltip } from '@mantine/core';
 import { PiDotsThreeCircleThin as DotsIcon } from 'react-icons/pi';
 import Link from 'next/link';
 import { TooltipStyle } from './style';
-import { TopIconButtonPropsWithLink } from './TopBar/IconButton';
 import { isTopBarLinkButton, TopBarItems } from './TopBar/types';
 import { modals } from '@mantine/modals';
 
@@ -46,6 +45,7 @@ const ActionMenu = ({ items }: ActionMenuProps) => {
             ) : (
               <Menu.Item
                 onClick={() =>
+                  x?.modal &&
                   modals.openContextModal({
                     modal: x.modal,
                     innerProps: {},

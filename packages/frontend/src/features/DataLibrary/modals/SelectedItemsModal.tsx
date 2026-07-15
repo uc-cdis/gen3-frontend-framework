@@ -11,9 +11,7 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { Icon } from '@iconify-icon/react';
-import { HTTPError } from '@gen3/core';
-import { HTTPUserFriendlyErrorMessages } from './utils';
-
+import { HTTPError, HTTPUserFriendlyErrorMessages } from '@gen3/core';
 import SelectedItemsTable from '../tables/SelectedItemsTable';
 import {
   doesGroupFailRule,

@@ -3,6 +3,7 @@ import { WorkspaceConfig } from './types';
 import WorkspaceProvider from './WorkspaceProvider';
 import WorkspaceStatusProvider from './WorkspaceStatusProvider';
 import WorkspaceNotebookPanelWithControls from './WorkspaceNotebookPanelWithControls';
+import ProtectedContent from '../ProtectedContent';
 
 interface WorkspaceProps {
   config: WorkspaceConfig;
@@ -11,6 +12,7 @@ interface WorkspaceProps {
 
 const Workspace = ({ config, workspaceToRunId }: WorkspaceProps) => {
   return (
+    <ProtectedContent>
       <WorkspaceProvider config={config}>
         <WorkspaceStatusProvider>
           <div className="flex flex-col grow w-full relative">
@@ -18,6 +20,7 @@ const Workspace = ({ config, workspaceToRunId }: WorkspaceProps) => {
           </div>
         </WorkspaceStatusProvider>
       </WorkspaceProvider>
+    </ProtectedContent>
   );
 };
 
