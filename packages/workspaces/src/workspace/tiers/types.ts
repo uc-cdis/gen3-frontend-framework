@@ -36,6 +36,7 @@ export interface FreeWorkspaceTierConfiguration extends WorkspaceTierInformation
 export interface RemoteComputeWorkspaceTierConfiguration extends WorkspaceTierInformation {
   baseUrl?: string;
   type: Extract<WorkspaceTier, 'remote'>;
+  startTimeLimit?: number; // time limit in seconds
 }
 
 export type RemoteComputeWorkspaceHandle = {

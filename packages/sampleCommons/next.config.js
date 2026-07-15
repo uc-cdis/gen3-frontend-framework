@@ -49,6 +49,7 @@ const nextConfig = {
     fetches: {
       fullUrl: true,
     },
+    browserToTerminal: false,
   },
   webpack: (config, { dev }) => {
     config.infrastructureLogging = {
@@ -56,9 +57,6 @@ const nextConfig = {
     };
 
     config.resolve = config.resolve || {};
-
-    // Important: disable symlinks for faster resolution
-    config.resolve.symlinks = false;
 
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
@@ -89,18 +87,27 @@ const nextConfig = {
     };
 
     if (isDev) {
+      // Follow symlinks so webpack sees the real paths for local @gen3
+      // packages, keeping them outside the node_modules snapshot scope.
+      config.resolve.symlinks = true;
+
       config.watchOptions = {
         ...(config.watchOptions || {}),
-        // Exclude @gen3 local packages so file-level changes trigger HMR
+        // Exclude non-@gen3 node_modules so file-level changes trigger HMR
         ignored: /node_modules[/\\](?!@gen3[/\\])/,
       };
 
+      // Merge with existing snapshot config instead of replacing it.
       // Exclude local @gen3 packages from managed-path snapshotting so webpack
       // watches individual file changes instead of package.json version bumps.
       config.snapshot = {
+        ...(config.snapshot || {}),
         managedPaths: [/^(.+?[\\/]node_modules[\\/])(?!@gen3[\\/])/],
         immutablePaths: [],
       };
+    } else {
+      // In production builds, disable symlinks for faster resolution
+      config.resolve.symlinks = false;
     }
     return config;
   },

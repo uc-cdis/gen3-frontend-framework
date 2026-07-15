@@ -1,4 +1,9 @@
-export type WorkspaceTier = 'free' | 'remote' | 'pending' | 'hosted';
+export type WorkspaceTier =
+  | 'free'
+  | 'remote'
+  | 'pending'
+  | 'hosted'
+  | 'selectable';
 
 /**
  * Configuration types for Jupyter Workspace infrastructure.

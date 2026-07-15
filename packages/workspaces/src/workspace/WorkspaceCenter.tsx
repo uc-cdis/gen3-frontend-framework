@@ -3,6 +3,7 @@ import TierSelectorLanding from '../components/TierSelectorLanding';
 import FreeWorkspace from './tiers/FreeWorkspace';
 import RemoteWorkspace from './tiers/RemoteComputeWorkspace';
 import { WorkspacesCenterConfiguration } from '../workspace/types';
+import { RemoteComputeWorkspaceTierConfiguration } from '../workspace/tiers/types';
 import WorkspaceLayout from '../workspace/WorkspaceLayout/WorkspaceLayout';
 import {
   CoreState,
@@ -69,7 +70,7 @@ const WorkspaceCenter = ({
 
   if (!workspaceTier) {
     return (
-      <div className="w-full bg-base-lightest ">
+      <div className="w-full h-full overflow-hidden bg-base-lightest ">
         <TierSelectorLanding
           cards={workspaces}
           onSelectTier={handleSelectTier}
@@ -91,9 +92,14 @@ const WorkspaceCenter = ({
   }
 
   if (workspaceTier === 'remote') {
+    const config =
+      tierConfiguration.remote as RemoteComputeWorkspaceTierConfiguration;
     return (
       <ProtectedContent>
-        <MicroContainerReduxProvider enabled={true}>
+        <MicroContainerReduxProvider
+          enabled={true}
+          startTimeLimit={config?.startTimeLimit}
+        >
           <WorkspaceLayout tierConfiguration={tierConfiguration.remote}>
             <RemoteWorkspace
               tenantId={authContext?.tenantId || 'default'}

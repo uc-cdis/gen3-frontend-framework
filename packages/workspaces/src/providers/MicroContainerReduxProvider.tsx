@@ -26,18 +26,20 @@ interface MicroContainerProviderProps {
   children: ReactNode;
   identifierTag?: string;
   enabled: boolean;
+  startTimeLimit?: number;
 }
 
 export function MicroContainerReduxProvider({
   children,
   identifierTag,
   enabled,
+  startTimeLimit = undefined,
 }: MicroContainerProviderProps) {
   const tag =
     identifierTag ?? (process.env.NEXT_PUBLIC_MICRO_CONTAINER_TAG || '');
 
   const value = useMicroContainerRedux(tag, enabled);
-  useJEGWorkspaceResourceMonitor(value.containerHash, true);
+  useJEGWorkspaceResourceMonitor(value.containerHash, true, startTimeLimit);
 
   return (
     <MicroContainerReduxProviderContext.Provider value={value}>
