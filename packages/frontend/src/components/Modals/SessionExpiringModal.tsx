@@ -1,35 +1,22 @@
 import React, { JSX } from 'react';
-import { Button, Modal, Text } from '@mantine/core';
+import { Button } from '@mantine/core';
+import { ContextModalProps } from '@mantine/modals';
 
-interface SessionExpiringModalProps {
-  readonly openModal: boolean;
+export interface SessionExpiringModalProps {
   readonly minutesRemaining: number;
   readonly onRenew: () => void;
   readonly onLogout: () => void;
 }
 
 export const SessionExpiringModal = ({
-  openModal,
-  minutesRemaining,
-  onRenew,
-  onLogout,
-}: SessionExpiringModalProps): JSX.Element => {
+  context,
+  id,
+  innerProps,
+}: ContextModalProps<SessionExpiringModalProps>): JSX.Element => {
+  const { minutesRemaining, onRenew, onLogout } = innerProps;
+
   return (
-    <Modal
-      opened={openModal}
-      title={
-        <Text size="lg" className="font-medium font-heading">
-          Session Expiring Soon
-        </Text>
-      }
-      onClose={onRenew}
-      zIndex={400}
-      size="60%"
-      withinPortal={false}
-      withCloseButton={false}
-      closeOnClickOutside={false}
-      closeOnEscape={false}
-    >
+    <>
       <div className="border-y border-y-base-darker py-4 space-y-4 font-content">
         <p>
           Your session will expire in {minutesRemaining} minute
@@ -40,20 +27,26 @@ export const SessionExpiringModal = ({
       <div className="flex justify-end mt-2.5 gap-2">
         <Button
           variant="outline"
-          onClick={onLogout}
+          onClick={() => {
+            onLogout();
+            context.closeModal(id);
+          }}
           data-testid="button-session-expiring-logout"
         >
           Log out
         </Button>
         <Button
-          onClick={onRenew}
+          onClick={() => {
+            onRenew();
+            context.closeModal(id);
+          }}
           className="!bg-primary hover:!bg-primary-darker"
           data-testid="button-session-expiring-renew"
         >
           Renew Session
         </Button>
       </div>
-    </Modal>
+    </>
   );
 };
 

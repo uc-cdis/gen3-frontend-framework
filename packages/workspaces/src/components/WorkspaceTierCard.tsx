@@ -24,6 +24,7 @@ const WorkspaceTierCard = ({
   label,
   description,
   tier,
+  tierLabel = undefined,
   features = [],
   tooltip = 'Launch workspace',
   buttonLabel = 'Launch',
@@ -62,7 +63,7 @@ const WorkspaceTierCard = ({
             size="lg"
             fw={500}
           >
-            {tier !== 'free' ? 'paid' : 'free'}
+            {tierLabel ?? (tier === 'remote' ? 'paid' : 'free')}
           </Badge>
         </Stack>
       </Card.Section>

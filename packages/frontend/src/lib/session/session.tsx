@@ -30,17 +30,21 @@ import { useThrottledCallback } from '@mantine/hooks';
 
 import { MinutesToMilliseconds } from '../../utils';
 import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
+import { modals } from '@mantine/modals';
 
 const ACTIVITY_THROTTLE_TIMEOUT = 7000;
 
 export const logoutSession = async () => {
-  // logged in using credentials then execute credentials logout first
-  const accessToken = getCookie('credentials_token');
-  if (accessToken) {
-    await fetch('/api/auth/credentialsLogout');
+  // logged in using credentials, then execute credentials logout first
+  if (process.env.NODE_ENV === 'development') {
+    const accessToken = getCookie('credentials_token');
+    if (accessToken) {
+      await fetch('/api/auth/credentialsLogout');
+    }
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function useOnline() {
   const [isOnline, setIsOnline] = useState(
     typeof navigator !== 'undefined' ? navigator.onLine : false,
@@ -77,7 +81,8 @@ export const getSession = async () => {
     if (res.status === 200) {
       return await res.json();
     }
-  } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_error: unknown) {
     return { status: 'error' };
   }
 };
@@ -175,7 +180,7 @@ export const SessionProvider = ({
   workspaceInactivityTimeLimit = 0,
   logoutInactiveUsers = true,
   monitorWorkspace = true,
-  expiryWarningMinutes = 5,
+  expireWarningMinutes = 5,
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
@@ -193,8 +198,6 @@ export const SessionProvider = ({
     useState(Date.now());
 
   const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
-
-  console.log('isUserOnWorkspace', isUserOnPage('Workspace'));
 
   // Initialize BroadcastChannel for cross-tab communication
   // any user event on one tab or window will update mostRecentActivityTimestamp
@@ -231,8 +234,10 @@ export const SessionProvider = ({
     setMostRecentSessionRefreshTimestamp,
   ] = useState(Date.now());
 
-  const expiryWarningMilliseconds = MinutesToMilliseconds(expiryWarningMinutes);
-  const [expiryWarningShown, setExpiryWarningShown] = useState(false);
+  const expireWarningMilliseconds = MinutesToMilliseconds(expireWarningMinutes);
+  const [expiryWarningShown, setExpiryWarningShown] = useState<string | null>(
+    null,
+  );
 
   const inactiveTimeLimitMilliseconds =
     MinutesToMilliseconds(inactiveTimeLimit);
@@ -271,8 +276,9 @@ export const SessionProvider = ({
       .finally(() => {
         if (isCredentialLogin) {
           router.push(GEN3_REDIRECT_URL);
-        } else
+        } else {
           router.push(`${GEN3_FENCE_API}/logout?next=${GEN3_REDIRECT_URL}`);
+        }
       });
   }, [getUserDetails, router]);
 
@@ -339,7 +345,7 @@ export const SessionProvider = ({
 
   useInterval(
     () => {
-      if (sessionInfo.status != 'issued') return; // no need to update session if user is not logged in
+      if (sessionInfo.status !== 'issued') return; // no need to update session if user is not logged in
       if (isUserOnPage('Login') /* || this.popupShown */) return;
 
       const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
@@ -355,30 +361,39 @@ export const SessionProvider = ({
           // No workspace inactivity limit configured — don't log out
         } else if (timeSinceLastActivity >= activeLimit) {
           coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
-          endSession();
+          endSession().then(() => console.log('ending session'));
           return;
         } else if (
-          expiryWarningMilliseconds > 0 &&
+          expireWarningMilliseconds > 0 &&
           !expiryWarningShown &&
-          timeSinceLastActivity >= activeLimit - expiryWarningMilliseconds
+          timeSinceLastActivity >= activeLimit - expireWarningMilliseconds
         ) {
           // Show warning before session expires, giving user a chance to act
-          setExpiryWarningShown(true);
-          coreDispatch(
-            showModal({
-              modal: Modals.SessionExpireModal,
-              message: `Your session will expire in approximately ${expiryWarningMinutes} minute${expiryWarningMinutes === 1 ? '' : 's'} due to inactivity.`,
-            }),
-          );
+
+          const expireModalId = modals.openContextModal({
+            modal: 'sessionExpiringModal',
+            title: 'Session Expiring',
+            innerProps: {
+              minutesRemaining: expireWarningMinutes,
+              onRenew: () => {
+                getUserDetails();
+              },
+              onLogout: () => {
+                endSession();
+              },
+            },
+          });
+          setExpiryWarningShown(expireModalId);
           return;
         }
 
         // Reset warning flag once user becomes active again
         if (
           expiryWarningShown &&
-          timeSinceLastActivity < activeLimit - expiryWarningMilliseconds
+          timeSinceLastActivity < activeLimit - expireWarningMilliseconds
         ) {
-          setExpiryWarningShown(false);
+          modals.close(expiryWarningShown);
+          setExpiryWarningShown(null);
         }
       }
       // fetching a userState will renew the session (rate-limited by refreshSession)

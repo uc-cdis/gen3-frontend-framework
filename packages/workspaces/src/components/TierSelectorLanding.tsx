@@ -67,6 +67,7 @@ const TierSelectorLanding = ({
             <WorkspaceTierCard
               key={card.tier}
               tier={card.tier}
+              tierLabel={card.tierLabel}
               onSelectTier={onSelectTier}
               label={card.label}
               description={card.description}

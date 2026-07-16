@@ -51,7 +51,7 @@ export interface SessionConfiguration {
    * Number of minutes before token expiry to show the session expiring warning modal.
    * Defaults to 5 minutes.
    */
-  expiryWarningMinutes?: number;
+  expireWarningMinutes?: number;
 }
 
 export interface SessionProviderProps extends SessionConfiguration {
