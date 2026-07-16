@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router'; // Or 'next/navigation' if using App Router
+import { useRouter } from 'next/router';
 import { Drawer } from '@mantine/core';
 import StudyDetailsPanel from './StudyDetailsPanel';
 import { useDisclosure } from '@mantine/hooks';
 import SinglePageStudyDetailsPanel from './SinglePageStudyDetailsPanel';
 import { useStudyContext } from '../StudyProvider';
-import { StudyDetailView, StudyPageConfig } from '../types';
-import { DataAuthorization } from '../../../utils';
 import StudyDetailsHeaderButtons from './StudyDetailsHeaderButtons';
 import { toString } from 'lodash';
 import { useDiscoveryContext } from '../../Discovery/DiscoveryProvider';
