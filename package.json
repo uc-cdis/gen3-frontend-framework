@@ -96,7 +96,7 @@
     "jest-environment-jsdom": "^30.4.1",
     "lerna": "^9.0.7",
     "msw": "^2.7.3",
-    "nx": "23.0.0",
+    "nx": "23.1.0",
     "oxlint": "^1.72.0",
     "postcss-import": "^16.1.0",
     "postcss-modules": "^9.0.1",
