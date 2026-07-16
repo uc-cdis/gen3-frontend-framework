@@ -117,11 +117,6 @@ const nextConfig = {
         source: '/workspace-api/:path*',
         destination: '/api/:path*',
       },
-      {
-        source:
-          '/lw-workspace/proxy/jeg-proxy/kernelspecs/:kernel/logo-:size.png',
-        destination: '/icons/kernels/logo-64.png',
-      },
     ];
     if (isDev) {
       const GEN3_TARGET =
@@ -143,6 +138,10 @@ const nextConfig = {
         {
           source: '/authz/:path*',
           destination: `${GEN3_TARGET}/authz/:path*`,
+        },
+        {
+          source: '/lw-workspace/proxy/',
+          destination: `${GEN3_TARGET}/lw-workspace/proxy/`,
         },
         {
           source: '/lw-workspace/:path*',

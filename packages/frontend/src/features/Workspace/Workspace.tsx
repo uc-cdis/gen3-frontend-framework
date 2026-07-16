@@ -3,7 +3,7 @@ import { WorkspaceConfig } from './types';
 import WorkspaceProvider from './WorkspaceProvider';
 import WorkspaceStatusProvider from './WorkspaceStatusProvider';
 import WorkspaceNotebookPanelWithControls from './WorkspaceNotebookPanelWithControls';
-import ProtectedContent from '../ProtectedContent';
+import ProtectedContent from '../../components/Protected/ProtectedContent';
 
 interface WorkspaceProps {
   config: WorkspaceConfig;

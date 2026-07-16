@@ -164,6 +164,9 @@ function injectRemoteConfig(
     remoteToken: accessToken,
     disabledExtensions,
     fullThemesUrl: '/workspace-api/workspace-assets/remote/build/themes',
+    // Required so JupyterLab sets window.jupyterapp, which the parent
+    // frame uses for polling readiness and attaching remote kernels.
+    exposeAppInBrowser: 'true',
   };
 
   if (branding?.appName) configData.appName = branding.appName;

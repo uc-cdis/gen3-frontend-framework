@@ -194,6 +194,8 @@ export const SessionProvider = ({
 
   const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
 
+  console.log('isUserOnWorkspace', isUserOnPage('Workspace'));
+
   // Initialize BroadcastChannel for cross-tab communication
   // any user event on one tab or window will update mostRecentActivityTimestamp
   useEffect(() => {
@@ -229,6 +231,9 @@ export const SessionProvider = ({
     setMostRecentSessionRefreshTimestamp,
   ] = useState(Date.now());
 
+  const expiryWarningMilliseconds = MinutesToMilliseconds(expiryWarningMinutes);
+  const [expiryWarningShown, setExpiryWarningShown] = useState(false);
+
   const inactiveTimeLimitMilliseconds =
     MinutesToMilliseconds(inactiveTimeLimit);
 
@@ -253,7 +258,7 @@ export const SessionProvider = ({
   }, [getUserDetails]);
 
   const endSession = useCallback(async () => {
-    const isCredentialLogin = await hasCookie('credentials_token')!;
+    const isCredentialLogin = hasCookie('credentials_token');
 
     logoutSession()
       .then(() => getUserDetails())
@@ -288,7 +293,7 @@ export const SessionProvider = ({
     });
   }, ACTIVITY_THROTTLE_TIMEOUT); // set the time between api calls
 
-  const updateUserActivity = useCallback(() => {
+  const updateUserActivity = useThrottledCallback(() => {
     const timestamp = Date.now();
     setMostRecentActivityTimestamp(timestamp);
 
@@ -299,7 +304,7 @@ export const SessionProvider = ({
       });
     }
     if (sessionInfo.status === 'issued') isSessionActive();
-  }, [isSessionActive, sessionInfo]);
+  }, ACTIVITY_THROTTLE_TIMEOUT);
 
   // Fetch session once on mount to establish initial auth state, then schedule expiry timers
   useEffect(() => {
@@ -317,7 +322,6 @@ export const SessionProvider = ({
     window.addEventListener('keypress', updateUserActivity);
     window.addEventListener('updateUserActivity', updateUserActivity);
     window.addEventListener('scroll', updateUserActivity);
-    window.addEventListener('click', updateUserActivity);
     window.addEventListener('touchstart', updateUserActivity);
 
     return () => {
@@ -325,7 +329,6 @@ export const SessionProvider = ({
       window.removeEventListener('keypress', updateUserActivity);
       window.removeEventListener('updateUserActivity', updateUserActivity);
       window.removeEventListener('scroll', updateUserActivity);
-      window.removeEventListener('click', updateUserActivity);
       window.removeEventListener('touchstart', updateUserActivity);
     };
   }, [
@@ -342,22 +345,40 @@ export const SessionProvider = ({
       const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
 
       if (logoutInactiveUsers) {
-        if (
-          timeSinceLastActivity >= inactiveTimeLimitMilliseconds &&
-          !isUserOnPage('Workspace')
-        ) {
+        const onWorkspacePage = isUserOnPage('Workspace');
+        const activeLimit = onWorkspacePage
+          ? workspaceInactivityTimeLimitMilliseconds
+          : inactiveTimeLimitMilliseconds;
+
+        // Skip workspace-specific limit if it's disabled (0)
+        if (onWorkspacePage && workspaceInactivityTimeLimitMilliseconds <= 0) {
+          // No workspace inactivity limit configured — don't log out
+        } else if (timeSinceLastActivity >= activeLimit) {
           coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
           endSession();
+          return;
+        } else if (
+          expiryWarningMilliseconds > 0 &&
+          !expiryWarningShown &&
+          timeSinceLastActivity >= activeLimit - expiryWarningMilliseconds
+        ) {
+          // Show warning before session expires, giving user a chance to act
+          setExpiryWarningShown(true);
+          coreDispatch(
+            showModal({
+              modal: Modals.SessionExpireModal,
+              message: `Your session will expire in approximately ${expiryWarningMinutes} minute${expiryWarningMinutes === 1 ? '' : 's'} due to inactivity.`,
+            }),
+          );
           return;
         }
+
+        // Reset warning flag once user becomes active again
         if (
-          workspaceInactivityTimeLimitMilliseconds > 0 &&
-          timeSinceLastActivity >= workspaceInactivityTimeLimitMilliseconds &&
-          isUserOnPage('Workspace')
+          expiryWarningShown &&
+          timeSinceLastActivity < activeLimit - expiryWarningMilliseconds
         ) {
-          coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
-          endSession();
-          return;
+          setExpiryWarningShown(false);
         }
       }
       // fetching a userState will renew the session (rate-limited by refreshSession)

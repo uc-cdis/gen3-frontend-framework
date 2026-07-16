@@ -15,7 +15,7 @@ import {
 } from '@gen3/core';
 import { notifications } from '@mantine/notifications';
 import { useDeepCompareEffect } from 'use-deep-compare';
-import { convertSecondsToMilliseconds } from '../../utils'; // TODO add to config
+import { convertSecondsToMilliseconds } from '../../utils';
 
 enum NotificationStatus {
   Info,
@@ -47,7 +47,7 @@ const WorkspacePollingInterval: Record<WorkspaceStatus, number> = {
   [WorkspaceStatus.NotFound]: 0,
   [WorkspaceStatus.Launching]: convertSecondsToMilliseconds(1),
   [WorkspaceStatus.Terminating]: convertSecondsToMilliseconds(1),
-  [WorkspaceStatus.Running]: convertSecondsToMilliseconds(300),
+  [WorkspaceStatus.Running]: convertSecondsToMilliseconds(30),
   [WorkspaceStatus.Stopped]: convertSecondsToMilliseconds(5),
   [WorkspaceStatus.Errored]: convertSecondsToMilliseconds(10),
   [WorkspaceStatus.LaunchError]: convertSecondsToMilliseconds(10),
@@ -155,6 +155,36 @@ export const useWorkspaceResourceMonitor = (
     if (!monitorWorkspace) return; // no need to monitor workspace
     if (!workspaceStatusData) return;
 
+    // Stopped means the pod is in a failed state — auto-terminate it
+    if (workspaceStatusData.status === WorkspaceStatus.Stopped) {
+      (async () => {
+        try {
+          await terminateWorkspace().unwrap();
+        } catch (error) {
+          const errorMessage =
+            (error as Error).message || 'Unknown error occurred';
+          console.error(
+            'Workspace termination of stopped pod failed: ',
+            errorMessage,
+          );
+          notifyUser(
+            'Workspace Error',
+            `Failed to terminate stopped workspace: ${errorMessage}`,
+            NotificationStatus.Error,
+          );
+        }
+      })();
+      dispatch(setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate));
+      dispatch(setActiveWorkspaceStatus(WorkspaceStatus.Terminating));
+      setPollingInterval(WorkspacePollingInterval[WorkspaceStatus.Terminating]);
+      notifyUser(
+        'Workspace Stopped',
+        'Workspace entered a failed state and is being terminated',
+        NotificationStatus.Error,
+      );
+      return;
+    }
+
     // Check if the workspace is running.
     // If so: need to check workspace idle if set
     // and ensure the pay model is queried
@@ -243,6 +273,24 @@ export const useWorkspaceResourceMonitor = (
           // Cleanup termination after terminated
           dispatch(setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Unset));
         }
+      }
+      return;
+    }
+
+    if (workspaceStatusData.status === WorkspaceStatus.Terminating) {
+      if (requestedStatus === RequestedWorkspaceStatus.Terminate) {
+        //  reuested terminaltion so return
+        return;
+      } else {
+        //something else terminated this pod
+        // both requested status and workspace pod status are the same, so stop all polling
+        setPollingInterval(
+          WorkspacePollingInterval[WorkspaceStatus.Terminating],
+        );
+        dispatch(setActiveWorkspaceStatus(WorkspaceStatus.Terminating));
+        dispatch(
+          setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate),
+        );
       }
       return;
     }
