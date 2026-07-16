@@ -85,8 +85,6 @@ export const WorkspacesCenterPageGetServerSideProps: GetServerSideProps<
       workspacesCenterConfiguration,
     );
 
-    console.log('mergedConfiguration', mergedConfiguration);
-
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),

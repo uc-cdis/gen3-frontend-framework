@@ -45,8 +45,6 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
 
     const { showStatus, showStop, tierLabel } = toolbarConfiguration || {};
 
-    console.log('tierLabel', tierLabel);
-
     const coreDispatch = useCoreDispatch();
 
     const toggleFullscreen = useCallback(() => {
