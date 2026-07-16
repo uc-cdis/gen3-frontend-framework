@@ -1,6 +1,6 @@
 {
   "name": "gen3-frontend-framework",
-  "version": "0.12.41",
+  "version": "0.12.52",
   "description": "The Gen3 Frontend Framework mono repo for Gen 3.2 development",
   "private": true,
   "workspaces": [
@@ -99,8 +99,8 @@
     "nx": "23.0.0",
     "oxlint": "^1.72.0",
     "postcss-import": "^16.1.0",
-    "postcss-modules": "^6.0.0",
-    "postcss-preset-mantine": "^1.17.0",
+    "postcss-modules": "^9.0.1",
+    "postcss-preset-mantine": "^1.18.0",
     "prettier": "^3.6.2",
     "rollup": "^4.22.4",
     "rollup-plugin-copy": "^3.5.0",

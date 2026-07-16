@@ -1,5 +1,5 @@
 import React from 'react';
-import { Badge, Button, Group, Stack, Text } from '@mantine/core';
+import { Button, Group, Stack, Text } from '@mantine/core';
 import { Icon } from '@iconify-icon/react';
 import { WorkspaceTier } from '../types';
 
@@ -31,13 +31,7 @@ const UpgradeActionsPanel = ({
 
       <div className="space-y-2 p-4 pt-0">
         <Stack>
-          <Group justify="space-between" wrap="nowrap">
-            <p className="text-md font-bold text-base-contrast-max">
-              Current Tier
-            </p>
-            <Badge color="primary.3">{currentTier as string}</Badge>
-          </Group>
-          <p className="mt-1 text-sm text-base-contrast-max">
+          <p className="my-1 text-sm text-base-contrast-max">
             {currentTier === 'free'
               ? 'Upgrade to remote kernels for long-running jobs and larger memory footprints.'
               : 'Remote compute is active. You can request expanded quota for larger workloads.'}

@@ -3,7 +3,7 @@
     "classNames": {
       "root": "pl-1 mr-6 bg-base-max text-primary opacity-100 hover:opacity-100",
       "item": "py-2 px-4 hover:bg-base-lightest hover:text-base-contrast",
-      "navigationPanel": "bg-base-max text-primary"
+      "navigationPanel": "bg-base-max text-primary-darker"
     },
     "logo": {
       "src": "/images/brh/logo.png",
@@ -41,30 +41,29 @@
   "topBar": {
     "items": [
       {
-        "link": "https://uc-cdis.github.io/BRH-documentation/",
-        "name": "Documentation"
+        "href": "https://uc-cdis.github.io/BRH-documentation/",
+        "name": "Documentation",
+        "newWindow": true
       },
       {
-        "link": "brhsupport@gen3.org",
+        "href": "mailto:brhsupport@gen3.org",
         "name": "Email Support"
       },
       {
-        "link": "https://uc-cdis.github.io/platform-citation/brh-cite/",
-        "name": "Cite BRH"
+        "href": "https://uc-cdis.github.io/platform-citation/brh-cite/",
+        "name": "Cite BRH",
+        "newWindow": true
       }
     ],
     "loginButtonVisibility": "visible",
     "classNames": {
-      "root": "border-base-light text-primary-contrast-dark",
-      "label": "text-primary-contrast",
-      "button": "hover:border-white",
-      "divider": "accent-dark",
-      "login" : "text-white hover:border-white"
+      "divider": "border-base-dark my-2"
     },
     "itemClassnames": {
-      "root": "border-base-light",
-      "label": "text-white",
-      "button": "hover:border-white"
+      "login": "font-content hover:border-base-max",
+      "button": "flex flex-nowrap items-center align-middle border-b-2 hover:border-base-max border-transparent text-base-contrast-max",
+      "label": "text-base-contrast-min",
+      "rightIcon": "text-base-contrast-min"
     }
   }
 }

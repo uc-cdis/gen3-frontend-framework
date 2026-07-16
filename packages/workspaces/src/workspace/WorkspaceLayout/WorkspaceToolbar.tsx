@@ -43,7 +43,7 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
       selectWorkspaceFullscreen(state),
     );
 
-    const { showStatus, showStop } = toolbarConfiguration || {};
+    const { showStatus, showStop, tierLabel } = toolbarConfiguration || {};
 
     const coreDispatch = useCoreDispatch();
 
@@ -95,8 +95,10 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
             </Text>
             <Group>
               <Text size="sm">{toolbarConfiguration?.description}</Text>
-              <Badge aria-label={`Workspace tier: ${workspaceTier as string}`}>
-                {workspaceTier as string}
+              <Badge
+                aria-label={`Workspace tier: ${tierLabel ?? (workspaceTier as string)}`}
+              >
+                {tierLabel ?? (workspaceTier as string)}
               </Badge>
             </Group>
           </Stack>

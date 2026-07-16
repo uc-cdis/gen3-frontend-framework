@@ -94,45 +94,51 @@ const RemoteComputeWorkspace = React.memo(
         };
       }, []);
 
-      // Handle setting up iframe event listeners
+      // Handle setting up iframe event listeners for activity detection.
+      // Tries same-origin contentDocument access first; falls back to
+      // focus/blur heuristics when the iframe is cross-origin.
       useEffect(() => {
         if (!jupyterReady) return;
 
         const updateUserActivity = () => {
-          const timestamp = Date.now();
           if (broadcastChannelRef.current) {
             broadcastChannelRef.current.postMessage({
               type: 'activity-update',
-              timestamp,
+              timestamp: Date.now(),
             });
           }
         };
 
         const iframe = iframeRef.current;
-        if (!iframe?.contentWindow) {
-          return;
+        let usedDirectListeners = false;
+
+        if (iframe?.contentWindow) {
+          try {
+            const iframeDoc =
+              iframe.contentDocument || iframe.contentWindow.document;
+
+            if (iframeDoc) {
+              iframeDoc.addEventListener('mousedown', updateUserActivity);
+              iframeDoc.addEventListener('keypress', updateUserActivity);
+              iframeDoc.addEventListener('scroll', updateUserActivity);
+              iframeDoc.addEventListener('touchstart', updateUserActivity);
+              usedDirectListeners = true;
+            }
+          } catch {
+            // cross-origin — fall through to focus/blur fallback
+          }
         }
 
-        try {
-          const iframeDoc =
-            iframe.contentDocument || iframe.contentWindow.document;
-
-          if (iframeDoc) {
-            iframeDoc.addEventListener('mousedown', updateUserActivity);
-            iframeDoc.addEventListener('keypress', updateUserActivity);
-            iframeDoc.addEventListener('scroll', updateUserActivity);
-            iframeDoc.addEventListener('click', updateUserActivity);
-            iframeDoc.addEventListener('touchstart', updateUserActivity);
-          }
-        } catch (error) {
-          console.warn(
-            'Cannot access iframe content - cross-origin restriction',
-            error,
-          );
+        // Fallback: treat iframe receiving focus as user activity.
+        // This fires when the user clicks into the iframe even if we
+        // cannot attach listeners to its document directly.
+        if (!usedDirectListeners) {
+          window.addEventListener('blur', updateUserActivity);
+          window.addEventListener('focus', updateUserActivity);
         }
 
         return () => {
-          if (iframe?.contentWindow) {
+          if (usedDirectListeners && iframe?.contentWindow) {
             try {
               const iframeDoc =
                 iframe.contentDocument || iframe.contentWindow.document;
@@ -140,12 +146,15 @@ const RemoteComputeWorkspace = React.memo(
                 iframeDoc.removeEventListener('mousedown', updateUserActivity);
                 iframeDoc.removeEventListener('keypress', updateUserActivity);
                 iframeDoc.removeEventListener('scroll', updateUserActivity);
-                iframeDoc.removeEventListener('click', updateUserActivity);
                 iframeDoc.removeEventListener('touchstart', updateUserActivity);
               }
             } catch {
               // Ignore cleanup errors
             }
+          }
+          if (!usedDirectListeners) {
+            window.removeEventListener('blur', updateUserActivity);
+            window.removeEventListener('focus', updateUserActivity);
           }
         };
       }, [jupyterReady]);
@@ -349,7 +358,8 @@ const RemoteComputeWorkspace = React.memo(
               className="min-h-0 flex-1 border-0"
               onLoad={() => {
                 setLoading(false);
-                setJupyterReady(true);
+                // jupyterReady is set by the polling effect once the
+                // JupyterLite app reports status === 'ready'
               }}
               onError={() => {
                 setLoadError(true);

@@ -4,62 +4,32 @@ import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailw
 import { extractClassName } from '../utils';
 import { LoginButtonVisibility } from '../../../components/Login/types';
 import { StylingOverrideWithMergeControl } from '../../../types';
-import {
-  IconButton,
-  TopIconButtonPropsWithLink,
-  TopIconButtonPropsWithModal,
-} from './IconButton';
+import { IconButton } from './IconButton';
 import { AccountButton } from './AccountButton';
 import { LoginButton } from './LoginButton';
 import { isTopBarLinkButton, TopBarItems, TopBarProps } from './types';
 import { modals } from '@mantine/modals';
-
-
 
 const processTopBarItems = (
   items: TopBarItems[],
   classNames: StylingOverrideWithMergeControl,
   dividerClassname: string,
 ): ReactElement[] => {
-  return items.reduce(
-    (
-      acc: ReactElement[],
-      item: TopBarItems
-    ) => {
-      const mergedClassnames = item?.classNames
-        ? mergeDefaultTailwindClassnames(classNames, item.classNames)
-        : classNames;
+  return items.reduce((acc: ReactElement[], item: TopBarItems) => {
+    const mergedClassnames = item?.classNames
+      ? mergeDefaultTailwindClassnames(classNames, item.classNames)
+      : classNames;
 
-      const Custom = item.component;
-      acc.push(
-        isTopBarLinkButton(item) ? (
-          <React.Fragment key={`${item.href}_${item.name}-topbar-item`}>
-            <a
-              className="flex"
-              href={item.href}
-              target={item.newWindow === true ? '_blank' : undefined}
-              rel={item.newWindow === true ? 'noreferrer' : undefined}
-            >
-              {Custom ? (
-                Custom
-              ) : (
-                <IconButton
-                  name={item.name}
-                  iconSize={item.iconSize}
-                  leftIcon={item.leftIcon}
-                  rightIcon={item.rightIcon}
-                  classNames={mergedClassnames}
-                />
-              )}
-            </a>
-            <Divider
-              size="md"
-              orientation="vertical"
-              classNames={{ root: dividerClassname }}
-            />
-          </React.Fragment>
-        ) : (
-          <React.Fragment key={`${item.name}-topbar-item`}>
+    const Custom = item.component;
+    acc.push(
+      isTopBarLinkButton(item) ? (
+        <React.Fragment key={`${item.href}_${item.name}-topbar-item`}>
+          <a
+            className="flex"
+            href={item.href}
+            target={item.newWindow === true ? '_blank' : undefined}
+            rel={item.newWindow === true ? 'noreferrer' : undefined}
+          >
             {Custom ? (
               Custom
             ) : (
@@ -69,27 +39,46 @@ const processTopBarItems = (
                 leftIcon={item.leftIcon}
                 rightIcon={item.rightIcon}
                 classNames={mergedClassnames}
-                clickHandler={() =>
-                  modals.openContextModal({
-                    modal: item.modal,
-                    innerProps: {},
-                    size: 'xl',
-                  })
-                }
               />
             )}
-            <Divider
-              size="md"
-              orientation="vertical"
-              classNames={{ root: dividerClassname }}
+          </a>
+          <Divider
+            size="md"
+            orientation="vertical"
+            classNames={{ root: dividerClassname }}
+          />
+        </React.Fragment>
+      ) : (
+        <React.Fragment key={`${item.name}-topbar-item`}>
+          {Custom ? (
+            Custom
+          ) : (
+            <IconButton
+              name={item.name}
+              iconSize={item.iconSize}
+              leftIcon={item.leftIcon}
+              rightIcon={item.rightIcon}
+              classNames={mergedClassnames}
+              clickHandler={() =>
+                item?.modal &&
+                modals.openContextModal({
+                  modal: item.modal,
+                  innerProps: {},
+                  size: 'xl',
+                })
+              }
             />
-          </React.Fragment>
-        ),
-      );
-      return acc;
-    },
-    [],
-  );
+          )}
+          <Divider
+            size="md"
+            orientation="vertical"
+            classNames={{ root: dividerClassname }}
+          />
+        </React.Fragment>
+      ),
+    );
+    return acc;
+  }, []);
 };
 
 const TopBar = ({
@@ -100,7 +89,7 @@ const TopBar = ({
   itemClassnames = {},
 }: TopBarProps) => {
   const classNamesDefaults = {
-    root: 'flex justify-end items-center align-middle w-100 bg-secondary-lighter',
+    root: 'flex justify-end items-center align-middle w-full bg-secondary-lighter',
     login: 'font-content hover:border-accent',
     divider: 'border-accent my-2',
   };

@@ -3,6 +3,7 @@ import {
   GEN3_WORKSPACE_API,
   selectActiveWorkspaceStatus,
   useCoreSelector,
+  WorkspaceStatus,
 } from '@gen3/core';
 import { ACTIVITY_CHANNEL } from './../../lib/session/constants';
 
@@ -41,7 +42,11 @@ const WorkspaceNotebook = () => {
     };
 
     const iframe = iframeRef.current;
+    let usedDirectListeners = false;
     if (!iframe?.contentWindow) {
+      console.warn(
+        'iframe contentWindow is not available, no iframeDoc with event listeners',
+      );
       return;
     }
 
@@ -54,12 +59,18 @@ const WorkspaceNotebook = () => {
         iframeDoc.addEventListener('scroll', updateUserActivity);
         iframeDoc.addEventListener('click', updateUserActivity);
         iframeDoc.addEventListener('touchstart', updateUserActivity);
+        usedDirectListeners = true;
       }
     } catch (error) {
       console.warn(
         'Cannot access iframe content - cross-origin restriction',
         error,
       );
+    }
+
+    if (!usedDirectListeners) {
+      window.addEventListener('blur', updateUserActivity);
+      window.addEventListener('focus', updateUserActivity);
     }
 
     return () => {
@@ -78,15 +89,25 @@ const WorkspaceNotebook = () => {
           // Ignore cleanup errors
         }
       }
+      if (!usedDirectListeners) {
+        window.removeEventListener('blur', updateUserActivity);
+        window.removeEventListener('focus', updateUserActivity);
+      }
     };
   }, [jupyterReady]);
 
+  if (currentWorkspaceStatus !== WorkspaceStatus.Running) {
+    return null;
+  }
   return (
     <React.Fragment>
       <div className="flex flex-col w-full h-workspace flex-grow content-center items-center">
         <iframe
           className="w-full h-full border-8"
           title="Workspace"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads allow-modals allow-storage-access-by-user-activation"
+          allow="clipboard-read; clipboard-write; cross-origin-isolated"
+          ref={iframeRef}
           src={`${GEN3_WORKSPACE_API}/proxy/`}
           onLoad={() => {
             setJupyterReady(true);

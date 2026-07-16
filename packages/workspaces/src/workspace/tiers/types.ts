@@ -9,6 +9,7 @@ interface LabelAndDescription {
 export interface TierToolbarConfiguration extends LabelAndDescription {
   showStop: boolean;
   showStatus: boolean;
+  tierLabel?: string;
 }
 
 export interface SettingsPanelConfiguration {
@@ -36,6 +37,7 @@ export interface FreeWorkspaceTierConfiguration extends WorkspaceTierInformation
 export interface RemoteComputeWorkspaceTierConfiguration extends WorkspaceTierInformation {
   baseUrl?: string;
   type: Extract<WorkspaceTier, 'remote'>;
+  startTimeLimit?: number; // time limit in seconds
 }
 
 export type RemoteComputeWorkspaceHandle = {

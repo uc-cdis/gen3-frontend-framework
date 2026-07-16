@@ -8,6 +8,8 @@ import React, {
 import {
   getCurrentTimestamp,
   isFetchBaseQueryError,
+  isSerializedError,
+  normalizeRtkError,
   RequestedWorkspaceStatus,
   selectActiveWorkspaceStatus,
   setActiveWorkspace,
@@ -30,8 +32,10 @@ const getWorkspaceErrorMessage = (
   error: unknown,
   defaultMessage: string,
 ): string => {
-  if (isFetchBaseQueryError(error)) {
-    return error.data as string;
+  if (isFetchBaseQueryError(error) || isSerializedError(error)) {
+    // before we return the error, check to see what it actually is
+    const normalizeError = normalizeRtkError(error);
+    return normalizeError.message;
   }
   return defaultMessage;
 };

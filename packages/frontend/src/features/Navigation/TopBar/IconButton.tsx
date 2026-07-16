@@ -12,7 +12,7 @@ export interface TopIconButtonProps extends NameAndIcon {
   clickHandler?: () => void;
   ariaLabel?: string;
   component?: React.ReactElement;
- }
+}
 
 export interface TopIconButtonPropsWithLink extends TopIconButtonProps {
   href: string;
@@ -20,7 +20,7 @@ export interface TopIconButtonPropsWithLink extends TopIconButtonProps {
 }
 
 export interface TopIconButtonPropsWithModal extends TopIconButtonProps {
-  modal: string;
+  modal?: string;
 }
 
 export const IconButton = ({

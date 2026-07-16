@@ -4,6 +4,7 @@ export interface WorkspaceCardConfig {
   label: string;
   description: string;
   tier: WorkspaceTier;
+  tierLabel?: string;
   features?: string[];
   tooltip?: string;
   buttonLabel?: string;

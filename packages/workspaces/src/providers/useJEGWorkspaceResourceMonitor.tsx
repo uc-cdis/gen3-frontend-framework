@@ -41,6 +41,7 @@ const notifyUser = (
     [NotificationStatus.Error]: 'utility.4',
   };
 
+  notifications.clean();
   notifications.show({
     title,
     message,
@@ -72,6 +73,7 @@ const workspaceShutdownAlertLimit = 30000; // 5 minutes: 5 * 60 * 1000 TODO Figu
 export const useJEGWorkspaceResourceMonitor = (
   workspaceId: string | null = null,
   monitorWorkspace: boolean,
+  startTimeLimit: number = MAXIMUM_START_TIME_IN_MINUTES,
 ) => {
   // start with default polling interval of 1 second
   const [pollingInterval, setPollingInterval] = useState<number>(
@@ -302,10 +304,10 @@ export const useJEGWorkspaceResourceMonitor = (
   }, [dispatch, workspaceStatusData, requestedStatus, activeStatus]);
 
   useEffect(() => {
-    // time out if exceeding maximum start timee
+    // time out if exceeding maximum start time
     if (
       requestedStatus === RequestedWorkspaceStatus.Launch &&
-      isTimeGreaterThan(requestedStatusTimestamp, MAXIMUM_START_TIME_IN_MINUTES)
+      isTimeGreaterThan(requestedStatusTimestamp, startTimeLimit)
     ) {
       if (workspaceId) terminateWorkspace(encodeURIComponent(workspaceId));
       dispatch(
@@ -321,5 +323,6 @@ export const useJEGWorkspaceResourceMonitor = (
     workspaceStatusData,
     workspaceId,
     terminateWorkspace,
+    startTimeLimit,
   ]);
 };

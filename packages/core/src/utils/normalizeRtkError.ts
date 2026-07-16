@@ -1,6 +1,34 @@
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import type { SerializedError } from '@reduxjs/toolkit';
 import { isFetchBaseQueryError } from '../types/types';
+import { HTTPUserFriendlyErrorMessages } from './httpUserFriendlyErrorMessages';
+
+const MAX_ERROR_LENGTH = 256;
+const DEFAULT_API_ERROR_MESSAGE = 'API Query Error';
+
+/**
+ * Checks if a string appears to be an HTML page
+ */
+function isHtmlContent(str: string): boolean {
+  const trimmed = str.trim().toLowerCase();
+  return (
+    trimmed.startsWith('<!doctype html') ||
+    trimmed.startsWith('<html') ||
+    /<html[\s>]/i.test(str)
+  );
+}
+
+/**
+ * Sanitizes an error message - returns DEFAULT_API_ERROR_MESSAGE if
+ * the message is too long or contains HTML content
+ */
+function sanitizeErrorMessage(message: string | undefined): string {
+  if (!message) return DEFAULT_API_ERROR_MESSAGE;
+  if (message.length > MAX_ERROR_LENGTH || isHtmlContent(message)) {
+    return DEFAULT_API_ERROR_MESSAGE;
+  }
+  return message;
+}
 
 export type NormalizedErrorType =
   | 'HTTP_ERROR' // server responded with non-2xx
@@ -45,12 +73,15 @@ export function normalizeRtkError(
   if (isFetchBaseQueryError(error)) {
     // status is number for HTTP errors, string literal for the others
     if (typeof error.status === 'number') {
+      const extractedMessage = extractMessage(error.data);
       return {
         type: 'HTTP_ERROR',
         status: error.status,
         message:
-          extractMessage(error.data) ??
-          `Request failed with status ${error.status}`,
+          sanitizeErrorMessage(extractedMessage) !== DEFAULT_API_ERROR_MESSAGE
+            ? sanitizeErrorMessage(extractedMessage)
+            : (HTTPUserFriendlyErrorMessages[error.status] ??
+              `Request failed with status ${error.status}`),
         data: error.data,
       };
     }
@@ -62,13 +93,22 @@ export function normalizeRtkError(
         return {
           type: 'PARSING_ERROR',
           status: error.originalStatus, // PARSING_ERROR carries the HTTP status
-          message: error.error,
+          message:
+            HTTPUserFriendlyErrorMessages[error.originalStatus] ??
+            `Request failed with status ${error.originalStatus}`,
           data: error.data,
         };
       case 'TIMEOUT_ERROR':
-        return { type: 'TIMEOUT_ERROR', message: error.error };
+        return {
+          type: 'TIMEOUT_ERROR',
+          message: sanitizeErrorMessage(error.error),
+        };
       case 'CUSTOM_ERROR':
-        return { type: 'CUSTOM_ERROR', message: error.error, data: error.data };
+        return {
+          type: 'CUSTOM_ERROR',
+          message: sanitizeErrorMessage(error.error),
+          data: error.data,
+        };
     }
   }
 
@@ -76,7 +116,9 @@ export function normalizeRtkError(
   if ('message' in error || 'name' in error) {
     return {
       type: 'SERIALIZED_ERROR',
-      message: (error as SerializedError).message ?? 'An error occurred',
+      message:
+        sanitizeErrorMessage((error as SerializedError).message) ||
+        'An error occurred',
     };
   }
 
