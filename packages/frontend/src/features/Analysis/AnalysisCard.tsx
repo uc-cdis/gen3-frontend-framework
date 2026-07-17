@@ -36,16 +36,18 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
           />
         </div>
         <div className="flex -mt-5 relative z-10">
-          <div className="p-0.5 bg-base-lightest ml-5 border-2 border-base h-1/6 w-1/6 max-h-24 max-w-24">
-            <Image
-              component={NextImage}
-              src={`${icon}`}
-              alt=""
-              width={40}
-              height={40}
-              radius="lg"
-            />
-          </div>
+          {icon && (
+            <div className="p-0.5 bg-base-lightest ml-5 border-2 border-base h-1/6 w-1/6 max-h-24 max-w-24">
+              <Image
+                component={NextImage}
+                src={`${icon}`}
+                alt=""
+                width={40}
+                height={40}
+                radius="lg"
+              />
+            </div>
+          )}
           <div className="relative mb-0 ml-2">
             <span className="absolute bottom-0 left-0 text-sm font-normal text-gray-700 w-max capitalize">
               {type}

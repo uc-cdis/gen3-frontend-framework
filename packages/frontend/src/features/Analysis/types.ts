@@ -7,8 +7,8 @@ type CountFunction = () => string;
 export interface AnalysisToolConfiguration {
   title: string;
   image?: string; // URL to image
-  icon: string | ReactElement; // URL, IconName as string, ReactElement
-  type: string;
+  icon?: string | ReactElement; // URL, IconName as string, ReactElement
+  type?: string;
   description: string;
   hasDemo?: boolean;
   loginRequired: boolean;
