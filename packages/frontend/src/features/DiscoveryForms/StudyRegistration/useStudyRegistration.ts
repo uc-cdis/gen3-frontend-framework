@@ -91,6 +91,7 @@ export const useStudyRegistration = (
   // Handle Form Submission
   const formOnSubmit = async (formValues: FormOnSubmitReturnProps) => {
     alert('here');
+    alert('formValues' + JSON.stringify(formValues));
     const hostname = window.location.hostname;
     try {
       const request = await requestQuery({
