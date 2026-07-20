@@ -97,7 +97,13 @@ const Form = ({
   });
 
   return (
-    <form onSubmit={form.onSubmit(onSubmit)} className={className}>
+    <form
+      onSubmit={() => {
+        form.onSubmit(onSubmit);
+        console.log(onSubmit);
+      }}
+      className={className}
+    >
       {bodyWithKey?.map((content, index) => (
         <FormContent {...content} form={form} key={index} />
       ))}

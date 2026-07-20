@@ -90,6 +90,7 @@ export const useStudyRegistration = (
 
   // Handle Form Submission
   const formOnSubmit = async (formValues: FormOnSubmitReturnProps) => {
+    alert('here');
     const hostname = window.location.hostname;
     try {
       const request = await requestQuery({

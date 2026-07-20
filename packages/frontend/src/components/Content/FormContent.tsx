@@ -6,6 +6,7 @@ import {
   Radio,
   Select,
   Stack,
+  TagsInput,
   TextInput,
   Textarea,
   Tooltip,
@@ -23,7 +24,8 @@ export enum FormContentType {
   Checkbox = 'Checkbox', // mantine Checkbox
   Textarea = 'Textarea', // mantine Textarea
   RadioGroup = 'RadioGroup', // mantine Radio.Group
-  Select = 'Select', // mantine Select
+  Select = 'Select',
+  Tags = 'Tags', // mantine Select
 }
 
 /**
@@ -165,6 +167,9 @@ const FormContent = ({
           required={required}
         />
       );
+    }
+    case FormContentType.Tags: {
+      return <TagsInput label={label} placeholder={placeholder} />;
     }
     case FormContentType.Textarea: {
       return (

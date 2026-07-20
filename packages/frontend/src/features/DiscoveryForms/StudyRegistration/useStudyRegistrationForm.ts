@@ -1,16 +1,15 @@
-// useStudyRegistration.ts
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { toString } from 'lodash';
 import {
   CoreState,
-  getRemoteSupportServiceRegistry,
   isHttpStatusError,
   selectUserDetails,
   useCoreSelector,
   useCreateRequestMutation,
   useUserRequestQuery,
   HttpError,
+  getRemoteSupportServiceRegistry,
 } from '@gen3/core';
 import { FormOutcome } from './types';
 import {
@@ -23,19 +22,14 @@ export const useStudyRegistrationForm = (
 ): {
   formError: string | undefined;
   formOutcome: FormOutcome;
-  studyUID: string | null;
   formBody: FormProps['body'];
   formOnSubmit: (formValues: FormOnSubmitReturnProps) => Promise<void>;
   isLoading: boolean;
 } => {
   const [formError, setFormError] = useState<string>();
   const [formOutcome, setFormOutcome] = useState(FormOutcome.pending);
-  const [studyUID, setStudyUID] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [studyName, setStudyName] = useState<string | null>(null);
-  const [studyRegistrationAuthZ, setStudyRegistrationAuthZ] = useState<
-    string | null
-  >(null);
-
   const router = useRouter();
   const formBody = config.form;
   const userInfo = useCoreSelector((state: CoreState) =>
@@ -45,12 +39,11 @@ export const useStudyRegistrationForm = (
   useEffect(() => {
     if (router.isReady && router.query) {
       const { query } = router;
-      if (query.studyUID) setStudyUID(query.studyUID as string);
       if (query.studyName) setStudyName(toString(query.studyName));
     }
   }, [router.isReady, router.query]);
 
-  // Validate existing requests and check for duplicates
+  /*   // Validate existing requests and check for duplicates
   const { data, isLoading, isError } = useUserRequestQuery({});
   useEffect(() => {
     if (!isLoading && isError) {
@@ -59,38 +52,63 @@ export const useStudyRegistrationForm = (
       );
     }
     // Check for study already in requester with same UID and userName
-    if (
-      data &&
-      studyUID &&
-      userInfo?.username &&
-      data.some(
-        (item) =>
-          item.resource_id === studyUID && item.username === userInfo.username,
-      )
-    ) {
+    if ('OK' == 'Duplicate Submission Usecase') {
       setFormOutcome(FormOutcome.duplicateSubmission);
     }
-  }, [isLoading, isError, data, studyUID, userInfo?.username]);
+  }, [isLoading, isError, data, userInfo?.username]); */
 
-  const [requestQuery] = useCreateRequestMutation();
+  const [regRequestPending, setRegRequestPending] = useState(false);
+  /*   const getClinicalTrialMetadata = async (ctID: string): Promise<object> => {
+    const errMsg = 'Unable to fetch study metadata from ClinicalTrials.gov';
+    const clinicalTrialFieldsToFetch =
+      studyRegistrationConfig.clinicalTrialFields || [];
+    // get metadata from the clinicaltrials.gov API
+    const resp = await fetch(
+      `https://clinicaltrials.gov/api/v2/studies/${ctID}?fields=${clinicalTrialFieldsToFetch.join('|')}`,
+    );
+    if (!resp || resp.status !== 200) {
+      return Promise.reject('Unable to verify ClinicalTrials.gov ID');
+    }
+    try {
+      const respJson = await resp.json();
+      return respJson;
+    } catch {
+      throw errMsg;
+    }
+  }; */
 
   // Handle Form Submission
+  const [requestQuery] = useCreateRequestMutation();
   const formOnSubmit = async (formValues: FormOnSubmitReturnProps) => {
+    console.log('line 83!!!' + Math.random());
+    alert('here');
     const hostname = window.location.hostname;
     try {
       const request = await requestQuery({
         username: userInfo.username,
-        resource_id: studyUID as string,
-        resource_paths: [
-          studyRegistrationAuthZ as string,
-          '/mds_gateway',
-          '/cedar',
-        ],
+        resource_id: '123',
+        resource_paths: ['4356', '/mds_gateway', '/cedar'],
         role_ids: ['study_registrant', 'mds_user', 'cedar_user'],
       }).unwrap();
 
       const printFormValuesArr = Object.entries(formValues).map(
         ([key, value]) => `${key}: ${value}`,
+      );
+
+      const zenDeskSubmission = {
+        subject: `Study registration access request for  ${studyName}`,
+        fullName: `${userInfo?.email}`,
+        email: `${userInfo?.email}`,
+        contents: `Request ID: ${request.request_id}\nGrant Number: TEST\nStudy Name: ${studyName}\nEnvironment: ${hostname}\nForm Values: ${printFormValuesArr.join('\n\n')}`,
+      };
+
+      const zendeskRequestAction =
+        getRemoteSupportServiceRegistry().getSupportService(
+          config.remoteSupportService.service,
+        );
+      await zendeskRequestAction(
+        zenDeskSubmission,
+        config.remoteSupportService.configuration,
       );
 
       setFormOutcome(FormOutcome.success);
@@ -120,7 +138,6 @@ export const useStudyRegistrationForm = (
   return {
     formError,
     formOutcome,
-    studyUID,
     formBody: autoFillValues(formBody) as FormProps['body'],
     formOnSubmit,
     isLoading,
