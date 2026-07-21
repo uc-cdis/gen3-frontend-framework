@@ -86,14 +86,50 @@ export const useStudyRegistration = (
     }
   }, [isLoading, isError, data, studyUID, userInfo?.username]);
 
-  const [requestQuery] = useCreateRequestMutation();
+  //
+  const getClinicalTrialMetadata = async (ctID: string): Promise<object> => {
+    const errMsg = 'Unable to fetch study metadata from ClinicalTrials.gov';
+    const clinicalTrialFieldsToFetch = config.clinicalTrialFields || [];
+    // get metadata from the clinicaltrials.gov API
+    const resp = await fetch(
+      `https://clinicaltrials.gov/api/v2/studies/${ctID}?fields=${clinicalTrialFieldsToFetch.join('|')}`,
+    );
+    if (!resp || resp.status !== 200) {
+      return Promise.reject('Unable to verify ClinicalTrials.gov ID');
+    }
+    try {
+      const respJson = await resp.json();
+      return respJson;
+    } catch {
+      throw errMsg;
+    }
+  };
 
   // Handle Form Submission
   const formOnSubmit = async (formValues: FormOnSubmitReturnProps) => {
     alert('here');
     alert('formValues' + JSON.stringify(formValues));
     const hostname = window.location.hostname;
-    try {
+
+    const cedarUserUUID = formValues.cedar_uuid;
+    const studyID = formValues.study_id;
+    const ctgovID = formValues.clinicalTrialsGovID; // example: NCT00000419
+    const valuesToUpdate = {
+      repository: formValues.repository || '',
+      repository_study_ids:
+        !formValues.repository_study_ids ||
+        (formValues.repository_study_ids.length === 1 &&
+          formValues.repository_study_ids[0] === '')
+          ? []
+          : formValues.repository_study_ids,
+      clinical_trials_id: ctgovID || '',
+      clinicaltrials_gov: ctgovID
+        ? await getClinicalTrialMetadata(ctgovID)
+        : undefined,
+    };
+    alert('ctgovID ' + ctgovID);
+    alert(JSON.stringify(valuesToUpdate));
+    /*     try {
       const request = await requestQuery({
         username: userInfo.username,
         resource_id: studyUID as string,
@@ -138,7 +174,7 @@ export const useStudyRegistration = (
       } else {
         setFormError('Unknown error while submitting resource request');
       }
-    }
+    } */
   };
 
   const autoFillValues = (body: FormProps['body']) => {
