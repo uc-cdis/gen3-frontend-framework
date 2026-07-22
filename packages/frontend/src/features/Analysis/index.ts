@@ -1,6 +1,6 @@
 import AnalysisCenter from './AnalysisCenter';
 import AnalysisCenterWithSections from './AnalysisCenterWithSections';
-import AnalysisWithCloseButton from './AnalysisWithCloseButton';
+import AnalysisWithCloseButton from './AnalysisWithBackButton';
 import {
   type AnalysisCenterSection,
   type AnalysisCenterWithSectionsConfiguration,

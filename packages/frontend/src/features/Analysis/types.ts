@@ -51,6 +51,8 @@ export interface AnalysisCenterConfiguration extends Gen3AppConfigData {
   tools: Array<AnalysisToolConfiguration>;
   showFilterAndSort?: boolean;
   onButtonClick?: AnalysisCardSelectionFunction; // Default handler for all cards
+  label?: string;
+  description?: string;
 }
 
 export interface AnalysisCenterSection {

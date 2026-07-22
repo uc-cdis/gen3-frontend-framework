@@ -30,7 +30,7 @@ const AnalysisCenter = ({
   };
 
   return (
-    <div className="w-full bg-base-light h-full">
+    <div className="w-full bg-base-lightest border-1 border-base-lighter h-full overflow-y-auto">
       {showFilterAndSort ? (
         <div className="flex justify-between items-center w-7/8 mt-2 mx-2">
           {/* // todo: for both dropdowns add downwards orange carrot */}
@@ -74,7 +74,7 @@ const AnalysisCenter = ({
         </div>
       ) : null}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6 p-1 mx-4 items-start h-full overflow-y-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6 p-1 mx-4 items-start h-full ">
         {tools.map(
           (
             {
