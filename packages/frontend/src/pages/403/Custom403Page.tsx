@@ -26,7 +26,8 @@ const Custom403Page = ({
 }: Custom403PageProps) => {
   // custom 403 page for workspace request access 
   const onPageList: string[] = (form403?.onPage && form403.onPage.length > 0 ) ? form403.onPage : ['/Workspace'];
-  const onPage = form403?.enabled && onPageList.includes(usePathname());
+  const onPagePath = usePathname();
+  const onPage = form403?.enabled && onPageList.includes(onPagePath);
 
   const userInfo = useCoreSelector((state: CoreState) =>
     selectUserDetails(state),
