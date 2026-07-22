@@ -17,6 +17,7 @@ import {
   FormOnSubmitReturnProps,
   FormProps,
 } from '../../../components/Content/Form';
+import { getClinicalTrialMetadata } from './utils';
 
 export const useStudyRegistration = (
   config: any,
@@ -86,25 +87,6 @@ export const useStudyRegistration = (
     }
   }, [isLoading, isError, data, studyUID, userInfo?.username]);
 
-  //
-  const getClinicalTrialMetadata = async (ctID: string): Promise<object> => {
-    const errMsg = 'Unable to fetch study metadata from ClinicalTrials.gov';
-    const clinicalTrialFieldsToFetch = config.clinicalTrialFields || [];
-    // get metadata from the clinicaltrials.gov API
-    const resp = await fetch(
-      `https://clinicaltrials.gov/api/v2/studies/${ctID}?fields=${clinicalTrialFieldsToFetch.join('|')}`,
-    );
-    if (!resp || resp.status !== 200) {
-      return Promise.reject('Unable to verify ClinicalTrials.gov ID');
-    }
-    try {
-      const respJson = await resp.json();
-      return respJson;
-    } catch {
-      throw errMsg;
-    }
-  };
-
   // Handle Form Submission
   const formOnSubmit = async (formValues: FormOnSubmitReturnProps) => {
     alert('here');
@@ -124,7 +106,7 @@ export const useStudyRegistration = (
           : formValues.repository_study_ids,
       clinical_trials_id: ctgovID || '',
       clinicaltrials_gov: ctgovID
-        ? await getClinicalTrialMetadata(ctgovID)
+        ? await getClinicalTrialMetadata(ctgovID, config)
         : undefined,
     };
     alert('ctgovID ' + ctgovID);

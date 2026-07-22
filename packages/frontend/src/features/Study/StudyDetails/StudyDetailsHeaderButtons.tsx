@@ -25,6 +25,7 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   const userInfo = useCoreSelector(
     (state: CoreState) => selectUserDetails(state) as ActiveUser,
   );
+
   const requiresLogin = !userInfo.active;
 
   const { discoveryConfig: config } = useDiscoveryContext();
@@ -37,9 +38,20 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   const showSubmitButton = config.detailView?.showSubmitButton;
   const router = useRouter();
 
+  console.log('userInfo.authz', userInfo.authz);
+  console.log('studyRegistrationAuthZ', studyRegistrationAuthZ);
+
+  const userCanRegisterStudy = Object.hasOwn(
+    userInfo?.authz ?? {},
+    studyRegistrationAuthZ,
+  );
+  console.log('userCanRegisterStudy', userCanRegisterStudy);
+
   const handleRegisterButtonClick = () => {
     if (requiresLogin) {
       router.push('/Login');
+    } else if (userCanRegisterStudy) {
+      router.push('/study-reg');
     } else {
       router.push(
         {
@@ -60,6 +72,7 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
     if (requiresLogin) {
       return 'Login to Register This Study';
     }
+    if (userCanRegisterStudy) return 'Register Study';
     return `Request Access to Register this Study`;
   }, [requiresLogin, studyUID]);
 
