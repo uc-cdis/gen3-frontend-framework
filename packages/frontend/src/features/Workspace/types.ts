@@ -51,6 +51,7 @@ export interface requestAccessFormProps extends Omit<FormProps, 'body'> {
   form: FormProps['body'];
   success: Config403Props;
   remoteSupportService: SupportServiceConfiguration;
+  onPage?: string[];
 }
 
 export interface WorkspaceConfig extends Gen3AppConfigData {
