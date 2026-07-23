@@ -5,8 +5,8 @@
   "main": "index.js",
   "type": "module",
   "engines": {
-    "npm": ">=11.9.0",
-    "node": ">=24.15.0"
+    "npm": ">=11.16.0",
+    "node": ">=24.18.0"
   },
   "scripts": {
     "lint": "eslint --ext .js,.ts src",

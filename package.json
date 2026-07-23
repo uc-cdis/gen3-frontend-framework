@@ -12,8 +12,8 @@
     "packages/workspaces"
   ],
   "engines": {
-    "npm": ">=11.9.0",
-    "node": ">=24.15.0"
+    "npm": ">=11.16.0",
+    "node": ">=24.18.0"
   },
   "scripts": {
     "lint": "lerna run lint",
@@ -149,5 +149,14 @@
     "@swc/core-linux-x64-gnu": "^1.11.10",
     "@swc/nx-darwin-arm64": "^1.11.10",
     "@swc/nx-linux-arm64-gnu": "^1.11.10"
+  },
+  "allowScripts": {
+    "unrs-resolver": true,
+    "esbuild": true,
+    "core-js-pure": true,
+    "msw": true,
+    "sharp": true,
+    "@swc/core": true,
+    "nx": true
   }
 }
