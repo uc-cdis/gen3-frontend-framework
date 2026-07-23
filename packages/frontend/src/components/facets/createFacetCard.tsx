@@ -21,15 +21,20 @@ const getValueTypeLabel = (
   valueLabel: FacetValueLabel,
   facetDefinition: FacetDefinition,
   queryOptions?: QueryOptions,
-) => {
+): string => {
+  // Facet definition's valueLabel takes precedence if defined
   if (facetDefinition?.valueLabel) {
     return facetDefinition.valueLabel;
   }
-  return valueLabel === undefined || typeof valueLabel === 'string'
-    ? valueLabel
-    : valueLabel(facetDefinition, queryOptions);
-};
 
+  // Handle undefined or string values directly
+  if (valueLabel === undefined || typeof valueLabel === 'string') {
+    return valueLabel;
+  }
+
+  // valueLabel is a function
+  return valueLabel(facetDefinition, queryOptions);
+};
 export interface CreateFacetCardProps {
   facetDefinition: FacetDefinition;
   hooks: FacetHooks;
