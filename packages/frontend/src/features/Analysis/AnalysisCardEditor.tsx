@@ -1,29 +1,28 @@
 import React, { useCallback, useState } from 'react';
 import {
   ActionIcon,
-  Card,
-  TextInput,
-  Textarea,
-  Select,
-  Switch,
   Button,
+  Card,
   FileInput,
-  Stack,
-  Title,
   Group,
-  Text,
-  Tabs,
   MultiSelect,
+  Select,
+  Stack,
+  Switch,
+  Tabs,
+  Text,
+  Textarea,
+  TextInput,
+  Title,
 } from '@mantine/core';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import { AnalysisToolConfiguration } from './types';
-import { FiAlertTriangle as AlertTriangle } from 'react-icons/fi';
 import {
+  FaDownload as Download,
+  FaRedo as Redo,
   FaSearch as Search,
   FaUndo as Undo,
-  FaRedo as Redo,
   FaUpload as Upload,
-  FaDownload as Download,
 } from 'react-icons/fa';
 import Image from 'next/image';
 import TextDescription from './TextDescription';
@@ -221,19 +220,6 @@ const AnalysisCardEditor = () => {
     link.href = url;
     link.click();
   };
-
-  // Filter cards
-  const filteredCards = history.present.filter((card) => {
-    const matchesSearch =
-      card.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      card.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType =
-      filters.type.length === 0 || filters.type.includes(card.type);
-    const matchesLogin =
-      filters.loginRequired === null ||
-      card.loginRequired === filters.loginRequired;
-    return matchesSearch && matchesType && matchesLogin;
-  });
 
   // Enhanced drag and drop handling with history
   const handleDragEnd = (result: any) => {
