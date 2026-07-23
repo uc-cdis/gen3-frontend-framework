@@ -372,14 +372,22 @@ is also searchable.
 ### Default Facet Sorting
 
 Enum facets are sorted by value count descending by default. To use a different initial sort order for an individual
-facet, set `defaultSort` in that field's `fieldsConfig` entry:
+facet, set `defaultSort` in that field's `fieldsConfig` entry within the relevant `filters.tabs` entry:
 
 ```json
 {
-  "fieldsConfig": {
-    "gender": {
-      "defaultSort": "label-asc"
-    }
+  "filters": {
+    "tabs": [
+      {
+        "title": "Subjects",
+        "fields": ["gender"],
+        "fieldsConfig": {
+          "gender": {
+            "defaultSort": "label-asc"
+          }
+        }
+      }
+    ]
   }
 }
 ```
