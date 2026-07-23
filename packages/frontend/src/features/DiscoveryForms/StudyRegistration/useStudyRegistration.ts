@@ -67,6 +67,7 @@ export const useStudyRegistration = (
 
   // Validate existing requests and check for duplicates
   const { data, isLoading, isError } = useUserRequestQuery({});
+  /*
   useEffect(() => {
     if (!isLoading && isError) {
       setFormError(
@@ -86,6 +87,8 @@ export const useStudyRegistration = (
       setFormOutcome(FormOutcome.duplicateSubmission);
     }
   }, [isLoading, isError, data, studyUID, userInfo?.username]);
+
+  */
 
   // Handle Form Submission
   const formOnSubmit = async (formValues: FormOnSubmitReturnProps) => {

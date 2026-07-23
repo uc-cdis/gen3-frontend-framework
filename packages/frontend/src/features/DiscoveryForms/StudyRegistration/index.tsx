@@ -25,6 +25,7 @@ const StudyRegistrationAccessRequestForm = ({
   return (
     <div className="flex justify-items-center w-full">
       <Box className="w-full bg-white rounded-md m-8 p-8 ">
+        {studyUID}
         <div className="max-w-4xl mx-auto">
           <FormContentViews
             formOutcome={formOutcome}
