@@ -162,6 +162,10 @@ const nextConfig = {
           destination: `${GEN3_TARGET}/manifests/:path*`,
         },
         {
+          source: '/dashboard/:path*',
+          destination: `${GEN3_TARGET}/dashboard/:path*`,
+        },
+        {
           source: '/requestor/:path*',
           destination: `${GEN3_TARGET}/requestor/:path*`,
         },
