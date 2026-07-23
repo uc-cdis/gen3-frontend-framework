@@ -54,7 +54,7 @@
     "idb": "^8.0.3",
     "isomorphic-fetch": "^3.0.0",
     "jsonpath-plus": "10.3.0",
-    "next": "^16.2.10",
+    "next": "^16.2.11",
     "react": "19.2.6",
     "react-cookie": "^7.2.2",
     "react-dom": "19.2.6",
