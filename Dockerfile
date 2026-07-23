@@ -1,7 +1,7 @@
 # docker build -t ff .
 # docker run -p 3000:3000 -it ff
 # Build stage
-FROM --platform=$BUILDPLATFORM node:24.18.0 AS builder
+FROM --platform=$BUILDPLATFORM node:24.18.0-alpine3.24 AS builder
 WORKDIR /gen3
 
 # Copy root manifests first to maximize npm install cache hits
@@ -32,7 +32,7 @@ RUN NODE_OPTIONS="--max-old-space-size=4096" \
 
 # ─────────────────────────────────────────────
 # Production stage
-FROM node:24.18.0 AS runner
+FROM node:24.18.0-alpine3.24 AS runner
 
 WORKDIR /gen3
 
