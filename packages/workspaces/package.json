@@ -1,6 +1,6 @@
 {
   "name": "@gen3/workspaces",
-  "version": "0.12.53",
+  "version": "0.12.54",
   "description": "Workspaces for Gen3",
   "license": "Apache-2.0",
   "sideEffects": false,
@@ -51,8 +51,8 @@
     "./jupyterlite-builds/*": "./dist/jupyterlite-builds/*"
   },
   "dependencies": {
-    "@gen3/core": "^0.12.53",
-    "@gen3/frontend": "^0.12.53",
+    "@gen3/core": "^0.12.54",
+    "@gen3/frontend": "^0.12.54",
     "camelcase-keys": "^10.0.2"
   },
   "peerDependencies": {
