@@ -3,6 +3,7 @@ import { Button, CopyButton } from '@mantine/core';
 import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
 import { FiLogIn as LoginIcon } from 'react-icons/fi';
 import {
+  AuthzMapping,
   CoreState,
   selectUserDetails,
   useCoreSelector,
@@ -38,20 +39,36 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   const showSubmitButton = config.detailView?.showSubmitButton;
   const router = useRouter();
 
-  console.log('userInfo.authz', userInfo.authz);
-  console.log('studyRegistrationAuthZ', studyRegistrationAuthZ);
-
-  const userCanRegisterStudy = Object.hasOwn(
-    userInfo?.authz ?? {},
-    studyRegistrationAuthZ,
-  );
-  console.log('userCanRegisterStudy', userCanRegisterStudy);
+  const userCanRegisterStudy = () => {
+    const actions = (userInfo?.authz as AuthzMapping)[studyRegistrationAuthZ];
+    const method = 'access';
+    const service = 'study_registration';
+    return (
+      actions !== undefined &&
+      actions.some(
+        (x) =>
+          (x.service === service || x.service === '*') &&
+          (x.method === method || x.method === '*'),
+      )
+    );
+  };
 
   const handleRegisterButtonClick = () => {
     if (requiresLogin) {
       router.push('/Login');
-    } else if (userCanRegisterStudy) {
-      router.push('/study-reg');
+    } else if (userCanRegisterStudy()) {
+      router.push(
+        {
+          pathname: '/study-reg',
+          query: {
+            studyUID: studyUID,
+            studyName: studyName,
+            studyRegistrationAuthZ: studyRegistrationAuthZ,
+            studyProjectNumber: studyProjectNumber,
+          },
+        },
+        '/study-reg',
+      );
     } else {
       router.push(
         {
