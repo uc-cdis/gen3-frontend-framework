@@ -209,6 +209,7 @@ export const classifyFacets = (
             undefined,
           moveValuesToBottom: facetDef?.moveValuesToBottom,
           excludeValues: facetDef?.excludeValues,
+          defaultSort: facetDef?.defaultSort,
           range: facetDef?.range
             ? {
                 minimum:
@@ -458,21 +459,21 @@ export const mapFacetSortToSortType = (facetSort: FacetSortType): SortType => {
     return defaultSort;
   }
 
-  const parts = facetSort.split('-');
-
-  // Check if we have exactly 2 parts
-  if (parts.length !== 2) {
-    console.warn(
-      `Invalid facetSort format: expected 'type-direction', got '${facetSort}'. Using default.`,
-    );
-    return defaultSort;
+  switch (facetSort) {
+    case 'value-asc':
+      return { type: 'value', direction: 'asc' };
+    case 'value-dsc':
+      return { type: 'value', direction: 'dsc' };
+    case 'label-asc':
+      return { type: 'alpha', direction: 'asc' };
+    case 'label-desc':
+      return { type: 'alpha', direction: 'dsc' };
+    default:
+      console.warn(
+        `Invalid facetSort value: got '${facetSort}'. Using default.`,
+      );
+      return defaultSort;
   }
-
-  const [type, direction] = facetSort.split('-');
-  return {
-    type: type === 'label' ? 'alpha' : 'value',
-    direction: direction as 'asc' | 'dsc',
-  };
 };
 
 export const compareKeysAscending = (

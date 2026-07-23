@@ -16,6 +16,10 @@ export type FacetType =
   | 'multiselect'
   | 'upload';
 
+// compact string representation of the enum facet sort order for config files
+export type FacetSortType =
+  'value-asc' | 'value-dsc' | 'label-asc' | 'label-desc';
+
 export interface AllowableRange {
   readonly minimum: number;
   readonly maximum: number;
@@ -34,4 +38,5 @@ export interface FacetDefinition {
   readonly sharedWithIndices?: Array<IndexAndField>; // if this filter is denormalized across indices
   readonly moveValuesToBottom?: Array<string>;
   readonly excludeValues?: Array<string>;
+  readonly defaultSort?: FacetSortType;
 }
