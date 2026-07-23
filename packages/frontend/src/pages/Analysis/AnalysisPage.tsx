@@ -14,6 +14,8 @@ const AnalysisPage = ({
   sections,
   classNames,
   type = 'section',
+  label,
+  description,
 }: AnalysisPageLayoutProps): JSX.Element => {
   if (type === 'breadcrumb') {
     return (
@@ -25,7 +27,11 @@ const AnalysisPage = ({
           key: 'gen3-analysis-center',
         }}
       >
-        <AnalysisWithCloseButton tools={tools ?? []} />
+        <AnalysisWithCloseButton
+          tools={tools ?? []}
+          label={label}
+          description={description}
+        />
       </FixedNavPageLayout>
     );
   }

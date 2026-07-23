@@ -9,4 +9,6 @@ export interface AnalysisPageLayoutProps extends NavPageLayoutProps {
   sections?: Array<AnalysisCenterSection>;
   classNames?: Record<string, string>;
   type?: 'section' | 'breadcrumb';
+  label?: string;
+  description?: string;
 }

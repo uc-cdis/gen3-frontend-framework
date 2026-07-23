@@ -19,9 +19,9 @@ const CROSSFADE_DURATION = 500;
 // crossfade instead of pushing each other around the flex column.
 const overlayCell: React.CSSProperties = { gridArea: '1 / 1' };
 
+const DEFAULT_LABEL = 'Analysis Tools';
 const DEFAULT_DESCRIPTION =
-  "The Jupyter notebooks contained in this notebook viewer pull data from various sources to generate and output useful tables, charts, graphs, and models. Each notebook is static, meaning the data being used by the notebooks is not updated in real time. Executable versions of these notebooks are also available in the 'Tutorials' Gen3 Workspace Image.";
-
+  'Explore various analysis tools available in the commons.';
 const AnalysisWithCloseButton = ({
   tools,
   label,
@@ -35,6 +35,8 @@ const AnalysisWithCloseButton = ({
     handlers.open();
   };
 
+  const backLabel = `Back to ${label ?? DEFAULT_LABEL}`;
+
   return (
     <div className="relative grid w-full h-full">
       <Transition
@@ -47,9 +49,9 @@ const AnalysisWithCloseButton = ({
             className="flex flex-col w-full bg-base-lightest py-2 pt-8 h-full overflow-hidden"
             style={{ ...overlayCell, ...styles }}
           >
-            <div className="flex w-full nowrap mb-2 px-20">
+            <div className="flex w-full nowrap mb-2 px-20 justify-center">
               <Stack gap="xs" align="center" justify="center">
-                <Text size="2em">{label ?? 'Jupyter Notebook Tutorials'}</Text>
+                <Text size="2em">{label ?? DEFAULT_LABEL}</Text>
                 <Center>
                   <Text size="sm" ta="center" textWrap="balance">
                     {description ?? DEFAULT_DESCRIPTION}
@@ -73,12 +75,12 @@ const AnalysisWithCloseButton = ({
             style={{ ...overlayCell, ...styles }}
           >
             <div className="flex w-full nowrap justify-start items-center m-2">
-              <Tooltip label="Back to Notebook list">
+              <Tooltip label={backLabel}>
                 <ActionIcon
                   variant="outline"
                   radius="xl"
                   size="lg"
-                  aria-label="Back to Notebook list"
+                  aria-label={backLabel}
                   color="accent.5"
                   className="mr-4"
                   onClick={() => handlers.close()}
@@ -92,7 +94,7 @@ const AnalysisWithCloseButton = ({
                 </ActionIcon>
               </Tooltip>
               <Text fw={500} size="2em">
-                Back to Notebook List
+                {backLabel}
               </Text>
             </div>
 
