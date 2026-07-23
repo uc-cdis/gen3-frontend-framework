@@ -1,14 +1,23 @@
-import { ReactElement } from 'react';
+import React, { ReactElement } from 'react';
 import { Gen3AppConfigData } from '../../lib/content/types';
 import { StylingOverrideWithMergeControl } from '../../types';
 
 type CountFunction = () => string;
 
+export interface CardTitleAndHRef {
+  title: string;
+  href?: string;
+}
+
+export type AnalysisCardSelectionFunction = (
+  tool: CardTitleAndHRef | null,
+) => void;
+
 export interface AnalysisToolConfiguration {
   title: string;
   image?: string; // URL to image
-  icon: string | ReactElement; // URL, IconName as string, ReactElement
-  type: string;
+  icon?: string | ReactElement; // URL, IconName as string, ReactElement
+  type?: string;
   description: string;
   hasDemo?: boolean;
   loginRequired: boolean;
@@ -24,16 +33,26 @@ export interface AnalysisToolConfiguration {
   noDataTooltip?: string;
   cardType?: 'regular' | 'compact';
   btnText?: string;
+  /**
+   * Optional handler for the primary action button. When provided, the button
+   * behaves as an action (calls this handler on click) instead of navigating
+   * to `href`. Must be injected by a parent, not from JSON config.
+   */
+  onButtonClick?: AnalysisCardSelectionFunction;
   tags?: Array<string>;
   readonly leftComponent?: React.FC;
   readonly rightComponent?: React.FC;
   readonly selectionScreen?: React.FC;
   classNames?: StylingOverrideWithMergeControl;
+  height?: string;
 }
 
 export interface AnalysisCenterConfiguration extends Gen3AppConfigData {
   tools: Array<AnalysisToolConfiguration>;
   showFilterAndSort?: boolean;
+  onButtonClick?: AnalysisCardSelectionFunction; // Default handler for all cards
+  label?: string;
+  description?: string;
 }
 
 export interface AnalysisCenterSection {

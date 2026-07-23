@@ -17,6 +17,24 @@ import { FacetDefinition } from '@gen3/core';
 import UploadFacet from './UploadFacet';
 import NumericRangeFacet from './NumericRangeFacet';
 
+const getValueTypeLabel = (
+  valueLabel: FacetValueLabel,
+  facetDefinition: FacetDefinition,
+  queryOptions?: QueryOptions,
+): string => {
+  // Facet definition's valueLabel takes precedence if defined
+  if (facetDefinition?.valueLabel) {
+    return facetDefinition.valueLabel;
+  }
+
+  // Handle undefined or string values directly
+  if (valueLabel === undefined || typeof valueLabel === 'string') {
+    return valueLabel;
+  }
+
+  // valueLabel is a function
+  return valueLabel(facetDefinition, queryOptions);
+};
 export interface CreateFacetCardProps {
   facetDefinition: FacetDefinition;
   hooks: FacetHooks;
@@ -45,10 +63,11 @@ export const createFacetCard = ({
 }: CreateFacetCardProps): React.ReactNode => {
   const { field, type, description, label } = facetDefinition;
   const facetLabel = label ?? facetNameFormatter(facetDefinition.field);
-  const valueTypeLabel =
-    valueLabel === undefined || typeof valueLabel === 'string'
-      ? valueLabel
-      : valueLabel(facetDefinition, queryOptions);
+  const valueTypeLabel = getValueTypeLabel(
+    valueLabel,
+    facetDefinition,
+    queryOptions,
+  );
 
   return (
     <div key={`${idPrefix}-facet-${field}`}>

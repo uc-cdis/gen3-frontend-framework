@@ -159,8 +159,8 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
             {indexSelector}
             <SummaryStatisticPanel summaries={summaryStatistics} />
             {enableSearchBar && (
-              <div className="w-3/4 flex flex-col">
-                <Grid>
+              <div className="w-3/4 flex flex-col ml-2">
+                <Grid align="center" gap="sm">
                   <Grid.Col
                     span={{ md: enableSearchableTags ? 7 : 10, sm: 12 }}
                   >
@@ -183,18 +183,15 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
                     />
                   </Grid.Col>
                   {enableSearchableTags && (
-                    <Grid.Col
-                      span={{ sm: 12, md: 5 }}
-                      className="md:mt-5 sm:mt-1"
-                    >
+                    <Grid.Col span={{ sm: 12, md: 5 }} align="center">
                       <Button
                         onClick={() => setSelectedTags({})}
                         variant="outline"
                         leftSection={<IoIosRefresh />}
                         className={
                           Object.keys(selectedTags).length === 0
-                            ? 'border-gray-400 mr-1 mt-1'
-                            : 'mr-1  mt-1'
+                            ? 'border-gray-400 mr-2'
+                            : 'mr-2'
                         }
                         data-disabled={Object.keys(selectedTags).length === 0}
                       >

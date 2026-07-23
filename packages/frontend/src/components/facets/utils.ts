@@ -210,6 +210,7 @@ export const classifyFacets = (
           moveValuesToBottom: facetDef?.moveValuesToBottom,
           excludeValues: facetDef?.excludeValues,
           defaultSort: facetDef?.defaultSort,
+          valueLabel: facetDef?.valueLabel,
           range: facetDef?.range
             ? {
                 minimum:
