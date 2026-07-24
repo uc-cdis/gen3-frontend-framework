@@ -23,6 +23,7 @@ const EnumFacet = ({
   sharedWithIndices = undefined,
   moveValuesToBottom = [],
   excludeValues = [],
+  defaultSort = 'value-dsc',
   header = {
     Panel: FacetHeader,
     Label: FacetText,
@@ -85,6 +86,7 @@ const EnumFacet = ({
           isSearching={isSearching}
           hideIfEmpty={hideIfEmpty}
           showPercent={showPercent}
+          sort={defaultSort}
           moveValuesToBottom={moveValuesToBottom}
           excludeValues={excludeValues}
         />
