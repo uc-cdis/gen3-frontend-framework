@@ -78,6 +78,8 @@ const globals = {
 const external = [
   ...Object.keys(globals),
   'tailwindcss/plugin',
+  'tailwindcss/colors',
+  'postcss-selector-parser',
   '@iconify/react',
   'next/router',
   'next/dynamic',
