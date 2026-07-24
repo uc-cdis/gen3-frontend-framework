@@ -162,6 +162,7 @@
     "core-js-pure": true,
     "msw": true,
     "sharp": true,
+    "fsevents": true,
     "@swc/core": true,
     "nx": true
   }
