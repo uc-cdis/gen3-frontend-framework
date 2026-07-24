@@ -6,8 +6,8 @@
   "sideEffects": false,
   "author": "Center for Translational Data Science",
   "engines": {
-    "npm": ">=11.9.0",
-    "node": ">=24.15.0"
+    "npm": ">=11.16.0",
+    "node": ">=24.18.0"
   },
   "main": "dist/index/cjs/index.js",
   "module": "dist/index/esm/index.js",
@@ -63,7 +63,7 @@
     "@mantine/modals": "^9.4.0",
     "@mantine/notifications": "^9.4.0",
     "mantine-react-table-open": "^9.0.3",
-    "next": "^16.2.10",
+    "next": "^16.2.11",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "tailwindcss": "^3.4.18"
