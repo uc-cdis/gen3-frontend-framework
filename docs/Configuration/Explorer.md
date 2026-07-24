@@ -369,6 +369,38 @@ add a ```fieldsConfig``` entry. The format is _field_ name then _type_. In the e
 switch to use ```multiselect```. Note that ```multiselect``` is the only type supported. The selection is a dropdown that
 is also searchable.
 
+### Default Facet Sorting
+
+Enum facets are sorted by value count descending by default. To use a different initial sort order for an individual
+facet, set `defaultSort` in that field's `fieldsConfig` entry within the relevant `filters.tabs` entry:
+
+```json
+{
+  "filters": {
+    "tabs": [
+      {
+        "title": "Subjects",
+        "fields": ["gender"],
+        "fieldsConfig": {
+          "gender": {
+            "defaultSort": "label-asc"
+          }
+        }
+      }
+    ]
+  }
+}
+```
+
+The supported values are:
+
+* `value-asc` - value count ascending
+* `value-dsc` - value count descending
+* `label-asc` - label ascending
+* `label-desc` - label descending
+
+Facets without `defaultSort` continue to use `value-dsc`.
+
 ![MultiSelectFacet](images/Explorer/MultiSelectFacet.png)
 
 ### Export Cohort Datafiles to Data Library

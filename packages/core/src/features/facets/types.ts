@@ -23,6 +23,14 @@ export type FacetType =
   | 'upload';
 
 /**
+ * Sort order for enum facet values.
+ *
+ * @category Facets
+ */
+export type FacetSortType =
+  'value-asc' | 'value-dsc' | 'label-asc' | 'label-desc';
+
+/**
  * The inclusive numeric bounds a range facet may filter within.
  *
  * @category Facets
@@ -97,6 +105,12 @@ export interface FacetDefinition {
    * Values omitted from the facet entirely.
    */
   readonly excludeValues?: Array<string>;
+  /**
+   * Initial sort order for the facet's values.
+   *
+   * @defaultValue `value-dsc`
+   */
+  readonly defaultSort?: FacetSortType;
   /**
    * Overrides the per-value label rendered for this facet when set.
    */
