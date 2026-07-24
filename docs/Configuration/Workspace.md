@@ -12,6 +12,7 @@ and example configuration:
   "requirePayModel": false,
   "requestAccessForm": {
     "enabled": true,
+    "onPage":["/Workspaces"],//Optional: Defaults to ["/Workspace"] can add an array of all page names you want to show this form if the user is given 403
     "remoteSupportService": {
       "service": "zenDesk",
       "configuration": {

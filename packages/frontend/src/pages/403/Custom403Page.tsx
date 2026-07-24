@@ -25,7 +25,9 @@ const Custom403Page = ({
   form403,
 }: Custom403PageProps) => {
   // custom 403 page for workspace request access 
-  const onWorkspace = usePathname() === '/Workspace';
+  const onPageList: string[] = (form403?.onPage && form403.onPage.length > 0 ) ? form403.onPage : ['/Workspace'];
+  const onPagePath = usePathname();
+  const onPage = form403?.enabled && onPageList.includes(onPagePath);
 
   const userInfo = useCoreSelector((state: CoreState) =>
     selectUserDetails(state),
@@ -168,7 +170,7 @@ const Custom403Page = ({
         ...(config403?.headerMetadata ? config403.headerMetadata : {}),
       }}
     >
-      {form403?.enabled && userInfo?.email && onWorkspace ?
+      {userInfo?.email && onPage ?
         workspaceRequestForm(form403)
       : main403Template(config403)
       }

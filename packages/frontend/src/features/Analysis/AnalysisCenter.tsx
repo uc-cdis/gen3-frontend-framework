@@ -6,6 +6,7 @@ import AnalysisCard from './AnalysisCard';
 const AnalysisCenter = ({
   tools,
   showFilterAndSort = false,
+  onButtonClick,
 }: AnalysisCenterConfiguration): ReactElement => {
   const [cards, setCards] = useState({
     type: '' as string,
@@ -29,7 +30,7 @@ const AnalysisCenter = ({
   };
 
   return (
-    <div className="w-full bg-base-light p-4">
+    <div className="w-full bg-base-lightest border-1 border-base-lighter h-full overflow-y-auto">
       {showFilterAndSort ? (
         <div className="flex justify-between items-center w-7/8 mt-2 mx-2">
           {/* // todo: for both dropdowns add downwards orange carrot */}
@@ -63,56 +64,54 @@ const AnalysisCenter = ({
               onChange={(value) => handleCardsFilter('access', value)}
             />
           </div>
-          <div>
-            {/* // todo: increase width of this */}
-            <TextInput
-              placeholder="Search in Analysis Center"
-              value={cards.search}
-              size="md"
-              onChange={(event) => handleCardsSearch(event.currentTarget.value)}
-            />
-          </div>
+          {/* // todo: increase width of this */}
+          <TextInput
+            placeholder="Search in Analysis Center"
+            value={cards.search}
+            size="md"
+            onChange={(event) => handleCardsSearch(event.currentTarget.value)}
+          />
         </div>
       ) : null}
-      <div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-1 mx-4 overflow-y-auto">
-          {tools.map(
-            (
-              {
-                title,
-                description,
-                type,
-                icon,
-                image,
-                hasDemo,
-                loginRequired,
-                href,
-                btnText,
-                demoHref,
-              },
-              key,
-            ) => {
-              return (
-                <AnalysisCard
-                  key={title}
-                  {...{
-                    title,
-                    description,
-                    type,
-                    icon,
-                    image,
-                    hasDemo,
-                    loginRequired,
-                    href,
-                    cardType: 'regular',
-                    btnText,
-                    demoHref,
-                  }}
-                />
-              );
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6 p-1 mx-4 items-start h-full ">
+        {tools.map(
+          (
+            {
+              title,
+              description,
+              type,
+              icon,
+              image,
+              hasDemo,
+              loginRequired,
+              href,
+              btnText,
+              demoHref,
             },
-          )}
-        </div>
+            key,
+          ) => {
+            return (
+              <AnalysisCard
+                key={title}
+                {...{
+                  title,
+                  description,
+                  type,
+                  icon,
+                  image,
+                  hasDemo,
+                  loginRequired,
+                  href,
+                  cardType: 'regular',
+                  btnText,
+                  demoHref,
+                  onButtonClick,
+                }}
+              />
+            );
+          },
+        )}
       </div>
     </div>
   );
