@@ -1,4 +1,3 @@
-// StudyRegistrationAccessRequestForm.tsx
 import React from 'react';
 import { Box, Text } from '@mantine/core';
 import { NavPageLayoutProps } from '../../../features/Navigation';
@@ -20,12 +19,16 @@ const StudyRegistrationAccessRequestForm = ({
     formBody,
     formOnSubmit,
     isLoading,
+    data,
   } = useStudyRegistration(configStudyRegistrationForm);
 
   return (
     <div className="flex justify-items-center w-full">
       <Box className="w-full bg-white rounded-md m-8 p-8 ">
         {studyUID}
+        <pre>{JSON.stringify(formBody[1], null, 2)}</pre>
+        <hr />
+        <pre>{JSON.stringify(data, null, 2)}</pre>
         <div className="max-w-4xl mx-auto">
           <FormContentViews
             formOutcome={formOutcome}

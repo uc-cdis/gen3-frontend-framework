@@ -1,16 +1,11 @@
-// useStudyRegistration.ts
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { toString } from 'lodash';
 import {
   CoreState,
-  getRemoteSupportServiceRegistry,
-  isHttpStatusError,
   selectUserDetails,
   useCoreSelector,
-  useCreateRequestMutation,
-  useUserRequestQuery,
-  HttpError,
+  JSONObject,
 } from '@gen3/core';
 import { FormOutcome } from './types';
 import {
@@ -18,7 +13,7 @@ import {
   FormProps,
 } from '../../../components/Content/Form';
 import { getClinicalTrialMetadata } from './utils';
-
+import { ActiveUser, userCanRegisterStudy } from './userCanRegisterStudy';
 export const useStudyRegistration = (
   config: any,
 ): {
@@ -28,154 +23,100 @@ export const useStudyRegistration = (
   formBody: FormProps['body'];
   formOnSubmit: (formValues: FormOnSubmitReturnProps) => Promise<void>;
   isLoading: boolean;
+  data: any;
 } => {
   const [formError, setFormError] = useState<string>();
   const [formOutcome, setFormOutcome] = useState(FormOutcome.pending);
   const [studyUID, setStudyUID] = useState<string | null>(null);
   const [studyName, setStudyName] = useState<string | null>(null);
-  const [studyProjectNumber, setStudyProjectNumber] = useState<string | null>(
-    null,
-  );
-  const [studyRegistrationAuthZ, setStudyRegistrationAuthZ] = useState<
-    string | null
-  >(null);
-  console.log('config', config);
   const router = useRouter();
-  const formBody = config.form;
+
+  // 1. Keep track of raw studies in state, not formBody
+  const [studies, setStudies] = useState<JSONObject[]>([]);
+
   const userInfo = useCoreSelector((state: CoreState) =>
     selectUserDetails(state),
   );
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isError, setIsError] = useState<boolean>(false);
+
+  // 2. Fetch raw data once on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        setIsError(false);
+        const response = await fetch(
+          'https://healdata.org/mds/metadata?data=True&_guid_type=unregistered_discovery_metadata&limit=2000&offset=0',
+        );
+
+        if (!response.ok) {
+          setIsError(true);
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const json = await response.json();
+        const rawStudies = Object.values(json).map(
+          (entry: any) => entry.gen3_discovery || {},
+        );
+
+        setStudies(rawStudies);
+      } catch (err: any) {
+        if (err.name !== 'AbortError') {
+          setIsError(true);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (router.isReady && router.query) {
       const { query } = router;
       if (query.studyUID) setStudyUID(query.studyUID as string);
       if (query.studyName) setStudyName(toString(query.studyName));
-      if (query.studyProjectNumber)
-        setStudyProjectNumber(query.studyProjectNumber as string);
-      if (query.studyRegistrationAuthZ) {
-        try {
-          setStudyRegistrationAuthZ(
-            JSON.parse(query.studyRegistrationAuthZ as string),
-          );
-        } catch (e) {
-          setStudyRegistrationAuthZ(query.studyRegistrationAuthZ as string);
-        }
-      }
     }
   }, [router.isReady, router.query]);
 
-  // Validate existing requests and check for duplicates
-  const { data, isLoading, isError } = useUserRequestQuery({});
-  /*
-  useEffect(() => {
-    if (!isLoading && isError) {
-      setFormError(
-        'Unable to load data from Requester, form may not submit correctly. Try refreshing this page',
-      );
-    }
-    // Check for study already in requester with same UID and userName
-    if (
-      data &&
-      studyUID &&
-      userInfo?.username &&
-      data.some(
-        (item) =>
-          item.resource_id === studyUID && item.username === userInfo.username,
-      )
-    ) {
-      setFormOutcome(FormOutcome.duplicateSubmission);
-    }
-  }, [isLoading, isError, data, studyUID, userInfo?.username]);
+  // 3. Derive formBody whenever studies, userInfo, or config.form change!
+  const formBody = useMemo(() => {
+    if (!studies.length || !userInfo) return config.form;
 
-  */
+    // Filter based on active user permissions
+    const registerableStudies = studies.filter((study) =>
+      userCanRegisterStudy(userInfo as ActiveUser, study.registration_authz),
+    );
 
-  // Handle Form Submission
-  const formOnSubmit = async (formValues: FormOnSubmitReturnProps) => {
-    alert('here');
-    alert('formValues' + JSON.stringify(formValues));
-    const hostname = window.location.hostname;
+    const registerableStudyNames = registerableStudies.map(
+      (study) =>
+        study.study_metadata?.minimal_info?.study_name || 'Untitled Study',
+    );
 
-    const cedarUserUUID = formValues.cedar_uuid;
-    const studyID = formValues.study_id;
-    const ctgovID = formValues.clinicalTrialsGovID; // example: NCT00000419
-    const valuesToUpdate = {
-      repository: formValues.repository || '',
-      repository_study_ids:
-        !formValues.repository_study_ids ||
-        (formValues.repository_study_ids.length === 1 &&
-          formValues.repository_study_ids[0] === '')
-          ? []
-          : formValues.repository_study_ids,
-      clinical_trials_id: ctgovID || '',
-      clinicaltrials_gov: ctgovID
-        ? await getClinicalTrialMetadata(ctgovID, config)
-        : undefined,
-    };
-    alert('ctgovID ' + ctgovID);
-    alert(JSON.stringify(valuesToUpdate));
-    /*     try {
-      const request = await requestQuery({
-        username: userInfo.username,
-        resource_id: studyUID as string,
-        resource_paths: [
-          studyRegistrationAuthZ as string,
-          '/mds_gateway',
-          '/cedar',
-        ],
-        role_ids: ['study_registrant', 'mds_user', 'cedar_user'],
-      }).unwrap();
-
-      const printFormValuesArr = Object.entries(formValues).map(
-        ([key, value]) => `${key}: ${value}`,
-      );
-
-      const zenDeskSubmission = {
-        subject: `Study registration access request for ${studyUID} ${studyName}`,
-        fullName: `${userInfo?.email}`,
-        email: `${userInfo?.email}`,
-        contents: `Request ID: ${request.request_id}\nGrant Number: ${studyProjectNumber}\nStudy Name: ${studyName}\nEnvironment: ${hostname}\nForm Values: ${printFormValuesArr.join('\n\n')}`,
-      };
-
-      const zendeskRequestAction =
-        getRemoteSupportServiceRegistry().getSupportService(
-          config.remoteSupportService.service,
-        );
-      await zendeskRequestAction(
-        zenDeskSubmission,
-        config.remoteSupportService.configuration,
-      );
-
-      setFormOutcome(FormOutcome.success);
-    } catch (error) {
-      if (isHttpStatusError(error)) {
-        setFormError(
-          `[${(error as HttpError).status}]: Error while submitting resource request`,
-        );
-      } else if (error instanceof Error) {
-        setFormError(
-          `Error while submitting resource request: ${error.message}`,
-        );
-      } else {
-        setFormError('Unknown error while submitting resource request');
-      }
-    } */
-  };
-
-  const autoFillValues = (body: FormProps['body']) => {
-    return body.map((item) =>
-      item.initialValue === 'studyName'
-        ? { ...item, initialValue: studyName }
+    // Return auto-filled schema
+    return config.form.map((item: any) =>
+      item?.variable === 'studyName'
+        ? {
+            ...item,
+            data: registerableStudyNames,
+            initialValue: registerableStudyNames[0],
+          }
         : item,
     );
+  }, [studies, userInfo, config.form]);
+
+  const formOnSubmit = async (formValues: FormOnSubmitReturnProps) => {
+    alert('called formOnSubmit');
   };
 
   return {
     formError,
     formOutcome,
     studyUID,
-    formBody: autoFillValues(formBody) as FormProps['body'],
+    formBody,
     formOnSubmit,
     isLoading,
+    data: studies,
   };
 };

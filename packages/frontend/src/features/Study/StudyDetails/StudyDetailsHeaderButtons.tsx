@@ -13,6 +13,7 @@ import { useDiscoveryContext } from '../../Discovery/DiscoveryProvider';
 import { useRouter } from 'next/router';
 import { useStudyContext } from '../StudyProvider';
 import { toString } from 'lodash';
+import { userCanRegisterStudy } from '../../DiscoveryForms/StudyRegistration/userCanRegisterStudy';
 
 interface StudyDetailsHeaderButtonsProps {
   onClose: () => void;
@@ -39,24 +40,10 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   const showSubmitButton = config.detailView?.showSubmitButton;
   const router = useRouter();
 
-  const userCanRegisterStudy = () => {
-    const actions = (userInfo?.authz as AuthzMapping)[studyRegistrationAuthZ];
-    const method = 'access';
-    const service = 'study_registration';
-    return (
-      actions !== undefined &&
-      actions.some(
-        (x) =>
-          (x.service === service || x.service === '*') &&
-          (x.method === method || x.method === '*'),
-      )
-    );
-  };
-
   const handleRegisterButtonClick = () => {
     if (requiresLogin) {
       router.push('/Login');
-    } else if (userCanRegisterStudy()) {
+    } else if (userCanRegisterStudy(userInfo, studyRegistrationAuthZ)) {
       router.push(
         {
           pathname: '/study-reg',
