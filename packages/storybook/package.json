@@ -36,7 +36,6 @@
     "@storybook/nextjs": "^10.4.6",
     "@storybook/test-runner": "^0.24.4",
     "@tailwindcss/forms": "^0.5.3",
-    "@tailwindcss/typography": "^0.5.20",
     "axe-playwright": "^2.2.2",
     "dotenv": "^16.4.7",
     "esbuild": "^0.28.1",
