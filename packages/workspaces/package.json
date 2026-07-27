@@ -64,7 +64,7 @@
     "@mantine/modals": "^9.4.0",
     "@mantine/notifications": "^9.4.0",
     "mantine-react-table-open": "^9.0.3",
-    "next": "^16.2.11",
+    "next": "^16.2.12",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "tailwindcss": "^3.4.18"

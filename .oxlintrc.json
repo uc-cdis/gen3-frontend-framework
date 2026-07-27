@@ -9,5 +9,11 @@
   },
   "env": {
     "builtin": true
-  }
+  },
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/packages/sampleCommons/jupyter-workspaces/**",
+    "**/packages/sampleCommons/builds/**",
+    "**/packages/sampleCommons/cockle_wasm_env/**"
+  ]
 }
