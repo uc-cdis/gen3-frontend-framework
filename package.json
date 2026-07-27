@@ -25,6 +25,7 @@
     "build:docker": "docker build -t gen3:fef .",
     "build:pkg": "lerna run build --include-dependencies --stream --ignore=@gen3/samplecommons",
     "build:tools": "lerna run build --scope=@gen3/toolsff --stream",
+    "build:jupyterlite": "lerna run build:jupyterlite --scope=@gen3/samplecommons",
     "build:clean": "lerna run build:clean",
     "compile": "lerna run compile",
     "predev": "if [ ! -f ./node_modules/@gen3/toolsff/dist/scanSitePaths.esm.js ]; then printf \"\\033[31mError: @gen3/toolsff not built (missing dist file). Run: npm run build:tools\\033[0m\\n\"; exit 1; fi",
@@ -47,7 +48,6 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@next/bundle-analyzer": "^16.2.10",
     "classnames": "^2.3.1",
     "dayjs": "^1.11.19",
     "glob": "^13.0.6",
@@ -64,6 +64,7 @@
   "devDependencies": {
     "@axe-core/react": "^4.10.0",
     "@eslint/js": "^9.28.0",
+    "@next/bundle-analyzer": "^16.2.11",
     "@next/eslint-plugin-next": "16.2.6",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-terser": "^1.0.0",
