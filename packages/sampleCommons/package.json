@@ -48,7 +48,7 @@
     "jose": "^6.1.0",
     "jsonpath-plus": "^10.3.0",
     "mantine-react-table-open": "^9.0.3",
-    "next": "^16.2.11",
+    "next": "^16.2.2",
     "pluralize": "^8.0.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
