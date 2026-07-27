@@ -147,7 +147,7 @@ const DiscoveryTable = ({
                 columnDef?.contentType,
                 columnDef?.cellRenderFunction ?? 'default',
                 {
-                  ...(columnDef?.params ?? {}),
+                  ...columnDef?.params,
                   valueIfNotAvailable: columnDef?.valueIfNotAvailable ?? '',
                 },
               ),
@@ -157,7 +157,7 @@ const DiscoveryTable = ({
                 'string',
                 columnDef?.cellRenderFunction ?? 'default',
                 {
-                  ...(columnDef?.params ?? {}),
+                  ...columnDef?.params,
                   valueIfNotAvailable: columnDef?.valueIfNotAvailable ?? '',
                 },
               ),

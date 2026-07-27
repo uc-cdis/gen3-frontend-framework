@@ -106,7 +106,6 @@ const useAuthorizationState = () => {
 
 const NavigationBar = ({
   logo = undefined,
-  title = undefined,
   items = [],
   classNames = {},
   hideUnauthorizedLinks = false,

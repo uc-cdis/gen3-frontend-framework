@@ -1,7 +1,5 @@
-import { type NavPageLayoutProps } from '../../Navigation';
 import { TextContentProps } from '../../../components/Content/TextContent';
 import { Gen3AppConfigData } from '../../../lib/content/types';
-import { WorkspaceConfig } from '../../Workspace';
 import { ButtonVariant } from '@mantine/core';
 
 export interface ConfigStudyRegistrationAccessRequestFormProps extends Gen3AppConfigData {

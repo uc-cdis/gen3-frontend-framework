@@ -1,3 +1,4 @@
+// oxlint-disable unicorn/no-empty-file
 // import { ActionButtonFunction, ActionButtonProps } from './types';
 // import FileSaver from 'file-saver';
 // import { GEN3_DOMAIN } from '@gen3/core';

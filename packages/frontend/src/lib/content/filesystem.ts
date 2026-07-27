@@ -25,7 +25,7 @@ export class FilesystemContent implements ContentSourceInterface {
       return await JSON.parse(
         fs.readFileSync(path.join(this.rootPath, filepath)).toString('utf8'),
       );
-    } catch (err: unknown) {
+    } catch (_err: unknown) {
       throw new Error(`Cannot process ${path.join(this.rootPath, filepath)} `);
     }
   }

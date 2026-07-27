@@ -18,7 +18,8 @@
     "gen3-validate-jupyterlite": "dist/jupyterlite-builds/scripts/validate-jupyterlite-assets.sh"
   },
   "scripts": {
-    "lint": "eslint .",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
     "compile": "tsc",
     "types": "tsc --emitDeclarationOnly",
     "clean": "rm -rf dist",

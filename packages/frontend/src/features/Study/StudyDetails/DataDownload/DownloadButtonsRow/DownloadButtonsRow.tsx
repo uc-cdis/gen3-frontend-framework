@@ -1,6 +1,5 @@
 import { JSONObject } from '@gen3/core';
 import React from 'react';
-import { useDiscoveryContext } from '../../../../Discovery/DiscoveryProvider';
 import { Button } from '@mantine/core';
 
 interface DownloadButtonsRowProps {
@@ -8,10 +7,10 @@ interface DownloadButtonsRowProps {
 }
 
 const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
-  const { discoveryConfig: discoveryConfig } = useDiscoveryContext();
   /*
   Showing, disabling and downloading logic will addressed: HP-2379, HP-2380, HP-2381, HP-2382
 
+  const { discoveryConfig: discoveryConfig } = useDiscoveryContext();
   const showDownloadStudyLevelMetadataButton = Boolean(
     discoveryConfig?.features?.exportToWorkspace?.enableDownloadStudyMetadata &&
     studyMetadataFieldNameReference &&

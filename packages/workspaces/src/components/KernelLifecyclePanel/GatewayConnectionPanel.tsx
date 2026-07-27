@@ -14,8 +14,11 @@ interface GatewayConnectionPanelProps {
 export const GatewayConnectionPanel = ({
   gatewayStatus,
   onRetryConnection = () => null,
+  // oxlint-disable-next-line no-unused-vars
   onRunStaleReap = () => null,
 }: GatewayConnectionPanelProps) => {
+  // TODO Add support for stale kernel reap
+  // oxlint-disable-next-line no-unused-vars
   const [reapKernels, { isLoading, isError }] = useReapKernelsMutation();
   return (
     <Stack className={PanelStyle} justify="space-between">

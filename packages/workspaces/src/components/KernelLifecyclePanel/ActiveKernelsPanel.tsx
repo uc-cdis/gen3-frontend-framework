@@ -67,7 +67,6 @@ export const ActiveKernelsPanel = () => {
     isFetching: isFetchingKernelSpecs,
     isError: isErrorKernelSpecs,
     error: errorKernelSpecs,
-    isSuccess: isSuccessKernelSpecs,
   } = useKernalSpecsQuery();
 
   if (isError) {
@@ -76,10 +75,27 @@ export const ActiveKernelsPanel = () => {
     const isAuthError = status === 401 || status === 403;
     return (
       <div className="mt-4 flex justify-center items-center text-sm bg-accent-lighter text-accent-contrast-lighter p-2">
+        <LoadingOverlay visible={isLoading} />
         <Text size="sm">
           {isAuthError
             ? 'You must be logged in to view active kernels.'
             : 'Failed to load active kernels.'}
+        </Text>
+      </div>
+    );
+  }
+
+  if (isErrorKernelSpecs) {
+    const normalizedError = normalizeRtkError(errorKernelSpecs);
+    const status = normalizedError?.status;
+    const isAuthError = status === 401 || status === 403;
+    return (
+      <div className="mt-4 flex justify-center items-center text-sm bg-accent-lighter text-accent-contrast-lighter p-2">
+        <LoadingOverlay visible={isFetchingKernelSpecs} />
+        <Text size="sm">
+          {isAuthError
+            ? 'You must be logged in to view kernel specs.'
+            : 'Failed to load kernel specs.'}
         </Text>
       </div>
     );

@@ -113,10 +113,7 @@ const AnalysisCardEditor = () => {
     });
   }, []);
 
-  const validateFile = (
-    file: File | null,
-    type: 'icon' | 'image',
-  ): string | null => {
+  const validateFile = (file: File | null): string | null => {
     if (!file) return null;
     if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
       return 'Invalid file type. Please upload a JPEG, PNG, or SVG file.';
@@ -128,7 +125,7 @@ const AnalysisCardEditor = () => {
   };
 
   const handleFileChange = (file: File | null, field: 'icon' | 'image') => {
-    const error = validateFile(file, field);
+    const error = validateFile(file);
     if (error) {
       setErrors({ ...errors, [field]: error });
       return;
@@ -204,7 +201,9 @@ const AnalysisCardEditor = () => {
         if (Array.isArray(withImages)) {
           updateHistory(withImages);
         }
-      } catch (error) {
+      } catch (error: unknown) {
+        if (error instanceof Error)
+          console.error('Invalid file format:', error.message);
         alert('Invalid file format');
       }
     };
@@ -290,37 +289,7 @@ const AnalysisCardEditor = () => {
     setEditingIndex(null);
     setErrors({});
   };
-
-  const BatchOperations = () => (
-    <Group gap="xs">
-      <Button
-        size="xs"
-        variant="light"
-        color="red"
-        onClick={() => handleDelete(selectedCards)}
-        disabled={selectedCards.length === 0}
-      >
-        Delete Selected
-      </Button>
-      <Button
-        size="xs"
-        variant="light"
-        onClick={() => handleDuplicate(selectedCards)}
-        disabled={selectedCards.length === 0}
-      >
-        Duplicate Selected
-      </Button>
-      <Button
-        size="xs"
-        variant="light"
-        onClick={() => setSelectedCards([])}
-        disabled={selectedCards.length === 0}
-      >
-        Clear Selection
-      </Button>
-    </Group>
-  );
-
+  // oxlint-disable-next-line no-unused-vars
   const FilterControls = () => (
     <Card shadow="xs" p="md">
       <Stack gap="xs">

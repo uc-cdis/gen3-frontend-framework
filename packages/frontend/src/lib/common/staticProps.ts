@@ -77,7 +77,7 @@ export const getNavPageLayoutPropsFromConfig =
       } else {
         console.warn('headerMetadata is not a valid HeaderMetadata object');
       }
-    } catch (error: unknown) {
+    } catch (_error: unknown) {
       console.warn(
         'No headerMetadata config found at: ',
         `${GEN3_COMMONS_NAME}/headerMetadata.json`,

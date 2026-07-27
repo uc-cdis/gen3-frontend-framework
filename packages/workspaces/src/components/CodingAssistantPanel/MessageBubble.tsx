@@ -1,8 +1,11 @@
-import React, { useMemo } from "react";
-import { Button } from "@mantine/core";
-import { UIMessage } from "./types";
+import React, { useMemo } from 'react';
+import { Button } from '@mantine/core';
+import { UIMessage } from './types';
 
-function extractCodeBlocks(text: string): Array<{ lang: string; code: string }> {
+// oxlint-disable-next-line no-unused-vars
+function extractCodeBlocks(
+  text: string,
+): Array<{ lang: string; code: string }> {
   // Regex defined inside the function to avoid shared lastIndex state across calls
   // (module-level /g regexes retain lastIndex between invocations).
   const CODE_BLOCK_RE = /```(\w+)?\n([\s\S]*?)```/g;
@@ -22,7 +25,6 @@ const MessageBubble = ({
   onInsert: (code: string) => void;
 }) => {
   const isUser = message.role === 'user';
-  const codeBlocks = useMemo(() => extractCodeBlocks(message.content), [message.content]);
 
   // Render content with code blocks highlighted
   const renderedContent = useMemo(() => {
@@ -46,13 +48,13 @@ const MessageBubble = ({
       const lang = match[1] ?? '';
       const code = match[2].trim();
       parts.push(
-        <div key={`c-${match.index}`} className="my-1.5 rounded-md bg-base-darkest">
+        <div
+          key={`c-${match.index}`}
+          className="my-1.5 rounded-md bg-base-darkest"
+        >
           <div className="flex items-center justify-between px-2.5 py-1 text-xs text-base-darker">
             <span>{lang || 'code'}</span>
-            <Button
-              onClick={() => onInsert(code)}
-              color="accent"
-            >
+            <Button onClick={() => onInsert(code)} color="accent">
               Insert ↗
             </Button>
           </div>

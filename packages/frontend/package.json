@@ -14,7 +14,8 @@
   "module": "dist/index/esm/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "lint": "eslint .",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
     "compile": "tsc",
     "clean": "rm -rf dist",
     "rollup": "rollup --config rollup.config.mjs",

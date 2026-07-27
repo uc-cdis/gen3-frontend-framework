@@ -59,6 +59,7 @@ export const RenderOpenAppLink = (
     variant,
     color = 'accent.4',
     size = 12,
+    // oxlint-disable-next-line no-unused-vars
     tooltip = '',
     baseUrl,
     filter,

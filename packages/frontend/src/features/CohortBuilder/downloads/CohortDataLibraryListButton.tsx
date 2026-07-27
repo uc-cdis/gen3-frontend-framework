@@ -18,6 +18,7 @@ import {
 } from './actions/extractDataSelectionFromCohort';
 import { useDeepCompareEffect } from 'use-deep-compare';
 
+// oxlint-disable-next-line no-unused-vars
 const useGetDatasetFromCohort = (
   filters: FilterSet,
   index: string,

@@ -35,9 +35,7 @@ export interface MicroContainerPanelProps {
 const PanelStyle =
   'h-full w-full flex flex-col items-center justify-start gap-6 px-6 mt-20';
 
-const MicroContainerReduxPanel = ({
-  compact = false,
-}: MicroContainerPanelProps) => {
+const MicroContainerReduxPanel = () => {
   const { launch, terminate } = useMicroContainerReduxContext();
 
   const status = useCoreSelector(selectJEGActiveWorkspaceStatus);

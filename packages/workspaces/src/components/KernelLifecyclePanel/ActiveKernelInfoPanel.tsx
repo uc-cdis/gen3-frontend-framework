@@ -16,19 +16,12 @@ const ActiveKernelInfoPanel = ({
   kernelName,
   executionState,
   uptimeMinutes,
-  onOpenNotebook,
   forceTerminate = false,
   rowSpec,
   connections = 0,
 }: RunningKernelPanelProps) => {
-  const [
-    terminateKernel,
-    {
-      isLoading: isTerminatingLoading,
-      isError: isTerminatingError,
-      error: terminatingError,
-    },
-  ] = useTerminateKernelMutation();
+  const [terminateKernel, { isLoading: isTerminatingLoading }] =
+    useTerminateKernelMutation();
 
   const isStaleOrIdle = executionState === 'idle';
   return (

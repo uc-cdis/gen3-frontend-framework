@@ -132,6 +132,7 @@ export class LocalStorageService implements StorageService {
       });
       await tx.done;
       return { status: 200, message: 'list added' };
+      // oxlint-disable-next-line no-unused-vars
     } catch (_error: unknown) {
       return {
         isError: true,
@@ -160,8 +161,9 @@ export class LocalStorageService implements StorageService {
       const version = listData.version ? listData.version + 1 : 0;
       const updated = {
         ...listData,
-        ...{ name, items },
-        version: version,
+        name,
+        items,
+        version,
         updated_time: timestamp,
         created_time: listData.created_time,
       };

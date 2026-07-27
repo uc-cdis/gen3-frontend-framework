@@ -1,4 +1,4 @@
-import React, { useMemo, JSX } from 'react';
+import React, { JSX, useMemo } from 'react';
 import {
   DownloadButtonPropsWithAction,
   DropdownsWithButtonsProps,
@@ -54,7 +54,7 @@ const createDownloadMenuButton = (
       actionArgs: {
         ...commonActionArgs,
         ...actionArgs,
-        ...(button.actionArgs ?? {}),
+        ...button.actionArgs,
       },
     } as DownloadButtonPropsWithAction;
   });
@@ -95,7 +95,6 @@ const DownloadsPanel = ({
   fields,
   filter,
   accessibility,
-  sort,
   indexPrefix = '',
 }: DownloadsPanelProps): JSX.Element => {
   const { status } = useSession(false);
@@ -163,7 +162,7 @@ const DownloadsPanel = ({
             actionFunction={actionFunction}
             actionArgs={{
               ...actionArgs,
-              ...(button.actionArgs ?? {}),
+              ...button.actionArgs,
               ...commonActionArgs,
             }}
             key={button.title}
@@ -179,7 +178,7 @@ const DownloadsPanel = ({
           disabled={disabled || !button.enabled}
           actionFunction={actionFunction}
           actionArgs={{
-            ...(button.actionArgs ?? {}),
+            ...button.actionArgs,
             ...commonActionArgs,
             ...actionArgs,
           }}
