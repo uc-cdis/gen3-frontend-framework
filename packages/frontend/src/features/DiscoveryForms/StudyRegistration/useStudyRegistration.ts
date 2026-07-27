@@ -30,10 +30,7 @@ export const useStudyRegistration = (
   const [studyUID, setStudyUID] = useState<string | null>(null);
   const [studyName, setStudyName] = useState<string | null>(null);
   const router = useRouter();
-
-  // 1. Keep track of raw studies in state, not formBody
   const [studies, setStudies] = useState<JSONObject[]>([]);
-
   const userInfo = useCoreSelector((state: CoreState) =>
     selectUserDetails(state),
   );
@@ -41,7 +38,6 @@ export const useStudyRegistration = (
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
 
-  // 2. Fetch raw data once on mount
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -80,10 +76,8 @@ export const useStudyRegistration = (
     }
   }, [router.isReady, router.query]);
 
-  // 3. Derive formBody whenever studies, userInfo, or config.form change!
   const formBody = useMemo(() => {
     if (!studies.length || !userInfo) return config.form;
-
     // Filter based on active user permissions
     const registerableStudies = studies.filter((study) =>
       userCanRegisterStudy(userInfo as ActiveUser, study.registration_authz),
@@ -91,10 +85,10 @@ export const useStudyRegistration = (
 
     const registerableStudyNames = registerableStudies.map(
       (study) =>
-        study.study_metadata?.minimal_info?.study_name || 'Untitled Study',
-    );
+        // study.study_metadata?.minimal_info?.study_name || 'Untitled Study',
 
-    // Return auto-filled schema
+        `${study.project_number || 'N/A'} : ${study.study_metadata?.minimal_info?.study_name || 'N/A'} : ${study.study_metadata?.metadata_location?.nih_application_id || 'N/A'}`,
+    );
     return config.form.map((item: any) =>
       item?.variable === 'studyName'
         ? {
