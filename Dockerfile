@@ -1,11 +1,35 @@
 # docker build -t ff .
 # docker run -p 3000:3000 -it ff
 # Build stage
-FROM --platform=$BUILDPLATFORM node:24.18.0-alpine3.24 AS builder
+FROM --platform=$BUILDPLATFORM node:24.18.0-trixie-slim AS builder
+
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+ARG TARGETARCH
 WORKDIR /gen3
 
 # Copy root manifests first to maximize npm install cache hits
 COPY package.json package-lock.json lerna.json ./
+
+# Install ALL dependencies once (including dev deps for build)
+RUN npm config set fetch-retries 5 && \
+    npm config set fetch-retry-mintimeout 20000 && \
+    npm config set fetch-retry-maxtimeout 120000 && \
+    npm ci && \
+    npm cache clean --force
+
+# Install Python and micromamba for JupyterLite build (cached independently of source changes)
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends python3 python3-venv curl bzip2 && \
+    rm -rf /var/lib/apt/lists/*
+
+
+RUN ARCH=$(uname -m) && \
+    if [ "$ARCH" = "x86_64" ]; then MICROMAMBA_ARCH="linux-64"; \
+    elif [ "$ARCH" = "aarch64" ]; then MICROMAMBA_ARCH="linux-aarch64"; \
+    else echo "Unsupported architecture: $ARCH" && exit 1; fi && \
+    curl -Ls https://micro.mamba.pm/api/micromamba/${MICROMAMBA_ARCH}/latest | tar -xvj -C /usr/local/bin --strip-components=1 bin/micromamba && \
+    chmod +x /usr/local/bin/micromamba
 
 # Copy only package manifests (not source) from each workspace so that
 # npm ci is only re-run when dependencies change, not on source changes
@@ -24,7 +48,7 @@ RUN --mount=type=cache,target=/root/.npm \
 # Copy source after install so the install layer stays cached on source-only changes
 COPY packages ./packages
 
-# Build only sampleCommons and its dependencies — storybook/workspaces are not needed
+# Build only sampleCommons and its dependencies — storybook is not needed
 RUN NODE_OPTIONS="--max-old-space-size=4096" \
     ./node_modules/.bin/lerna run build \
     --scope=@gen3/samplecommons \
@@ -32,7 +56,7 @@ RUN NODE_OPTIONS="--max-old-space-size=4096" \
 
 # ─────────────────────────────────────────────
 # Production stage
-FROM node:24.18.0-alpine3.24 AS runner
+FROM node:24.18.0-trixie-slim  AS runner
 
 WORKDIR /gen3
 
