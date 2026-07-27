@@ -34,7 +34,8 @@
     }
   },
   "scripts": {
-    "lint": "eslint .",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
     "compile": "tsc",
     "clean": "rm -rf dist",
     "types": "tsc --emitDeclarationOnly --skipLibCheck",

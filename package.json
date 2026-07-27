@@ -17,9 +17,7 @@
   },
   "scripts": {
     "lint": "lerna run lint",
-    "lint-fix": "eslint . --fix",
-    "lint:config": "npx @eslint/config-inspector@latest",
-    "oxlint": "oxlint .",
+    "lint-fix": "oxlint . --fix",
     "analyze": "lerna run analyze --scope=@gen3/samplecommons",
     "build": "lerna run build",
     "build:docker": "docker build -t gen3:fef .",
@@ -54,7 +52,7 @@
     "idb": "^8.0.3",
     "isomorphic-fetch": "^3.0.0",
     "jsonpath-plus": "10.3.0",
-    "next": "^16.2.11",
+    "next": "^16.2.12",
     "react": "19.2.6",
     "react-cookie": "^7.2.2",
     "react-dom": "19.2.6",
@@ -63,41 +61,28 @@
   },
   "devDependencies": {
     "@axe-core/react": "^4.10.0",
-    "@eslint/js": "^9.28.0",
-    "@next/bundle-analyzer": "^16.2.11",
-    "@next/eslint-plugin-next": "16.2.6",
+    "@next/bundle-analyzer": "^16.2.12",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-terser": "^1.0.0",
     "@rollup/plugin-typescript": "^12.1.0",
     "@storybook/nextjs": "10.3.6",
     "@swc/cli": "^0.8.1",
-    "@swc/core": "^1.15.41",
+    "@swc/core": "^1.15.46",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^16.3.2",
-    "@types/jest": "^29.5.13",
-    "@types/node": "22.7.2",
-    "@types/react": "19.2.15",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^26.1.1",
+    "@types/react": "^19.2.17",
     "@types/tinycolor2": "^1.4.6",
-    "@typescript-eslint/eslint-plugin": "^8.7.0",
-    "@typescript-eslint/parser": "^8.7.0",
     "@welldone-software/why-did-you-render": "^10.0.0",
     "autoprefixer": "^10.4.20",
-    "eslint": "^9.39.4",
-    "eslint-config-next": "16.2.6",
-    "eslint-config-prettier": "^10.0.2",
-    "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-jsx-a11y": "^6.10.2",
-    "eslint-plugin-prettier": "^5.4.1",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^5.1.0",
-    "eslint-plugin-storybook": "10.3.6",
     "globals": "^16.0.0",
     "jest": "^30.4.2",
     "jest-canvas-mock": "^2.5.2",
     "jest-environment-jsdom": "^30.4.1",
     "lerna": "^9.0.7",
     "msw": "^2.7.3",
-    "nx": "23.0.0",
+    "nx": "^23.1.0",
     "oxlint": "^1.72.0",
     "postcss-import": "^16.1.0",
     "postcss-modules": "^9.0.1",
@@ -111,14 +96,13 @@
     "rollup-plugin-preserve-directives": "^0.4.0",
     "rollup-plugin-swc3": "^0.11.2",
     "rollup-swc-preserve-directives": "^0.7.0",
+    "rimraf": "^6.1.3",
     "tailwindcss": "^3.4.18",
     "terser-webpack-plugin": "^5.3.10",
     "ts-jest": "^29.2.5",
     "ts-json-schema-generator": "^2.3.0",
     "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.9.2",
-    "typescript-eslint": "^8.26.0"
+    "typescript": "^5.9.2"
   },
   "overrides": {
     "rollup-plugin-copy": {
@@ -129,9 +113,12 @@
         "glob": "^13.0.6"
       }
     },
-    "@types/react": "19.2.15",
     "nx": {
-      "tmp": "^0.2.7"
+      "tmp": "^0.2.7",
+      "brace-expansion": "^5.0.8",
+      "minimatch": {
+        "brace-expansion": "^5.0.8"
+      }
     },
     "lerna": {
       "npmcli": {
@@ -140,16 +127,25 @@
         },
         "pacote": "^21.1.5"
       },
-      "pacote": "^21.1.5"
+      "pacote": "^21.1.5",
+      "nx": {
+        "brace-expansion": "^5.0.8"
+      }
     },
     "@tailwindcss/typography": {
       "postcss-selector-parser": "^6.1.4"
     },
     "@iconify/tools": {
-      "cheerio": "^1.0.0-rc.12",
+      "cheerio": "^1.0.0",
       "undici": "^6.21.1",
       "axios": "^1.8.2"
-    }
+    },
+    "brace-expansion@^1.0.0": "^1.1.16",
+    "brace-expansion@^5.0.0": "^5.0.8",
+    "nyc": "^18.0.0",
+    "flat-cache": "^4.0.1",
+    "test-exclude": "^8.0.0",
+    "rimraf": "$rimraf"
   },
   "optionalDependencies": {
     "@nx/nx-darwin-arm64": "^20.7.1",

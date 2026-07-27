@@ -44,7 +44,7 @@ export interface DiscoveryIndexPanelProps {
 
 const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
   const {
-    discoveryConfig: discoveryConfig,
+    discoveryConfig,
     selectedTags,
     setSelectedTags,
     selectedAccessLevels,

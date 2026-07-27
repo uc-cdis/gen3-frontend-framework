@@ -51,6 +51,8 @@ const getWorkspaceErrorMessage = (
  * @param {string} title - The title of the error notification.
  * @param {string} message - The message content of the error notification.
  */
+
+// oxlint-disable-next-line no-unused-vars
 const showErrorNotification = (title: string, message: string) => {
   // Clear any existing notifications first
   notifications.clean(); // TODO debounce instead of clearing
@@ -89,8 +91,9 @@ export function useMicroContainerRedux(
   const coreDispatch = useCoreDispatch();
 
   // get the options for the workspace could move to parent
-  const { data: optionData, error: optionsError } =
-    useDoesHatcheryOptionExistsQuery(tag, { skip: containerHash !== null });
+  const { data: optionData } = useDoesHatcheryOptionExistsQuery(tag, {
+    skip: containerHash !== null,
+  });
 
   const [
     launchTrigger,

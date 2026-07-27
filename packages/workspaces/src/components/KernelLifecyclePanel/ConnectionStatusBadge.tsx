@@ -13,10 +13,7 @@ export interface ConnectionStatusBadgeProps {
  * In 'reconnecting' state the lifecycle panel and iframe remain visible —
  * this badge is the ONLY signal to the user, preserving their workflow.
  */
-const ConnectionStatusBadge = ({
-  state,
-  onRetry,
-}: ConnectionStatusBadgeProps) => {
+const ConnectionStatusBadge = ({ state }: ConnectionStatusBadgeProps) => {
   if (state === 'idle') return null;
 
   if (state === 'connected') {

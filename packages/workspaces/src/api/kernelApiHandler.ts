@@ -60,8 +60,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const action = Array.isArray(req.query.action) ? req.query.action : [];
-  const isStatusPath = action[0] === 'api' && action[1] === 'status';
   try {
     await upstreamHandler(req, res);
   } catch (err) {

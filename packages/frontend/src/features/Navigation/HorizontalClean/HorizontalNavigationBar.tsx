@@ -45,7 +45,6 @@ const HorizontalNavigationBar = ({
   const routesConfig = useProtectedRoutesContext();
   const {
     data: resources,
-    error: authzResourceError,
     isFetching: isAuthzResourcesFetching,
     isError: isAuthzResourcesError,
     refetch,

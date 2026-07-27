@@ -8,8 +8,6 @@ export const exportToManifest: DataActionFunction = async (
   params,
   onDone = () => null,
   onError = () => null,
-  onAbort = () => null,
-  signal = undefined,
 ) => {
   const manifest = selectionToManifest(validatedSelections); // TODO md5sum? commons_name?
   try {

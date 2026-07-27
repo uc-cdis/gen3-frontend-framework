@@ -103,6 +103,7 @@ const reducer = (
   }
 };
 
+// oxlint-disable-next-line no-unused-vars
 interface QueryExpressionHooks {
   useClearCohortFilters: () => (index: string) => void;
   useUpdateFilters: () => (
@@ -127,7 +128,6 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   showImportExport = false,
   displayOnly = false,
   showTitle = true,
-  fieldsAreFlat = true,
 }: Readonly<QueryExpressionSectionProps>) => {
   const [expandedState, setExpandedState] = useReducer(reducer, {});
   const [filtersSectionCollapsed, setFiltersSectionCollapsed] = useState(true);

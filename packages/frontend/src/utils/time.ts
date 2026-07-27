@@ -86,5 +86,6 @@ export const measureExecutionTime = async (func: () => Promise<any>) => {
 export const getHighResolutionTimestamp = (): number => {
   return performance.now(); // More precise than Date.now() for performance measurements
 };
+// oxlint-disable-next-line no-unused-vars
 const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
 export const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;

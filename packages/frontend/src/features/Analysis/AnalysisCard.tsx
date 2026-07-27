@@ -72,7 +72,6 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
   demoHref,
   btnText,
   onButtonClick,
-  height = 'h-29rem',
 }) => {
   const handleClick = () => {
     if (onButtonClick) {

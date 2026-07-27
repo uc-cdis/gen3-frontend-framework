@@ -46,7 +46,7 @@ export const verifyWorkspaceAccess = (
 ): AuthVerificationResult => {
   const policy = {
     ...defaultAccessPolicy,
-    ...(accessPolicy || {}),
+    ...accessPolicy,
   };
 
   if (policy.allowLocalDevBypass && isLocalDevelopmentRuntime()) {

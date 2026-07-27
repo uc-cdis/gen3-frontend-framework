@@ -76,21 +76,18 @@ const AnalysisCenter = ({
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6 p-1 mx-4 items-start h-full ">
         {tools.map(
-          (
-            {
-              title,
-              description,
-              type,
-              icon,
-              image,
-              hasDemo,
-              loginRequired,
-              href,
-              btnText,
-              demoHref,
-            },
-            key,
-          ) => {
+          ({
+            title,
+            description,
+            type,
+            icon,
+            image,
+            hasDemo,
+            loginRequired,
+            href,
+            btnText,
+            demoHref,
+          }) => {
             return (
               <AnalysisCard
                 key={title}
