@@ -1,8 +1,14 @@
 import whyDidYouRender from '@welldone-software/why-did-you-render';
-import App, { AppContext, AppInitialProps, AppProps } from 'next/app';
+import type { AppContext, AppInitialProps, AppProps } from 'next/app';
+import App from 'next/app';
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { MantineProvider, mergeThemeOverrides } from '@mantine/core';
 
+import type {
+  RegisteredIcons,
+  SessionConfiguration,
+  TenStringArray,
+} from '@gen3/frontend/app';
 import {
   type AuthorizedRoutesConfig,
   createMantineTheme,
@@ -11,12 +17,9 @@ import {
   Gen3Provider,
   type ModalsConfig,
   registerCohortBuilderDefaultPreviewRenderers,
-  RegisteredIcons,
   registerExplorerDefaultCellRenderers,
   registerIGVApp,
   registerMetadataSchemaApp,
-  SessionConfiguration,
-  TenStringArray,
 } from '@gen3/frontend/app';
 import { registerDefaultRemoteSupport, setDRSHostnames } from '@gen3/core';
 

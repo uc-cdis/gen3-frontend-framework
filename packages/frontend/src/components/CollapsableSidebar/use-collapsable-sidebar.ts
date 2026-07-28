@@ -18,7 +18,8 @@ export function getElementWidth(
   return el?.current ? el.current.scrollWidth : 'auto';
 }
 
-const raf = window?.requestAnimationFrame;
+const raf =
+  typeof window !== 'undefined' ? window.requestAnimationFrame : undefined;
 
 interface UseCollapsableSidebar {
   opened: boolean;
