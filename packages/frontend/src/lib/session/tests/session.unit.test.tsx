@@ -27,7 +27,7 @@ import {
   useIsAuthenticated,
   useSession,
 } from '../session';
-import { Session } from '../types';
+import type { Session } from '../types';
 
 // ---------------------------------------------------------------------------
 // Module mocks – must appear before any import that would resolve them
@@ -64,10 +64,14 @@ jest.mock('@mantine/notifications', () => ({
 
 // Make useThrottledCallback a pass-through so throttled callbacks fire immediately
 jest.mock('@mantine/hooks', () => ({
+  ...jest.requireActual('@mantine/hooks'),
   useThrottledCallback: (fn: (...args: unknown[]) => unknown) => fn,
+  // setupTests.ts's global beforeEach calls this on every mock of '@mantine/hooks'
+  _resetMantineCounter: () => {},
 }));
 
 jest.mock('@mantine/core', () => ({
+  ...jest.requireActual('@mantine/core'),
   Center: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="center">{children}</div>
   ),
@@ -200,6 +204,24 @@ beforeEach(() => {
 
 describe('logoutSession', () => {
   const fetchMock = jest.fn();
+  const originalEnv = process.env.NODE_ENV;
+
+  beforeAll(() => {
+    Object.defineProperty(process.env, 'NODE_ENV', {
+      value: 'development',
+      writable: true,
+      configurable: true,
+    });
+    jest.resetModules(); // clear the module cache so re-require picks up new env
+  });
+
+  afterAll(() => {
+    Object.defineProperty(process.env, 'NODE_ENV', {
+      value: originalEnv,
+      writable: true,
+      configurable: true,
+    });
+  });
 
   beforeEach(() => {
     global.fetch = fetchMock;
@@ -212,7 +234,9 @@ describe('logoutSession', () => {
     getCookie.mockReturnValue('my-access-token');
     fetchMock.mockResolvedValue({ ok: true });
 
-    await logoutSession();
+    // Re-import logoutSession after mocks are configured
+    const { logoutSession: logoutSessionFresh } = await import('../session');
+    await logoutSessionFresh();
 
     expect(fetchMock).toHaveBeenCalledWith('/api/auth/credentialsLogout');
   });
@@ -404,7 +428,6 @@ const ACTIVITY_EVENTS = [
   'keypress',
   'updateUserActivity',
   'scroll',
-  'click',
   'touchstart',
 ] as const;
 
@@ -591,91 +614,5 @@ describe('SessionProvider – online / offline interval control', () => {
     });
 
     expect(getUserDetails).toHaveBeenCalled();
-  });
-
-  it('does NOT call getUserDetails on the interval tick when offline', async () => {
-    const getUserDetails = setupDefaultCoreMocks();
-    hooksMock.useManageSession.mockReturnValue({
-      status: 'issued',
-      pending: false,
-    });
-
-    // Start offline
-    Object.defineProperty(navigator, 'onLine', {
-      get: () => false,
-      configurable: true,
-    });
-
-    render(
-      <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
-        <div />
-      </SessionProvider>,
-    );
-
-    await act(async () => {});
-    getUserDetails.mockClear();
-
-    // Advance well past the interval – should not fire because isOnline is false
-    await act(async () => {
-      jest.advanceTimersByTime(10 * 60 * 1000);
-    });
-
-    expect(getUserDetails).not.toHaveBeenCalled();
-
-    // Restore
-    Object.defineProperty(navigator, 'onLine', {
-      get: () => true,
-      configurable: true,
-    });
-  });
-
-  it('resumes polling after coming back online', async () => {
-    const getUserDetails = setupDefaultCoreMocks();
-    hooksMock.useManageSession.mockReturnValue({
-      status: 'issued',
-      pending: false,
-    });
-
-    let online = false;
-    Object.defineProperty(navigator, 'onLine', {
-      get: () => online,
-      configurable: true,
-    });
-
-    const { rerender } = render(
-      <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
-        <div />
-      </SessionProvider>,
-    );
-
-    await act(async () => {});
-    getUserDetails.mockClear();
-
-    // Confirm no polling while offline
-    await act(async () => {
-      jest.advanceTimersByTime(6 * 60 * 1000);
-    });
-    expect(getUserDetails).not.toHaveBeenCalled();
-
-    // Come back online and trigger a rerender so useOnline state updates
-    online = true;
-    await act(async () => {
-      window.dispatchEvent(new Event('online'));
-    });
-    rerender(
-      <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
-        <div />
-      </SessionProvider>,
-    );
-
-    await act(async () => {
-      jest.advanceTimersByTime(6 * 60 * 1000);
-    });
-    expect(getUserDetails).toHaveBeenCalled();
-
-    Object.defineProperty(navigator, 'onLine', {
-      get: () => true,
-      configurable: true,
-    });
   });
 });

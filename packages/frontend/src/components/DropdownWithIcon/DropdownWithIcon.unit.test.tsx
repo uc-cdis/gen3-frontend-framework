@@ -1,5 +1,6 @@
 import React from 'react';
-import { render, waitFor } from '@testing-library/react';
+import { render } from '../../utils/testing/index';
+import { waitFor } from '@testing-library/react';
 import { DropdownWithIcon } from './DropdownWithIcon';
 import userEvent from '@testing-library/user-event';
 
@@ -96,7 +97,7 @@ describe('<DropdownWithIcon />', () => {
     const firstMenuItem = getByTestId('test-0');
     await userEvent.click(firstMenuItem);
 
-    expect(mockOnClickCallBack1).toBeCalled();
+    expect(mockOnClickCallBack1).toHaveBeenCalled();
   });
 
   it('test menu item disabled', async () => {

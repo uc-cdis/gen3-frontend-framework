@@ -9,7 +9,7 @@ import {
   roundContinuousValue,
   toDisplayName,
 } from './utils';
-import { CDaveCardType, DataDimension } from './types';
+import type { CDaveCardType, DataDimension } from './types';
 
 describe('filterUsefulFacets', () => {
   it('remove empty bucket fields', () => {

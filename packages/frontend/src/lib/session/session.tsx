@@ -10,7 +10,7 @@ import { getCookie, hasCookie } from 'cookies-next';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { useManageSession } from './hooks';
 import { showNotification } from '@mantine/notifications';
-import { Session, SessionProviderProps } from './types';
+import type { Session, SessionProviderProps } from './types';
 import { isUserOnPage } from './utils';
 import {
   type CoreState,
