@@ -55,7 +55,7 @@ const GradioApp = ({ app }: { app: string }) => {
       />
 
       <div className="m-2 w-full">
-        <gradio-app src={gradioUrl}></gradio-app>
+        <gradio-app src={gradioUrl} />
       </div>
     </>
   );
