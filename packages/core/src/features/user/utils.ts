@@ -61,13 +61,15 @@ export const makeAuthenticatedRequest = async <T>(
 ): Promise<T> => {
   const csrfToken = await getCsrfToken();
 
+  const mergedHeaders = new Headers(options?.headers);
+
+  // 2. Safely append or overwrite the new keys
+  mergedHeaders.set('X-CSRF-Token', csrfToken);
+  mergedHeaders.set('Content-Type', 'application/json');
+
   const response = await fetch(url, {
     ...options,
-    headers: {
-      ...options.headers,
-      'X-CSRF-Token': csrfToken,
-      'Content-Type': 'application/json',
-    },
+    headers: mergedHeaders, // Pass the valid Headers object directly
   });
 
   if (!response.ok) {

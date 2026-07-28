@@ -1,5 +1,6 @@
 // caseConversion.unit.test.ts
 import { toCamelCase, toSnakeCase } from '../caseConversion';
+import { expect } from '@jest/globals';
 
 describe('toCamelCase', () => {
   it('should convert object keys to camelCase', () => {

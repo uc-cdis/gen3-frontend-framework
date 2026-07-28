@@ -317,7 +317,6 @@ export function nodesBreadthFirst(
   // root node has no edges coming out of it, just edges coming in
   const root = findRoot(nodes, edges);
   if (!root) {
-    console.log('Could not find root of given graph');
     return result;
   }
 
@@ -351,7 +350,6 @@ export function nodesBreadthFirst(
           queue.push({ query: sourceName, level: level + 1 });
         }
       } else {
-        console.log(`Edge comes from unknown node ${sourceName}`);
       }
     });
   }
@@ -388,7 +386,6 @@ export function nodesBreadthFirst(
           queue.push({ query: sourceName, level: level + 1 });
         }
       } else {
-        console.log(`Edge comes from unknown node ${sourceName}`);
       }
     });
   }
@@ -499,13 +496,11 @@ export const formatDataForGraph = (dictionary: DataDictionary) => {
     [],
   );
   const nodeTree = nodesBreadthFirst(nodes, edges);
-  console.log('dictionary', dictionary);
-  console.log('nodes edges', nodes, edges);
-  console.log('nodesBreadthFirst', nodeTree);
+
   const graphData = placeNodesOnGraph(nodeTree.treeLevel2Names, dictionary);
-  console.log('placeNodesOnGraph', graphData);
+
   const graphLinks = linksForGraph(edges);
-  console.log('linksForGraph', graphLinks);
+
   return {
     data: graphData,
     links: graphLinks,

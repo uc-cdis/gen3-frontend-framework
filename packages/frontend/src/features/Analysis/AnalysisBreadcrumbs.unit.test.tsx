@@ -2,9 +2,9 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { SelectionScreenContext } from './context';
 import AnalysisBreadcrumbs from './AnalysisBreadcrumbs';
-import { AnalysisToolConfiguration } from './types';
+import type { AnalysisToolConfiguration } from './types';
 
-export const REGISTERED_APPS: AnalysisToolConfiguration[] = [
+const REGISTERED_APPS: AnalysisToolConfiguration[] = [
   {
     title: 'Mutation Frequency',
     href: 'apps/',

@@ -33,7 +33,7 @@ const CountsPanel: React.FC<CountsPanelProps> = ({
   );
 
   useDeepCompareEffect(() => {
-    getCounts({
+    void getCounts({
       type: index,
       filters: cohortFilters,
       accessibility: accessibility,

@@ -53,7 +53,7 @@ export const useGetBAMAndBAIFileFromGUID = (bamId: string) => {
   useEffect(() => {
     if (!bamId) return;
 
-    fetchBAMData(bamId);
+    void fetchBAMData(bamId);
   }, [bamId, fetchBAMData]);
 
   useEffect(() => {
@@ -61,11 +61,11 @@ export const useGetBAMAndBAIFileFromGUID = (bamId: string) => {
 
     const baiFilename = bamMetadata.file_name.replace('.bam', '.bai');
 
-    fetchBAIMetadata({
+    void fetchBAIMetadata({
       filters: [{ key: 'file_name', value: baiFilename }],
     });
 
-    fetchBAMDownloadURL(bamId);
+    void fetchBAMDownloadURL(bamId);
   }, [
     bamId,
     isSuccessBamMetadata,
@@ -78,7 +78,7 @@ export const useGetBAMAndBAIFileFromGUID = (bamId: string) => {
     const baiId = baiMetadata?.records?.[0]?.baseid;
     if (!isSuccessBaiMetadata || !baiId) return;
 
-    fetchBAIDownloadURL(baiId);
+    void fetchBAIDownloadURL(baiId);
   }, [isSuccessBaiMetadata, baiMetadata, fetchBAIDownloadURL]);
 
   const isFetching =

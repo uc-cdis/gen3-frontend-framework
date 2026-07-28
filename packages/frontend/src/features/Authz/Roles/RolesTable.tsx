@@ -41,7 +41,7 @@ const RolesTable = () => {
     positionActionsColumn: 'last',
     renderRowActionMenuItems: ({ row }) => (
       <React.Fragment>
-        <Menu.Item onClick={() => console.info('Delete')}>Delete</Menu.Item>
+        <Menu.Item onClick={() => {}}>Delete</Menu.Item>
       </React.Fragment>
     ),
     enableRowSelection: true,

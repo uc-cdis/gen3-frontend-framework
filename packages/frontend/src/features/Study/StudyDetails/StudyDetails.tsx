@@ -30,10 +30,10 @@ const StudyDetails = () => {
   useEffect(() => {
     if (studyId) {
       if (opened) {
-        pushUrl(`/${defaultPath}/${encodeURI(studyId)}`);
+        void pushUrl(`/${defaultPath}/${encodeURI(studyId)}`);
         setPermalink(`${origin}/${defaultPath}/${encodeURI(studyId)}`);
       } else {
-        pushUrl(`/${defaultPath}`);
+        void pushUrl(`/${defaultPath}`);
         setPermalink(defaultPermaLinkValue);
       }
     }

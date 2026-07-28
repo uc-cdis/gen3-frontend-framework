@@ -145,7 +145,7 @@ export const useUserAuth = (renew = false): Gen3UserLoginResponse<Gen3User> => {
   useEffect(() => {
     if (status === 'uninitialized' || renew) {
       // TODO: need to determine what other states require dispatch
-      coreDispatch(fetchUserState());
+      void coreDispatch(fetchUserState());
     }
   }, [status, coreDispatch, renew]);
 

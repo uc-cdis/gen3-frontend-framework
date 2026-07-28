@@ -10,7 +10,9 @@ import icons from './loadIcons';
 
 import '../src/styles/globals.css';
 import '@fontsource/montserrat';
-import '@fontsource/source-sans-pro';
+// source-sans-pro is frozen at a fontsource build that ships no `types`/`exports`,
+// unlike montserrat/poppins — import the stylesheet directly so it type-resolves.
+import '@fontsource/source-sans-pro/index.css';
 import '@fontsource/poppins';
 /*
  * Initializes MSW

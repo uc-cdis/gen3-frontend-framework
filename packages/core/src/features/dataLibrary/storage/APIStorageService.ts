@@ -7,9 +7,9 @@ import {
 import { GEN3_DATA_LIBRARY_API } from '../../../constants';
 import { ReturnStatus, StorageService } from './types';
 import {
-  isDataLibraryAPIResponse,
   DataLibrary,
   DatalistAsAPIItems,
+  isDataLibraryAPIResponse,
 } from '../types';
 import { BuildLists } from '../utils';
 
@@ -24,7 +24,7 @@ interface FetchJSONResponse {
 export const fetchFromDataLibraryAPI = async (
   url: string,
   method: HttpMethod = HttpMethod.GET,
-  body: unknown = undefined,
+  body?: unknown,
 ): Promise<FetchJSONResponse> => {
   try {
     return {
@@ -80,7 +80,7 @@ export class APIStorageService implements StorageService<DataLibrary> {
   private async dedupedRequest(
     url: string,
     method: HttpMethod = HttpMethod.GET,
-    body: unknown = undefined,
+    body?: unknown,
   ): Promise<FetchJSONResponse> {
     // Create a unique key for this request
     const requestKey = `${method}:${url}:${body ? JSON.stringify(body) : ''}`;

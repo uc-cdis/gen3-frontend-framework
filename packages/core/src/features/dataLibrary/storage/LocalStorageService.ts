@@ -1,14 +1,16 @@
-import { IDBPDatabase, openDB } from 'idb';
-import { ReturnStatus, StorageService } from './types';
-import {
+import type { IDBPDatabase } from 'idb';
+import { openDB } from 'idb';
+import type { ReturnStatus, StorageService } from './types';
+import type {
   DataLibraryAPI,
   DatalistAPI,
   DatalistAsAPIItems,
   DatalistWithIdAPI,
-  isDatalistAPI,
 } from '../types';
+import { isDatalistAPI } from '../types';
 import { BuildLists } from '../utils';
-import { isJSONObject, JSONObject } from '../../../types';
+import type { JSONObject } from '../../../types';
+import { isJSONObject } from '../../../types';
 import { nanoid } from '@reduxjs/toolkit';
 import { getTimestamp } from '../../../utils';
 
@@ -53,7 +55,7 @@ export class LocalStorageService implements StorageService {
       const db = await this.getDb();
       const tx = db.transaction(STORE_NAME, 'readwrite');
       for (const [id, list] of Object.entries(allLists)) {
-        tx.objectStore(STORE_NAME).put({ id, ...(list as object) });
+        await tx.objectStore(STORE_NAME).put({ id, ...(list as object) });
       }
       await tx.done;
       return { status: 200, message: 'success' };
@@ -117,7 +119,7 @@ export class LocalStorageService implements StorageService {
       const db = await this.getDb();
       const tx = db.transaction(STORE_NAME, 'readwrite');
       const id = nanoid(); // Create an id for the list
-      tx.objectStore(STORE_NAME).put({
+      await tx.objectStore(STORE_NAME).put({
         id,
         version: 0,
         items: list?.items ?? {},
@@ -168,7 +170,7 @@ export class LocalStorageService implements StorageService {
         created_time: listData.created_time,
       };
 
-      store.put(updated);
+      await store.put(updated);
       await tx.done;
       return { status: 200, message: 'success' };
     } catch (error: unknown) {
@@ -195,7 +197,7 @@ export class LocalStorageService implements StorageService {
         throw new Error(`List ${id} does not exist`);
       }
 
-      store.delete(id);
+      await store.delete(id);
       await tx.done;
       return { status: 200, message: `${id} deleted` };
     } catch (error: unknown) {
@@ -212,7 +214,7 @@ export class LocalStorageService implements StorageService {
     try {
       const db = await this.getDb();
       const tx = db.transaction(STORE_NAME, 'readwrite');
-      tx.objectStore(STORE_NAME).clear();
+      await tx.objectStore(STORE_NAME).clear();
       await tx.done;
       return { status: 200, message: 'list cleared' };
     } catch (error: unknown) {
@@ -251,7 +253,7 @@ export class LocalStorageService implements StorageService {
       const db = await this.getDb();
       const tx = db.transaction(STORE_NAME, 'readwrite');
       for (const [id, list] of Object.entries(allLists)) {
-        tx.objectStore(STORE_NAME).put({ id, ...(list as object) });
+        await tx.objectStore(STORE_NAME).put({ id, ...(list as object) });
       }
       await tx.done;
       return { status: 200, message: 'success' };
@@ -277,7 +279,7 @@ export class LocalStorageService implements StorageService {
     try {
       const db = await this.getDb();
       const tx = db.transaction(STORE_NAME, 'readwrite');
-      tx.objectStore(STORE_NAME).put({ id: id, ...(data as object) });
+      await tx.objectStore(STORE_NAME).put({ id: id, ...(data as object) });
       await tx.done;
       return { status: 200, message: 'success' };
     } catch (error: unknown) {

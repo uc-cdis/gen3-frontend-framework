@@ -50,7 +50,7 @@ describe('<DropdownWithIcon />', () => {
     expect(getByRole('button', { name: 'test' })).not.toBeDisabled();
   });
 
-  it('menu label should be present when menuLabelText is provided ', async () => {
+  it('menu label should be present when menuLabelText is provided', async () => {
     const { getByText, getByRole, getByTestId } = render(
       <DropdownWithIcon
         TargetButtonChildren="test"
@@ -66,7 +66,7 @@ describe('<DropdownWithIcon />', () => {
     expect(getByText('test menu label text')).toBeInTheDocument();
   });
 
-  it('menu label should NOT be present when menuLabelText is NOT provided ', async () => {
+  it('menu label should NOT be present when menuLabelText is NOT provided', async () => {
     const { queryByTestId, getByRole } = render(
       <DropdownWithIcon
         TargetButtonChildren="test"

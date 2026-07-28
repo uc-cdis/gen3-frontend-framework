@@ -25,7 +25,9 @@ import { registerCustomExplorerDetailsPanels } from '@/lib/CohortBuilder/FileDet
 
 import '../styles/globals.css';
 import '@fontsource/montserrat';
-import '@fontsource/source-sans-pro';
+// source-sans-pro is frozen at a fontsource build that ships no `types`/`exports`,
+// unlike montserrat/poppins — import the stylesheet directly so it type-resolves.
+import '@fontsource/source-sans-pro/index.css';
 import '@fontsource/poppins';
 import drsHostnames from '../../config/drsHostnames.json';
 import { loadContent } from '@/lib/content/loadContent';

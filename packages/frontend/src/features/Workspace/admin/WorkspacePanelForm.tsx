@@ -27,9 +27,7 @@ const WorkspacePanelForm: React.FC = () => {
     },
   });
 
-  const handleSubmit = () => {
-    console.log('Submission');
-  };
+  const handleSubmit = () => {};
 
   const iconOptions = [
     { value: 'icon1', label: 'Icon 1' },

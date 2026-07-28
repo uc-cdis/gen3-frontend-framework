@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { CellRendererFunctionProps } from './types';
 import { ActionIcon } from '@mantine/core';
 import { FaExternalLinkAlt } from 'react-icons/fa';
@@ -48,7 +48,7 @@ export const RenderOpenAppLink = (
   const router = useRouter();
 
   if (!cell?.getValue() || cell?.getValue() === '') {
-    return <span></span>;
+    return <span />;
   }
 
   const mergedParams = {
@@ -57,10 +57,10 @@ export const RenderOpenAppLink = (
   };
   const {
     variant,
-    color = 'accent.4',
-    size = 12,
+    color,
+    size,
     // oxlint-disable-next-line no-unused-vars
-    tooltip = '',
+    tooltip,
     baseUrl,
     filter,
   } = mergedParams;

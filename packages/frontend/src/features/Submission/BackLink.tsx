@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 import { MdOutlineArrowBack as BackIcon } from 'react-icons/md';
 import { useRouter } from 'next/router';
 

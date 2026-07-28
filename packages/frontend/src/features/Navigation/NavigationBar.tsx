@@ -90,7 +90,7 @@ const useAuthorizationState = () => {
 
   useEffect(() => {
     if (loginStatus && loginStatus !== 'pending') {
-      refetch();
+      void refetch();
     }
   }, [loginStatus, refetch]);
 

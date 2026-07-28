@@ -106,7 +106,7 @@ export const useSession = (
       if (typeof window === 'undefined')
         // route is not available on SSR
         return session;
-      router.push('Login');
+      void router.push('Login');
     }
   }
   return session;
@@ -259,7 +259,7 @@ export const SessionProvider = ({
       setMostRecentSessionRefreshTimestamp(Date.now());
     };
 
-    updateSessionWithUserStatus();
+    void updateSessionWithUserStatus();
   }, [getUserDetails]);
 
   const endSession = useCallback(async () => {
@@ -275,9 +275,11 @@ export const SessionProvider = ({
       })
       .finally(() => {
         if (isCredentialLogin) {
-          router.push(GEN3_REDIRECT_URL);
+          void router.push(GEN3_REDIRECT_URL);
         } else {
-          router.push(`${GEN3_FENCE_API}/logout?next=${GEN3_REDIRECT_URL}`);
+          void router.push(
+            `${GEN3_FENCE_API}/logout?next=${GEN3_REDIRECT_URL}`,
+          );
         }
       });
   }, [getUserDetails, router]);
@@ -287,7 +289,7 @@ export const SessionProvider = ({
    */
   const isSessionActive = useThrottledCallback(() => {
     //Check session token, this call updates info
-    getUserDetails(undefined, true).then((obj) => {
+    void getUserDetails(undefined, true).then((obj) => {
       // use cache value to prevent excessive calls to /user/user
       //check to make sure logged-out users are logged out
       if (
@@ -361,7 +363,7 @@ export const SessionProvider = ({
           // No workspace inactivity limit configured — don't log out
         } else if (timeSinceLastActivity >= activeLimit) {
           coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
-          endSession().then(() => console.log('ending session'));
+          void endSession().then(() => {});
           return;
         } else if (
           expireWarningMilliseconds > 0 &&
@@ -376,10 +378,10 @@ export const SessionProvider = ({
             innerProps: {
               minutesRemaining: expireWarningMinutes,
               onRenew: () => {
-                getUserDetails();
+                void getUserDetails();
               },
               onLogout: () => {
-                endSession();
+                void endSession();
               },
             },
           });

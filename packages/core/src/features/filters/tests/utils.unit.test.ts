@@ -13,7 +13,7 @@ describe('test Operation type guards', () => {
     operands: [],
   };
 
-  test('test hasFieldMember', () => {
+  test('hasFieldMember', () => {
     expect(isOperationWithField(includes)).toEqual(true);
     expect(isOperationWithField(union)).toEqual(false);
   });

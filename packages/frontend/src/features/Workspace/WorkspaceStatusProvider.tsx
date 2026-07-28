@@ -166,7 +166,7 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
 
   const status = useMemo(() => {
     const startWorkspace = (id: string) => {
-      launchTrigger(id);
+      void launchTrigger(id);
       dispatch(setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Launch));
       dispatch(
         setActiveWorkspace({
@@ -181,7 +181,7 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
     const toggleFullscreen = () => switchScreenMode();
 
     const stopWorkspace = () => {
-      terminateWorkspace();
+      void terminateWorkspace();
       dispatch(setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate));
       dispatch(setActiveWorkspaceStatus(WorkspaceStatus.Terminating));
     };

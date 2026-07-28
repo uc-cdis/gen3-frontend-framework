@@ -62,9 +62,9 @@ export const Default: Story = {
                     width="1em"
                     xmlns="http://www.w3.org/2000/svg"
                   >
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                    <polyline points="15 3 21 3 21 9"></polyline>
-                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
                   </svg>
                   ENST00000269305
                 </a>
@@ -94,7 +94,7 @@ export const Default: Story = {
     const canvas = within(canvasElement);
     let testIds = ['customDataTestID'];
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const numberOfRowsExpected = 6;
     const rowIds = Array.from(
@@ -104,7 +104,7 @@ export const Default: Story = {
     testIds = [...testIds, ...rowIds];
     testIds.forEach((id) => {
       const currEle = canvas.getByTestId(id);
-      expect(currEle).toBeInTheDocument();
+      void expect(currEle).toBeInTheDocument();
     });
   },
 };

@@ -5,7 +5,12 @@ import { Title, TitleOrder } from '@mantine/core';
 import { IconType } from 'react-icons';
 import { Gen3Button, Gen3ButtonReverse } from '../Buttons/Gen3Button';
 
-import { MdFormatQuote, MdGroup, MdOutlineBarChart, MdOutlineSearch, } from 'react-icons/md';
+import {
+  MdFormatQuote,
+  MdGroup,
+  MdOutlineBarChart,
+  MdOutlineSearch,
+} from 'react-icons/md';
 import { FaGraduationCap, FaRegQuestionCircle, FaVideo } from 'react-icons/fa';
 import Gen3Link from '../../features/Navigation/Gen3Link';
 import TextContent, { ContentType } from './TextContent';
@@ -80,7 +85,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                 className={`${
                   index % 2 === 0 ? 'text-primary' : 'text-primary-lighter'
                 }}`}
-              ></span>
+              />
               {component.title.text}
             </Title>
           );
