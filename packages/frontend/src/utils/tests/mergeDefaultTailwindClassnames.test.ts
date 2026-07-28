@@ -34,7 +34,7 @@ describe('mergeDefaultTailwindClassnames function', () => {
     const userValues: StylingOverrideWithMergeControl = {
       root: 'bg-blue-600',
       label: 'text-black',
-      mergeMode: 'replace',
+      mode: 'replace',
     };
     expect(mergeDefaultTailwindClassnames(defaultValues, userValues)).toEqual({
       root: userValues.root,

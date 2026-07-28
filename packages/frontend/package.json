@@ -19,7 +19,7 @@
     "compile": "tsc",
     "clean": "rm -rf dist",
     "rollup": "rollup --config rollup.config.mjs",
-    "test": "jest unit",
+    "test": "node --experimental-vm-modules jest unit",
     "test:watch": "jest unit --watch",
     "test:int": "echo No integrations tests yet",
     "test:all": "jest",

@@ -13,9 +13,7 @@ const DownloadAsZipButton = ({
       label="Download Zip"
       icon={<DownloadIcon />}
       tooltip="Download Zip"
-      onClick={() => {
-        console.log('Download Zip');
-      }}
+      onClick={() => {}}
     />
   );
 };

@@ -1,11 +1,12 @@
 import React from 'react';
+import Link from 'next/link';
 import { Loader } from '@mantine/core';
-import { useUserAuth, useGetIndexdMetdataQuery } from '@gen3/core';
+import { useGetIndexdMetdataQuery, useUserAuth } from '@gen3/core';
 import { TbFileUpload as UploadIcon } from 'react-icons/tb';
 import MessagePanel from '../../components/MessagePanel';
 import { ProtectedContent } from '../../components/Protected';
 import BackLink from './BackLink';
-import { SubmissionConfig } from './types';
+import type { SubmissionConfig } from './types';
 
 const UploadedFiles = ({ config }: { config?: SubmissionConfig }) => {
   const { data: userData, isFetching: authFetching } = useUserAuth();
@@ -52,12 +53,12 @@ const UploadedFiles = ({ config }: { config?: SubmissionConfig }) => {
                       </a>{' '}
                       to set up and upload your files.
                     </p>
-                    <a
+                    <Link
                       href="/Submission"
                       className="p-2 mt-4 bg-white text-primary-darker border-1 border-primary-darker rounded"
                     >
                       Back to Submission
-                    </a>
+                    </Link>
                   </div>
                 )
               )}

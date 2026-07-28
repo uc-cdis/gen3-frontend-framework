@@ -4,9 +4,9 @@ import { AccessLevel } from '../../../../utils';
 import { Divider, Group, Text, Tooltip } from '@mantine/core';
 import {
   LuClock as PendingIcon,
+  LuFileLock as OtherIcon,
   LuLock as LockedIcon,
   LuLockOpen as UnlockedIcon,
-  LuFileLock as OtherIcon,
 } from 'react-icons/lu';
 import { AiOutlineDash as NotAvailableIcon } from 'react-icons/ai';
 import { getAccessLevelFromNumber } from '../../utils';
@@ -48,14 +48,14 @@ export const DataAccessCellRenderer = ({
   if (numFileObjects === 0 && accessLevel === undefined) {
     return (
       <Tooltip label={buildTooltip('No data attached to this study')}>
-        <NotAvailableIcon className="text-utility-error"></NotAvailableIcon>
+        <NotAvailableIcon className="text-utility-error" />
       </Tooltip>
     );
   }
   if (!accessLevel) {
     return (
       <Tooltip label={buildTooltip('Unable to determine access level')}>
-        <NotAvailableIcon className="text-utility-error"></NotAvailableIcon>
+        <NotAvailableIcon className="text-utility-error" />
       </Tooltip>
     );
   }
@@ -63,16 +63,16 @@ export const DataAccessCellRenderer = ({
   if (accessLevel === AccessLevel.WAITING) {
     return (
       <Tooltip label={buildTooltip('Data are not yet available')}>
-        <PendingIcon className="text-utility-warning"></PendingIcon>
+        <PendingIcon className="text-utility-warning" />
       </Tooltip>
     );
   }
   if (accessLevel === AccessLevel.MIXED) {
     return (
-      <Tooltip label={buildTooltip('You have mixed acccess')}>
+      <Tooltip label={buildTooltip('You have mixed access')}>
         <Group>
-          <LockedIcon className="text-utility-warning"></LockedIcon>
-          <UnlockedIcon className="text-utility-warning"></UnlockedIcon>
+          <LockedIcon className="text-utility-warning" />
+          <UnlockedIcon className="text-utility-warning" />
         </Group>
       </Tooltip>
     );
@@ -81,7 +81,7 @@ export const DataAccessCellRenderer = ({
     return (
       <Tooltip label={buildTooltip('Acccess level is other')}>
         <Group>
-          <OtherIcon className="text-utility-warning"></OtherIcon>
+          <OtherIcon className="text-utility-warning" />
         </Group>
       </Tooltip>
     );
@@ -89,7 +89,7 @@ export const DataAccessCellRenderer = ({
   if (accessLevel === AccessLevel.NOT_AVAILABLE) {
     return (
       <Tooltip label={buildTooltip('No data is shared')}>
-        <NotAvailableIcon className="text-utility-error"></NotAvailableIcon>
+        <NotAvailableIcon className="text-utility-error" />
       </Tooltip>
     );
   }
@@ -106,7 +106,7 @@ export const DataAccessCellRenderer = ({
         )}
       >
         <div>
-          <UnlockedIcon className="text-utility-success"></UnlockedIcon>
+          <UnlockedIcon className="text-utility-success" />
         </div>
       </Tooltip>
     );
@@ -123,7 +123,7 @@ export const DataAccessCellRenderer = ({
         )}
       >
         <div>
-          <LockedIcon className="text-utility-error"></LockedIcon>
+          <LockedIcon className="text-utility-error" />
         </div>
       </Tooltip>
     );

@@ -165,7 +165,7 @@ export const useGetFederatedLoginStatus = ({
 
     // Only run if there's data to act on
     if (!wstIsLoading && wtsResults) {
-      fetchData();
+      void fetchData();
     }
   }, [selectedFiles, wstIsLoading, wtsError, wtsResults]);
 

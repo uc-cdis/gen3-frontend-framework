@@ -99,7 +99,7 @@ const CohortDataLibraryListButton = ({
       setLoading(false);
     };
 
-    extractDataFunction();
+    void extractDataFunction();
   }, [
     filters,
     cohortIndex,

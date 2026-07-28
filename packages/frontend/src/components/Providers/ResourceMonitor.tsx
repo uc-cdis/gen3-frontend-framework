@@ -157,7 +157,7 @@ export const useWorkspaceResourceMonitor = (
 
     // Stopped means the pod is in a failed state — auto-terminate it
     if (workspaceStatusData.status === WorkspaceStatus.Stopped) {
-      (async () => {
+      void (async () => {
         try {
           await terminateWorkspace().unwrap();
         } catch (error) {
@@ -207,7 +207,7 @@ export const useWorkspaceResourceMonitor = (
         if (remainingWorkspaceKernelLife <= 0) {
           // kernel has died due to inactivity
           // so terminate
-          (async () => {
+          void (async () => {
             try {
               await terminateWorkspace().unwrap();
             } catch (error) {
@@ -305,7 +305,7 @@ export const useWorkspaceResourceMonitor = (
       requestedStatus === RequestedWorkspaceStatus.Launch &&
       isTimeGreaterThan(requestedStatusTimestamp, 8)
     ) {
-      terminateWorkspace();
+      void terminateWorkspace();
       dispatch(setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate));
       notifyUser(
         'Workspace Startup',

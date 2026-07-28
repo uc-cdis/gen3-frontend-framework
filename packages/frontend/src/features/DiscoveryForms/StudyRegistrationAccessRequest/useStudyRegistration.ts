@@ -5,12 +5,12 @@ import { toString } from 'lodash';
 import {
   CoreState,
   getRemoteSupportServiceRegistry,
+  HttpError,
   isHttpStatusError,
   selectUserDetails,
   useCoreSelector,
   useCreateRequestMutation,
   useUserRequestQuery,
-  HttpError,
 } from '@gen3/core';
 import { FormOutcome } from './types';
 import {
@@ -57,7 +57,7 @@ export const useStudyRegistration = (
           setStudyRegistrationAuthZ(
             JSON.parse(query.studyRegistrationAuthZ as string),
           );
-        } catch (e) {
+        } catch {
           setStudyRegistrationAuthZ(query.studyRegistrationAuthZ as string);
         }
       }

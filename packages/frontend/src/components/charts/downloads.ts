@@ -113,7 +113,7 @@ export const handleDownloadSVG = async (
   ref: React.MutableRefObject<HTMLElement>,
   filename: string,
 ): Promise<void> => {
-  if (ref && ref.current) {
+  if (ref?.current) {
     const svgBlob = await createSVG(ref);
     const href = URL.createObjectURL(svgBlob);
     handleDownload(href, filename);

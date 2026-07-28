@@ -194,7 +194,7 @@ const DownloadsPanel = ({
       {buttonElements}
     </div>
   ) : (
-    <React.Fragment></React.Fragment>
+    <React.Fragment />
   );
 };
 

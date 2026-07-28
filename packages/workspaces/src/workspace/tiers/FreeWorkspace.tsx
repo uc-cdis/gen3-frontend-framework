@@ -149,7 +149,7 @@ const FreeWorkspace = ({
           setLoadError(true);
           onError?.(new Error('Unable to load JupyterLite workspace.'));
         }}
-      ></iframe>
+      />
     </div>
   );
 };

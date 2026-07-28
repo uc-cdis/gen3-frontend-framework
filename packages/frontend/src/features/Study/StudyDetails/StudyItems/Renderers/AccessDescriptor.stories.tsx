@@ -1,7 +1,6 @@
 import React from 'react';
 import type { Meta } from '@storybook/nextjs';
 import AccessDescriptor from './AccessDescriptor';
-import { AccessLevel } from '../../../../../utils';
 
 const meta = {
   component: AccessDescriptor,

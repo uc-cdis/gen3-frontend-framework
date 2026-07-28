@@ -1,18 +1,18 @@
-import React, { useState, useEffect, JSX } from 'react';
+import React, { JSX, useEffect, useState } from 'react';
 import { MdClose as CloseIcon, MdInfo } from 'react-icons/md';
 import { PiSparkleFill, PiTrash } from 'react-icons/pi';
 import {
-  TextInput,
-  Loader,
-  Tabs,
   Button,
-  UnstyledButton,
-  Title,
   Divider,
-  Tooltip,
+  Loader,
   Table,
+  Tabs,
+  TextInput,
+  Title,
+  Tooltip,
+  UnstyledButton,
 } from '@mantine/core';
-import { useAskQuestionMutation, AiSearchResponse } from '@gen3/core';
+import { AiSearchResponse, useAskQuestionMutation } from '@gen3/core';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useDeepCompareCallback } from 'use-deep-compare';
@@ -90,7 +90,7 @@ const AiSearch = ({
 
     //make API Call
     setShowLoading(true);
-    askQuestion({
+    void askQuestion({
       query: searchTerm,
     });
     //clear old data
@@ -219,7 +219,7 @@ const AiSearch = ({
                   {searchTerm}
                 </button>
               </td>
-              <td className="text-right">
+              <td className="text-right" aria-label="Delete">
                 <Tooltip
                   label="Delete"
                   position="bottom"

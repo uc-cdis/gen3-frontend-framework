@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Popover,
-  Checkbox,
   Button,
-  Stack,
+  Checkbox,
   Group,
+  Popover,
+  Stack,
   Text,
   UnstyledButton,
 } from '@mantine/core';
 import {
-  MdOutlineWatchLater as WaitingIcon,
-  MdOutlineLockOpen as AvailableIcon,
   MdOutlineLock as RequestAccessIcon,
+  MdOutlineLockOpen as AvailableIcon,
+  MdOutlineWatchLater as WaitingIcon,
 } from 'react-icons/md';
 import { AiOutlineDash as NotAvailableIcon } from 'react-icons/ai';
 import { LuFilter as FilterIcon } from 'react-icons/lu';
@@ -76,6 +76,7 @@ const DataAccessFilterDropdown = () => {
   ];
 
   return (
+    // oxlint-disable-next-line jsx-a11y/click-events-have-key-events jsx-a11y/no-static-element-interactions
     <div onClick={(e) => e.stopPropagation()}>
       <Popover
         opened={opened}
@@ -102,12 +103,18 @@ const DataAccessFilterDropdown = () => {
         <Popover.Dropdown className="p-0">
           <Stack gap={0} className="py-2">
             {items.map((item) => (
+              // oxlint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
               <label
                 key={item.level}
                 className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 cursor-pointer"
                 onClick={(e) => {
                   e.preventDefault();
                   handleCheckboxToggle(item.level);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleCheckboxToggle(item.level);
+                  }
                 }}
               >
                 <Checkbox
