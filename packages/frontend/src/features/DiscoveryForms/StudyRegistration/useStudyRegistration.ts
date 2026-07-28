@@ -76,17 +76,29 @@ export const useStudyRegistration = (
     }
   }, [router.isReady, router.query]);
 
+  const moveStudyToFront = (studies: JSONObject[], studyUID: String) => {
+    const targetIndex = studies.findIndex((item) => item._hdp_uid === studyUID);
+    if (targetIndex > 0) {
+      const [targetItem] = studies.splice(targetIndex, 1);
+      studies.unshift(targetItem);
+    }
+    return studies;
+  };
+
   const formBody = useMemo(() => {
     if (!studies.length || !userInfo) return config.form;
     // Filter based on active user permissions
     const registerableStudies = studies.filter((study) =>
       userCanRegisterStudy(userInfo as ActiveUser, study.registration_authz),
     );
+    // Set pre-selected study as the first item in array
+    const organizedRegistrableStudies = moveStudyToFront(
+      studies,
+      toString(studyUID),
+    );
 
-    const registerableStudyNames = registerableStudies.map(
+    const registerableStudyNames = organizedRegistrableStudies.map(
       (study) =>
-        // study.study_metadata?.minimal_info?.study_name || 'Untitled Study',
-
         `${study.project_number || 'N/A'} : ${study.study_metadata?.minimal_info?.study_name || 'N/A'} : ${study.study_metadata?.metadata_location?.nih_application_id || 'N/A'}`,
     );
     return config.form.map((item: any) =>
@@ -101,7 +113,8 @@ export const useStudyRegistration = (
   }, [studies, userInfo, config.form]);
 
   const formOnSubmit = async (formValues: FormOnSubmitReturnProps) => {
-    alert('called formOnSubmit');
+    console.log('formValues', formValues);
+    alert('called formOnSubmit' + formValues);
   };
 
   return {

@@ -25,7 +25,8 @@ export enum FormContentType {
   Textarea = 'Textarea', // mantine Textarea
   RadioGroup = 'RadioGroup',
   Select = 'Select',
-  Tags = 'Tags', // mantine Radio.Group
+  Tags = 'Tags',
+  CedarUserUUID = 'CedarUserUUID', // mantine Radio.Group
 }
 
 /**
@@ -94,6 +95,7 @@ const FormContent = ({
 
   switch (type) {
     case FormContentType.Email:
+    case FormContentType.CedarUserUUID:
     case FormContentType.TextInput: {
       return (
         <TextInput
