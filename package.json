@@ -16,7 +16,7 @@
     "node": ">=24.18.0"
   },
   "scripts": {
-    "lint": "lerna run lint",
+    "lint": "oxlint --quiet .",
     "lint-fix": "oxlint . --fix",
     "analyze": "lerna run analyze --scope=@gen3/samplecommons",
     "build": "lerna run build",
