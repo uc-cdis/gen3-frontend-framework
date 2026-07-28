@@ -1,175 +1,160 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { createWorkspaceAssetsHandler } from '../server/workspaceAssetsHandler';
-import { GEN3_COMMONS_NAME } from '@gen3/core';
+/**
+ * Next.js API route for JupyterLite static assets.
+ *
+ * The handler options are read from a per-commons JSON file:
+ *
+ *   <GEN3_FRONTEND_CONFIGURATION_ROOT>/<GEN3_COMMONS_NAME>/workspaceAssets.json
+ *
+ * matching the convention used by the rest of the framework's server-side
+ * configuration (see `FilesystemContent` / `GEN3_FRONTEND_CONFIGURATION_ROOT`).
+ * The file is optional — DEFAULT_OPTIONS below is used when it is absent or
+ * unreadable, so a bad config never takes down the whole assets route.
+ *
+ * The upstream handler is built lazily on first request rather than at import
+ * time: `createWorkspaceAssetsHandler` recursively walks both tier asset trees
+ * when constructed, and this module is imported transitively by
+ * `next.config.js` (via `@gen3/workspaces/server`) where that I/O is wasted.
+ */
 
-const upstreamHandler = createWorkspaceAssetsHandler({
+import type { NextApiRequest, NextApiResponse } from 'next';
+import fs from 'fs';
+import nodePath from 'path';
+import { GEN3_COMMONS_NAME } from '@gen3/core';
+import {
+  createWorkspaceAssetsHandler,
+  type WorkspaceAssetsHandlerOptions,
+} from '../server/workspaceAssetsHandler';
+
+const CONFIG_ROOT = process.env.GEN3_FRONTEND_CONFIGURATION_ROOT || './config/';
+const CONFIG_FILENAME = 'workspaceAssets.json';
+
+const DEFAULT_OPTIONS: WorkspaceAssetsHandlerOptions = {
   // Route JupyterLite remote-mode kernel WebSocket traffic through revproxy's
   // /lw-workspace/proxy/ nginx block → ambassador-service (ExternalName → Emissary)
   // → JEG.  Next.js API routes cannot handle WebSocket upgrades, so we must
   // bypass them and use the nginx path that has allow_upgrade + long timeouts.
   gatewayBaseUrl: '/lw-workspace/proxy/',
-});
+  // Route all kernel ops through jeg-proxy so JupyterLite sees merged Python3
+  // (container) + JEG GPU kernelspecs. The proxy routes Python3 kernel
+  // launches/channels to the container; GPU kernel launches are gated (403)
+  // with a message to use the Kernel Panel.
+  remoteKernelsPath: '/lw-workspace/proxy/jeg-proxy',
+  // The remote tier attaches to a real kernel gateway, so JupyterLite's
+  // in-browser Pyodide kernel must not be offered alongside it.
+  additionalDisabledExtensions: [
+    '@jupyterlite/pyodide-kernel-extension:kernel',
+  ],
+  appName: GEN3_COMMONS_NAME,
+};
 
-const VECTIS_WORKSPACE_APP_NAME = 'Vectis Workspaces';
-const VECTIS_FAVICON_URL = '/icons/Vectis_Logo_Colored_LightTheme.svg';
+const STRING_OPTIONS = [
+  'gatewayBaseUrl',
+  'assetRoot',
+  'appName',
+  'faviconUrl',
+  'pageTitle',
+  'remoteKernelsPath',
+  'fullThemesUrl',
+] as const satisfies ReadonlyArray<keyof WorkspaceAssetsHandlerOptions>;
 
-/** Escape characters that are special inside an HTML text node / attribute. */
-function escapeHtml(text: string): string {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;');
+function configFilePath(): string {
+  return nodePath.resolve(
+    process.cwd(),
+    CONFIG_ROOT,
+    GEN3_COMMONS_NAME,
+    CONFIG_FILENAME,
+  );
 }
 
 /**
- * Return the first value of a header that Node.js may (in rare edge cases)
- * expose as an array. `host` and `referer` are always strings in practice,
- * but this keeps the helper safe for any header name.
+ * Pick and type-check the known option keys. Unknown keys are ignored so a
+ * config file can carry extra metadata without reaching the factory,
+ * and a wrong-typed value falls back to its default instead of throwing.
  */
-function firstHeader(value: string | string[] | undefined): string | undefined {
-  if (Array.isArray(value)) return value[0];
-  return value;
-}
+function parseOptions(raw: unknown): WorkspaceAssetsHandlerOptions {
+  if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) {
+    console.warn(
+      `[workspace-assets] ${CONFIG_FILENAME} is not a JSON object; using defaults.`,
+    );
+    return DEFAULT_OPTIONS;
+  }
 
-function resolveOrigin(req: NextApiRequest): {
-  proto: string;
-  host: string;
-} {
-  const forwardedProto = firstHeader(req.headers['x-forwarded-proto']);
-  const forwardedHost = firstHeader(req.headers['x-forwarded-host']);
-  // `host` is always a single string per Node.js HTTP spec; firstHeader is
-  // used for type-safety only.
-  const hostHeader = firstHeader(req.headers.host);
-  const refererHeader = firstHeader(req.headers.referer);
+  const source = raw as Record<string, unknown>;
+  const parsed: WorkspaceAssetsHandlerOptions = {};
 
-  let proto = (forwardedProto ?? '').trim();
-  let host = (forwardedHost || hostHeader || '').trim();
-
-  if (refererHeader) {
-    try {
-      const refererUrl = new URL(refererHeader);
-      // Prefer referer origin when the host header dropped a non-default port.
-      if (!host || !host.includes(':')) {
-        host = refererUrl.host;
-      }
-      // Only fall back to referer protocol when nothing better is available.
-      if (!proto) {
-        proto = refererUrl.protocol.replace(':', '');
-      }
-    } catch {
-      // Ignore malformed referer; keep header-derived values.
+  for (const key of STRING_OPTIONS) {
+    const value = source[key];
+    if (value === undefined) continue;
+    if (typeof value === 'string') {
+      parsed[key] = value;
+    } else {
+      console.warn(
+        `[workspace-assets] ignoring ${key}: expected a string, got ${typeof value}.`,
+      );
     }
   }
 
-  return {
-    proto: proto || 'http',
-    host: host || 'localhost:30080',
-  };
+  const extensions = source.additionalDisabledExtensions;
+  if (extensions !== undefined) {
+    if (
+      Array.isArray(extensions) &&
+      extensions.every((entry) => typeof entry === 'string')
+    ) {
+      parsed.additionalDisabledExtensions = extensions;
+    } else {
+      console.warn(
+        '[workspace-assets] ignoring additionalDisabledExtensions: expected an array of strings.',
+      );
+    }
+  }
+
+  return { ...DEFAULT_OPTIONS, ...parsed };
 }
 
-function injectVectisBranding(html: string, req: NextApiRequest): string {
-  const isRemoteTierRequest =
-    (Array.isArray(req.query.tier) ? req.query.tier[0] : req.query.tier) ===
-    'remote';
-
-  // Resolve origin only when needed (remote tier).
-  const absoluteRemoteBaseUrl = isRemoteTierRequest
-    ? (() => {
-        const { proto, host } = resolveOrigin(req);
-        return { base: `${proto}://${host}/lw-workspace/proxy/`, proto, host };
-      })()
-    : null;
-
-  const withConfig = html.replace(
-    /(<script\s+id="jupyter-config-data"[^>]*>)([\s\S]*?)(<\/script>)/,
-    (_match, openTag: string, rawContent: string, closeTag: string) => {
-      // Strip leading/trailing whitespace left by the template.
-      const trimmed = rawContent.trim();
-      // Verify the captured content looks like a JSON object before parsing.
-      if (!trimmed.startsWith('{') || !trimmed.endsWith('}')) {
-        console.error(
-          '[vectis-branding] jupyter-config-data content is not a JSON object; skipping merge.',
-        );
-        return _match;
-      }
-
-      let existing: Record<string, unknown> = {};
-      try {
-        existing = JSON.parse(trimmed) as Record<string, unknown>;
-      } catch (err) {
-        console.error(
-          '[vectis-branding] Failed to parse jupyter-config-data JSON; skipping merge.',
-          err,
-        );
-        return _match;
-      }
-
-      const existingDisabled = Array.isArray(existing.disabledExtensions)
-        ? (existing.disabledExtensions as string[])
-        : [];
-      const remoteDisabledExtensions = isRemoteTierRequest
-        ? [...existingDisabled, '@jupyterlite/pyodide-kernel-extension:kernel']
-        : existingDisabled;
-
-      const merged: Record<string, unknown> = {
-        ...existing,
-        appName: GEN3_COMMONS_NAME,
-        faviconUrl: VECTIS_FAVICON_URL,
-        ...(remoteDisabledExtensions.length > 0
-          ? {
-              disabledExtensions: Array.from(new Set(remoteDisabledExtensions)),
-            }
-          : {}),
-        ...(isRemoteTierRequest && absoluteRemoteBaseUrl
-          ? {
-              // Use an absolute URL so JupyterLite does not resolve WS endpoints
-              // relative to /workspace-api/workspace-assets/remote/.
-              remoteBaseUrl: absoluteRemoteBaseUrl.base,
-              // Route all kernel ops through jeg-proxy so JupyterLite sees merged
-              // Python3 (container) + JEG GPU kernelspecs. The handler routes
-              // Python3 kernel launches/channels to the container; GPU kernel
-              // launches are gated (403) with a message to use the Kernel Panel.
-              remoteKernelsBaseUrl: `${absoluteRemoteBaseUrl.proto}://${absoluteRemoteBaseUrl.host}/lw-workspace/proxy/jeg-proxy`,
-              fullThemesUrl:
-                '/workspace-api/workspace-assets/remote/build/themes',
-            }
-          : {}),
-      };
-      return `${openTag}${JSON.stringify(merged)}${closeTag}`;
-    },
-  );
-
-  // Escape the app name before placing it into the HTML title element.
-  return withConfig.replace(
-    /<title>[^<]*<\/title>/,
-    `<title>${escapeHtml(VECTIS_WORKSPACE_APP_NAME)}</title>`,
-  );
+function loadOptions(): WorkspaceAssetsHandlerOptions {
+  const file = configFilePath();
+  try {
+    return parseOptions(JSON.parse(fs.readFileSync(file, 'utf-8')));
+  } catch (err) {
+    const reason = err instanceof Error ? err.message : String(err);
+    console.warn(
+      `[workspace-assets] could not read ${file} (${reason}); using defaults.`,
+    );
+    return DEFAULT_OPTIONS;
+  }
 }
 
-function isHtmlResponse(res: NextApiResponse): boolean {
-  const contentType = res.getHeader('content-type');
-  if (typeof contentType === 'string') return contentType.includes('text/html');
-  if (Array.isArray(contentType))
-    return contentType.some((v) => v.includes('text/html'));
-  return false;
+let upstreamHandler:
+  ReturnType<typeof createWorkspaceAssetsHandler> | undefined;
+let loadedConfigMtimeMs: number | undefined;
+
+/** mtime of the config file, or undefined when it does not exist. */
+function configMtimeMs(): number | undefined {
+  try {
+    return fs.statSync(configFilePath()).mtimeMs;
+  } catch {
+    return undefined;
+  }
+}
+
+function getUpstreamHandler(): ReturnType<typeof createWorkspaceAssetsHandler> {
+  if (process.env.NODE_ENV === 'development') {
+    // Rebuild when the config file changes so edits don't need a dev-server
+    // restart. Only the cheap stat runs per request — the expensive asset walk
+    // happens on the first request and then only after a real config change.
+    const mtimeMs = configMtimeMs();
+    if (upstreamHandler && mtimeMs !== loadedConfigMtimeMs) {
+      upstreamHandler = undefined;
+    }
+    loadedConfigMtimeMs = mtimeMs;
+  }
+
+  if (!upstreamHandler) {
+    upstreamHandler = createWorkspaceAssetsHandler(loadOptions());
+  }
+  return upstreamHandler;
 }
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const originalSend = res.send.bind(res);
-
-  res.send = ((body: unknown) => {
-    if (
-      typeof body === 'string' &&
-      isHtmlResponse(res) &&
-      body.includes('id="jupyter-config-data"') &&
-      body.includes('<title>')
-    ) {
-      return originalSend(injectVectisBranding(body, req));
-    }
-    return originalSend(body);
-  }) as typeof res.send;
-
-  return upstreamHandler(req, res);
+  return getUpstreamHandler()(req, res);
 }

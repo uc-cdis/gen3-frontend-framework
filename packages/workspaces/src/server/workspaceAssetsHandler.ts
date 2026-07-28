@@ -11,6 +11,10 @@
  *   export default createWorkspaceAssetsHandler({
  *     gatewayBaseUrl: '/api/workspace/gateway/',
  *   });
+ *
+ * `workspaceAssetsApi` (this package's default wiring) builds its options from
+ * `<GEN3_FRONTEND_CONFIGURATION_ROOT>/<GEN3_COMMONS_NAME>/workspaceAssets.json`,
+ * so per-commons branding and gateway routing need no code changes.
  */
 
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -36,6 +40,22 @@ export interface WorkspaceAssetsHandlerOptions {
   appName?: string;
   /** Favicon URL injected into JupyterLite config data (opt-in branding). */
   faviconUrl?: string;
+  /**
+   * `<title>` override for served JupyterLite HTML. Defaults to `appName` when
+   * omitted; set it when the window title should differ from the config-data
+   * `appName` JupyterLite reports internally.
+   */
+  pageTitle?: string;
+  /**
+   * Origin-relative path used to build the absolute `remoteKernelsBaseUrl`
+   * injected into the remote tier (e.g. `/lw-workspace/proxy/jeg-proxy`).
+   * The origin is resolved per-request from forwarding headers so JupyterLite
+   * does not resolve kernel endpoints relative to the assets route.
+   * Omitted → `remoteKernelsBaseUrl` is not injected.
+   */
+  remoteKernelsPath?: string;
+  /** Override for the remote tier's `fullThemesUrl` (default: `/workspace-api/workspace-assets/remote/build/themes`). */
+  fullThemesUrl?: string;
 }
 
 // ---------- constants ----------
@@ -61,6 +81,9 @@ const MIME_TYPES: Record<string, string> = {
   '.map': 'application/json; charset=utf-8',
   '.ipynb': 'application/json; charset=utf-8',
 };
+
+const DEFAULT_FULL_THEMES_URL =
+  '/workspace-api/workspace-assets/remote/build/themes';
 
 const REMOTE_DISABLED_EXTENSIONS = [
   '@jupyterlite/services-extension:config-section-manager',
@@ -91,6 +114,36 @@ function defaultAssetRoot(): string {
 interface BrandingConfig {
   appName?: string;
   faviconUrl?: string;
+  pageTitle?: string;
+}
+
+const DEFAULT_REMOTE_BRANDING: BrandingConfig = {
+  appName: 'JupyterLite',
+  faviconUrl: '/favicon2.ico',
+};
+
+/** Escape characters that are special inside an HTML text node / attribute. */
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
+/**
+ * Replace the document title with the configured page title (or app name).
+ * Values originate from a server-side config file, but they are escaped so a
+ * stray `<` in a commons name cannot break out of the title element.
+ */
+function replaceTitle(html: string, branding: BrandingConfig): string {
+  const title = branding.pageTitle ?? branding.appName;
+  if (!title) return html;
+  return html.replace(
+    /<title>[^<]*<\/title>/,
+    `<title>${escapeHtml(title)}</title>`,
+  );
 }
 
 /**
@@ -136,16 +189,27 @@ function resolveOrigin(req: NextApiRequest): { proto: string; host: string } {
   return { proto: resolvedProto, host: resolvedHost };
 }
 
+interface RemoteInjectionConfig {
+  gatewayBaseUrl: string;
+  disabledExtensions: string[];
+  fullThemesUrl: string;
+  remoteKernelsPath?: string;
+  branding?: BrandingConfig;
+}
+
 function injectRemoteConfig(
   html: string,
   req: NextApiRequest,
-  gatewayBaseUrl: string,
-  disabledExtensions: string[],
-  branding = {
-    appName: 'JupyterLite',
-    faviconUrl: '/favicon2.ico',
-  } as BrandingConfig,
+  config: RemoteInjectionConfig,
 ): string {
+  const {
+    gatewayBaseUrl,
+    disabledExtensions,
+    fullThemesUrl,
+    remoteKernelsPath,
+  } = config;
+  const branding = config.branding ?? DEFAULT_REMOTE_BRANDING;
+
   const { proto, host } = resolveOrigin(req);
   const absoluteGatewayBase = `${proto}://${host}${gatewayBaseUrl}`;
 
@@ -163,16 +227,23 @@ function injectRemoteConfig(
     remoteBaseUrl: absoluteGatewayBase,
     remoteToken: accessToken,
     disabledExtensions,
-    fullThemesUrl: '/workspace-api/workspace-assets/remote/build/themes',
+    fullThemesUrl,
     // Required so JupyterLab sets window.jupyterapp, which the parent
     // frame uses for polling readiness and attaching remote kernels.
     exposeAppInBrowser: 'true',
   };
 
+  if (remoteKernelsPath) {
+    // Absolute so JupyterLite does not resolve kernel ops relative to
+    // /workspace-api/workspace-assets/remote/. Routing all kernel traffic
+    // through jeg-proxy lets JupyterLite see merged container + JEG kernelspecs.
+    configData.remoteKernelsBaseUrl = `${proto}://${host}${remoteKernelsPath}`;
+  }
+
   if (branding?.appName) configData.appName = branding.appName;
   if (branding?.faviconUrl) configData.faviconUrl = branding.faviconUrl;
 
-  let result = html.replace(
+  const result = html.replace(
     /(<script\s+id="jupyter-config-data"[^>]*>)\s*(\{[^]*?\})\s*(<\/script>)/,
     (_match, openTag: string, existingJson: string, closeTag: string) => {
       let existing: Record<string, unknown> = {};
@@ -193,18 +264,11 @@ function injectRemoteConfig(
     },
   );
 
-  if (branding?.appName) {
-    result = result.replace(
-      /<title>[^<]*<\/title>/,
-      `<title>${branding.appName}</title>`,
-    );
-  }
-
-  return result;
+  return replaceTitle(result, branding);
 }
 
 function injectBranding(html: string, branding: BrandingConfig): string {
-  let result = html.replace(
+  const result = html.replace(
     /(<script\s+id="jupyter-config-data"[^>]*>)\s*(\{[^]*?\})\s*(<\/script>)/,
     (_match, openTag: string, existingJson: string, closeTag: string) => {
       let existing: Record<string, unknown> = {};
@@ -224,14 +288,7 @@ function injectBranding(html: string, branding: BrandingConfig): string {
     },
   );
 
-  if (branding.appName) {
-    result = result.replace(
-      /<title>[^<]*<\/title>/,
-      `<title>${branding.appName}</title>`,
-    );
-  }
-
-  return result;
+  return replaceTitle(result, branding);
 }
 
 // ---------- factory ----------
@@ -254,9 +311,21 @@ export function createWorkspaceAssetsHandler(
     : REMOTE_DISABLED_EXTENSIONS;
 
   const branding: BrandingConfig | undefined =
-    options?.appName || options?.faviconUrl
-      ? { appName: options.appName, faviconUrl: options.faviconUrl }
+    options?.appName || options?.faviconUrl || options?.pageTitle
+      ? {
+          appName: options.appName,
+          faviconUrl: options.faviconUrl,
+          pageTitle: options.pageTitle,
+        }
       : undefined;
+
+  const remoteInjectionConfig: RemoteInjectionConfig = {
+    gatewayBaseUrl,
+    disabledExtensions,
+    fullThemesUrl: options?.fullThemesUrl ?? DEFAULT_FULL_THEMES_URL,
+    remoteKernelsPath: options?.remoteKernelsPath,
+    branding,
+  };
 
   // Build the allowed-file sets once at factory time (not per-request) to
   // avoid unbounded I/O on every incoming request (CWE-770).
@@ -380,13 +449,7 @@ export function createWorkspaceAssetsHandler(
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       try {
         const html = fs.readFileSync(filePath, 'utf-8');
-        const injected = injectRemoteConfig(
-          html,
-          req,
-          gatewayBaseUrl,
-          disabledExtensions,
-          branding,
-        );
+        const injected = injectRemoteConfig(html, req, remoteInjectionConfig);
         res.status(200).send(injected);
       } catch {
         res.status(500).end('Internal server error');
@@ -430,6 +493,21 @@ export function createWorkspaceAssetsHandler(
   };
 }
 
-/** Default handler — for one-liner re-exports */
-const defaultHandler = createWorkspaceAssetsHandler();
+/**
+ * Default handler — for one-liner re-exports.
+ *
+ * Built lazily on first request: `createWorkspaceAssetsHandler` walks both tier
+ * asset trees at factory time, and this module is imported transitively by
+ * `next.config.js` (via `@gen3/workspaces/server`), where that I/O is wasted.
+ */
+let lazyDefaultHandler:
+  ReturnType<typeof createWorkspaceAssetsHandler> | undefined;
+
+const defaultHandler = (req: NextApiRequest, res: NextApiResponse): void => {
+  if (!lazyDefaultHandler) {
+    lazyDefaultHandler = createWorkspaceAssetsHandler();
+  }
+  return lazyDefaultHandler(req, res);
+};
+
 export default defaultHandler;
