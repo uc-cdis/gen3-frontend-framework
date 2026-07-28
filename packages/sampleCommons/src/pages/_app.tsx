@@ -95,11 +95,13 @@ const Gen3App = ({
       setMantineTheme(mergedTheme);
     }
     console.log('Gen3 App initialized');
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    // oxlint-disable-next-line react/react-compiler
     setIsClient(true); // Only on client-side
   }, []);
   return (
