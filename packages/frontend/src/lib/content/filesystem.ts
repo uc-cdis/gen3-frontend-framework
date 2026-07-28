@@ -6,9 +6,7 @@ const myGlob = (dir: string, filter: string) => {
   try {
     const files = fs.readdirSync(dir);
     return files.filter((file) => file.search(filter) !== -1);
-  } catch (error: any) {
-    console.log('myGlob error', error, dir);
-  }
+  } catch (error: any) {}
   return [];
 };
 
@@ -25,7 +23,7 @@ export class FilesystemContent implements ContentSourceInterface {
       return await JSON.parse(
         fs.readFileSync(path.join(this.rootPath, filepath)).toString('utf8'),
       );
-    } catch (_err: unknown) {
+    } catch {
       throw new Error(`Cannot process ${path.join(this.rootPath, filepath)} `);
     }
   }
@@ -38,7 +36,7 @@ export class FilesystemContent implements ContentSourceInterface {
       return Promise.all(
         files.map((file) => this.get<T>(path.join(filepath, file))),
       );
-    } catch (_err: unknown) {
+    } catch {
       throw new Error(
         `getAllCannot process ${path.join(this.rootPath, filepath)}/${filter}`,
       );

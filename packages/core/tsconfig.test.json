@@ -18,6 +18,9 @@
     "resolveJsonModule": true,
     "incremental": true,
     "noEmitOnError": true,
+    // oxlint's type-aware pass (tsgolint) resolves this tsconfig for test files
+    // too, and does not auto-include node_modules/@types the way tsc does.
+    "types": ["jest", "node"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]

@@ -2,20 +2,12 @@
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import { dirname } from 'node:path';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
 import path from 'path';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
 import webpack from 'webpack';
 import type { StorybookConfig } from '@storybook/nextjs';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
 const require = createRequire(import.meta.url);
 
 const config: StorybookConfig = {

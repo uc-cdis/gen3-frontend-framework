@@ -54,7 +54,7 @@ const ActiveKernelInfoPanel = ({
                     )*/}
         </div>
         <Badge color={isStaleOrIdle ? 'utility.2' : 'utility.6'}>
-          <Text size="xs" tt="uppercase" fw={600} c="base-contrast.4"></Text>
+          <Text size="xs" tt="uppercase" fw={600} c="base-contrast.4" />
           {isStaleOrIdle ? 'Idle' : 'Active'}
         </Badge>
       </div>

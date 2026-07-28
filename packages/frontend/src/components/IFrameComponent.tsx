@@ -36,7 +36,7 @@ const IFrameComponent = ({ url }: { url?: string }) => {
       }
     };
 
-    checkUrl();
+    void checkUrl();
   }, [url]);
 
   useEffect(() => {
@@ -90,7 +90,7 @@ const IFrameComponent = ({ url }: { url?: string }) => {
       width="100%"
       height="100%"
       title="notebook running in iframe"
-    ></iframe>
+    />
   );
 };
 

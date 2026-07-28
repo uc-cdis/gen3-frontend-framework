@@ -52,7 +52,7 @@ const HorizontalNavigationBar = ({
 
   useDeepCompareEffect(() => {
     if (loggedIn && !isAuthzResourcesFetching && !isAuthzResourcesError) {
-      refetch();
+      void refetch();
     }
   }, [loggedIn, isAuthzResourcesFetching, isAuthzResourcesError, refetch]);
 

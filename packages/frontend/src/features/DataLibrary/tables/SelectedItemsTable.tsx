@@ -55,7 +55,7 @@ const SelectedItemsTableHeader: React.FC<SelectedItemsTableHeaderProps> = ({
             width={iconSize}
             height={iconSize}
             className="text-utility-warning m-1"
-          ></Icon>
+          />
           <Text
             fw={600}
             size={size}

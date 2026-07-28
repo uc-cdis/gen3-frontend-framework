@@ -37,7 +37,7 @@ export async function proxy(req: NextRequest) {
 
   // Gen3 login check
   const loginStatus = await getLoginStatus(req.headers.get('Cookie') || '');
-  const loggedIn = await isLoggedIn(loginStatus);
+  const loggedIn = isLoggedIn(loginStatus);
 
   // Enforce login if required
   if (!loggedIn) {

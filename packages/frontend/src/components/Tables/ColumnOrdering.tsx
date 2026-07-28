@@ -247,7 +247,8 @@ function DraggableColumnItem<TData extends MRT_RowData>({
     >
       <div
         {...attributes}
-        role={undefined}
+        role="switch"
+        aria-checked={column.getIsVisible()}
         className="flex gap-2 items-center bg-nci-violet-lightest px-1 py-1.5 h-6 cursor-move"
       >
         <DragIcon size="1rem" className="text-primary" />

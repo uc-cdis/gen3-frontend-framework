@@ -66,7 +66,7 @@ const PoliciesTable = () => {
             <MultiSelect
               data={all_roles}
               value={row.original.role_ids}
-              onChange={(value) => console.log(value)}
+              onChange={(value) => {}}
             />
           );
         },
@@ -80,7 +80,7 @@ const PoliciesTable = () => {
             <MultiSelect
               data={all_resources}
               value={row.original.resource_paths}
-              onChange={(value) => console.log(value)}
+              onChange={(value) => {}}
             />
           );
         },
@@ -96,7 +96,7 @@ const PoliciesTable = () => {
     positionActionsColumn: 'last',
     renderRowActionMenuItems: ({ row }) => (
       <React.Fragment>
-        <Menu.Item onClick={() => console.info('Delete')}>Delete</Menu.Item>
+        <Menu.Item onClick={() => {}}>Delete</Menu.Item>
       </React.Fragment>
     ),
     enableRowSelection: true,

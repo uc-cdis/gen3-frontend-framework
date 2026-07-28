@@ -28,7 +28,7 @@ const nextConfig = {
     config.resolve.symlinks = false;
 
     config.resolve.alias = {
-      ...(config.resolve.alias || {}),
+      ...config.resolve.alias,
 
       '@gen3/core$': path.resolve(__dirname, '../core/src/index.ts'),
 
@@ -57,7 +57,7 @@ const nextConfig = {
       };
 
       config.watchOptions = {
-        ...(config.watchOptions || {}),
+        ...config.watchOptions,
         ignored: [
           '**/.next/**',
           '**/dist/**',

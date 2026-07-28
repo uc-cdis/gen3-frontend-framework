@@ -28,7 +28,7 @@ const AppsPage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
           width="100%"
           height="100%"
           title="client notebook"
-        ></iframe>
+        />
       </div>
     </NavPageLayout>
   );

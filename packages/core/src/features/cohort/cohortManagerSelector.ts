@@ -143,5 +143,5 @@ export const selectIndexFilters = (
   if (!cohort) {
     console.error('No Cohort Defined');
   }
-  return cohort?.filters?.[index] ?? EmptyFilterSet;
+  return cohort.filters?.[index] ?? EmptyFilterSet;
 };

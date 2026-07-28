@@ -34,7 +34,7 @@ const NotebookLitePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
           height="100%"
           title="client notebook"
           style={{ border: 'none' }}
-        ></iframe>
+        />
       </div>
     </NavPageLayout>
   );

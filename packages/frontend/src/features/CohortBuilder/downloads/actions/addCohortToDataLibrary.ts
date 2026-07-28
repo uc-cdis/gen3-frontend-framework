@@ -158,7 +158,7 @@ export const addCohortDataFilesToDataLibraryAsDataset = async (
     index,
     cohortIndex,
     accessibility,
-    datasetIdField = 'dataset_id',
+    datasetIdField,
     fileFields,
     libraryDataItemMapping,
     dataPath = '*',

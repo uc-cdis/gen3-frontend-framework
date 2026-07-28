@@ -1,5 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { MantineReactTable, useMantineReactTable, } from 'mantine-react-table-open';
+import {
+  MantineReactTable,
+  useMantineReactTable,
+} from 'mantine-react-table-open';
 import DictionaryPanel from './DictionaryPanel/DictionaryPanel';
 import { DictionaryConfig } from '../Dictionary';
 import SectionCollapse from './SectionCollapse';
@@ -28,7 +31,7 @@ const AddDataToProject = ({ config }: { config?: DictionaryConfig }) => {
       }
     };
 
-    parseFile();
+    void parseFile();
   }, [file]);
 
   const columns = useMemo(

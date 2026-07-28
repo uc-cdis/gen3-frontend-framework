@@ -174,9 +174,8 @@ const CohortManagerPanel = ({
               if (e.key === 'Enter' && editingLabel.trim()) saveEdit();
               if (e.key === 'Escape') cancelEditing();
             }}
-            autoFocus
             style={{ flex: 1 }}
-          ></TextInput>
+          />
           <Tooltip label="Apply rename" position="bottom" withArrow>
             <Button
               variant="action"

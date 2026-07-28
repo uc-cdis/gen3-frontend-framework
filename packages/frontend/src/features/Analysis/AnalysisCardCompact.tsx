@@ -14,7 +14,7 @@ const AnalysisCardCompact: React.FC<AnalysisCardCompactProps> = ({
   type = 'application',
   icon,
   hasDemo = false,
-  loginRequired = false,
+  loginRequired,
   href,
   count,
   countUnits,

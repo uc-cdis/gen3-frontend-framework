@@ -39,9 +39,9 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
 
   const handleRegisterButtonClick = () => {
     if (requiresLogin) {
-      router.push('/Login');
+      void router.push('/Login');
     } else {
-      router.push(
+      void router.push(
         {
           pathname: '/study-reg/request-access',
           query: {

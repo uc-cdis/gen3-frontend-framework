@@ -2,7 +2,12 @@ import React, { JSX, useMemo } from 'react';
 import { Badge } from '@mantine/core';
 import { TableIcons } from '../../components/Tables/TableIcons';
 
-import { MantineReactTable, MRT_Cell, MRT_ColumnDef, useMantineReactTable, } from 'mantine-react-table-open';
+import {
+  MantineReactTable,
+  MRT_Cell,
+  MRT_ColumnDef,
+  useMantineReactTable,
+} from 'mantine-react-table-open';
 import { useResourcesContext } from './ResourcesProvider';
 import { useProfileContext } from './ProfileProvider';
 import { ServiceColorAndLabel } from './types';
@@ -100,7 +105,7 @@ const ResourcesTable = ({ filters }: ResourcesTableProps) => {
                     />
                   ))
                 ) : (
-                  <span className="w-4 h-4"></span>
+                  <span className="w-4 h-4" />
                 )}
               </div>
             );

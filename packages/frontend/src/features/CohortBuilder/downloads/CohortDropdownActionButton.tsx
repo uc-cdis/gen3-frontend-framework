@@ -63,7 +63,7 @@ const GuppyDropdownMenuItem = ({
   });
   const clickHandler = useCallback(() => {
     if (disabled) return;
-    if (!active) handleClick();
+    if (!active) void handleClick();
     else cancel();
   }, [active, disabled, handleClick, cancel]);
   return (

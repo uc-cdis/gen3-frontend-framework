@@ -108,7 +108,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
   const router = useRouter();
 
   const gotoDataLibrary = () => {
-    router.push('/DataLibrary');
+    void router.push('/DataLibrary');
   };
 
   const numItems = Object.keys(items).length;
@@ -124,7 +124,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
 
   useEffect(() => {
     if (userStatus === 'pending') {
-      return
+      return;
     }
     const tempIsAuth = isAuthenticated(userStatus);
     if (tempIsAuth != isLoggedIn) {
@@ -202,7 +202,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
         return;
       }
 
-      updateListInDataLibrary({
+      void updateListInDataLibrary({
         id: listId,
         name: listname,
         items: { ...dataLibrary[listId].items, ...items },
@@ -229,7 +229,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
           });
       });
     } else {
-      addListToDataLibrary(items, listname).then((results) => {
+      void addListToDataLibrary(items, listname).then((results) => {
         if (results.isError) {
           notifications.show({
             id: 'update-datalibrary-list-error-notification',
@@ -373,7 +373,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
       <div className="flex items-center relative">
         <LoadingOverlay
           loaderProps={{ color: 'accent.4', size: 'sm' }}
-          visible={isLoading || isItemsLoading  || !!isUpdating}
+          visible={isLoading || isItemsLoading || !!isUpdating}
         />
         <Badge
           className="ml-2 max-w-48"

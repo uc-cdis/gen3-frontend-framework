@@ -174,7 +174,7 @@ export const selectWorkspaceStatusFromService = createSelector(
 
 export const selectWorkspaceStatus = createSelector(
   workspaceStatusSelector,
-  (status) => status?.data?.status ?? WorkspaceStatus.NotFound,
+  (status) => status.data?.status ?? WorkspaceStatus.NotFound,
 );
 
 export const paymodelStatusSelector =
