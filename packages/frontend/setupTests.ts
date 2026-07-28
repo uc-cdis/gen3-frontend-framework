@@ -71,6 +71,7 @@ jest.mock('url-join', () => ({
 
 jest.mock('nanoid', () => ({
   nanoid: () => 'mock-nanoid',
+  customAlphabet: () => () => 'mock-nanoid',
 }));
 
 const mockRouter = {
