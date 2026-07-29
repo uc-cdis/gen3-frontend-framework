@@ -7,13 +7,14 @@ import {
   useCoreSelector,
   JSONObject,
 } from '@gen3/core';
-import { FormOutcome } from './types';
+import { FormOutcome } from '../types';
 import {
   FormOnSubmitReturnProps,
   FormProps,
-} from '../../../components/Content/Form';
-import { getClinicalTrialMetadata } from './utils';
-import { ActiveUser, userCanRegisterStudy } from './userCanRegisterStudy';
+} from '../../../../components/Content/Form';
+import { ActiveUser, userCanRegisterStudy } from '../userCanRegisterStudy';
+import { getClinicalTrialMetadata } from './getClinicalTrialMetadata';
+
 export const useStudyRegistration = (
   config: any,
 ): {
@@ -38,6 +39,7 @@ export const useStudyRegistration = (
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
 
+  // Fetch all unregistered studies from MDS
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -68,6 +70,7 @@ export const useStudyRegistration = (
     fetchData();
   }, []);
 
+  // Get values from router query
   useEffect(() => {
     if (router.isReady && router.query) {
       const { query } = router;
@@ -76,6 +79,7 @@ export const useStudyRegistration = (
     }
   }, [router.isReady, router.query]);
 
+  // Helper func for setting study from router query as the first one shown
   const moveStudyToFront = (studies: JSONObject[], studyUID: String) => {
     const targetIndex = studies.findIndex((item) => item._hdp_uid === studyUID);
     if (targetIndex > 0) {
@@ -96,13 +100,13 @@ export const useStudyRegistration = (
       studies,
       toString(studyUID),
     );
-
     const registerableStudyNames = organizedRegistrableStudies.map(
       (study) =>
         `${study.project_number || 'N/A'} : ${study.study_metadata?.minimal_info?.study_name || 'N/A'} : ${study.study_metadata?.metadata_location?.nih_application_id || 'N/A'}`,
     );
+    // Autofill values for form:
     return config.form.map((item: any) =>
-      item?.variable === 'studyName'
+      item?.variable === 'study_id'
         ? {
             ...item,
             data: registerableStudyNames,
@@ -112,9 +116,45 @@ export const useStudyRegistration = (
     );
   }, [studies, userInfo, config.form]);
 
+  const [regRequestPending, setRegRequestPending] = useState(false);
   const formOnSubmit = async (formValues: FormOnSubmitReturnProps) => {
     console.log('formValues', formValues);
-    alert('called formOnSubmit' + formValues);
+    alert('called formOnSubmit' + JSON.stringify(formValues));
+    setRegRequestPending(true);
+    const cedarUserUUID = formValues.cedar_uuid;
+    const studyID = formValues.study_id;
+    const ctgovID = formValues.clinical_trials_id;
+    const valuesToUpdate = {
+      repository: formValues.repository || '',
+      repository_study_ids:
+        !formValues.repository_study_ids ||
+        (formValues.repository_study_ids.length === 1 &&
+          formValues.repository_study_ids[0] === '')
+          ? []
+          : formValues.repository_study_ids,
+      clinical_trials_id: ctgovID || '',
+      clinicaltrials_gov: ctgovID
+        ? await getClinicalTrialMetadata(config.clinicalTrialFields, ctgovID)
+        : undefined,
+    };
+    console.log('valuesToUpdate', valuesToUpdate);
+    /*     preprocessStudyRegistrationMetadata(
+      props.user.username,
+      studyID,
+      valuesToUpdate,
+    ).then(
+      (preprocessedMetadata) =>
+        createCEDARInstance(cedarUserUUID, preprocessedMetadata).then(
+          (updatedMetadataToRegister) =>
+            updateStudyInMDS(studyID, updatedMetadataToRegister).then(() =>
+              setFormSubmissionStatus({ status: 'success' }),
+            ),
+          (err) =>
+            setFormSubmissionStatus({ status: 'error', text: err.message }),
+        ),
+      (err) => setFormSubmissionStatus({ status: 'error', text: err.message }),
+    );
+ */
   };
 
   return {

@@ -1,9 +1,9 @@
 export const getClinicalTrialMetadata = async (
+  clinicalTrialFields: string[],
   ctID: string,
-  config: any,
 ): Promise<object> => {
   const errMsg = 'Unable to fetch study metadata from ClinicalTrials.gov';
-  const clinicalTrialFieldsToFetch = config.clinicalTrialFields || [];
+  const clinicalTrialFieldsToFetch = clinicalTrialFields || [];
   // get metadata from the clinicaltrials.gov API
   const resp = await fetch(
     `https://clinicaltrials.gov/api/v2/studies/${ctID}?fields=${clinicalTrialFieldsToFetch.join('|')}`,

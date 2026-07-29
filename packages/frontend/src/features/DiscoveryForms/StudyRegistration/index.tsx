@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Text } from '@mantine/core';
 import { NavPageLayoutProps } from '../../../features/Navigation';
-import { useStudyRegistration } from './useStudyRegistration';
+import { useStudyRegistration } from './useStudyRegistration/useStudyRegistration';
 import { FormContentViews } from './FormContentViews';
 
 interface StudyRegistrationAccessRequestFormProps {
