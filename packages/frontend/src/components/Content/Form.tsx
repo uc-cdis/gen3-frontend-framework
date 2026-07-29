@@ -3,7 +3,7 @@ import React from 'react';
 import FormContent, { FormContentProps, FormContentType } from './FormContent';
 import { Button, Text } from '@mantine/core';
 import { useForm, FormValidateInput, isEmail, isNotEmpty } from '@mantine/form';
-import { isRequiredCedarUUID } from './formValidators';
+import { isCedarUUIDValid, isClinicalTrialIDValid } from './formValidators';
 
 interface FormPropsBody extends Omit<FormContentProps, 'keyString' | 'form'> {
   readonly errorText: string; // text to display on error
@@ -69,7 +69,11 @@ const Form = ({
         if (item.required) {
           switch (item.type) {
             case FormContentType.CedarUserUUID: {
-              validate[itemKey] = isRequiredCedarUUID(item.errorText);
+              validate[itemKey] = isCedarUUIDValid(item.errorText);
+              break;
+            }
+            case FormContentType.ClinicalTrialID: {
+              validate[itemKey] = isClinicalTrialIDValid(item.errorText);
               break;
             }
             case FormContentType.Email: {

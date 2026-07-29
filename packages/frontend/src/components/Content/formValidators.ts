@@ -1,5 +1,12 @@
 type Validator = (value: unknown) => string | null;
+type AsyncValidator = (
+  value: unknown,
+  values?: any,
+  path?: string,
+  signal?: AbortSignal,
+) => Promise<string | null>;
 
+/* CEDAR ID VALIDATION */
 const CEDAR_UUID_REGEX =
   /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/i;
 
@@ -12,7 +19,7 @@ const validateCedarUUID = (
   };
 };
 
-const isRequiredCedarUUID = (
+const isCedarUUIDValid = (
   errorText: string = 'Valid Cedar User UUID required',
 ): Validator => {
   return (value: unknown) => {
@@ -21,4 +28,40 @@ const isRequiredCedarUUID = (
   };
 };
 
-export { validateCedarUUID, isRequiredCedarUUID };
+/* CLINICAL TRIALS GOV ID VALIDATION */
+const validateClinicalTrialID = (
+  errorText: string = 'Invalid ClinicalTrials.gov ID',
+): AsyncValidator => {
+  return async (value: unknown, _, __, signal?: AbortSignal) => {
+    const ctID = String(value || '').trim();
+    if (!ctID) return null; // Pass empty values for optional fields
+    try {
+      const resp = await fetch(
+        `https://clinicaltrials.gov/api/v2/studies/${ctID}?fields=NCTId`,
+        { signal }, // Pass Mantine's AbortSignal to cancel stale requests
+      );
+      if (!resp.ok) return 'Unable to verify ClinicalTrials.gov ID';
+      const respJson = await resp.json();
+      console.log('respJson', respJson);
+      if (respJson?.protocolSection?.identificationModule?.nctId === ctID) {
+        return null; // Valid
+      }
+      return errorText;
+    } catch (error: any) {
+      if (error?.name === 'AbortError') return null; // Request canceled by newer blur/change event
+      return 'Unable to verify ClinicalTrials.gov ID';
+    }
+  };
+};
+
+// Required check (returns error if empty OR invalid)
+const isClinicalTrialIDValid = (
+  errorText: string = 'Valid ClinicalTrials.gov ID required',
+): AsyncValidator => {
+  return async (value: unknown, values, path, signal) => {
+    if (!value || String(value).trim() === '') return errorText;
+    return validateClinicalTrialID(errorText)(value, values, path, signal);
+  };
+};
+
+export { isCedarUUIDValid, isClinicalTrialIDValid };

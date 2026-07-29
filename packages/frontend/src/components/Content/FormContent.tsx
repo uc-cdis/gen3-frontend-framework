@@ -26,7 +26,8 @@ export enum FormContentType {
   RadioGroup = 'RadioGroup',
   Select = 'Select',
   Tags = 'Tags',
-  CedarUserUUID = 'CedarUserUUID', // mantine Radio.Group
+  CedarUserUUID = 'CedarUserUUID',
+  ClinicalTrialID = 'ClinicalTrialID', // mantine Radio.Group
 }
 
 /**
@@ -96,6 +97,7 @@ const FormContent = ({
   switch (type) {
     case FormContentType.Email:
     case FormContentType.CedarUserUUID:
+    case FormContentType.ClinicalTrialID:
     case FormContentType.TextInput: {
       return (
         <TextInput
