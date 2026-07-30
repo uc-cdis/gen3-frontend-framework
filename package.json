@@ -80,7 +80,7 @@
     "jest": "^30.4.2",
     "jest-canvas-mock": "^2.5.2",
     "jest-environment-jsdom": "^30.4.1",
-    "lerna": "^9.0.7",
+    "lerna": "^10.0.0",
     "msw": "^2.7.3",
     "nx": "^23.1.0",
     "oxlint": "^1.76.0",
