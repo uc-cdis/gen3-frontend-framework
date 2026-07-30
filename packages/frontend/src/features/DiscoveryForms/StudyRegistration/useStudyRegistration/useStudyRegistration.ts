@@ -14,6 +14,7 @@ import {
 } from '../../../../components/Content/Form';
 import { ActiveUser, userCanRegisterStudy } from '../userCanRegisterStudy';
 import { getClinicalTrialMetadata } from './getClinicalTrialMetadata';
+import { preprocessStudyRegistrationMetadata } from './preprocessStudyRegistrationMetadata';
 
 export const useStudyRegistration = (
   config: any,
@@ -100,17 +101,19 @@ export const useStudyRegistration = (
       studies,
       toString(studyUID),
     );
-    const registerableStudyNames = organizedRegistrableStudies.map(
-      (study) =>
-        `${study.project_number || 'N/A'} : ${study.study_metadata?.minimal_info?.study_name || 'N/A'} : ${study.study_metadata?.metadata_location?.nih_application_id || 'N/A'}`,
-    );
+    // console.log('organizedRegistrableStudies', organizedRegistrableStudies);
+    const registerableStudyData = organizedRegistrableStudies.map((study) => ({
+      label: `${study.project_number || 'N/A'} : ${study.study_metadata?.minimal_info?.study_name || 'N/A'} : ${study.study_metadata?.metadata_location?.nih_application_id || 'N/A'}`,
+      value: study._hdp_uid,
+    }));
+    console.log('registerableStudyData[0]', registerableStudyData[0]);
     // Autofill values for form:
     return config.form.map((item: any) =>
       item?.variable === 'study_id'
         ? {
             ...item,
-            data: registerableStudyNames,
-            initialValue: registerableStudyNames[0],
+            data: registerableStudyData,
+            initialValue: registerableStudyData[0],
           }
         : item,
     );
@@ -138,7 +141,30 @@ export const useStudyRegistration = (
         : undefined,
     };
     console.log('valuesToUpdate', valuesToUpdate);
-    /*     preprocessStudyRegistrationMetadata(
+    console.log('userInfo', userInfo);
+    preprocessStudyRegistrationMetadata(
+      config,
+      // props.user.username,
+      userInfo.username as string,
+      studyID,
+      valuesToUpdate,
+    );
+    /*.then(
+      (preprocessedMetadata: JSONObject) => alert(JSON.stringify(preprocessedMetadata)
+    )*/
+  };
+  /*         createCEDARInstance(cedarUserUUID, preprocessedMetadata).then(
+          (updatedMetadataToRegister) =>
+            updateStudyInMDS(studyID, updatedMetadataToRegister).then(() =>
+              setFormSubmissionStatus({ status: 'success' }),
+            ),
+          (err) =>
+            setFormSubmissionStatus({ status: 'error', text: err.message }),
+        ),
+      (err) => setFormSubmissionStatus({ status: 'error', text: err.message }),
+    ); */
+
+  /*     preprocessStudyRegistrationMetadata(
       props.user.username,
       studyID,
       valuesToUpdate,
@@ -154,8 +180,8 @@ export const useStudyRegistration = (
         ),
       (err) => setFormSubmissionStatus({ status: 'error', text: err.message }),
     );
+
  */
-  };
 
   return {
     formError,
