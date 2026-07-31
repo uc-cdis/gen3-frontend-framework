@@ -9,7 +9,7 @@ const path = require('path');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { withJupyterWorkspaces } = require('@gen3/workspaces/server');
 
-const basePath = process.env.NEXT_PUBLIC_BASEPATH;
+const basePath = process.env.BASE_PATH || '';
 
 dns.setDefaultResultOrder('ipv4first');
 
@@ -35,16 +35,6 @@ const nextConfig = {
   productionBrowserSourceMaps: true,
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   basePath: basePath,
-  images: {
-    localPatterns: [
-      {
-        pathname: '/icons/**',
-      },
-      {
-        pathname: '/images/**',
-      },
-    ],
-  },
   logging: {
     fetches: {
       fullUrl: true,

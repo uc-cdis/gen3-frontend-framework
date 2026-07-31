@@ -1,11 +1,7 @@
 import type { CoreState } from '../../reducers';
-import { Cohort, CohortId } from './types';
-import {
-  EmptyFilterSet,
-  FilterSet,
-  IndexedFilterSet,
-  Operation,
-} from '../filters';
+import type { Cohort, CohortId } from './types';
+import type { FilterSet, IndexedFilterSet, Operation } from '../filters';
+import { EmptyFilterSet } from '../filters';
 import { cohortsAdapter, cohortSelectors } from './cohortManagerSlice';
 
 export const {

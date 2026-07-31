@@ -23,10 +23,7 @@ In the case of Gen3.2, the `yalc` command is:
 ### Setting up the local copy of the Gen3.2 packages
 Run `yalc publish` in both the @gen3/core and @gen3/frontend directories:
 ```bash
-cd packages/core
-yalc publish
-cd ../frontend
-yalc publish
+yalc publish packages/core packages/frontend packages/tools packages/workspaces
 ```
 
 you should add `.valc` and `yalc.lock` to the `.gitignore` file to the
@@ -34,7 +31,7 @@ data commons repository.
 
 then in the datacommons application (e.g. cadc-datacommons):
 ```bash
- yalc add @gen3/frontend @gen3/core
+ yalc add @gen3/frontend @gen3/core @gen3/toolsff @gen3/workspaces
 ```
 This will then use the local copy of the Gen3.2 frontend and core packages
 in the datacommons application, without the overhead of publishing new
@@ -51,9 +48,12 @@ which will update the local copy of the Gen3.2 packages and any linked applicati
 
 ### Removing the local copy of the Gen3.2 packages
 
-When you want to revert back to using the published npm packages, remove
-the link with `yalc remove @gen3/frontend @gen3/core`
+When you want to revert back to using the published npm packages, remove the link with:
+
+```bash
+yalc remove @gen3/frontend @gen3/core @gen3/toolsff @gen3/workspaces
+```
 
 ### Un-publishing the local copy of the Gen3.2 packages
 You will need to un-publish the local copy of the Gen3.2 packages with
-`yalc installations clean @gen3/frontend @gen3/core`
+`yalc installations clean @gen3/frontend @gen3/core @gen3/toolsff @gen3/workspaces`
