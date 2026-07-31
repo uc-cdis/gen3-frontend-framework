@@ -23,7 +23,7 @@ export interface LandingPageContentProp {
   content: LandingPageProps;
 }
 
-export interface leftRightProps {
+export interface LeftRightProps {
   readonly text?: string;
   readonly type?: ContentType;
   readonly link?: {
@@ -44,8 +44,8 @@ export interface LandingPageProps extends Gen3AppConfigData {
       readonly level: TitleOrder;
     };
     readonly splitarea?: {
-      readonly left: leftRightProps[];
-      readonly right: leftRightProps[];
+      readonly left: LeftRightProps[];
+      readonly right: LeftRightProps[];
     };
     readonly break?: string;
     readonly cardsArea?: {
@@ -95,7 +95,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
           );
         }
         if (component.splitarea) {
-          const splitareaJsx = (area: leftRightProps[]) =>
+          const splitareaJsx = (area: LeftRightProps[]) =>
             area.map((obj, index) => {
               if (obj.text) {
                 return (

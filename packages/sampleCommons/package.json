@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "analyze": "ANALYZE=true npm run build",
-    "build": "next build --webpack",
+    "build": "next build",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "predev": "[ -f ../../node_modules/@gen3/toolsff/dist/scanSitePaths.esm.js ] && node ../../node_modules/@gen3/toolsff/dist/scanSitePaths.esm.js || (printf \"\\033[31mError: @gen3/toolsff not built. Please run build in the tools directory first.\\033[0m\\n\" && exit 1)",

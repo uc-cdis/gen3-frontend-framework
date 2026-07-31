@@ -15,7 +15,6 @@ const filterRedirect = (
   redirect: string | string[] | undefined,
   basePath = '',
 ) => {
-  console.log('filterRedirect', redirect, basePath);
   let redirectPath = '';
   if (Array.isArray(redirect)) {
     redirectPath = redirect[0];
@@ -55,8 +54,6 @@ const LoginPanel = (loginConfig: LoginConfig) => {
     basePath,
     query: { referer: refererQuery, redirect: redirectQuery },
   } = router;
-
-  console.log('BASE_PATH:', basePath);
 
   const referer = redirectQuery || refererQuery; // either referer or redirect query param
 

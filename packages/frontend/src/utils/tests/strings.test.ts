@@ -48,4 +48,8 @@ describe('withBasePath', () => {
     const result = withBasePath('/ff', '');
     expect(result).toBe('/ff');
   });
+  it('should check if basePath is already on src', () => {
+    const result = withBasePath('/ff', '/ff/Page');
+    expect(result).toBe('/ff/Page');
+  });
 });

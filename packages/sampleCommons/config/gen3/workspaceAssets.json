@@ -4,6 +4,11 @@
   "gatewayBaseUrl": "/lw-workspace/proxy/",
   "remoteKernelsPath": "/lw-workspace/proxy/jeg-proxy",
   "additionalDisabledExtensions": [
-    "@jupyterlite/pyodide-kernel-extension:kernel"
+    "@jupyterlab/docmanager-extension:download",
+    "@jupyterlab/filebrowser-extension:download",
+    "@jupyterlab/notebook-extension:export",
+    "@jupyterlab/docmanager-extension:download",
+    "@jupyterlab/filebrowser-extension:download",
+    "@jupyterlab/notebook-extension:export"
   ]
 }
