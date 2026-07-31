@@ -28,7 +28,7 @@ import { ACTIVITY_CHANNEL } from './constants';
 import { Center, Loader } from '@mantine/core';
 import { useThrottledCallback } from '@mantine/hooks';
 
-import { MinutesToMilliseconds, withBasePath } from '../../utils';
+import { minutesToMilliseconds, withBasePath } from '../../utils';
 import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
 import { modals } from '@mantine/modals';
 
@@ -160,7 +160,7 @@ const useInterval = (callback: IntervalFunction, delay: number | null) => {
   }, [delay]);
 };
 
-const UPDATE_SESSION_LIMIT = MinutesToMilliseconds(1);
+const UPDATE_SESSION_LIMIT = minutesToMilliseconds(1);
 
 /**
  * SessionProvider creates a React context which keeps track of wether the user is authenticated
@@ -234,19 +234,19 @@ export const SessionProvider = ({
     setMostRecentSessionRefreshTimestamp,
   ] = useState(Date.now());
 
-  const expireWarningMilliseconds = MinutesToMilliseconds(expireWarningMinutes);
+  const expireWarningMilliseconds = minutesToMilliseconds(expireWarningMinutes);
   const [expiryWarningShown, setExpiryWarningShown] = useState<string | null>(
     null,
   );
 
   const inactiveTimeLimitMilliseconds =
-    MinutesToMilliseconds(inactiveTimeLimit);
+    minutesToMilliseconds(inactiveTimeLimit);
 
-  const workspaceInactivityTimeLimitMilliseconds = MinutesToMilliseconds(
+  const workspaceInactivityTimeLimitMilliseconds = minutesToMilliseconds(
     workspaceInactivityTimeLimit,
   );
   const updateSessionIntervalMilliseconds =
-    MinutesToMilliseconds(updateSessionTime);
+    minutesToMilliseconds(updateSessionTime);
 
   // update session status using the user status
 
