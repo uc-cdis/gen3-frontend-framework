@@ -37,14 +37,19 @@ This will then use the local copy of the Gen3.2 frontend and core packages
 in the datacommons application, without the overhead of publishing new
 Gen3.2 NPMs.
 
-### Updating changes to core or frontend packages
+### Updating changes to a single package
 ```bash
-cd packages/core or ../frontend
+cd packages/core, packages/frontend,packages/workspaces, or packages/tools
 npm run build:clean
 yalc publish --push
 ```
 which will update the local copy of the Gen3.2 packages and any linked applications.
 
+or all:
+
+```
+yalc publish packages/core packages/frontend packages/tools packages/workspaces --push
+```
 
 ### Removing the local copy of the Gen3.2 packages
 
