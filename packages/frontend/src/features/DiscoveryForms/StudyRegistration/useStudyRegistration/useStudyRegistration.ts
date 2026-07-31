@@ -15,6 +15,7 @@ import {
 import { ActiveUser, userCanRegisterStudy } from '../userCanRegisterStudy';
 import { getClinicalTrialMetadata } from './getClinicalTrialMetadata';
 import { preprocessStudyRegistrationMetadata } from './preprocessStudyRegistrationMetadata';
+import { createCEDARInstance } from './createCedarInstance';
 
 export const useStudyRegistration = (
   config: any,
@@ -113,7 +114,7 @@ export const useStudyRegistration = (
         ? {
             ...item,
             data: registerableStudyData,
-            initialValue: registerableStudyData[0],
+            initialValue: registerableStudyData[0].value,
           }
         : item,
     );
@@ -148,10 +149,17 @@ export const useStudyRegistration = (
       userInfo.username as string,
       studyID,
       valuesToUpdate,
-    );
-    /*.then(
-      (preprocessedMetadata: JSONObject) => alert(JSON.stringify(preprocessedMetadata)
-    )*/
+    )
+      .then((preprocessedMetadata: JSONObject) =>
+        createCEDARInstance(
+          config.cedarWrapperURL,
+          cedarUserUUID,
+          preprocessedMetadata,
+        ),
+      )
+      .then((updatedMetadataToRegister) =>
+        console.log('updatedMetadataToRegister', updatedMetadataToRegister),
+      );
   };
   /*         createCEDARInstance(cedarUserUUID, preprocessedMetadata).then(
           (updatedMetadataToRegister) =>
