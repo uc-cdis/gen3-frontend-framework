@@ -1,7 +1,7 @@
 # docker build -t ff .
 # docker run -p 3000:3000 -it ff
 # Build stage
-FROM --platform=$BUILDPLATFORM node:24.18.0-trixie-slim AS builder
+FROM --platform=$BUILDPLATFORM node:24.18.1-trixie-slim AS builder
 
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
@@ -56,7 +56,7 @@ RUN NODE_OPTIONS="--max-old-space-size=4096" \
 
 # ─────────────────────────────────────────────
 # Production stage
-FROM node:24.18.0-trixie-slim  AS runner
+FROM node:24.18.1-trixie-slim  AS runner
 
 WORKDIR /gen3
 
