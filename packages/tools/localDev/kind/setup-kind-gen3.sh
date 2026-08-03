@@ -385,7 +385,7 @@ setup_coredns() {
   info "Resolving host.docker.internal from Kind node (${CLUSTER_NAME}-control-plane)..."
   local host_ip
   host_ip="$(docker exec "${CLUSTER_NAME}-control-plane" \
-    python3 -c "import socket; print(socket.gethostbyname('host.docker.internal'))" 2>/dev/null)" || {
+    getent ahostsv4 host.docker.internal | awk 'NR==1{print $1}')" || {
     error "Failed to resolve host.docker.internal from the Kind node."
     error "Ensure Docker Desktop is running and the cluster is up."
     exit 1

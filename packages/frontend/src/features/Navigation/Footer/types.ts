@@ -49,20 +49,16 @@ export interface FooterLogo {
 }
 
 export type FooterRow =
-  | FooterLogo
-  | FooterText
-  | FooterLink
-  | FooterLinks
-  | FooterSectionProps;
+  FooterLogo | FooterText | FooterLink | FooterLinks | FooterSectionProps;
 
 export interface FooterColumnProps {
   heading?: string;
-  rows: Array<Record<string, FooterRow>>;
+  rows?: Array<Record<string, FooterRow>>;
   classNames?: StylingOverrideWithMergeControl;
 }
 
 export interface FooterSectionProps {
-  columns: ReadonlyArray<FooterColumnProps>;
+  columns?: ReadonlyArray<FooterColumnProps>;
   className?: string;
 }
 

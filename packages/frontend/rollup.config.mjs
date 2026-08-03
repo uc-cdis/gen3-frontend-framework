@@ -117,6 +117,7 @@ const jsBundle = (input, baseName, additionalExternal) => ({
       dir: `dist/${baseName}/cjs`,
       format: 'cjs',
       globals,
+      interop: 'auto',
       sourcemap: true,
     },
     {
