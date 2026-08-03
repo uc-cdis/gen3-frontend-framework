@@ -16,6 +16,7 @@ import { ActiveUser, userCanRegisterStudy } from '../userCanRegisterStudy';
 import { getClinicalTrialMetadata } from './getClinicalTrialMetadata';
 import { preprocessStudyRegistrationMetadata } from './preprocessStudyRegistrationMetadata';
 import { createCEDARInstance } from './createCedarInstance';
+import { useCreateCedarInstanceMutation } from './cedarApi';
 
 export const useStudyRegistration = (
   config: any,
@@ -40,6 +41,7 @@ export const useStudyRegistration = (
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
+  const [createCedarQuery] = useCreateCedarInstanceMutation();
 
   // Fetch all unregistered studies from MDS
   useEffect(() => {
@@ -108,6 +110,7 @@ export const useStudyRegistration = (
       value: study._hdp_uid,
     }));
     console.log('registerableStudyData[0]', registerableStudyData[0]);
+    console.log('userInfo', userInfo);
     // Autofill values for form:
     return config.form.map((item: any) =>
       item?.variable === 'study_id'
@@ -143,6 +146,7 @@ export const useStudyRegistration = (
     };
     console.log('valuesToUpdate', valuesToUpdate);
     console.log('userInfo', userInfo);
+
     preprocessStudyRegistrationMetadata(
       config,
       // props.user.username,
@@ -155,6 +159,7 @@ export const useStudyRegistration = (
           config.cedarWrapperURL,
           cedarUserUUID,
           preprocessedMetadata,
+          createCedarQuery, // <--- Pass the trigger function here
         ),
       )
       .then((updatedMetadataToRegister) =>

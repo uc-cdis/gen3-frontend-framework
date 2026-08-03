@@ -6,7 +6,10 @@ export const userCanRegisterStudy = (
   userInfo: ActiveUser,
   studyRegistrationAuthZ: any,
 ) => {
-  const actions = (userInfo?.authz as AuthzMapping)[studyRegistrationAuthZ];
+  const actions =
+    userInfo?.authz && studyRegistrationAuthZ
+      ? (userInfo?.authz as AuthzMapping)[studyRegistrationAuthZ]
+      : undefined;
   const method = 'access';
   const service = 'study_registration';
   return (
