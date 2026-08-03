@@ -15,8 +15,10 @@ import {
 import { ActiveUser, userCanRegisterStudy } from '../userCanRegisterStudy';
 import { getClinicalTrialMetadata } from './getClinicalTrialMetadata';
 import { preprocessStudyRegistrationMetadata } from './preprocessStudyRegistrationMetadata';
-import { createCEDARInstance } from './createCedarInstance';
-import { useCreateCedarInstanceMutation } from './cedarApi';
+// import {  }createCEDARInstance from './createCedarInstance';
+// import { useCreateCedarInstanceMutation } from './cedarApi';
+
+import { createCEDARInstance, cedarApi } from '@gen3/core';
 
 export const useStudyRegistration = (
   config: any,
@@ -41,7 +43,6 @@ export const useStudyRegistration = (
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
-  const [createCedarQuery] = useCreateCedarInstanceMutation();
 
   // Fetch all unregistered studies from MDS
   useEffect(() => {
@@ -146,7 +147,7 @@ export const useStudyRegistration = (
     };
     console.log('valuesToUpdate', valuesToUpdate);
     console.log('userInfo', userInfo);
-
+    const [createCedarQuery] = cedarApi.useCreateCedarInstanceMutation();
     preprocessStudyRegistrationMetadata(
       config,
       // props.user.username,

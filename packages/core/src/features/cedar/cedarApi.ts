@@ -1,6 +1,4 @@
-// src/services/cedar/cedarApi.ts
-
-import { gen3Api } from '@gen3/core';
+import { gen3Api } from '../gen3';
 
 export interface CreateCedarPayload {
   cedar_user_uuid: string;
