@@ -2,7 +2,7 @@ import { coreStore } from '../../store';
 import { userAuthApi } from './userSliceRTK';
 import { fetchJSONDataFromURL, HttpMethod } from '../../utils';
 import { GEN3_WTS_API } from '../../constants';
-import { ExternalProvider } from './types';
+import type { ExternalProvider } from './types';
 
 let cachedToken: string | null = null;
 

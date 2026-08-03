@@ -5,7 +5,7 @@ KIND_NODE="${KIND_NODE:-kind-multi-node-control-plane}"
 HOSTNAME="${HOSTNAME:-gen3dev.local.io}"
 
 echo "Getting IP address of host.docker.internal from ${KIND_NODE}..."
-HOST_IP=$(docker exec "${KIND_NODE}" python3 -c "import socket; print(socket.gethostbyname('host.docker.internal'))")
+HOST_IP=$(docker exec "${KIND_NODE}" getent ahostsv4 host.docker.internal | awk 'NR==1{print $1}')
 
 if [[ -z "${HOST_IP}" ]]; then
   echo "ERROR: Could not resolve host.docker.internal" >&2

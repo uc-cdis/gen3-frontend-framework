@@ -1,9 +1,11 @@
 import { NavigationBarLogo } from './types';
 import HoverLink from './HoverLink';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import React from 'react';
 import { extractClassName } from './utils';
 import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
+import { withBasePath } from '../../utils/strings';
 
 const NavigationLogo = ({
   src,
@@ -31,6 +33,8 @@ const NavigationLogo = ({
     classNames,
   );
 
+  const { basePath } = useRouter();
+
   return (
     <div
       className={extractClassName('root', mergedClassnames)}
@@ -46,7 +50,7 @@ const NavigationLogo = ({
           width={width ?? undefined}
           height={height ?? undefined}
           fill={!width && !height}
-          src={`${src}`}
+          src={withBasePath(basePath, src)}
           alt={description ?? title ?? 'link back to homepage'}
         />
       </HoverLink>

@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 /* eslint-disable @typescript-eslint/no-require-imports */
 const plugin = require('tailwindcss/plugin');
+// Vendored copy of @tailwindcss/typography re-exported by @gen3/frontend so this
+// config doesn't pull the vulnerable postcss-selector-parser@6.0.10 pinned by the
+// real @tailwindcss/typography package (CVE-2026-9358).
+const { typographyPlugin } = require('@gen3/frontend');
 
 const GEN3_COMMONS_NAME = process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME || 'gen3';
 
@@ -100,7 +104,7 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/forms'),
-    require('@tailwindcss/typography'),
+    typographyPlugin,
     require('@tailwindcss/forms')({
       strategy: 'class',
     }),

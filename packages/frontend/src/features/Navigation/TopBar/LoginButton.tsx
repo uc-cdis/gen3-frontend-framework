@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { NameAndIcon } from '../types';
-import { NextRouter, useRouter } from 'next/router';
+import type { NameAndIcon } from '../types';
+import type { NextRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { usePathname } from 'next/navigation';
 import { SessionContext } from '../../../lib/session/session';
 import {

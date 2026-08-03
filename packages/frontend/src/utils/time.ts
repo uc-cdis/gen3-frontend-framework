@@ -88,4 +88,4 @@ export const getHighResolutionTimestamp = (): number => {
 };
 // oxlint-disable-next-line no-unused-vars
 const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
-export const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;
+export const minutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;

@@ -28,7 +28,7 @@ import { ACTIVITY_CHANNEL } from './constants';
 import { Center, Loader } from '@mantine/core';
 import { useThrottledCallback } from '@mantine/hooks';
 
-import { MinutesToMilliseconds } from '../../utils';
+import { minutesToMilliseconds, withBasePath } from '../../utils';
 import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
 import { modals } from '@mantine/modals';
 
@@ -160,7 +160,7 @@ const useInterval = (callback: IntervalFunction, delay: number | null) => {
   }, [delay]);
 };
 
-const UPDATE_SESSION_LIMIT = MinutesToMilliseconds(1);
+const UPDATE_SESSION_LIMIT = minutesToMilliseconds(1);
 
 /**
  * SessionProvider creates a React context which keeps track of wether the user is authenticated
@@ -234,19 +234,19 @@ export const SessionProvider = ({
     setMostRecentSessionRefreshTimestamp,
   ] = useState(Date.now());
 
-  const expireWarningMilliseconds = MinutesToMilliseconds(expireWarningMinutes);
+  const expireWarningMilliseconds = minutesToMilliseconds(expireWarningMinutes);
   const [expiryWarningShown, setExpiryWarningShown] = useState<string | null>(
     null,
   );
 
   const inactiveTimeLimitMilliseconds =
-    MinutesToMilliseconds(inactiveTimeLimit);
+    minutesToMilliseconds(inactiveTimeLimit);
 
-  const workspaceInactivityTimeLimitMilliseconds = MinutesToMilliseconds(
+  const workspaceInactivityTimeLimitMilliseconds = minutesToMilliseconds(
     workspaceInactivityTimeLimit,
   );
   const updateSessionIntervalMilliseconds =
-    MinutesToMilliseconds(updateSessionTime);
+    minutesToMilliseconds(updateSessionTime);
 
   // update session status using the user status
 
@@ -264,6 +264,7 @@ export const SessionProvider = ({
 
   const endSession = useCallback(async () => {
     const isCredentialLogin = hasCookie('credentials_token');
+    const basePath = router.basePath;
 
     logoutSession()
       .then(() => getUserDetails())
@@ -275,11 +276,13 @@ export const SessionProvider = ({
       })
       .finally(() => {
         if (isCredentialLogin) {
+          // already logged out so just redirect
           void router.push(GEN3_REDIRECT_URL);
         } else {
-          void router.push(
-            `${GEN3_FENCE_API}/logout?next=${GEN3_REDIRECT_URL}`,
-          );
+          // need a fence redirect
+          const fullUrl = `${GEN3_FENCE_API}/logout?next=${withBasePath(basePath, GEN3_REDIRECT_URL)}`;
+          // replaced next.router push as this a separate site
+          window.location.href = fullUrl;
         }
       });
   }, [getUserDetails, router]);
