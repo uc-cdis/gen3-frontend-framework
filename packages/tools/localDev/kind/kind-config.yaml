@@ -4,6 +4,7 @@ name:  kind-multi-node
 networking:
   ipFamily: ipv4
   apiServerAddress: 127.0.0.1
+  serviceSubnet: "10.100.0.0/16"
 nodes:
   - role: control-plane
     extraMounts:
