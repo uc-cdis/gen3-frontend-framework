@@ -162,6 +162,8 @@
     "sharp": true,
     "fsevents": true,
     "@swc/core": true,
-    "nx": true
+    "nx": true,
+    "uuid@8.3.2": true,
+    "uuid@11.1.1": true
   }
 }
