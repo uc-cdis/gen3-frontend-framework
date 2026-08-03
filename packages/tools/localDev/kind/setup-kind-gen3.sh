@@ -212,6 +212,41 @@ install_ingress() {
   info "Ingress controller installed and ready"
 }
 
+# ── Helper: apply manifest with retry ────────────────────────────────────────
+#
+# On Kind, kube-proxy's iptables rules for the ingress-nginx-controller-admission
+# Service can lag a few seconds behind the controller pod reporting Ready. An
+# `kubectl apply` on an Ingress right after that triggers the validating webhook,
+# which fails with a connection-refused error until the Service is routable.
+# Retry specifically on that failure mode instead of failing the whole script.
+
+apply_with_retry() {
+  local yaml="$1"
+  local max_attempts=10
+  local delay=3
+  local attempt=1
+  local output
+
+  while (( attempt <= max_attempts )); do
+    if output="$(kubectl apply -f - <<<"$yaml" 2>&1)"; then
+      echo "$output"
+      return 0
+    fi
+    if echo "$output" | grep -q "ingress-nginx-controller-admission"; then
+      warn "Ingress admission webhook not reachable yet (attempt $attempt/$max_attempts). Retrying in ${delay}s..."
+      sleep "$delay"
+      ((attempt++))
+      continue
+    fi
+    echo "$output" >&2
+    return 1
+  done
+
+  error "Ingress admission webhook still unreachable after $max_attempts attempts."
+  error "Check: kubectl get pods -n ingress-nginx"
+  return 1
+}
+
 # ── Step 3: Setup SSL ────────────────────────────────────────────────────────
 
 setup_ssl() {
@@ -286,7 +321,7 @@ setup_ssl() {
 
   info "Applying ingress configuration for $HOSTNAME..."
 
-  cat <<EOF | kubectl apply -f -
+  apply_with_retry "$(cat <<EOF
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -313,6 +348,7 @@ spec:
             port:
               number: 80
 EOF
+)"
 
   info "Ingress applied"
   echo
@@ -343,7 +379,7 @@ setup_csp() {
   # Apply ingress with CSP headers
   info "Applying ingress with Content-Security-Policy headers..."
 
-  cat <<EOF | kubectl apply -f -
+  apply_with_retry "$(cat <<EOF
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -371,6 +407,7 @@ spec:
             port:
               number: 80
 EOF
+)"
 
   info "CSP configuration applied"
   info "Workspace iframes from https://localhost:3010 are now allowed"
@@ -385,11 +422,16 @@ setup_coredns() {
   info "Resolving host.docker.internal from Kind node (${CLUSTER_NAME}-control-plane)..."
   local host_ip
   host_ip="$(docker exec "${CLUSTER_NAME}-control-plane" \
-    python3 -c "import socket; print(socket.gethostbyname('host.docker.internal'))" 2>/dev/null)" || {
+    getent ahostsv4 host.docker.internal 2>/dev/null | awk 'NR==1{print $1}')" || {
     error "Failed to resolve host.docker.internal from the Kind node."
     error "Ensure Docker Desktop is running and the cluster is up."
     exit 1
   }
+  if [[ -z "$host_ip" ]]; then
+    error "Failed to resolve host.docker.internal from the Kind node."
+    error "Ensure Docker Desktop is running and the cluster is up."
+    exit 1
+  fi
   info "host.docker.internal -> $host_ip"
 
   # Fetch the current Corefile
