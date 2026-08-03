@@ -23,3 +23,12 @@ export const toDisplayName = (field: string): string => {
 export const removeMultipleSlashes = (str: string): string => {
   return str.replace(/\/+/g, '/');
 };
+
+// next/image does not automatically prepend basePath to local image sources,
+// so config-driven paths (e.g. "/images/foo.png") need it added explicitly.
+export const withBasePath = (basePath: string, src: string): string => {
+  if (!src) return basePath;
+  if (/^https?:\/\//.test(src)) return src;
+  if (basePath && src.startsWith(basePath)) return src;
+  return removeMultipleSlashes(`${basePath}/${src}`);
+};

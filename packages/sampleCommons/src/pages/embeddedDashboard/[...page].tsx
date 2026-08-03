@@ -17,7 +17,7 @@ const DashboardContentApp = ({
     'loading',
   );
 
-  const iframeRef = useRef<HTMLIFrameElement>(null!);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null!);
 
   // Check if the dashboard URL exists
   useEffect(() => {
@@ -28,7 +28,7 @@ const DashboardContentApp = ({
 
     const checkUrl = async () => {
       try {
-        const response = await fetch(`/dashboard/${path}`, {
+        const response = await fetch(`${router.basePath}/dashboard/${path}`, {
           method: 'GET',
           headers: {
             Range: 'bytes=0-0',
@@ -42,7 +42,7 @@ const DashboardContentApp = ({
         }
       } catch (error) {
         console.error('Failed to check dashboard URL:', error);
-        router.replace('/404');
+        await router.replace('/404');
       }
     };
 
@@ -57,7 +57,7 @@ const DashboardContentApp = ({
         // Access iframe document
         if (iframe) {
           const iframeDoc =
-            iframe.contentDocument || iframe?.contentWindow?.document;
+            iframe.contentDocument || iframe.contentWindow?.document;
 
           // Find all anchor tags and add target="_blank"
           const links = iframeDoc?.querySelectorAll('a');
@@ -114,7 +114,7 @@ const DashboardContentApp = ({
           sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"
           referrerPolicy="strict-origin-when-cross-origin"
           allow="geolocation 'none'; microphone 'none'; camera 'none'"
-          src={`/dashboard/${path}`}
+          src={`${router.basePath}/dashboard/${path}`}
           width="100%"
           height="100%"
           title="client notebook"

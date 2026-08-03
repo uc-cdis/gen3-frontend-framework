@@ -2,8 +2,8 @@ import React from 'react';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import { Loader, Tabs, Title } from '@mantine/core';
-import { ContextModalProps } from '@mantine/modals';
-import {
+import type { ContextModalProps } from '@mantine/modals';
+import type {
   CohortDiscoveryConfig,
   DataAccessRequestUserInformation,
 } from './types';
@@ -16,6 +16,8 @@ import DataAccessRequestForm from './Requests/DataAccessRequestForm';
 import TabbedIndex from './TabbedIndex';
 import { extractIndexResourceFromConfiguration } from './utils';
 import { loadCohortsFromStorage } from './CohortManagment/CohortManagerSlice';
+import { useRouter } from 'next/router';
+import { withBasePath } from '../../utils';
 
 const persistor = persistStore(AppStore);
 
@@ -46,6 +48,9 @@ const DataRequestModal = ({
 const CohortDiscovery = (config: CohortDiscoveryConfig) => {
   const indexResources = extractIndexResourceFromConfiguration(config);
   useAppDispatch(loadCohortsFromStorage());
+
+  const { basePath } = useRouter();
+
   return (
     <React.Fragment>
       <PersistGate persistor={persistor} loading={<Loader variant="dots" />}>
@@ -71,7 +76,7 @@ const CohortDiscovery = (config: CohortDiscoveryConfig) => {
               return (
                 <Tabs.Tab value={key} key={key}>
                   <Image
-                    src={config.leftNav[key].image}
+                    src={withBasePath(basePath, config.leftNav[key].image)}
                     alt={config.leftNav[key].imageAlt}
                     width={40}
                     height={40}

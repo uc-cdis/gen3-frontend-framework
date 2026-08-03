@@ -1,9 +1,9 @@
 import type { Middleware, Reducer } from '@reduxjs/toolkit';
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { GraphQLError } from 'graphql';
-import { JSONObject } from '../../types';
+import type { JSONObject } from '../../types';
 import { GEN3_GUPPY_API } from '../../constants';
-import { CoreState } from '../../reducers';
+import type { CoreState } from '../../reducers';
 import { getCookie } from 'cookies-next';
 import { selectCSRFToken } from '../user';
 

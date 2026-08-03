@@ -1,9 +1,12 @@
-import React, { AriaAttributes } from 'react';
+import type { AriaAttributes } from 'react';
+import React from 'react';
+import NextImage from 'next/image';
+import { useRouter } from 'next/router';
 import { Image, NavLink, Stack, Tooltip } from '@mantine/core';
 import TextDescription from './TextDescription';
 import Link from 'next/link';
-import { AnalysisToolConfiguration } from './types';
-import NextImage from 'next/image';
+import type { AnalysisToolConfiguration } from './types';
+import { withBasePath } from '../../utils/strings';
 
 const CARD_ACTION_CLASSNAMES = {
   root: 'bg-accent text-accent-contrast text-nowrap text-center hover:bg-accent-darker p-2 rounded min-h-[44px] flex items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
@@ -73,6 +76,8 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
   btnText,
   onButtonClick,
 }) => {
+  const { basePath } = useRouter();
+
   const handleClick = () => {
     if (onButtonClick) {
       onButtonClick({
@@ -82,12 +87,20 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
     }
   };
 
+  console.log('icon', icon);
+  console.log('icon instanceof String', icon instanceof String);
+  console.log('icon instanceof String', typeof icon);
+  console.log(
+    'withBasePath(basePath, icon as string)',
+    withBasePath(basePath, icon as string),
+  );
+
   return (
     <Stack key={title} className="rounded-sm rounded-t-md bg-base-max p-0">
       <div className="relative h-[28em]">
         <div className="p-0 h-max-1/3 h-1/3 flex justify-center items-start relative overflow-hidden auto-rows-min">
           <Image
-            src={`${image}`}
+            src={withBasePath(basePath, image ?? '')}
             alt={''}
             w="auto"
             classNames={{
@@ -100,7 +113,11 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
             <div className="p-0.5 bg-base-lightest ml-5 border-2 border-base h-1/8 w-1/8 max-h-24 max-w-24">
               <Image
                 component={NextImage}
-                src={`${icon}`}
+                src={
+                  typeof icon === 'string'
+                    ? withBasePath(basePath, icon as string)
+                    : icon
+                }
                 alt=""
                 width={32}
                 height={32}

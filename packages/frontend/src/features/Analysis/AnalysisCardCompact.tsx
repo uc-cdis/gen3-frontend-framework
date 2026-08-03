@@ -3,8 +3,9 @@ import Link from 'next/link';
 import NextImage from 'next/image';
 import TextDescription from './TextDescription';
 import { Button, Group, Image, Stack, Text } from '@mantine/core';
-import { AnalysisToolConfiguration } from './types';
+import type { AnalysisToolConfiguration } from './types';
 import { useRouter } from 'next/router';
+import { withBasePath } from '../../utils';
 
 type AnalysisCardCompactProps = Omit<AnalysisToolConfiguration, 'image'>;
 
@@ -21,6 +22,8 @@ const AnalysisCardCompact: React.FC<AnalysisCardCompactProps> = ({
   btnText,
 }) => {
   const router = useRouter();
+
+  const { basePath } = router;
 
   const handleClick = useCallback(
     (href: string) => router.push(href),
@@ -39,7 +42,11 @@ const AnalysisCardCompact: React.FC<AnalysisCardCompactProps> = ({
         <div className="relative rounded-lg bg-base-lightest ml-5 border-4 border-base-light mx-1 w-1/4 aspect-square">
           <Image
             component={NextImage}
-            src={`${icon}`}
+            src={
+              icon instanceof String
+                ? `${withBasePath(basePath, icon as string)}`
+                : icon
+            }
             alt={`${title} logo`}
             fill
             fit="cover"
@@ -57,7 +64,7 @@ const AnalysisCardCompact: React.FC<AnalysisCardCompactProps> = ({
           </Text>
           {count && (
             <Text size="md" fw="semibold" c="base-contrast.5">
-              {count?.toLocaleString()} {countUnits}
+              {count.toLocaleString()} {countUnits}
             </Text>
           )}
           <div
