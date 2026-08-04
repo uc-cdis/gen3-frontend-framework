@@ -12,7 +12,8 @@ export interface Session extends AuthTokenData {
   userStatus?: LoginStatus;
   user?: Gen3User;
   updateSession: () => void;
-  endSession: () => void;
+  /** Resolves once logout has completed and the redirect has been initiated. */
+  endSession: () => Promise<void>;
   pending: boolean;
 }
 
