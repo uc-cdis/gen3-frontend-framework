@@ -351,9 +351,7 @@ export const SessionProvider = ({
           void router.push(GEN3_REDIRECT_URL);
         } else {
           // need a fence redirect
-          const fullUrl = `${GEN3_FENCE_API}/logout?next=${withBasePath(basePath, GEN3_REDIRECT_URL)}`;
-          // replaced next.router push as this a separate site
-          window.location.href = fullUrl;
+          window.location.href = `${GEN3_FENCE_API}/logout?next=${withBasePath(basePath, GEN3_REDIRECT_URL)}`;
         }
       });
   }, [getUserDetails, router]);
@@ -362,10 +360,10 @@ export const SessionProvider = ({
    * Check if the user session has ended
    */
   const isSessionActive = useThrottledCallback(() => {
-    //Check session token, this call updates info
+    // Check session token, this call updates info
     void getUserDetails(undefined, true).then((obj) => {
       // use cache value to prevent excessive calls to /user/user
-      //check to make sure logged-out users are logged out
+      // check to make sure logged-out users are logged out
       if (
         obj?.data?.loginStatus != 'authenticated' &&
         userStatus === 'authenticated'
@@ -394,7 +392,7 @@ export const SessionProvider = ({
   }, []);
 
   // Activity monitoring — only active while the user is logged in.
-  // Re-registers listeners whenever login state or the handler reference changes,
+  // Re-registers listeners whenever the login state or the handler reference changes,
   // which also fixes the stale closure bug (updateUserActivity captures sessionInfo).
   useEffect(() => {
     if (updateSessionIntervalMilliseconds <= 0) return;
