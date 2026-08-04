@@ -1173,6 +1173,106 @@ describe('SessionProvider – refresh scheduling resilience', () => {
     });
     expect(fetchMock).toHaveBeenCalledTimes(readsAfterMount + 2);
   });
+
+  it('still attempts recovery on a token that expired while the tab was hidden', async () => {
+    const getUserDetails = setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+
+    // The endpoint is down, which is what a hidden tab's late-firing timers look
+    // like: each unhealthy cycle spends another step of the backoff.
+    global.fetch = jest.fn().mockResolvedValue({
+      status: 500,
+      json: jest.fn().mockResolvedValue({ message: 'boom' }),
+    });
+
+    render(
+      <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+    await act(async () => {});
+
+    await act(async () => {
+      jest.advanceTimersByTime(5000); // burn the prompt attempt, engaging the backoff
+    });
+
+    // The tab comes back, and the token turned out to have expired meanwhile.
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    global.fetch = jest.fn().mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue({
+        status: 'expired',
+        issued: nowSeconds - 20 * 60,
+        expires: nowSeconds - 60,
+      }),
+    });
+    getUserDetails.mockClear();
+
+    await act(async () => {
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+
+    // An expired token gets its recovery attempt even though the backoff counter
+    // was already spent — sharing that counter meant nothing was armed here.
+    getUserDetails.mockClear();
+    await act(async () => {
+      jest.advanceTimersByTime(5000);
+    });
+    expect(getUserDetails).toHaveBeenCalledTimes(1);
+
+    // Still exactly one: Fence did not reissue, so polling stops.
+    getUserDetails.mockClear();
+    await act(async () => {
+      jest.advanceTimersByTime(10 * 60 * 1000);
+    });
+    expect(getUserDetails).not.toHaveBeenCalled();
+  });
+
+  it('settles the login state when the token no longer backs it', async () => {
+    const getUserDetails = setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+
+    // Healthy at mount, so the refresh is armed ~18 minutes out and nothing else
+    // is due.
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    global.fetch = jest.fn().mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue({
+        status: 'issued',
+        issued: nowSeconds,
+        expires: nowSeconds + 20 * 60,
+      }),
+    });
+
+    render(
+      <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+    await act(async () => {});
+
+    // The cookie is gone by the time the tab is foregrounded. `userStatus` is
+    // derived from a cached /user response, so without an explicit request the
+    // store keeps reporting an authenticated session against no token at all.
+    global.fetch = jest.fn().mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue({ status: 'not present' }),
+    });
+    getUserDetails.mockClear();
+
+    await act(async () => {
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+
+    // Asked for immediately, not on some later timer.
+    expect(getUserDetails).toHaveBeenCalledTimes(1);
+  });
 });
 
 // ===========================================================================

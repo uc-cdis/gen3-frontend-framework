@@ -381,6 +381,22 @@ export const SessionProvider = ({
     void Promise.resolve(getUserDetails()).catch(() => undefined);
   }, [getUserDetails]);
 
+  // Ask Fence for the login state, uncached, after a token read that contradicts
+  // it.
+  //
+  // `userStatus` is derived from the /user cache entry, which nothing in a hidden
+  // tab invalidates, so a token that expires while the tab is backgrounded leaves
+  // the store reporting `authenticated` indefinitely: the UI stays logged in,
+  // every request 401s, and no logout or re-login is ever prompted. This request
+  // resolves that — Fence either reissues the cookie off its own session, or
+  // answers unauthenticated and the store settles, which drops
+  // `sessionInfo.status` off 'issued' and tears the schedule down.
+  const resettleLoginState = useCallback(() => {
+    // Same shape as `updateSession`: the query owns its error state, so swallow
+    // the rejection rather than let it surface unhandled.
+    void Promise.resolve(getUserDetails()).catch(() => undefined);
+  }, [getUserDetails]);
+
   // Read the token metadata and mirror it into state for the context value.
   // `basePath` is fixed for the lifetime of the app, so depending on it does not
   // churn this callback (or the refresh schedule derived from it).
@@ -405,6 +421,15 @@ export const SessionProvider = ({
   // survives re-derivations of the schedule: a tab foreground must not reset the
   // backoff, or flipping tabs while the endpoint is down restarts fast retries.
   const refreshFailuresRef = useRef(0);
+
+  // Whether the one recovery attempt for a definitively dead token has been
+  // spent. Deliberately *not* the backoff counter above: a tab that sat hidden
+  // long enough for the token to expire has usually burned that counter on
+  // late-firing timers, and sharing it meant the expired branch below found it
+  // non-zero and armed nothing at all — the user came back to a dead session
+  // that never tried to recover. Reset when the tab is foregrounded and on a
+  // fresh login, so returning to a stale tab always gets an attempt.
+  const expiredRecoveryAttemptedRef = useRef(false);
 
   // Set while a refresh cycle is running, so a concurrent re-derivation defers to
   // it instead of racing to arm the timer off a staler read.
@@ -434,14 +459,23 @@ export const SessionProvider = ({
   );
 
   // Decide the next timer from a token read.
+  //
+  // `loginStateIsFresh` says whether the caller has just been to /user, so the
+  // dead-token branches below can skip re-settling a login state that is already
+  // current instead of spending a second request on it.
   const scheduleFromTokenData = useCallback(
-    (session: AuthTokenData) => {
+    (session: AuthTokenData, loginStateIsFresh = false) => {
       if (!isMountedRef.current) return;
       if (sessionStatusRef.current !== 'issued') return;
 
-      // No cookie at all: there is nothing to renew, and the login state will
-      // settle to unauthenticated, which clears the schedule.
-      if (session.status === 'not present') return;
+      // No cookie at all: there is nothing to renew. The login state does not
+      // settle to unauthenticated on its own — it is derived from a cached /user
+      // response — so ask for it rather than leaving the app acting logged in
+      // against a token that is not there.
+      if (session.status === 'not present') {
+        if (!loginStateIsFresh) resettleLoginState();
+        return;
+      }
 
       // `exp` at or before `iat` is a malformed token; no retry fixes that.
       if (
@@ -453,11 +487,16 @@ export const SessionProvider = ({
 
       if (session.status === 'expired' || session.status === 'invalid') {
         // A definitive answer, but a single /user call can still re-authenticate
-        // through Fence's own session and reissue the cookie. Allow exactly one
-        // such attempt — beyond that the token is not coming back and polling
-        // would only hammer Fence.
-        if (refreshFailuresRef.current === 0) {
-          refreshFailuresRef.current = 1;
+        // through Fence's own session and reissue the cookie — and that same call
+        // is what tells the store the session is gone when it cannot. Either way
+        // the app stops believing a dead token is live.
+        if (!loginStateIsFresh) resettleLoginState();
+
+        // Backstop for when that request does not move the login state at all
+        // (an unreachable endpoint leaves it authenticated): retry the full cycle
+        // once. Anything beyond that is polling a token that is not coming back.
+        if (!expiredRecoveryAttemptedRef.current) {
+          expiredRecoveryAttemptedRef.current = true;
           armRefreshTimer(MIN_REFRESH_DELAY_MILLISECONDS);
         }
         return;
@@ -467,6 +506,7 @@ export const SessionProvider = ({
         const delay = refreshDelayFromToken(session);
         if (delay >= MIN_REFRESH_DELAY_MILLISECONDS) {
           refreshFailuresRef.current = 0;
+          expiredRecoveryAttemptedRef.current = false;
           armRefreshTimer(delay);
           return;
         }
@@ -478,7 +518,7 @@ export const SessionProvider = ({
       armRefreshTimer(unhealthyRefreshDelay(refreshFailuresRef.current));
       refreshFailuresRef.current += 1;
     },
-    [armRefreshTimer],
+    [armRefreshTimer, resettleLoginState],
   );
 
   const performScheduledRefresh = useCallback(async () => {
@@ -496,7 +536,9 @@ export const SessionProvider = ({
       } catch (_error: unknown) {
         // Leave `session` as 'error' so we retry rather than abandon the chain.
       }
-      scheduleFromTokenData(session);
+      // This cycle opened with a /user call, so the login state is already as
+      // current as a request can make it.
+      scheduleFromTokenData(session, true);
     } finally {
       refreshInFlightRef.current = false;
     }
@@ -527,6 +569,7 @@ export const SessionProvider = ({
     }
 
     refreshFailuresRef.current = 0; // a fresh login starts from a clean backoff
+    expiredRecoveryAttemptedRef.current = false;
     void rescheduleFromToken();
 
     return () => {
@@ -553,6 +596,14 @@ export const SessionProvider = ({
       )
         return;
       lastVisibilityRecheckRef.current = now;
+
+      // Coming back to the tab is the moment a dead token is worth one more
+      // attempt: this is the case the shared backoff counter used to swallow.
+      // Bounded by the throttle above, so flipping tabs cannot turn it into a
+      // poll. The backoff counter itself is deliberately left alone — a failing
+      // endpoint must not get fast retries again just because the tab was
+      // foregrounded.
+      expiredRecoveryAttemptedRef.current = false;
 
       void rescheduleFromToken();
     };

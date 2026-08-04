@@ -74,6 +74,7 @@
     "@types/node": "^26.1.1",
     "@types/react": "^19.2.17",
     "@types/tinycolor2": "^1.4.6",
+    "@types/uuid": "^10.0.0",
     "@welldone-software/why-did-you-render": "^10.0.0",
     "autoprefixer": "^10.4.20",
     "globals": "^16.0.0",
