@@ -4,7 +4,8 @@ import { decodeJwt, importSPKI, JWTPayload, jwtVerify } from 'jose';
 import { fetchJWTKey } from '../../lib/auth/utils';
 import { getWebTokenErrorResponse } from './errorHandler';
 
-export const isExpired = (value: number) => value - Date.now() > 0;
+// `value` is a JWT `exp` claim in seconds since epoch; `Date.now()` is milliseconds.
+export const isExpired = (value: number) => value * 1000 - Date.now() <= 0;
 
 export interface JWTPayloadAndUser extends JWTPayload {
   context: Record<string, string>;

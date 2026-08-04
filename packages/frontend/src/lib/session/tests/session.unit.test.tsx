@@ -584,7 +584,7 @@ describe('SessionProvider – online / offline interval control', () => {
     jest.useRealTimers();
   });
 
-  it('calls getUserDetails on the interval tick when online', async () => {
+  it('schedules a refresh from the token exp and calls getUserDetails when it fires', async () => {
     const getUserDetails = setupDefaultCoreMocks();
     hooksMock.useManageSession.mockReturnValue({
       status: 'issued',
@@ -597,20 +597,36 @@ describe('SessionProvider – online / offline interval control', () => {
       configurable: true,
     });
 
+    // Token expires 20 minutes from now — the scheduler should fire ~2
+    // minutes early (REFRESH_MARGIN_MILLISECONDS), not on updateSessionTime's clock.
+    const expiresSeconds = Math.floor(Date.now() / 1000) + 20 * 60;
+    global.fetch = jest.fn().mockResolvedValue({
+      status: 200,
+      json: jest
+        .fn()
+        .mockResolvedValue({ status: 'issued', expires: expiresSeconds }),
+    });
+
     render(
       <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
         <div />
       </SessionProvider>,
     );
 
-    // Flush mount effects then clear the initial mount call
+    // Flush mount effects (initial getUserDetails + the seeding fetch to
+    // /api/auth/sessionToken) then clear the initial mount call.
     await act(async () => {});
     getUserDetails.mockClear();
 
-    // Advance past the 1-minute interval and past the 5-minute UPDATE_SESSION_LIMIT
-    // so refreshSession actually calls getUserDetails
+    // Not yet due — well short of the 18-minute scheduled delay.
     await act(async () => {
-      jest.advanceTimersByTime(6 * 60 * 1000);
+      jest.advanceTimersByTime(5 * 60 * 1000);
+    });
+    expect(getUserDetails).not.toHaveBeenCalled();
+
+    // Advance past the scheduled refresh (expires - REFRESH_MARGIN_MILLISECONDS).
+    await act(async () => {
+      jest.advanceTimersByTime(15 * 60 * 1000);
     });
 
     expect(getUserDetails).toHaveBeenCalled();

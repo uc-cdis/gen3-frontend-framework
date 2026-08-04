@@ -120,24 +120,6 @@ export const useIsAuthenticated = () => {
   };
 };
 
-const refreshSession = (
-  getUserDetails: () => void,
-  mostRecentSessionRefreshTimestamp: number,
-  updateSessionRefreshTimestamp: (arg0: number) => void,
-): void => {
-  const timeSinceLastSessionUpdate =
-    Date.now() - mostRecentSessionRefreshTimestamp;
-  // don't hit Fence to refresh tokens too frequently
-
-  if (timeSinceLastSessionUpdate < UPDATE_SESSION_LIMIT) {
-    return;
-  }
-
-  // hitting Fence endpoint refreshes the token
-  updateSessionRefreshTimestamp(Date.now());
-  getUserDetails();
-};
-
 type IntervalFunction = () => unknown | void;
 
 const useInterval = (callback: IntervalFunction, delay: number | null) => {
@@ -160,7 +142,15 @@ const useInterval = (callback: IntervalFunction, delay: number | null) => {
   }, [delay]);
 };
 
-const UPDATE_SESSION_LIMIT = minutesToMilliseconds(1);
+// How long before the access token's real expiry (decoded from the JWT, not
+// guessed from `updateSessionTime`) we proactively refresh it. Refreshing
+// against the token's own `exp` means we hit Fence's /user endpoint at most
+// once per token lifetime instead of on a fixed clock that can drift into
+// (or past) the actual expiry.
+const REFRESH_MARGIN_MILLISECONDS = minutesToMilliseconds(2);
+// Floor for the scheduled refresh delay so a nearly-expired or already-expired
+// token doesn't cause a tight refresh loop.
+const MIN_REFRESH_DELAY_MILLISECONDS = 5000;
 
 /**
  * SessionProvider creates a React context which keeps track of wether the user is authenticated
@@ -229,11 +219,6 @@ export const SessionProvider = ({
     }
   }, []);
 
-  const [
-    mostRecentSessionRefreshTimestamp,
-    setMostRecentSessionRefreshTimestamp,
-  ] = useState(Date.now());
-
   const expireWarningMilliseconds = minutesToMilliseconds(expireWarningMinutes);
   const [expiryWarningShown, setExpiryWarningShown] = useState<string | null>(
     null,
@@ -254,13 +239,99 @@ export const SessionProvider = ({
 
   // for now, we are using the user status to determine if the user is logged in
   const updateSession = useCallback(() => {
-    const updateSessionWithUserStatus = async () => {
-      await getUserDetails();
-      setMostRecentSessionRefreshTimestamp(Date.now());
+    void getUserDetails();
+  }, [getUserDetails]);
+
+  // Proactive, expiry-driven token refresh.
+  //
+  // Fence reissues the access_token cookie every time /user is hit, so we
+  // schedule exactly one refresh per token lifetime — timed from the token's
+  // own `exp` claim (via /api/auth/sessionToken) rather than a fixed clock
+  // that can drift into, or past, the real expiry.
+  const refreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Holds the latest scheduleNextRefresh so performScheduledRefresh (defined
+  // first, for readability) can reschedule itself without a circular useCallback dependency.
+  const scheduleNextRefreshRef = useRef<(expiresSeconds: number) => void>(
+    () => {},
+  );
+
+  const clearScheduledRefresh = useCallback(() => {
+    if (refreshTimeoutRef.current) {
+      clearTimeout(refreshTimeoutRef.current);
+      refreshTimeoutRef.current = null;
+    }
+  }, []);
+
+  const performScheduledRefresh = useCallback(async () => {
+    await getUserDetails();
+    const session = await getSession();
+    if (session?.expires) {
+      scheduleNextRefreshRef.current(session.expires);
+    }
+  }, [getUserDetails]);
+
+  const scheduleNextRefresh = useCallback(
+    (expiresSeconds: number) => {
+      clearScheduledRefresh();
+      const delay = Math.max(
+        MIN_REFRESH_DELAY_MILLISECONDS,
+        expiresSeconds * 1000 - Date.now() - REFRESH_MARGIN_MILLISECONDS,
+      );
+      refreshTimeoutRef.current = setTimeout(() => {
+        void performScheduledRefresh();
+      }, delay);
+    },
+    [clearScheduledRefresh, performScheduledRefresh],
+  );
+
+  useEffect(() => {
+    scheduleNextRefreshRef.current = scheduleNextRefresh;
+  }, [scheduleNextRefresh]);
+
+  // Seed (and cancel) the schedule as login state changes.
+  useEffect(() => {
+    if (sessionInfo.status !== 'issued') {
+      clearScheduledRefresh();
+      return;
+    }
+
+    let cancelled = false;
+    void (async () => {
+      const session = await getSession();
+      if (!cancelled && session?.expires) {
+        scheduleNextRefresh(session.expires);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+      clearScheduledRefresh();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionInfo.status]);
+
+  // Catch up if the scheduled setTimeout was throttled while the tab was
+  // backgrounded (browsers can pause/delay timers in inactive tabs well
+  // beyond our refresh margin). Re-derive the schedule from the real token
+  // expiry as soon as the tab is visible again.
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    if (sessionInfo.status !== 'issued') return;
+
+    const handleVisibility = () => {
+      if (document.visibilityState !== 'visible') return;
+      void (async () => {
+        const session = await getSession();
+        if (session?.expires) {
+          scheduleNextRefresh(session.expires);
+        }
+      })();
     };
 
-    void updateSessionWithUserStatus();
-  }, [getUserDetails]);
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () =>
+      document.removeEventListener('visibilitychange', handleVisibility);
+  }, [sessionInfo.status, scheduleNextRefresh]);
 
   const endSession = useCallback(async () => {
     const isCredentialLogin = hasCookie('credentials_token');
@@ -401,14 +472,8 @@ export const SessionProvider = ({
           setExpiryWarningShown(null);
         }
       }
-      // fetching a userState will renew the session (rate-limited by refreshSession)
-      refreshSession(
-        async () => {
-          await getUserDetails();
-        },
-        mostRecentSessionRefreshTimestamp,
-        (ts: number) => setMostRecentSessionRefreshTimestamp(ts),
-      );
+      // Token refresh is handled by the exp-driven scheduler above — this
+      // interval only tracks inactivity/logout timing.
     },
     updateSessionIntervalMilliseconds > 0
       ? updateSessionIntervalMilliseconds
