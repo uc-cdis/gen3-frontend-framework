@@ -37,34 +37,12 @@ const ACTIVITY_THROTTLE_TIMEOUT = 7000;
 export const logoutSession = async () => {
   // logged in using credentials, then execute credentials logout first
   if (process.env.NODE_ENV === 'development') {
-    const accessToken = getCookie('credentials_token');
-    if (accessToken) {
+    const credentialsToken = getCookie('credentials_token');
+    if (credentialsToken) {
       await fetch('/api/auth/credentialsLogout');
     }
   }
 };
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function useOnline() {
-  const [isOnline, setIsOnline] = useState(
-    typeof navigator !== 'undefined' ? navigator.onLine : false,
-  );
-
-  const setOnline = () => setIsOnline(true);
-  const setOffline = () => setIsOnline(false);
-
-  useEffect(() => {
-    window.addEventListener('online', setOnline);
-    window.addEventListener('offline', setOffline);
-
-    return () => {
-      window.removeEventListener('online', setOnline);
-      window.removeEventListener('offline', setOffline);
-    };
-  }, []);
-
-  return isOnline;
-}
 
 export const SessionContext = React.createContext<Session | undefined>(
   undefined,
@@ -477,23 +455,22 @@ export const SessionProvider = ({
     const isCredentialLogin = hasCookie('credentials_token');
     const basePath = router.basePath;
 
-    await logoutSession()
-      .then(() => getUserDetails())
-      .catch((e) => {
-        showNotification({
-          title: 'Logout Error',
-          message: `error logging out ${e.message}`,
-        });
-      })
-      .finally(() => {
-        if (isCredentialLogin) {
-          // already logged out so just redirect
+    if (isCredentialLogin) {
+      await logoutSession()
+        .then(() => getUserDetails())
+        .catch((e) => {
+          showNotification({
+            title: 'Logout Error',
+            message: `error logging out ${e.message}`,
+          });
+        })
+        .finally(() => {
           void router.push(GEN3_REDIRECT_URL);
-        } else {
-          // need a fence redirect
-          window.location.href = `${GEN3_FENCE_API}/logout?next=${withBasePath(basePath, GEN3_REDIRECT_URL)}`;
-        }
-      });
+        });
+    } else {
+      // need a fence redirect
+      window.location.href = `${GEN3_FENCE_API}/logout?next=${withBasePath(basePath, GEN3_REDIRECT_URL)}`;
+    }
   }, [getUserDetails, router]);
 
   /**
@@ -589,8 +566,7 @@ export const SessionProvider = ({
   }, []);
 
   // Activity monitoring — only active while the user is logged in.
-  // Re-registers listeners whenever the login state or the handler reference changes,
-  // which also fixes the stale closure bug (updateUserActivity captures sessionInfo).
+  // Re-registers listeners whenever the login state or the handler reference changes.
   useEffect(() => {
     if (updateSessionIntervalMilliseconds <= 0) return;
     if (sessionInfo.status !== 'issued') return;
@@ -616,14 +592,15 @@ export const SessionProvider = ({
 
   useInterval(
     () => {
+      const { pathname } = router;
       if (sessionInfo.status !== 'issued') return; // no need to update session if user is not logged in
-      if (isUserOnPage('Login') /* || this.popupShown */) return;
+      if (isUserOnPage('Login', pathname) /* || this.popupShown */) return;
 
       if (!logoutInactiveUsers) return;
 
       const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
 
-      const activeLimit = isUserOnPage('Workspace')
+      const activeLimit = isUserOnPage('Workspace', pathname)
         ? workspaceInactivityTimeLimitMilliseconds
         : inactiveTimeLimitMilliseconds;
 

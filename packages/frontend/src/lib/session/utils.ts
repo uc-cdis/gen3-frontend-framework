@@ -5,10 +5,6 @@ export const pageFromURL = (currentURL: string): string => {
   return paths[paths.length - 1];
 };
 
-export const isUserOnPage = (pageName: string): boolean => {
-  if (typeof window === 'undefined') return false;
-
-  return pageFromURL(window.location.href)
-    .toLowerCase()
-    .includes(pageName.toLowerCase());
+export const isUserOnPage = (pageName: string, pathname: string): boolean => {
+  return pathname.toLowerCase().includes(pageName.toLowerCase());
 };
