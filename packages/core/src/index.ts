@@ -35,6 +35,7 @@ export * from './dataAccess';
 export * from './features/aiSearch';
 export * from './features/authz';
 export * from './features/cedar';
+export * from './features/updateStudyInMDS';
 export * from './features/cohort';
 export * from './features/dataLibrary';
 export * from './features/drsResolver';

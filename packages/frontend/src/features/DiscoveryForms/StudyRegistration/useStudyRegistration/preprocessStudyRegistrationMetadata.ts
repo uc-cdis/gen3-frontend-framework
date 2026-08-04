@@ -17,7 +17,7 @@ export const preprocessStudyRegistrationMetadata = async (
   GUIDType = 'discovery_metadata',
 ) => {
   try {
-    const queryURL = `${config.mdsURL}/${metadataID}`;
+    const queryURL = `${config.mdsURL}/metadata/${metadataID}`;
     const queryRes = await fetch(queryURL);
     if (queryRes.status !== 200) {
       throw new Error(

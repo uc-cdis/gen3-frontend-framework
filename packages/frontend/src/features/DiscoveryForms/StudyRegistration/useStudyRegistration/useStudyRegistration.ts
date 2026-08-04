@@ -6,6 +6,7 @@ import {
   selectUserDetails,
   useCoreSelector,
   JSONObject,
+  useUpdateStudyInMDSMutation,
 } from '@gen3/core';
 import { FormOutcome } from '../types';
 import {
@@ -18,7 +19,7 @@ import { preprocessStudyRegistrationMetadata } from './preprocessStudyRegistrati
 // import {  }createCEDARInstance from './createCedarInstance';
 // import { useCreateCedarInstanceMutation } from './cedarApi';
 
-import { createCEDARInstance, cedarApi } from '@gen3/core';
+import { createCEDARInstance, cedarApi, updateStudyInMDS } from '@gen3/core';
 
 export const useStudyRegistration = (
   config: any,
@@ -31,6 +32,8 @@ export const useStudyRegistration = (
   isLoading: boolean;
   data: any;
 } => {
+  const [createCedarQuery] = cedarApi.useCreateCedarInstanceMutation();
+  const [updateMdsQuery] = useUpdateStudyInMDSMutation();
   const [formError, setFormError] = useState<string>();
   const [formOutcome, setFormOutcome] = useState(FormOutcome.pending);
   const [studyUID, setStudyUID] = useState<string | null>(null);
@@ -51,7 +54,8 @@ export const useStudyRegistration = (
         setIsLoading(true);
         setIsError(false);
         const response = await fetch(
-          'https://healdata.org/mds/metadata?data=True&_guid_type=unregistered_discovery_metadata&limit=2000&offset=0',
+          config.mdsURL +
+            '/metadata?data=True&_guid_type=unregistered_discovery_metadata&limit=2000&offset=0',
         );
 
         if (!response.ok) {
@@ -102,7 +106,7 @@ export const useStudyRegistration = (
     );
     // Set pre-selected study as the first item in array
     const organizedRegistrableStudies = moveStudyToFront(
-      studies,
+      registerableStudies,
       toString(studyUID),
     );
     // console.log('organizedRegistrableStudies', organizedRegistrableStudies);
@@ -147,7 +151,7 @@ export const useStudyRegistration = (
     };
     console.log('valuesToUpdate', valuesToUpdate);
     console.log('userInfo', userInfo);
-    const [createCedarQuery] = cedarApi.useCreateCedarInstanceMutation();
+
     preprocessStudyRegistrationMetadata(
       config,
       // props.user.username,
@@ -164,8 +168,19 @@ export const useStudyRegistration = (
         ),
       )
       .then((updatedMetadataToRegister) =>
-        console.log('updatedMetadataToRegister', updatedMetadataToRegister),
-      );
+        updateStudyInMDS(
+          config.mdsURL, // Pass base MDS URL from config
+          studyID,
+          updatedMetadataToRegister,
+          updateMdsQuery, // Pass trigger function
+        ),
+      )
+      .then((mdsResponse) => {
+        console.log('Successfully updated study in MDS:', mdsResponse);
+      })
+      .catch((err) => {
+        console.error('Study registration pipeline failed:', err);
+      });
   };
   /*         createCEDARInstance(cedarUserUUID, preprocessedMetadata).then(
           (updatedMetadataToRegister) =>
