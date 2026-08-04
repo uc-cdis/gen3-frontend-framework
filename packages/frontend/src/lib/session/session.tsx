@@ -142,9 +142,7 @@ const useInterval = (callback: IntervalFunction, delay: number | null) => {
   }, [delay]);
 };
 
-// How long before the access token's real expiry (decoded from the JWT, not
-// guessed from `updateSessionTime`) we proactively refresh it. Refreshing
-// against the token's own `exp` means we hit Fence's /user endpoint at most
+// Refreshing against the token's own `exp` means we hit Fence's /user endpoint at most
 // once per token lifetime instead of on a fixed clock that can drift into
 // (or past) the actual expiry.
 const REFRESH_MARGIN_MILLISECONDS = minutesToMilliseconds(2);
@@ -307,7 +305,6 @@ export const SessionProvider = ({
       cancelled = true;
       clearScheduledRefresh();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionInfo.status]);
 
   // Catch up if the scheduled setTimeout was throttled while the tab was
@@ -365,7 +362,7 @@ export const SessionProvider = ({
       // use cache value to prevent excessive calls to /user/user
       // check to make sure logged-out users are logged out
       if (
-        obj?.data?.loginStatus != 'authenticated' &&
+        obj?.data?.loginStatus !== 'authenticated' &&
         userStatus === 'authenticated'
       ) {
         coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
