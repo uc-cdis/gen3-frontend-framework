@@ -764,21 +764,119 @@ describe('SessionProvider – refresh scheduling resilience', () => {
     await act(async () => {});
     getUserDetails.mockClear();
 
-    // A failed read must not leave the session unscheduled: the first retry is
-    // due 30s later.
+    // A failed read must not leave the session unscheduled: one prompt retry
+    // 5s later, since hitting /user may fix things.
     await act(async () => {
-      jest.advanceTimersByTime(30000);
+      jest.advanceTimersByTime(5000);
     });
     expect(getUserDetails).toHaveBeenCalled();
 
-    // ...and it keeps retrying, backing off to 60s for the second attempt.
+    // ...then it backs off to 30s rather than retrying at that rate forever.
     getUserDetails.mockClear();
     await act(async () => {
-      jest.advanceTimersByTime(45000);
+      jest.advanceTimersByTime(25000);
     });
     expect(getUserDetails).not.toHaveBeenCalled();
     await act(async () => {
-      jest.advanceTimersByTime(20000);
+      jest.advanceTimersByTime(6000);
+    });
+    expect(getUserDetails).toHaveBeenCalled();
+
+    // ...and doubles again to 60s for the next one.
+    getUserDetails.mockClear();
+    await act(async () => {
+      jest.advanceTimersByTime(55000);
+    });
+    expect(getUserDetails).not.toHaveBeenCalled();
+    await act(async () => {
+      jest.advanceTimersByTime(6000);
+    });
+    expect(getUserDetails).toHaveBeenCalled();
+  });
+
+  it('backs off instead of tight-looping on an already-expiring token', async () => {
+    const getUserDetails = setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+
+    // Inside the 2 minute refresh margin, and Fence is not moving the expiry
+    // forward: the wall-clock delay stays negative on every read.
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    global.fetch = jest.fn().mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue({
+        status: 'issued',
+        issued: nowSeconds - 20 * 60,
+        expires: nowSeconds + 30,
+      }),
+    });
+
+    render(
+      <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+
+    await act(async () => {});
+    getUserDetails.mockClear();
+
+    // One prompt attempt at the floor — the refresh itself may reissue the token
+    await act(async () => {
+      jest.advanceTimersByTime(5000);
+    });
+    expect(getUserDetails).toHaveBeenCalled();
+
+    // It didn't, so the next attempt backs off instead of firing 5s later again
+    getUserDetails.mockClear();
+    await act(async () => {
+      jest.advanceTimersByTime(25000);
+    });
+    expect(getUserDetails).not.toHaveBeenCalled();
+    await act(async () => {
+      jest.advanceTimersByTime(6000);
+    });
+    expect(getUserDetails).toHaveBeenCalled();
+  });
+
+  it('bounds the delay by the token lifetime when the browser clock is behind', async () => {
+    const getUserDetails = setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+
+    // Browser clock is an hour behind the server, so the raw `exp - now`
+    // arithmetic claims ~78 minutes remain on a 20 minute token. The refresh has
+    // to happen within one lifetime, not when the skewed clock says.
+    const serverNowSeconds = Math.floor(Date.now() / 1000) + 60 * 60;
+    global.fetch = jest.fn().mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue({
+        status: 'issued',
+        issued: serverNowSeconds,
+        expires: serverNowSeconds + 20 * 60,
+      }),
+    });
+
+    render(
+      <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+
+    await act(async () => {});
+    getUserDetails.mockClear();
+
+    // Bounded to lifetime - margin == 18 minutes
+    await act(async () => {
+      jest.advanceTimersByTime(17 * 60 * 1000);
+    });
+    expect(getUserDetails).not.toHaveBeenCalled();
+
+    await act(async () => {
+      jest.advanceTimersByTime(2 * 60 * 1000);
     });
     expect(getUserDetails).toHaveBeenCalled();
   });
@@ -809,6 +907,140 @@ describe('SessionProvider – refresh scheduling resilience', () => {
       jest.advanceTimersByTime(5 * 60 * 1000);
     });
     expect(getUserDetails).not.toHaveBeenCalled();
+  });
+});
+
+// ===========================================================================
+// SessionProvider – cross-tab activity channel
+// ===========================================================================
+
+describe('SessionProvider – cross-tab activity channel', () => {
+  /** The 'message' listener the provider registered on the channel */
+  const messageHandler = () => {
+    const call = mockChannel.addEventListener.mock.calls.find(
+      ([event]) => event === 'message',
+    );
+    if (!call) throw new Error('no message listener was registered');
+    return call[1] as (event: MessageEvent) => void;
+  };
+
+  it('does not crash when BroadcastChannel is unavailable', async () => {
+    setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+
+    const original = global.BroadcastChannel;
+    // Safari < 15.4 and non-DOM environments
+    // @ts-expect-error – deliberately removing the global
+    delete global.BroadcastChannel;
+
+    try {
+      render(
+        <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
+          <div data-testid="child" />
+        </SessionProvider>,
+      );
+      await act(async () => {});
+
+      expect(screen.getByTestId('child')).toBeInTheDocument();
+    } finally {
+      global.BroadcastChannel = original;
+    }
+  });
+
+  it('does not crash when the constructor throws', async () => {
+    setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+
+    const channelCtor = global.BroadcastChannel as unknown as jest.Mock;
+    channelCtor.mockImplementationOnce(() => {
+      throw new Error('channel unavailable');
+    });
+
+    render(
+      <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
+        <div data-testid="child" />
+      </SessionProvider>,
+    );
+    await act(async () => {});
+
+    expect(screen.getByTestId('child')).toBeInTheDocument();
+  });
+
+  it('ignores malformed messages from other senders on the channel', async () => {
+    setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+
+    render(
+      <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+    await act(async () => {});
+
+    const handler = messageHandler();
+
+    // Anything on the origin can post here; none of this may throw
+    for (const data of [null, undefined, 'string', 42, {}, { type: 'other' }]) {
+      expect(() => handler({ data } as MessageEvent)).not.toThrow();
+    }
+
+    // A well-formed message with a non-numeric timestamp is also ignored
+    expect(() =>
+      handler({
+        data: { type: 'activity-update', timestamp: 'soon' },
+      } as MessageEvent),
+    ).not.toThrow();
+  });
+
+  it('clamps a future-dated activity timestamp to now', async () => {
+    setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+    jest.useFakeTimers();
+
+    try {
+      render(
+        <SessionProvider
+          updateSessionTime={1}
+          inactiveTimeLimit={3}
+          expireWarningMinutes={1}
+        >
+          <div />
+        </SessionProvider>,
+      );
+      await act(async () => {});
+
+      // A tab claiming activity an hour into the future must not be able to hold
+      // the inactivity clock open indefinitely.
+      const handler = messageHandler();
+      await act(async () => {
+        handler({
+          data: {
+            type: 'activity-update',
+            timestamp: Date.now() + 60 * 60 * 1000,
+          },
+        } as MessageEvent);
+      });
+
+      // Still logs out on schedule: warning at 2 minutes, logout at 3
+      await act(async () => {
+        jest.advanceTimersByTime(3 * 60 * 1000);
+      });
+      expect(mockOpenContextModal).toHaveBeenCalled();
+    } finally {
+      jest.useRealTimers();
+    }
   });
 });
 

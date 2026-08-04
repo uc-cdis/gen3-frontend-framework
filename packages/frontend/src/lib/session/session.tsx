@@ -167,28 +167,52 @@ const useInterval = (callback: IntervalFunction, delay: number | null) => {
 // once per token lifetime instead of on a fixed clock that can drift into
 // (or past) the actual expiry.
 const REFRESH_MARGIN_MILLISECONDS = minutesToMilliseconds(2);
-// Floor for the scheduled refresh delay so a nearly-expired or already-expired
-// token doesn't cause a tight refresh loop.
+// How soon we retry once, and only once, after a cycle that didn't produce a
+// healthy token: hitting /user reissues the cookie, so one prompt attempt often
+// fixes things. Repeating it at this rate would not, hence the backoff below.
 const MIN_REFRESH_DELAY_MILLISECONDS = 5000;
-// When the token's expiry cannot be read (endpoint error, network blip) retry on
-// a bounded backoff. Not retrying would leave the session with no scheduled
-// refresh at all, silently logging the user out when the token expires.
+// Backoff for every subsequent unhealthy cycle. Without it, a cause that a
+// refresh cannot fix — an unreachable endpoint, a skewed browser clock, a token
+// Fence will not renew — turns into a tight poll against /user.
 const REFRESH_RETRY_BASE_MILLISECONDS = 30000;
 const REFRESH_RETRY_MAX_MILLISECONDS = minutesToMilliseconds(5);
 
 const MILLISECONDS_PER_MINUTE = minutesToMilliseconds(1);
 
-const refreshDelayFromExpiry = (expiresSeconds: number) =>
-  Math.max(
-    MIN_REFRESH_DELAY_MILLISECONDS,
-    expiresSeconds * 1000 - Date.now() - REFRESH_MARGIN_MILLISECONDS,
-  );
+/**
+ * Delay before the next refresh of a healthy token, or a negative/small number
+ * when the token does not look healthy (see `unhealthyRefreshDelay`).
+ *
+ * `exp * 1000 - Date.now()` mixes the server's clock with the browser's, so a
+ * skewed browser clock makes the result wrong in both directions. A clock that
+ * is behind the server's inflates it, which would schedule the refresh past the
+ * real expiry and silently log the user out — and re-reading the token later
+ * yields the same wrong answer, so nothing recovers from it. The remaining
+ * lifetime can never exceed the token's full lifetime, so `iat` gives us a
+ * skew-free upper bound. A clock that is ahead deflates the result instead,
+ * which is handled by backing off rather than refreshing on a tight loop.
+ */
+const refreshDelayFromToken = (session: AuthTokenData): number => {
+  const wallClockDelay =
+    (session.expires ?? 0) * 1000 - Date.now() - REFRESH_MARGIN_MILLISECONDS;
 
-const refreshRetryDelay = (attempt: number) =>
-  Math.min(
-    REFRESH_RETRY_MAX_MILLISECONDS,
-    REFRESH_RETRY_BASE_MILLISECONDS * 2 ** attempt,
-  );
+  if (!session.issued || !session.expires) return wallClockDelay;
+
+  const lifetime = (session.expires - session.issued) * 1000;
+  return Math.min(wallClockDelay, lifetime - REFRESH_MARGIN_MILLISECONDS);
+};
+
+/**
+ * Delay after `failures` consecutive cycles that did not yield a healthy,
+ * future-dated token: prompt for the first, backing off for the rest.
+ */
+const unhealthyRefreshDelay = (failures: number) =>
+  failures <= 0
+    ? MIN_REFRESH_DELAY_MILLISECONDS
+    : Math.min(
+        REFRESH_RETRY_MAX_MILLISECONDS,
+        REFRESH_RETRY_BASE_MILLISECONDS * 2 ** (failures - 1),
+      );
 
 /**
  * SessionProvider creates a React context which keeps track of wether the user is authenticated
@@ -246,31 +270,44 @@ export const SessionProvider = ({
   // Initialize BroadcastChannel for cross-tab communication
   // any user event on one tab or window will update mostRecentActivityTimestamp
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      broadcastChannelRef.current = new BroadcastChannel(ACTIVITY_CHANNEL);
+    // Cross-tab activity sync is an enhancement, not a requirement: it is
+    // unavailable on Safari < 15.4 and in non-DOM environments, and the session
+    // has to keep working without it.
+    if (
+      typeof window === 'undefined' ||
+      typeof BroadcastChannel === 'undefined'
+    )
+      return;
 
-      // Listen for activity updates from other tabs
-      const handleActivityMessage = (event: MessageEvent) => {
-        if (event.data.type === 'activity-update') {
-          setMostRecentActivityTimestamp(event.data.timestamp);
-        }
-      };
-
-      broadcastChannelRef.current.addEventListener(
-        'message',
-        handleActivityMessage,
-      );
-
-      return () => {
-        if (broadcastChannelRef.current) {
-          broadcastChannelRef.current.removeEventListener(
-            'message',
-            handleActivityMessage,
-          );
-          broadcastChannelRef.current.close();
-        }
-      };
+    let channel: BroadcastChannel;
+    try {
+      channel = new BroadcastChannel(ACTIVITY_CHANNEL);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_error: unknown) {
+      return;
     }
+    broadcastChannelRef.current = channel;
+
+    // Listen for activity updates from other tabs. Anything on the origin can
+    // post here, so treat the payload as untrusted: a malformed message must not
+    // throw, and a future-dated timestamp must not be able to hold the
+    // inactivity clock open forever.
+    const handleActivityMessage = (event: MessageEvent) => {
+      const data = event.data as
+        { type?: unknown; timestamp?: unknown } | null | undefined;
+      if (data?.type !== 'activity-update') return;
+      if (typeof data.timestamp !== 'number' || Number.isNaN(data.timestamp))
+        return;
+      setMostRecentActivityTimestamp(Math.min(data.timestamp, Date.now()));
+    };
+
+    channel.addEventListener('message', handleActivityMessage);
+
+    return () => {
+      channel.removeEventListener('message', handleActivityMessage);
+      channel.close();
+      broadcastChannelRef.current = null;
+    };
   }, []);
 
   const expireWarningMilliseconds = minutesToMilliseconds(expireWarningMinutes);
@@ -327,23 +364,36 @@ export const SessionProvider = ({
 
   // The timer callback has to re-arm the timer; holding the latest
   // implementation in a ref avoids a circular useCallback dependency.
-  const armRefreshTimerRef = useRef<(delay: number, attempt: number) => void>(
+  const armRefreshTimerRef = useRef<(delay: number, failures: number) => void>(
     () => {},
   );
 
-  // Decide the next timer from a token read. `attempt` counts consecutive
-  // failed reads so the retry backoff can grow.
+  // Decide the next timer from a token read. `failures` counts consecutive
+  // cycles that did not yield a healthy token, so the backoff can grow.
   const scheduleFromTokenData = useCallback(
-    (session: AuthTokenData, attempt: number) => {
+    (session: AuthTokenData, failures: number) => {
       if (!isMountedRef.current) return;
       if (sessionStatusRef.current !== 'issued') return;
 
       if (session.expires) {
-        armRefreshTimerRef.current(refreshDelayFromExpiry(session.expires), 0);
+        const delay = refreshDelayFromToken(session);
+        if (delay >= MIN_REFRESH_DELAY_MILLISECONDS) {
+          armRefreshTimerRef.current(delay, 0);
+          return;
+        }
+        // The token reads as already expiring. Refreshing now may well fix that,
+        // but if it doesn't, doing it again at the same rate won't either.
+        armRefreshTimerRef.current(
+          unhealthyRefreshDelay(failures),
+          failures + 1,
+        );
         return;
       }
       if (session.status === 'error') {
-        armRefreshTimerRef.current(refreshRetryDelay(attempt), attempt + 1);
+        armRefreshTimerRef.current(
+          unhealthyRefreshDelay(failures),
+          failures + 1,
+        );
       }
       // Any other status ('not present' / 'invalid' / 'expired') means the token
       // is genuinely gone: there is nothing to refresh, and the login state will
@@ -353,7 +403,7 @@ export const SessionProvider = ({
   );
 
   const performScheduledRefresh = useCallback(
-    async (attempt: number) => {
+    async (failures: number) => {
       if (sessionStatusRef.current !== 'issued') return;
 
       let session: AuthTokenData = { status: 'error' };
@@ -364,17 +414,17 @@ export const SessionProvider = ({
       } catch (_error: unknown) {
         // Leave `session` as 'error' so we retry rather than abandon the chain.
       }
-      scheduleFromTokenData(session, attempt);
+      scheduleFromTokenData(session, failures);
     },
     [getUserDetails, syncAuthTokenData, scheduleFromTokenData],
   );
 
   const armRefreshTimer = useCallback(
-    (delay: number, attempt: number) => {
+    (delay: number, failures: number) => {
       clearScheduledRefresh();
       if (!isMountedRef.current) return;
       refreshTimeoutRef.current = setTimeout(() => {
-        void performScheduledRefresh(attempt);
+        void performScheduledRefresh(failures);
       }, delay);
     },
     [clearScheduledRefresh, performScheduledRefresh],
