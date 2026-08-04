@@ -95,6 +95,12 @@ function parseOptions(raw: unknown): WorkspaceAssetsHandlerOptions {
   }
 
   const extensions = source.additionalDisabledExtensions;
+
+  // oxlint-disable-next-line no-console
+  console.log(
+    'addtional disabled extensions',
+    source.additionalDisabledExtensions,
+  );
   if (extensions !== undefined) {
     if (
       Array.isArray(extensions) &&
@@ -107,6 +113,9 @@ function parseOptions(raw: unknown): WorkspaceAssetsHandlerOptions {
       );
     }
   }
+
+  // oxlint-disable-next-line no-console
+  console.log('parsed options', parsed);
 
   return { ...DEFAULT_OPTIONS, ...parsed };
 }
