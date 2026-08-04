@@ -52,4 +52,8 @@ describe('withBasePath', () => {
     const result = withBasePath('/ff', '/ff/Page');
     expect(result).toBe('/ff/Page');
   });
+  it('should check if basePath is in full url', () => {
+    const result = withBasePath('/ff', 'http://localhost/ff');
+    expect(result).toBe('http://localhost/ff');
+  });
 });

@@ -29,6 +29,7 @@ export const removeMultipleSlashes = (str: string): string => {
 export const withBasePath = (basePath: string, src: string): string => {
   if (!src) return basePath;
   if (/^https?:\/\//.test(src)) return src;
-  if (basePath && src.startsWith(basePath)) return src;
+  if (basePath && src.includes(basePath)) return src;
+  if (basePath.includes(src)) return basePath;
   return removeMultipleSlashes(`${basePath}/${src}`);
 };

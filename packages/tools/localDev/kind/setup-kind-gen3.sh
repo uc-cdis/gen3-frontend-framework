@@ -319,9 +319,47 @@ setup_ssl() {
 
   # ── Apply ingress ──
 
-  info "Applying ingress configuration for $HOSTNAME..."
+  # ── Apply ingress (skip if another Ingress already claims this host+path) ──
+  #
+  # The Gen3 Helm chart deploys its own Ingress (typically named revproxy-dev)
+  # for this host. Creating a second Ingress with the same host/path is
+  # rejected by the nginx admission webhook as an ambiguous route. When that
+  # Ingress already exists, mirror the mkcert certificate into whatever
+  # secretName it references instead of creating a competing Ingress.
 
-  apply_with_retry "$(cat <<EOF
+  local existing_ingress
+  existing_ingress="$(kubectl get ingress -A \
+    -o jsonpath='{range .items[*]}{.metadata.namespace}{"/"}{.metadata.name}{" "}{.spec.rules[*].host}{"\n"}{end}' \
+    2>/dev/null | awk -v host="$HOSTNAME" -v self="default/ingress-nginx-controller" \
+      '$2 == host && $1 != self {print $1; exit}')"
+
+  if [[ -n "$existing_ingress" ]]; then
+    local existing_ns="${existing_ingress%%/*}"
+    local existing_name="${existing_ingress#*/}"
+    warn "Ingress '$existing_ingress' already routes host $HOSTNAME (likely deployed via the Gen3 Helm chart)."
+
+    local existing_tls_secret
+    existing_tls_secret="$(kubectl get ingress "$existing_name" -n "$existing_ns" \
+      -o jsonpath='{.spec.tls[0].secretName}' 2>/dev/null)"
+
+    if [[ -n "$existing_tls_secret" ]]; then
+      info "Mirroring mkcert certificate into secret '$existing_tls_secret' (used by $existing_ingress)..."
+      if kubectl get secret "$existing_tls_secret" -n "$existing_ns" >/dev/null 2>&1; then
+        kubectl delete secret "$existing_tls_secret" -n "$existing_ns"
+      fi
+      kubectl create secret tls "$existing_tls_secret" -n "$existing_ns" \
+        --cert="$SSL_CERT_DIR/cert.pem" \
+        --key="$SSL_CERT_DIR/key.pem"
+      info "Secret '$existing_tls_secret' updated with mkcert certificate."
+    else
+      warn "$existing_ingress has no tls.secretName set; leaving it unmodified."
+    fi
+
+    warn "Skipping creation of a separate ingress-nginx-controller Ingress to avoid a host/path conflict."
+  else
+    info "Applying ingress configuration for $HOSTNAME..."
+
+    apply_with_retry "$(cat <<EOF
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -350,7 +388,8 @@ spec:
 EOF
 )"
 
-  info "Ingress applied"
+    info "Ingress applied"
+  fi
   echo
   info "Verify secrets:"
   kubectl get secrets | grep -E "(tls|ca)" || true

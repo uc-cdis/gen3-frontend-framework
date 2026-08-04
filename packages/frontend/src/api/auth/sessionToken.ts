@@ -1,17 +1,39 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { parse } from 'cookie';
-import { decodeJwt, importSPKI, JWTPayload, jwtVerify } from 'jose';
+import type { JWTPayload } from 'jose';
+import { decodeJwt, errors as joseErrors, importSPKI, jwtVerify } from 'jose';
 import { fetchJWTKey } from '../../lib/auth/utils';
 import { getWebTokenErrorResponse } from './errorHandler';
 
-export const isExpired = (value: number) => value - Date.now() > 0;
-
 export interface JWTPayloadAndUser extends JWTPayload {
-  context: Record<string, string>;
+  /**
+   * Fence puts the user in here. Optional because nothing in the JWT spec
+   * requires it: a token signed by the same key without one would otherwise
+   * crash the handler on a property access.
+   */
+  context?: Record<string, string>;
 }
 
 /**
+ * Claims the client needs from a token whose signature has already been verified.
+ */
+const tokenClaims = (accessToken: string) => {
+  const decoded = decodeJwt(accessToken) as JWTPayloadAndUser;
+  return {
+    issued: decoded.iat,
+    expires: decoded.exp,
+    userContext: decoded.context?.user,
+  };
+};
+
+/**
  * returns the access_token expiration, user, and status
+ *
+ * Every token state this endpoint can determine — issued, expired, invalid,
+ * not present — is reported as a 200 with an explicit `status`. Only a failure
+ * to determine the state at all (no JWKS key, an unreachable key source, a
+ * malformed request) is an error response, so the client can tell "your token is
+ * expired" from "I could not find out" and stop retrying the former.
  * @param req
  * @param res
  */
@@ -40,18 +62,28 @@ export default async function handler(
       }
       // validate the token
       const publicKey = await importSPKI(jwtKey, 'RS256');
-      await jwtVerify(accessToken, publicKey);
-      const decodedAccessToken = decodeJwt(accessToken) as JWTPayloadAndUser;
+      try {
+        await jwtVerify(accessToken, publicKey);
+      } catch (error: unknown) {
+        // jwtVerify checks the signature before the claims, so an expired token
+        // has already proven its signature, and its claims can be reported. This
+        // has to be caught here: letting it reach the error handler would turn a
+        // definitive "expired" into an opaque 401.
+        if (error instanceof joseErrors.JWTExpired) {
+          res.status(200).json({
+            ...tokenClaims(accessToken),
+            status: 'expired',
+          });
+          return;
+        }
+        throw error;
+      }
 
+      const claims = tokenClaims(accessToken);
       res.status(200).json({
-        issued: decodedAccessToken.iat,
-        expires: decodedAccessToken.exp,
-        userContext: decodedAccessToken.context.user,
-        status: decodedAccessToken.exp
-          ? isExpired(decodedAccessToken.exp)
-            ? 'expired'
-            : 'issued'
-          : 'invalid',
+        ...claims,
+        // A token with no `exp` never expires, which we will not honour
+        status: claims.expires ? 'issued' : 'invalid',
       });
       return;
     }
