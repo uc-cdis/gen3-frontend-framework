@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { serialize } from 'cookie';
-import { decodeJwt, importSPKI, JWTPayload, jwtVerify } from 'jose';
+import { decodeJwt, importSPKI, jwtVerify } from 'jose';
 import { fetchFence } from '@gen3/core';
 import { getWebTokenErrorResponse } from './errorHandler';
 import { fetchJWTKey } from '../../lib/auth/utils';
@@ -54,8 +54,9 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     // validate the token
     const publicKey = await importSPKI(jwtKey, 'RS256');
     await jwtVerify(access_token, publicKey);
-    const payload = decodeJwt(access_token) as JWTPayload;
+    const payload = decodeJwt(access_token);
 
+    // oxlint-disable-next-line typescript/no-unnecessary-condition
     if (!payload) {
       res.setHeader(
         'Set-Cookie',
@@ -74,9 +75,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       'Set-Cookie',
       serialize('credentials_token', access_token, {
         maxAge:
-          payload && payload.exp && payload.iat
-            ? payload.exp - payload.iat
-            : 60 * 60 * 20,
+          payload.exp && payload.iat ? payload.exp - payload.iat : 60 * 60 * 20,
         path: '/',
         sameSite: 'lax',
         httpOnly: process.env.NODE_ENV === 'production',

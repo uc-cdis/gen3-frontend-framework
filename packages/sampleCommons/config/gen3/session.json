@@ -1,5 +1,5 @@
 {
-    "updateSessionTime": 5,
-    "inactiveTimeLimit": 20,
-    "logoutInactiveUsers": false
+  "updateSessionTime": 5,
+  "inactiveTimeLimit": 20,
+  "logoutInactiveUsers": true
 }

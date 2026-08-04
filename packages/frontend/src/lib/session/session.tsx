@@ -11,7 +11,7 @@ import { useDeepCompareMemo } from 'use-deep-compare';
 import { useManageSession } from './hooks';
 import { showNotification } from '@mantine/notifications';
 import type { AuthTokenData, Session, SessionProviderProps } from './types';
-import { isUserOnPage } from './utils';
+import { isUserOnPage, redirectTo } from './utils';
 import {
   type CoreState,
   GEN3_FENCE_API,
@@ -34,12 +34,42 @@ import { modals } from '@mantine/modals';
 
 const ACTIVITY_THROTTLE_TIMEOUT = 7000;
 
-export const logoutSession = async () => {
+// Foregrounding a tab re-derives the refresh schedule from the real token; this
+// keeps tab-flipping from turning into one request per flip.
+const VISIBILITY_RECHECK_THROTTLE_MILLISECONDS = 10000;
+
+/**
+ * Events that count as user activity.
+ *
+ * `keydown` rather than `keypress`: the latter is deprecated and never fires for
+ * arrows, backspace, delete or tab, so editing with those looked like inactivity.
+ * `scroll` does not bubble, so it is registered in the capture phase to also see
+ * scrolling inside nested containers; it and `touchstart` are passive so activity
+ * tracking cannot delay scrolling.
+ */
+const ACTIVITY_EVENTS: ReadonlyArray<
+  readonly [type: string, options?: AddEventListenerOptions]
+> = [
+  ['mousedown'],
+  ['keydown'],
+  ['updateUserActivity'],
+  ['scroll', { passive: true, capture: true }],
+  ['touchstart', { passive: true }],
+];
+
+/**
+ * Development-only "credentials login" leaves a client-readable cookie behind.
+ * Its logout is client-side, so it keeps the SPA — and anything we render to
+ * explain the logout — alive, where the Fence path replaces the document.
+ */
+const isCredentialsLogin = () => hasCookie('credentials_token');
+
+export const logoutSession = async (basePath: string) => {
   // logged in using credentials, then execute credentials logout first
   if (process.env.NODE_ENV === 'development') {
     const credentialsToken = getCookie('credentials_token');
     if (credentialsToken) {
-      await fetch('/api/auth/credentialsLogout');
+      await fetch(`${basePath}/api/auth/credentialsLogout`);
     }
   }
 };
@@ -52,10 +82,18 @@ export const SessionContext = React.createContext<Session | undefined>(
  *  We eventually want to use the session token to determine if the user is logged in
  *  as opposed to the user status since that check will happen on the server using httpOnly cookies
  *  and verification of the session token
+ *
+ * @param basePath - Next.js `router.basePath`: '' when the app is served from the
+ *   root and already leading-slashed otherwise. Required for the API route to
+ *   resolve under a basePath deployment.
  */
-export const getSession = async (): Promise<AuthTokenData> => {
+export const getSession = async (
+  basePath: string = '',
+): Promise<AuthTokenData> => {
   try {
-    const res = await fetch('/api/auth/sessionToken', { cache: 'no-store' });
+    const res = await fetch(`${basePath}/api/auth/sessionToken`, {
+      cache: 'no-store',
+    });
     if (res.status === 200) {
       return (await res.json()) as AuthTokenData;
     }
@@ -89,12 +127,25 @@ export const useSession = (
     !session.pending &&
     session.status !== 'issued';
 
+  // Fires once per unauthenticated transition. `router` has to be a dependency,
+  // and the pages router hands back a new object on every route change, so
+  // without the ref a navigation would re-run this and stack a second redirect
+  // (or a second `onUnauthenticated`, which for a delayed handler means a second
+  // timer).
+  const redirectHandledRef = useRef(false);
+
   // Navigating is a side effect: doing it in the render body warns in React,
   // runs twice under StrictMode, and can loop when the target route also
   // renders a `required` consumer. Effects don't run on the server, so this
   // also replaces the previous explicit SSR guard.
   useEffect(() => {
-    if (!isUnauthenticated) return;
+    if (!isUnauthenticated) {
+      redirectHandledRef.current = false;
+      return;
+    }
+    if (redirectHandledRef.current) return;
+    redirectHandledRef.current = true;
+
     if (onUnauthenticatedRef.current) {
       onUnauthenticatedRef.current();
       return;
@@ -119,7 +170,7 @@ export const useIsAuthenticated = () => {
   };
 };
 
-type IntervalFunction = () => unknown | void;
+type IntervalFunction = () => void;
 
 const useInterval = (callback: IntervalFunction, delay: number | null) => {
   const savedCallback = useRef<IntervalFunction | null>(null);
@@ -193,14 +244,23 @@ const unhealthyRefreshDelay = (failures: number) =>
       );
 
 /**
- * SessionProvider creates a React context which keeps track of wether the user is authenticated
- * and if their session is stale and logs them out if they do not preform an action in an alotted amount of time
- * @param children - Pass in a child session if one exists
- * @param session - Pass in a cached session if one exists
- * @param updateSessionTime - Interval of time between fetching session token
- * @param inactiveTimeLimit - Amount of time user is allowed to be inactive before getting logged out if user is tabbed away from page
- * @param workspaceInactivityTimeLimit - Amount of time user is allowed to be inactive if user is tabbed into the site
- * @param logoutInactiveUsers - Whether to log out users that are determined to be inactive or not
+ * SessionProvider creates a React context which keeps track of whether the user is
+ * authenticated, refreshes their access token ahead of its expiry, and logs them
+ * out if they do not act within an allotted amount of time.
+ *
+ * See {@link SessionConfiguration} for what each option means; all times are in
+ * minutes.
+ *
+ * @param children - Subtree that gets access to the session context
+ * @param updateSessionTime - How often the inactivity check runs, and so the
+ *   resolution of every inactivity decision. `0` disables activity monitoring
+ * @param inactiveTimeLimit - Inactivity allowed before logout, off a workspace page
+ * @param workspaceInactivityTimeLimit - Inactivity allowed before logout on a
+ *   workspace page. `0` (the default) means no limit there
+ * @param logoutInactiveUsers - Whether inactive users are logged out at all
+ * @param monitorWorkspace - Whether to poll running/configured workspaces
+ * @param expireWarningMinutes - How far ahead of the inactivity logout to warn;
+ *   clamped to fit the poll interval and the inactivity window
  * @returns a Session context that can be used to keep track of user session activity
  */
 export const SessionProvider = ({
@@ -215,8 +275,11 @@ export const SessionProvider = ({
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
 
-  const { isSuccess: isGetCSRFSuccess, isError: isGetCSRFError } =
-    useGetCSRFQuery();
+  const {
+    isSuccess: isGetCSRFSuccess,
+    isError: isGetCSRFError,
+    isFetching: isFetchingCSRF,
+  } = useGetCSRFQuery();
   useWorkspaceResourceMonitor(monitorWorkspace); // monitor workspaces if any are running or configured
 
   const [getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
@@ -225,6 +288,7 @@ export const SessionProvider = ({
   );
 
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
+    // oxlint-disable-next-line react/react-compiler
     useState(Date.now());
 
   // Token metadata (issued / expires / userContext) read from
@@ -312,18 +376,22 @@ export const SessionProvider = ({
 
   // for now, we are using the user status to determine if the user is logged in
   const updateSession = useCallback(() => {
-    void getUserDetails();
+    // The query holds its own error state; catch so a failure here cannot surface
+    // as an unhandled rejection.
+    void Promise.resolve(getUserDetails()).catch(() => undefined);
   }, [getUserDetails]);
 
   // Read the token metadata and mirror it into state for the context value.
+  // `basePath` is fixed for the lifetime of the app, so depending on it does not
+  // churn this callback (or the refresh schedule derived from it).
   const syncAuthTokenData = useCallback(async (): Promise<AuthTokenData> => {
-    const session = await getSession();
+    const session = await getSession(router.basePath);
     // Don't clobber known-good data with a failed lookup.
     if (session.status !== 'error' && isMountedRef.current) {
       setAuthTokenData(session);
     }
     return session;
-  }, []);
+  }, [router.basePath]);
 
   // Proactive, expiry-driven token refresh.
   //
@@ -333,6 +401,15 @@ export const SessionProvider = ({
   // that can drift into, or past, the real expiry.
   const refreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Consecutive cycles that did not yield a healthy token. In a ref so it
+  // survives re-derivations of the schedule: a tab foreground must not reset the
+  // backoff, or flipping tabs while the endpoint is down restarts fast retries.
+  const refreshFailuresRef = useRef(0);
+
+  // Set while a refresh cycle is running, so a concurrent re-derivation defers to
+  // it instead of racing to arm the timer off a staler read.
+  const refreshInFlightRef = useRef(false);
+
   const clearScheduledRefresh = useCallback(() => {
     if (refreshTimeoutRef.current) {
       clearTimeout(refreshTimeoutRef.current);
@@ -340,50 +417,77 @@ export const SessionProvider = ({
     }
   }, []);
 
-  // The timer callback has to re-arm the timer; holding the latest
-  // implementation in a ref avoids a circular useCallback dependency.
-  const armRefreshTimerRef = useRef<(delay: number, failures: number) => void>(
-    () => {},
+  // A refresh cycle re-arms the timer that started it. The cycle is held in a ref
+  // so `armRefreshTimer` does not have to depend on it — every timer can only fire
+  // after the commit that assigns this, so it is always populated when read.
+  const performScheduledRefreshRef = useRef<(() => Promise<void>) | null>(null);
+
+  const armRefreshTimer = useCallback(
+    (delay: number) => {
+      clearScheduledRefresh();
+      if (!isMountedRef.current) return;
+      refreshTimeoutRef.current = setTimeout(() => {
+        void performScheduledRefreshRef.current?.();
+      }, delay);
+    },
+    [clearScheduledRefresh],
   );
 
-  // Decide the next timer from a token read. `failures` counts consecutive
-  // cycles that did not yield a healthy token, so the backoff can grow.
+  // Decide the next timer from a token read.
   const scheduleFromTokenData = useCallback(
-    (session: AuthTokenData, failures: number) => {
+    (session: AuthTokenData) => {
       if (!isMountedRef.current) return;
       if (sessionStatusRef.current !== 'issued') return;
+
+      // No cookie at all: there is nothing to renew, and the login state will
+      // settle to unauthenticated, which clears the schedule.
+      if (session.status === 'not present') return;
+
+      // `exp` at or before `iat` is a malformed token; no retry fixes that.
+      if (
+        session.issued &&
+        session.expires &&
+        session.expires <= session.issued
+      )
+        return;
+
+      if (session.status === 'expired' || session.status === 'invalid') {
+        // A definitive answer, but a single /user call can still re-authenticate
+        // through Fence's own session and reissue the cookie. Allow exactly one
+        // such attempt — beyond that the token is not coming back and polling
+        // would only hammer Fence.
+        if (refreshFailuresRef.current === 0) {
+          refreshFailuresRef.current = 1;
+          armRefreshTimer(MIN_REFRESH_DELAY_MILLISECONDS);
+        }
+        return;
+      }
 
       if (session.expires) {
         const delay = refreshDelayFromToken(session);
         if (delay >= MIN_REFRESH_DELAY_MILLISECONDS) {
-          armRefreshTimerRef.current(delay, 0);
+          refreshFailuresRef.current = 0;
+          armRefreshTimer(delay);
           return;
         }
-        // The token reads as already expiring. Refreshing now may well fix that,
-        // but if it doesn't, doing it again at the same rate won't either.
-        armRefreshTimerRef.current(
-          unhealthyRefreshDelay(failures),
-          failures + 1,
-        );
-        return;
       }
-      if (session.status === 'error') {
-        armRefreshTimerRef.current(
-          unhealthyRefreshDelay(failures),
-          failures + 1,
-        );
-      }
-      // Any other status ('not present' / 'invalid' / 'expired') means the token
-      // is genuinely gone: there is nothing to refresh, and the login state will
-      // settle to unauthenticated, which clears the schedule below.
+
+      // Either the read failed ('error') or the token reads as already expiring.
+      // Refreshing may fix that; if it doesn't, doing it again at the same rate
+      // won't either, so each attempt costs more than the last.
+      armRefreshTimer(unhealthyRefreshDelay(refreshFailuresRef.current));
+      refreshFailuresRef.current += 1;
     },
-    [],
+    [armRefreshTimer],
   );
 
-  const performScheduledRefresh = useCallback(
-    async (failures: number) => {
-      if (sessionStatusRef.current !== 'issued') return;
+  const performScheduledRefresh = useCallback(async () => {
+    if (sessionStatusRef.current !== 'issued') return;
 
+    // The flag covers scheduling as well as the read, so a re-derivation cannot
+    // land between the two and arm a timer this cycle is about to replace.
+    refreshInFlightRef.current = true;
+    try {
       let session: AuthTokenData = { status: 'error' };
       try {
         await getUserDetails();
@@ -392,29 +496,27 @@ export const SessionProvider = ({
       } catch (_error: unknown) {
         // Leave `session` as 'error' so we retry rather than abandon the chain.
       }
-      scheduleFromTokenData(session, failures);
-    },
-    [getUserDetails, syncAuthTokenData, scheduleFromTokenData],
-  );
-
-  const armRefreshTimer = useCallback(
-    (delay: number, failures: number) => {
-      clearScheduledRefresh();
-      if (!isMountedRef.current) return;
-      refreshTimeoutRef.current = setTimeout(() => {
-        void performScheduledRefresh(failures);
-      }, delay);
-    },
-    [clearScheduledRefresh, performScheduledRefresh],
-  );
+      scheduleFromTokenData(session);
+    } finally {
+      refreshInFlightRef.current = false;
+    }
+    // oxlint-disable-next-line react/react-compiler
+  }, [getUserDetails, syncAuthTokenData, scheduleFromTokenData]);
 
   useEffect(() => {
-    armRefreshTimerRef.current = armRefreshTimer;
-  }, [armRefreshTimer]);
+    performScheduledRefreshRef.current = performScheduledRefresh;
+  }, [performScheduledRefresh]);
 
   // Re-derive the schedule from a freshly read token.
   const rescheduleFromToken = useCallback(async () => {
-    scheduleFromTokenData(await syncAuthTokenData(), 0);
+    if (refreshInFlightRef.current) return; // that cycle schedules from its own read
+    refreshInFlightRef.current = true;
+    try {
+      scheduleFromTokenData(await syncAuthTokenData());
+    } finally {
+      refreshInFlightRef.current = false;
+    }
+    // oxlint-disable-next-line react/react-compiler
   }, [scheduleFromTokenData, syncAuthTokenData]);
 
   // Seed (and cancel) the schedule as login state changes.
@@ -424,24 +526,34 @@ export const SessionProvider = ({
       return;
     }
 
+    refreshFailuresRef.current = 0; // a fresh login starts from a clean backoff
     void rescheduleFromToken();
 
     return () => {
       clearScheduledRefresh();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionInfo.status]);
+  }, [sessionInfo.status, rescheduleFromToken, clearScheduledRefresh]);
 
   // Catch up if the scheduled setTimeout was throttled while the tab was
   // backgrounded (browsers can pause/delay timers in inactive tabs well
   // beyond our refresh margin). Re-derive the schedule from the real token
   // expiry as soon as the tab is visible again.
+  const lastVisibilityRecheckRef = useRef(0);
   useEffect(() => {
     if (typeof document === 'undefined') return;
     if (sessionInfo.status !== 'issued') return;
 
     const handleVisibility = () => {
       if (document.visibilityState !== 'visible') return;
+
+      const now = Date.now();
+      if (
+        now - lastVisibilityRecheckRef.current <
+        VISIBILITY_RECHECK_THROTTLE_MILLISECONDS
+      )
+        return;
+      lastVisibilityRecheckRef.current = now;
+
       void rescheduleFromToken();
     };
 
@@ -450,44 +562,77 @@ export const SessionProvider = ({
       document.removeEventListener('visibilitychange', handleVisibility);
   }, [sessionInfo.status, rescheduleFromToken]);
 
-  // Returns the logout chain so callers can await logout actually completing.
-  const endSession = useCallback(async (): Promise<void> => {
-    const isCredentialLogin = hasCookie('credentials_token');
-    const basePath = router.basePath;
+  // Read through a ref so `endSession` — and therefore the context value — does
+  // not change identity every time the router does, i.e. on every navigation.
+  const routerRef = useRef(router);
+  useEffect(() => {
+    routerRef.current = router;
+  }, [router]);
 
-    if (isCredentialLogin) {
-      await logoutSession()
-        .then(() => getUserDetails())
-        .catch((e) => {
-          showNotification({
-            title: 'Logout Error',
-            message: `error logging out ${e.message}`,
-          });
-        })
-        .finally(() => {
-          void router.push(GEN3_REDIRECT_URL);
+  // Logout ends in a navigation, and navigation is asynchronous, so the page
+  // stays live for a while afterwards. Without this guard the inactivity tick can
+  // re-enter and start a second logout in that window.
+  const endingSessionRef = useRef(false);
+
+  const endSession = useCallback(async (): Promise<void> => {
+    if (endingSessionRef.current) return;
+    endingSessionRef.current = true;
+
+    const credentialsLogin = isCredentialsLogin();
+
+    try {
+      await logoutSession(routerRef.current.basePath);
+      // Settle the store before navigating: until this lands, `userStatus` still
+      // reads authenticated and the rest of the app acts as if nothing happened.
+      await getUserDetails();
+    } catch (error: unknown) {
+      // Only worth surfacing on the credentials path — the Fence path replaces
+      // the document, so a notification there is never seen.
+      if (credentialsLogin) {
+        showNotification({
+          title: 'Logout Error',
+          message: `error logging out ${error instanceof Error ? error.message : String(error)}`,
         });
-    } else {
-      // need a fence redirect
-      window.location.href = `${GEN3_FENCE_API}/logout?next=${withBasePath(basePath, GEN3_REDIRECT_URL)}`;
+      }
     }
-  }, [getUserDetails, router]);
+
+    if (credentialsLogin) {
+      // Client-side redirect: the provider stays mounted, so release the guard
+      // once it lands or a later deliberate logout would be a no-op.
+      try {
+        await routerRef.current.push(GEN3_REDIRECT_URL);
+      } finally {
+        endingSessionRef.current = false;
+      }
+      return;
+    }
+
+    // need a fence redirect
+    redirectTo(
+      `${GEN3_FENCE_API}/logout?next=${withBasePath(routerRef.current.basePath, GEN3_REDIRECT_URL)}`,
+    );
+  }, [getUserDetails]);
 
   /**
    * Check if the user session has ended
    */
   const isSessionActive = useThrottledCallback(() => {
     // Check session token, this call updates info
-    void getUserDetails(undefined, true).then((obj) => {
-      // use cache value to prevent excessive calls to /user/user
-      // check to make sure logged-out users are logged out
-      if (
-        obj?.data?.loginStatus !== 'authenticated' &&
-        userStatus === 'authenticated'
-      ) {
-        coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
-      }
-    });
+    void getUserDetails(undefined, true)
+      .then((obj) => {
+        // use cache value to prevent excessive calls to /user/user
+        // check to make sure logged-out users are logged out
+        if (
+          obj.data?.loginStatus !== 'authenticated' &&
+          userStatus === 'authenticated'
+        ) {
+          coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
+        }
+      })
+      .catch(() => {
+        // A failed check is not evidence of a dead session, and the query keeps
+        // its own error state. Swallow it rather than reject unhandled.
+      });
   }, ACTIVITY_THROTTLE_TIMEOUT); // set the time between api calls
 
   // Unthrottled: programmatic renewals (the expiry warning's "Renew" button)
@@ -526,8 +671,8 @@ export const SessionProvider = ({
   const renewSession = useCallback(() => {
     closeExpiryWarning();
     recordActivity(); // the point of "Renew": restart the inactivity clock
-    void getUserDetails();
-  }, [closeExpiryWarning, recordActivity, getUserDetails]);
+    updateSession();
+  }, [closeExpiryWarning, recordActivity, updateSession]);
 
   const logoutFromWarning = useCallback(() => {
     closeExpiryWarning();
@@ -563,6 +708,7 @@ export const SessionProvider = ({
   // Fetch session once on mount to establish initial auth state, then schedule expiry timers
   useEffect(() => {
     updateSession();
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Activity monitoring — only active while the user is logged in.
@@ -571,18 +717,14 @@ export const SessionProvider = ({
     if (updateSessionIntervalMilliseconds <= 0) return;
     if (sessionInfo.status !== 'issued') return;
 
-    window.addEventListener('mousedown', updateUserActivity);
-    window.addEventListener('keypress', updateUserActivity);
-    window.addEventListener('updateUserActivity', updateUserActivity);
-    window.addEventListener('scroll', updateUserActivity);
-    window.addEventListener('touchstart', updateUserActivity);
+    ACTIVITY_EVENTS.forEach(([type, options]) =>
+      window.addEventListener(type, updateUserActivity, options),
+    );
 
     return () => {
-      window.removeEventListener('mousedown', updateUserActivity);
-      window.removeEventListener('keypress', updateUserActivity);
-      window.removeEventListener('updateUserActivity', updateUserActivity);
-      window.removeEventListener('scroll', updateUserActivity);
-      window.removeEventListener('touchstart', updateUserActivity);
+      ACTIVITY_EVENTS.forEach(([type, options]) =>
+        window.removeEventListener(type, updateUserActivity, options),
+      );
     };
   }, [
     sessionInfo.status,
@@ -594,8 +736,7 @@ export const SessionProvider = ({
     () => {
       const { pathname } = router;
       if (sessionInfo.status !== 'issued') return; // no need to update session if user is not logged in
-      if (isUserOnPage('Login', pathname) /* || this.popupShown */) return;
-
+      if (isUserOnPage('Login', pathname)) return;
       if (!logoutInactiveUsers) return;
 
       const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
@@ -609,7 +750,12 @@ export const SessionProvider = ({
 
       if (timeSinceLastActivity >= activeLimit) {
         closeExpiryWarning();
-        coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
+        // Only worth showing where the redirect is client-side: there the modal
+        // survives the navigation and is what tells the user why they were logged
+        // out. On the Fence path the document is replaced, so it would only flash.
+        if (isCredentialsLogin()) {
+          coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
+        }
         void endSession();
         return;
       }
@@ -625,6 +771,18 @@ export const SessionProvider = ({
           expiryWarningIdRef.current = modals.openContextModal({
             modal: 'sessionExpiringModal',
             title: 'Session Expiring',
+            // Dismissable only through its own Renew / Log out buttons, matching
+            // SessionExpiredModal. A stray Escape or click-outside used to close
+            // the modal while leaving our id set, which suppressed every later
+            // warning and logged the user out with no notice at all.
+            withCloseButton: false,
+            closeOnClickOutside: false,
+            closeOnEscape: false,
+            // Belt and braces for a close we did not initiate (modals.closeAll
+            // elsewhere, say) so the id never outlives the modal.
+            onClose: () => {
+              expiryWarningIdRef.current = null;
+            },
             innerProps: {
               minutesRemaining: Math.max(
                 1,
@@ -674,16 +832,26 @@ export const SessionProvider = ({
     );
   }
 
-  if (isGetCSRFSuccess)
+  if (isGetCSRFSuccess) {
     return (
       <SessionContext.Provider value={value}>
         {children}
       </SessionContext.Provider>
     );
-  else
-    return (
-      <Center h="100vh">
-        <Loader />
-      </Center>
-    );
+  } else {
+    if (isFetchingCSRF) {
+      return (
+        <Center h="100vh">
+          <Loader />
+        </Center>
+      );
+    } else // error
+    {
+      return (
+        <Center h="100vh">
+          {`Error from the commons services. They do not seem to be running`}
+        </Center>
+      );
+    }
+  }
 };

@@ -11,10 +11,13 @@ import { GEN3_REDIRECT_URL } from '@gen3/core';
 import { appendParameterToUrl } from './utils';
 import { withBasePath } from '../../utils';
 
+const removeTrailingSlash = (path: string) => path.replace(/\/+$/, '');
+
 const filterRedirect = (
   redirect: string | string[] | undefined,
   basePath = '',
 ) => {
+  // oxlint-disable-next-line no-useless-assignment
   let redirectPath = '';
   if (Array.isArray(redirect)) {
     redirectPath = redirect[0];
@@ -31,13 +34,11 @@ const filterRedirect = (
   }
 
   // Remove trailing slash from base URL and leading slash from path
-  const baseUrl = GEN3_REDIRECT_URL.replace(/\/+$/, '');
-  const cleanPath = redirectPath.replace(/^\/+/, '');
+  const baseUrl = removeTrailingSlash(GEN3_REDIRECT_URL);
+  const cleanPath = removeTrailingSlash(redirectPath);
 
   // Join with a single slash, ensuring we don't create double slashes
-  return cleanPath
-    ? withBasePath(basePath, `${baseUrl}/${cleanPath}`)
-    : withBasePath(basePath, `${basePath}/${baseUrl}`);
+  return cleanPath ? `${baseUrl}/${cleanPath}` : baseUrl;
 };
 
 const LoginPanel = (loginConfig: LoginConfig) => {
@@ -71,14 +72,22 @@ const LoginPanel = (loginConfig: LoginConfig) => {
   );
 
   const handleCredentialsLogin = useCallback(async () => {
-    const redirect = filterRedirect(referer, basePath);
-    router.push(redirect).catch((e) => {
+    // oxlint-disable-next-line no-useless-assignment
+    let refererPath: string | undefined = undefined;
+    if (Array.isArray(referer)) {
+      refererPath = referer[0];
+    } else {
+      refererPath = referer;
+    }
+
+    // router push will handle any basePath
+    router.push(refererPath ?? '/').catch((e) => {
       showNotification({
         title: 'Login Error',
         message: `error logging in ${e.message}`,
       });
     });
-  }, [referer, router, basePath]);
+  }, [referer, router]);
 
   return (
     <div className="grid grid-cols-6 w-full">
@@ -94,7 +103,7 @@ const LoginPanel = (loginConfig: LoginConfig) => {
           loginBtnHorizontal={loginBtnHorizontal}
         />
 
-        {loginConfig?.showCredentialsLogin &&
+        {loginConfig.showCredentialsLogin &&
           process.env.NODE_ENV === 'development' && (
             <Stack>
               <CredentialsLogin handleLogin={handleCredentialsLogin} />

@@ -3,12 +3,18 @@
  *
  * Coverage targets:
  *  - logoutSession            – credentials vs. non-credentials logout path
- *  - useSession               – throws without provider, required redirect, custom handler
+ *  - useSession               – throws without provider, required redirect (once
+ *    per transition), custom handler
  *  - useIsAuthenticated       – isAuthenticated flag and userContext passthrough
  *  - SessionProvider rendering – CSRF loading / error states
- *  - Activity listener lifecycle (Bug #2 fix) – listeners are only attached while
- *    the user is authenticated (status === 'issued') and are removed on logout
- *  - Online / offline (useOnline wiring) – interval pauses while offline
+ *  - Token metadata on the context – issued / expires / userContext
+ *  - Refresh scheduling       – expiry-driven timing, clock-skew bound, backoff on
+ *    unhealthy cycles, definitive statuses, visibility catch-up
+ *  - Activity listener lifecycle – listeners are only attached while the user is
+ *    authenticated (status === 'issued') and are removed on logout
+ *  - Cross-tab activity channel – unavailable / throwing / hostile payloads
+ *  - Inactivity warning + logout – window sizing, renew, dismissal, modal cleanup
+ *  - endSession               – awaitable, re-entrant-safe, settles the store
  *  - Initial mount fetch      – getUserDetails is called once on mount
  */
 
@@ -34,8 +40,17 @@ import type { Session } from '../types';
 // ---------------------------------------------------------------------------
 
 const mockRouterPush = jest.fn();
+const routerState = { pathname: '/Explorer' };
 jest.mock('next/router', () => ({
-  useRouter: jest.fn(() => ({ push: mockRouterPush })),
+  // A fresh object per call, like the pages router on a route change, so tests
+  // exercise the identity churn the provider has to tolerate.
+  useRouter: jest.fn(() => ({
+    push: mockRouterPush,
+    basePath: '',
+    get pathname() {
+      return routerState.pathname;
+    },
+  })),
 }));
 
 jest.mock('cookies-next', () => ({
@@ -70,13 +85,21 @@ interface ExpiringModalInnerProps {
   onLogout: () => void;
 }
 
+interface OpenContextModalArgs {
+  innerProps: ExpiringModalInnerProps;
+  onClose?: () => void;
+  withCloseButton?: boolean;
+  closeOnClickOutside?: boolean;
+  closeOnEscape?: boolean;
+}
+
 const mockOpenContextModal = jest.fn(
-  (_args: { innerProps: ExpiringModalInnerProps }) => 'expiring-modal-id',
+  (_args: OpenContextModalArgs) => 'expiring-modal-id',
 );
 const mockCloseModal = jest.fn((_id: string) => undefined);
 jest.mock('@mantine/modals', () => ({
   modals: {
-    openContextModal: (args: { innerProps: ExpiringModalInnerProps }) =>
+    openContextModal: (args: OpenContextModalArgs) =>
       mockOpenContextModal(args),
     close: (id: string) => mockCloseModal(id),
   },
@@ -133,6 +156,14 @@ jest.mock('../../../components/Modals/SessionExpiringModal', () => ({
 // without pulling in the jose / JWT dependencies from hooks.ts
 jest.mock('../hooks', () => ({
   useManageSession: jest.fn(),
+}));
+
+// Only the full-page navigation is stubbed; isUserOnPage stays real so the page
+// matching the inactivity rules depend on is exercised, not mocked away.
+const mockRedirectTo = jest.fn((_url: string) => undefined);
+jest.mock('../utils', () => ({
+  ...jest.requireActual('../utils'),
+  redirectTo: (url: string) => mockRedirectTo(url),
 }));
 
 // ---------------------------------------------------------------------------
@@ -214,6 +245,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   jest.clearAllMocks();
+  routerState.pathname = '/Explorer';
   // Reset channel mock counters between tests
   Object.values(mockChannel).forEach((fn) => (fn as jest.Mock).mockClear());
 });
@@ -256,7 +288,7 @@ describe('logoutSession', () => {
 
     // Re-import logoutSession after mocks are configured
     const { logoutSession: logoutSessionFresh } = await import('../session');
-    await logoutSessionFresh();
+    await logoutSessionFresh('');
 
     expect(fetchMock).toHaveBeenCalledWith('/api/auth/credentialsLogout');
   });
@@ -267,7 +299,7 @@ describe('logoutSession', () => {
     };
     getCookie.mockReturnValue(undefined);
 
-    await logoutSession();
+    await logoutSession('');
 
     expect(fetchMock).not.toHaveBeenCalled();
   });
@@ -322,6 +354,48 @@ describe('useSession', () => {
     renderHook(() => useSession(true), { wrapper: sessionWrapper(session) });
 
     expect(mockRouterPush).not.toHaveBeenCalled();
+  });
+
+  it('handles an unauthenticated session once, not once per render', () => {
+    // The router object changes identity on every route change, and it has to be
+    // a dependency of the redirect effect. Without a guard, navigating while
+    // unauthenticated fires the handler again — which for a delayed handler means
+    // a second pending redirect.
+    const session = makeSession('invalid', false);
+    const onUnauthenticated = jest.fn();
+
+    const { rerender } = renderHook(() => useSession(true, onUnauthenticated), {
+      wrapper: sessionWrapper(session),
+    });
+
+    rerender();
+    rerender();
+
+    expect(onUnauthenticated).toHaveBeenCalledTimes(1);
+  });
+
+  it('handles the next unauthenticated transition after re-authenticating', () => {
+    const onUnauthenticated = jest.fn();
+    const Probe = () => {
+      useSession(true, onUnauthenticated);
+      return null;
+    };
+    const tree = (session: Session) => (
+      <SessionContext.Provider value={session}>
+        <Probe />
+      </SessionContext.Provider>
+    );
+
+    const { rerender } = render(tree(makeSession('invalid', false)));
+    expect(onUnauthenticated).toHaveBeenCalledTimes(1);
+
+    // Logged back in — nothing to handle
+    rerender(tree(makeSession('issued', false)));
+    expect(onUnauthenticated).toHaveBeenCalledTimes(1);
+
+    // ...and logged out again: the guard must have been released
+    rerender(tree(makeSession('invalid', false)));
+    expect(onUnauthenticated).toHaveBeenCalledTimes(2);
   });
 });
 
@@ -445,7 +519,7 @@ describe('SessionProvider – initial mount fetch', () => {
 
 const ACTIVITY_EVENTS = [
   'mousedown',
-  'keypress',
+  'keydown',
   'updateUserActivity',
   'scroll',
   'touchstart',
@@ -509,6 +583,38 @@ describe('SessionProvider – activity listener lifecycle', () => {
         expect(registeredEvents).toContain(ev);
       });
     });
+
+    // `keypress` never fires for arrows/backspace/delete/tab, so it must not be
+    // what activity tracking relies on
+    expect(addSpy.mock.calls.map(([event]) => event)).not.toContain('keypress');
+  });
+
+  it('registers scroll in the capture phase and passively', async () => {
+    setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+
+    render(
+      <SessionProvider updateSessionTime={1}>
+        <div />
+      </SessionProvider>,
+    );
+
+    await waitFor(() => {
+      expect(activityAddCalls(addSpy).length).toBeGreaterThan(0);
+    });
+
+    // scroll does not bubble: without capture, scrolling a nested container is
+    // invisible to the listener. Passive so it cannot delay the scroll.
+    const scrollCall = addSpy.mock.calls.find(([event]) => event === 'scroll');
+    expect(scrollCall?.[2]).toEqual({ passive: true, capture: true });
+
+    const touchCall = addSpy.mock.calls.find(
+      ([event]) => event === 'touchstart',
+    );
+    expect(touchCall?.[2]).toEqual({ passive: true });
   });
 
   it('removes all activity listeners when the user logs out', async () => {
@@ -592,10 +698,10 @@ describe('SessionProvider – activity listener lifecycle', () => {
 });
 
 // ===========================================================================
-// SessionProvider – online / offline (useOnline wiring)
+// SessionProvider – expiry-driven refresh scheduling
 // ===========================================================================
 
-describe('SessionProvider – online / offline interval control', () => {
+describe('SessionProvider – expiry-driven refresh scheduling', () => {
   beforeEach(() => {
     jest.useFakeTimers();
   });
@@ -908,6 +1014,165 @@ describe('SessionProvider – refresh scheduling resilience', () => {
     });
     expect(getUserDetails).not.toHaveBeenCalled();
   });
+
+  it('makes exactly one recovery attempt on an expired token, then stops', async () => {
+    const getUserDetails = setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+
+    // 'expired' is a definitive answer, but hitting /user can still
+    // re-authenticate through Fence's own session, so one attempt is worth it.
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    global.fetch = jest.fn().mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue({
+        status: 'expired',
+        issued: nowSeconds - 20 * 60,
+        expires: nowSeconds - 60,
+      }),
+    });
+
+    render(
+      <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+
+    await act(async () => {});
+    getUserDetails.mockClear();
+
+    await act(async () => {
+      jest.advanceTimersByTime(5000);
+    });
+    expect(getUserDetails).toHaveBeenCalledTimes(1);
+
+    // Fence did not reissue, so nothing further is scheduled — polling a dead
+    // token cannot bring it back.
+    getUserDetails.mockClear();
+    await act(async () => {
+      jest.advanceTimersByTime(10 * 60 * 1000);
+    });
+    expect(getUserDetails).not.toHaveBeenCalled();
+  });
+
+  it('does not schedule anything for a malformed token', async () => {
+    const getUserDetails = setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+
+    // exp at or before iat: no refresh can fix this
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    global.fetch = jest.fn().mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue({
+        status: 'issued',
+        issued: nowSeconds,
+        expires: nowSeconds,
+      }),
+    });
+
+    render(
+      <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+
+    await act(async () => {});
+    getUserDetails.mockClear();
+
+    await act(async () => {
+      jest.advanceTimersByTime(10 * 60 * 1000);
+    });
+    expect(getUserDetails).not.toHaveBeenCalled();
+  });
+
+  it('keeps the backoff across a tab foreground instead of restarting it', async () => {
+    const getUserDetails = setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+    global.fetch = jest.fn().mockResolvedValue({
+      status: 500,
+      json: jest.fn().mockResolvedValue({ message: 'boom' }),
+    });
+
+    render(
+      <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+    await act(async () => {});
+
+    // Burn the one prompt attempt so the backoff is engaged
+    await act(async () => {
+      jest.advanceTimersByTime(5000);
+    });
+    getUserDetails.mockClear();
+
+    // Foregrounding re-derives the schedule; it must not reset the failure count,
+    // or flipping tabs while the endpoint is down restarts fast retries.
+    await act(async () => {
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+
+    await act(async () => {
+      jest.advanceTimersByTime(25000);
+    });
+    expect(getUserDetails).not.toHaveBeenCalled();
+  });
+
+  it('throttles the visibility re-check', async () => {
+    setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+
+    // Healthy token so the armed timer is ~18 minutes out and cannot add reads
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    const fetchMock = jest.fn().mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue({
+        status: 'issued',
+        issued: nowSeconds,
+        expires: nowSeconds + 20 * 60,
+      }),
+    });
+    global.fetch = fetchMock;
+
+    render(
+      <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+    await act(async () => {});
+
+    const readsAfterMount = fetchMock.mock.calls.length;
+
+    await act(async () => {
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(readsAfterMount + 1);
+
+    // Flipping back and forth must not be one request per flip
+    await act(async () => {
+      document.dispatchEvent(new Event('visibilitychange'));
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(readsAfterMount + 1);
+
+    // ...but a check is allowed again once the throttle window has passed
+    await act(async () => {
+      jest.advanceTimersByTime(11000);
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(readsAfterMount + 2);
+  });
 });
 
 // ===========================================================================
@@ -1188,6 +1453,124 @@ describe('SessionProvider – inactivity warning', () => {
     expect(mockCloseModal).toHaveBeenCalledWith('expiring-modal-id');
     expect(mockRouterPush).toHaveBeenCalled();
   });
+
+  it('opens the warning so only its own buttons can dismiss it', async () => {
+    render(
+      <SessionProvider
+        updateSessionTime={1}
+        inactiveTimeLimit={3}
+        expireWarningMinutes={1}
+      >
+        <div />
+      </SessionProvider>,
+    );
+    await act(async () => {});
+
+    await act(async () => {
+      jest.advanceTimersByTime(2 * 60 * 1000);
+    });
+
+    // An Escape or click-outside dismissal leaves the provider holding an id for a
+    // modal that is gone, which suppresses every later warning
+    expect(mockOpenContextModal).toHaveBeenCalledWith(
+      expect.objectContaining({
+        withCloseButton: false,
+        closeOnClickOutside: false,
+        closeOnEscape: false,
+        onClose: expect.any(Function),
+      }),
+    );
+  });
+
+  it('re-shows the warning if the modal is closed from outside the provider', async () => {
+    // 1 minute poll, 4 minute limit, 2 minute warning -> two ticks inside the
+    // warning window, so a re-open is observable before the logout tick.
+    render(
+      <SessionProvider
+        updateSessionTime={1}
+        inactiveTimeLimit={4}
+        expireWarningMinutes={2}
+      >
+        <div />
+      </SessionProvider>,
+    );
+    await act(async () => {});
+
+    await act(async () => {
+      jest.advanceTimersByTime(2 * 60 * 1000);
+    });
+    expect(mockOpenContextModal).toHaveBeenCalledTimes(1);
+    expect(lastInnerProps().minutesRemaining).toBe(2);
+
+    // Something else closed it (modals.closeAll, say). onClose has to release our
+    // id or the user is logged out at the limit having seen no warning.
+    await act(async () => {
+      const { onClose } = mockOpenContextModal.mock.calls[0][0];
+      onClose?.();
+    });
+
+    await act(async () => {
+      jest.advanceTimersByTime(60000);
+    });
+    expect(mockOpenContextModal).toHaveBeenCalledTimes(2);
+    expect(mockRouterPush).not.toHaveBeenCalled();
+  });
+
+  it('shows the timeout modal on a client-side logout redirect', async () => {
+    const dispatch = jest.fn();
+    coreMock.useCoreDispatch.mockReturnValue(dispatch);
+
+    render(
+      <SessionProvider
+        updateSessionTime={1}
+        inactiveTimeLimit={3}
+        expireWarningMinutes={0}
+      >
+        <div />
+      </SessionProvider>,
+    );
+    await act(async () => {});
+
+    await act(async () => {
+      jest.advanceTimersByTime(3 * 60 * 1000);
+    });
+
+    // The credentials redirect is client-side, so the modal survives it and is
+    // what tells the user why they were logged out.
+    expect(dispatch).toHaveBeenCalledWith(
+      expect.objectContaining({ type: 'SHOW_MODAL' }),
+    );
+    expect(mockRouterPush).toHaveBeenCalled();
+  });
+
+  it('does not show the timeout modal when the document is about to be replaced', async () => {
+    const dispatch = jest.fn();
+    coreMock.useCoreDispatch.mockReturnValue(dispatch);
+    cookiesMock.hasCookie.mockReturnValue(false); // Fence logout
+
+    render(
+      <SessionProvider
+        updateSessionTime={1}
+        inactiveTimeLimit={3}
+        expireWarningMinutes={0}
+      >
+        <div />
+      </SessionProvider>,
+    );
+    await act(async () => {});
+
+    await act(async () => {
+      jest.advanceTimersByTime(3 * 60 * 1000);
+    });
+
+    // A full page load is coming, so the modal would only flash
+    expect(dispatch).not.toHaveBeenCalledWith(
+      expect.objectContaining({ type: 'SHOW_MODAL' }),
+    );
+    expect(mockRedirectTo).toHaveBeenCalledWith(
+      expect.stringContaining('fence.example.com/logout'),
+    );
+  });
 });
 
 // ===========================================================================
@@ -1199,6 +1582,32 @@ describe('SessionProvider – endSession', () => {
     hasCookie: jest.Mock;
   };
 
+  /** Renders the provider and hands back the context's endSession + its value */
+  const renderWithCapture = async () => {
+    const captured: {
+      endSession?: () => Promise<void>;
+      value?: Session;
+    } = {};
+
+    const Capture = () => {
+      const session = useSession();
+      React.useEffect(() => {
+        captured.endSession = session.endSession;
+        captured.value = session;
+      }, [session]);
+      return null;
+    };
+
+    const result = render(
+      <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
+        <Capture />
+      </SessionProvider>,
+    );
+
+    await act(async () => {});
+    return { ...result, captured };
+  };
+
   it('resolves only after the logout redirect has been initiated', async () => {
     setupDefaultCoreMocks();
     hooksMock.useManageSession.mockReturnValue({
@@ -1207,22 +1616,7 @@ describe('SessionProvider – endSession', () => {
     });
     cookiesMock.hasCookie.mockReturnValue(true);
 
-    const captured: { endSession?: () => Promise<void> } = {};
-    const Capture = () => {
-      const { endSession } = useSession();
-      React.useEffect(() => {
-        captured.endSession = endSession;
-      }, [endSession]);
-      return null;
-    };
-
-    render(
-      <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
-        <Capture />
-      </SessionProvider>,
-    );
-
-    await act(async () => {});
+    const { captured } = await renderWithCapture();
 
     await act(async () => {
       const pending = captured.endSession?.();
@@ -1230,5 +1624,101 @@ describe('SessionProvider – endSession', () => {
       await pending;
       expect(mockRouterPush).toHaveBeenCalledWith('https://example.com');
     });
+  });
+
+  it('ignores a second logout while one is already under way', async () => {
+    const getUserDetails = setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+    cookiesMock.hasCookie.mockReturnValue(true);
+
+    const { captured } = await renderWithCapture();
+    getUserDetails.mockClear();
+
+    // Navigation is asynchronous, so the page stays live after logout starts and
+    // the inactivity tick can re-enter
+    await act(async () => {
+      await Promise.all([captured.endSession?.(), captured.endSession?.()]);
+    });
+
+    expect(getUserDetails).toHaveBeenCalledTimes(1);
+    expect(mockRouterPush).toHaveBeenCalledTimes(1);
+  });
+
+  it('accepts a later logout once the client-side redirect has landed', async () => {
+    setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+    cookiesMock.hasCookie.mockReturnValue(true);
+
+    const { captured } = await renderWithCapture();
+
+    await act(async () => {
+      await captured.endSession?.();
+    });
+    await act(async () => {
+      await captured.endSession?.();
+    });
+
+    // The provider survives a client-side redirect, so the guard has to release
+    expect(mockRouterPush).toHaveBeenCalledTimes(2);
+  });
+
+  it('settles the auth store before navigating away to Fence', async () => {
+    const getUserDetails = setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+    cookiesMock.hasCookie.mockReturnValue(false); // Fence logout
+
+    // How many getUserDetails calls had landed when we navigated away
+    let userDetailCallsAtRedirect = -1;
+    mockRedirectTo.mockImplementation(() => {
+      userDetailCallsAtRedirect = getUserDetails.mock.calls.length;
+      return undefined;
+    });
+
+    const { captured } = await renderWithCapture();
+    getUserDetails.mockClear();
+
+    await act(async () => {
+      await captured.endSession?.();
+    });
+
+    // Until getUserDetails lands, userStatus still reads authenticated and the
+    // rest of the app behaves as though nothing happened
+    expect(userDetailCallsAtRedirect).toBe(1);
+    expect(mockRedirectTo).toHaveBeenCalledWith(
+      'https://fence.example.com/logout?next=https://example.com',
+    );
+  });
+
+  it('keeps the context value stable across navigations', async () => {
+    setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+
+    const { captured, rerender } = await renderWithCapture();
+    const firstValue = captured.value;
+
+    // Every useRouter() call returns a new object, as the pages router does on a
+    // route change. endSession must not churn with it, or every consumer of the
+    // session context re-renders on every navigation.
+    routerState.pathname = '/Workspace';
+    rerender(
+      <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+    await act(async () => {});
+
+    expect(captured.value).toBe(firstValue);
   });
 });
