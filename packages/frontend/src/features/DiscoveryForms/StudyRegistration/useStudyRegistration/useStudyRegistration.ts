@@ -116,13 +116,14 @@ export const useStudyRegistration = (
     }));
     console.log('registerableStudyData[0]', registerableStudyData[0]);
     console.log('userInfo', userInfo);
+    console.log('config.form', config.form);
     // Autofill values for form:
     return config.form.map((item: any) =>
       item?.variable === 'study_id'
         ? {
             ...item,
             data: registerableStudyData,
-            initialValue: registerableStudyData[0].value,
+            initialValue: registerableStudyData[0]?.value,
           }
         : item,
     );
