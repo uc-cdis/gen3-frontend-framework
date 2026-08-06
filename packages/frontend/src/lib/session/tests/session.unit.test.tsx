@@ -1273,6 +1273,124 @@ describe('SessionProvider – refresh scheduling resilience', () => {
     // Asked for immediately, not on some later timer.
     expect(getUserDetails).toHaveBeenCalledTimes(1);
   });
+
+  it('refreshes anyway when the armed timer never fires', async () => {
+    const getUserDetails = setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+
+    // Reissued on every read, as Fence does when /user is hit, so a refresh that
+    // lands leaves a healthy token behind rather than one still inside the margin.
+    global.fetch = jest.fn().mockImplementation(() => {
+      const seconds = Math.floor(Date.now() / 1000);
+      return Promise.resolve({
+        status: 200,
+        json: jest.fn().mockResolvedValue({
+          status: 'issued',
+          issued: seconds,
+          expires: seconds + 20 * 60,
+        }),
+      });
+    });
+
+    // Stand in for a suspended tab: the long refresh timer is never delivered,
+    // while short timers and intervals keep working. Before the heartbeat this
+    // silently cost the user their session — nothing else was watching.
+    const realSetTimeout = global.setTimeout;
+    const setTimeoutSpy = jest
+      .spyOn(global, 'setTimeout')
+      .mockImplementation(((
+        fn: Parameters<typeof setTimeout>[0],
+        ms?: number,
+        ...rest: unknown[]
+      ) =>
+        (ms ?? 0) > 60000
+          ? (0 as unknown as ReturnType<typeof setTimeout>)
+          : realSetTimeout(fn, ms, ...rest)) as unknown as typeof setTimeout);
+
+    try {
+      render(
+        <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
+          <div />
+        </SessionProvider>,
+      );
+      await act(async () => {});
+      getUserDetails.mockClear();
+
+      // The 18 minute deadline passes with no timer to announce it
+      await act(async () => {
+        jest.advanceTimersByTime(17 * 60 * 1000);
+      });
+      expect(getUserDetails).not.toHaveBeenCalled();
+
+      // The heartbeat notices once it is past the deadline plus its grace window
+      await act(async () => {
+        jest.advanceTimersByTime(2 * 60 * 1000);
+      });
+      expect(getUserDetails).toHaveBeenCalled();
+
+      // ...and having rescheduled, it does not then refresh on every tick
+      getUserDetails.mockClear();
+      await act(async () => {
+        jest.advanceTimersByTime(60 * 1000);
+      });
+      expect(getUserDetails).not.toHaveBeenCalled();
+    } finally {
+      setTimeoutSpy.mockRestore();
+    }
+  });
+
+  it('re-derives the schedule on focus and on regaining the network', async () => {
+    setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+
+    // Healthy token, so the armed timer is ~18 minutes out and cannot itself add
+    // reads within the window this test advances.
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    const fetchMock = jest.fn().mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue({
+        status: 'issued',
+        issued: nowSeconds,
+        expires: nowSeconds + 20 * 60,
+      }),
+    });
+    global.fetch = fetchMock;
+
+    render(
+      <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+    await act(async () => {});
+
+    const readsAfterMount = fetchMock.mock.calls.length;
+
+    // A window raised above another application never changes document visibility
+    await act(async () => {
+      window.dispatchEvent(new Event('focus'));
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(readsAfterMount + 1);
+
+    // Signals that arrive together share one throttle rather than stacking reads
+    await act(async () => {
+      window.dispatchEvent(new Event('online'));
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(readsAfterMount + 1);
+
+    // Coming back from an outage that outlasted the throttle is its own catch-up
+    await act(async () => {
+      jest.advanceTimersByTime(11000);
+      window.dispatchEvent(new Event('online'));
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(readsAfterMount + 2);
+  });
 });
 
 // ===========================================================================

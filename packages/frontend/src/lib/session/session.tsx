@@ -34,9 +34,11 @@ import { modals } from '@mantine/modals';
 
 const ACTIVITY_THROTTLE_TIMEOUT = 7000;
 
-// Foregrounding a tab re-derives the refresh schedule from the real token; this
-// keeps tab-flipping from turning into one request per flip.
-const VISIBILITY_RECHECK_THROTTLE_MILLISECONDS = 10000;
+// Coming back to the page re-derives the refresh schedule from the real token.
+// Several signals mean "we are back" and can arrive together, so they share one
+// throttle: this keeps tab- and window-flipping from turning into one request per
+// flip.
+const CATCH_UP_THROTTLE_MILLISECONDS = 10000;
 
 /**
  * Events that count as user activity.
@@ -205,6 +207,31 @@ const MIN_REFRESH_DELAY_MILLISECONDS = 5000;
 // Fence will not renew — turns into a tight poll against /user.
 const REFRESH_RETRY_BASE_MILLISECONDS = 30000;
 const REFRESH_RETRY_MAX_MILLISECONDS = minutesToMilliseconds(5);
+
+/**
+ * How often the heartbeat re-checks the refresh deadline against the wall clock.
+ *
+ * The scheduled `setTimeout` is still the primary mechanism — it is precise and
+ * costs nothing until it fires. This supervises it: a deadline can be missed
+ * because the timer was never armed (a branch that returned early, a race between
+ * a cycle and a re-derivation) or because the tab was suspended long enough for
+ * the browser to deliver it late. Each tick is cheap — it compares two numbers
+ * and does nothing unless a deadline is actually overdue — so a frequency this
+ * high costs nothing in the common case.
+ *
+ * It does not, and cannot, refresh while the page is frozen: no timer in the
+ * document runs then. What it bounds is how long an overdue refresh stays
+ * overdue once the page is running again.
+ */
+const REFRESH_HEARTBEAT_INTERVAL_MILLISECONDS = 30000;
+
+/**
+ * How far past the deadline the heartbeat waits before stepping in, so a timer
+ * that is about to fire on its own is left to do it. One interval: if the timeout
+ * is going to fire, it has already had a full tick's worth of slack.
+ */
+const REFRESH_HEARTBEAT_GRACE_MILLISECONDS =
+  REFRESH_HEARTBEAT_INTERVAL_MILLISECONDS;
 
 const MILLISECONDS_PER_MINUTE = minutesToMilliseconds(1);
 
@@ -435,11 +462,18 @@ export const SessionProvider = ({
   // it instead of racing to arm the timer off a staler read.
   const refreshInFlightRef = useRef(false);
 
+  // When the armed refresh is due, as an absolute timestamp, or null when nothing
+  // is owed. The `setTimeout` above carries the same information as a duration,
+  // but a duration cannot be re-checked: it is only ever right if the callback
+  // runs when it was promised. This is what the heartbeat compares against.
+  const refreshDueAtRef = useRef<number | null>(null);
+
   const clearScheduledRefresh = useCallback(() => {
     if (refreshTimeoutRef.current) {
       clearTimeout(refreshTimeoutRef.current);
       refreshTimeoutRef.current = null;
     }
+    refreshDueAtRef.current = null;
   }, []);
 
   // A refresh cycle re-arms the timer that started it. The cycle is held in a ref
@@ -451,6 +485,7 @@ export const SessionProvider = ({
     (delay: number) => {
       clearScheduledRefresh();
       if (!isMountedRef.current) return;
+      refreshDueAtRef.current = Date.now() + delay;
       refreshTimeoutRef.current = setTimeout(() => {
         void performScheduledRefreshRef.current?.();
       }, delay);
@@ -524,6 +559,11 @@ export const SessionProvider = ({
   const performScheduledRefresh = useCallback(async () => {
     if (sessionStatusRef.current !== 'issued') return;
 
+    // This cycle consumes the deadline. `scheduleFromTokenData` sets the next one,
+    // or deliberately leaves it unset for a token that is not coming back — which
+    // is also what stops the heartbeat below from retrying such a token forever.
+    refreshDueAtRef.current = null;
+
     // The flag covers scheduling as well as the read, so a re-derivation cannot
     // land between the two and arm a timer this cycle is about to replace.
     refreshInFlightRef.current = true;
@@ -561,6 +601,30 @@ export const SessionProvider = ({
     // oxlint-disable-next-line react/react-compiler
   }, [scheduleFromTokenData, syncAuthTokenData]);
 
+  // Supervise the armed timer against the wall clock.
+  //
+  // A deadline held only as a `setTimeout` duration is right exactly once — if the
+  // callback runs when it was promised. It may not: a suspended tab gets its
+  // timers delivered late, and an early return elsewhere can leave no timer armed
+  // at all. Re-reading the deadline on a short interval makes a missed refresh
+  // self-correcting instead of permanent, and puts a bound on how late it can be
+  // that does not depend on how long the tab was away.
+  const heartbeatTick = useCallback(() => {
+    const dueAt = refreshDueAtRef.current;
+    if (dueAt === null) return; // nothing owed, or deliberately not rescheduled
+    if (refreshInFlightRef.current) return; // that cycle owns the next deadline
+    if (Date.now() < dueAt + REFRESH_HEARTBEAT_GRACE_MILLISECONDS) return;
+
+    void performScheduledRefreshRef.current?.();
+  }, []);
+
+  useInterval(
+    heartbeatTick,
+    sessionInfo.status === 'issued'
+      ? REFRESH_HEARTBEAT_INTERVAL_MILLISECONDS
+      : null,
+  );
+
   // Seed (and cancel) the schedule as login state changes.
   useEffect(() => {
     if (sessionInfo.status !== 'issued') {
@@ -577,40 +641,51 @@ export const SessionProvider = ({
     };
   }, [sessionInfo.status, rescheduleFromToken, clearScheduledRefresh]);
 
-  // Catch up if the scheduled setTimeout was throttled while the tab was
-  // backgrounded (browsers can pause/delay timers in inactive tabs well
-  // beyond our refresh margin). Re-derive the schedule from the real token
-  // expiry as soon as the tab is visible again.
-  const lastVisibilityRecheckRef = useRef(0);
+  // Catch up when the page comes back to life, from any of the three directions it
+  // can: the tab is shown again, the window regains focus, or the network returns.
+  //
+  // These are not redundant. `visibilitychange` misses a window that stayed
+  // visible while another application sat on top of it — hidden from the user, and
+  // on some platforms throttled, without ever being `hidden` to the document.
+  // `online` covers an outage that outlasted the token, where nothing about the
+  // page's visibility changed at all. Whichever arrives first does the work and
+  // the shared throttle below silences the rest.
+  const lastCatchUpAtRef = useRef(0);
   useEffect(() => {
     if (typeof document === 'undefined') return;
     if (sessionInfo.status !== 'issued') return;
 
-    const handleVisibility = () => {
-      if (document.visibilityState !== 'visible') return;
-
+    const catchUp = () => {
       const now = Date.now();
-      if (
-        now - lastVisibilityRecheckRef.current <
-        VISIBILITY_RECHECK_THROTTLE_MILLISECONDS
-      )
+      if (now - lastCatchUpAtRef.current < CATCH_UP_THROTTLE_MILLISECONDS)
         return;
-      lastVisibilityRecheckRef.current = now;
+      lastCatchUpAtRef.current = now;
 
-      // Coming back to the tab is the moment a dead token is worth one more
-      // attempt: this is the case the shared backoff counter used to swallow.
-      // Bounded by the throttle above, so flipping tabs cannot turn it into a
+      // Coming back is the moment a dead token is worth one more attempt: this is
+      // the case the shared backoff counter used to swallow. Bounded by the
+      // throttle above, so flipping between tabs or windows cannot turn it into a
       // poll. The backoff counter itself is deliberately left alone — a failing
-      // endpoint must not get fast retries again just because the tab was
-      // foregrounded.
+      // endpoint must not get fast retries again just because we came back.
       expiredRecoveryAttemptedRef.current = false;
 
       void rescheduleFromToken();
     };
 
-    document.addEventListener('visibilitychange', handleVisibility);
-    return () =>
-      document.removeEventListener('visibilitychange', handleVisibility);
+    // A visibility change also fires on the way *out*, which is not a catch-up.
+    const catchUpIfVisible = () => {
+      if (document.visibilityState !== 'visible') return;
+      catchUp();
+    };
+
+    document.addEventListener('visibilitychange', catchUpIfVisible);
+    window.addEventListener('focus', catchUp);
+    window.addEventListener('online', catchUp);
+
+    return () => {
+      document.removeEventListener('visibilitychange', catchUpIfVisible);
+      window.removeEventListener('focus', catchUp);
+      window.removeEventListener('online', catchUp);
+    };
   }, [sessionInfo.status, rescheduleFromToken]);
 
   // Read through a ref so `endSession` — and therefore the context value — does
@@ -803,7 +878,7 @@ export const SessionProvider = ({
         closeExpiryWarning();
         // Only worth showing where the redirect is client-side: there the modal
         // survives the navigation and is what tells the user why they were logged
-        // out. On the Fence path the document is replaced, so it would only flash.
+        // out
         if (isCredentialsLogin()) {
           coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
         }

@@ -60,6 +60,15 @@ export const jegGatewayApi = GatewayWithTags.injectEndpoints({
       },
       invalidatesTags: ['ActiveKernels'],
     }),
+    kernelPackages: builder.query<any, string>({
+      query: (kernelId) => ({
+        url: `/api/kernel-packages/${encodeURIComponent(kernelId)}`,
+      }),
+      transformResponse: (response: Record<string, unknown>, _meta) => {
+        return response;
+      },
+      providesTags: ['ActiveKernels'],
+    }),
   }),
   overrideExisting: true,
 });
@@ -70,6 +79,8 @@ export const {
   useTerminateKernelMutation,
   useJegGatewayStatusQuery,
   useReapKernelsMutation,
+  useKernelPackagesQuery,
+  useLazyKernelPackagesQuery,
 } = jegGatewayApi;
 
 // select active kernels

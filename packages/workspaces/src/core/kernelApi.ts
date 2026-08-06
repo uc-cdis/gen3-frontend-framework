@@ -1,6 +1,6 @@
 import { gen3Api } from '@gen3/core';
 import { GEN3_KERNEL_API } from '../constants';
-import { KernelSpecEntry, KernelSpecsResponse } from './types';
+import type { KernelSpecEntry, KernelSpecsResponse } from './types';
 
 const KernelWithTags = gen3Api.enhanceEndpoints({
   addTagTypes: ['Kernel'],
@@ -54,15 +54,8 @@ export const kernelApi = KernelWithTags.injectEndpoints({
         return res;
       },
     }),
-    kernelsList: builder.query<Array<KernelItem>, void>({
-      query: () => `${GEN3_KERNEL_API}/kernels_list`,
-      transformResponse: (response: Array<KernelItemResponse>) => {
-        return response.map((kernel) => ({
-          ...kernel,
-          executionState: kernel.execution_state,
-          lastActivity: kernel.last_activity,
-        }));
-      },
+    kernelsList: builder.query<any, string>({
+      query: (kernelId) => `${GEN3_KERNEL_API}/kernels_list/${kernelId}`,
     }),
   }),
   overrideExisting: true,
