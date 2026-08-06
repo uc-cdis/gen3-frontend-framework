@@ -232,7 +232,7 @@ const MILLISECONDS_PER_MINUTE = minutesToMilliseconds(1);
  *
  * `exp * 1000 - Date.now()` mixes the server's clock with the browser's, so a
  * skewed browser clock makes the result wrong in both directions. A clock that
- * is behind the server's inflates it, which would schedule the refresh past the
+ * is behind the server inflates it, which would schedule the refresh past the
  * real expiry and silently log the user out — and re-reading the token later
  * yields the same wrong answer, so nothing recovers from it. The remaining
  * lifetime can never exceed the token's full lifetime, so `iat` gives us a
@@ -399,9 +399,6 @@ export const SessionProvider = ({
     void Promise.resolve(getUserDetails()).catch(() => undefined);
   }, [getUserDetails]);
 
-  // Ask Fence for the login state, uncached, after a token read that contradicts
-  // it.
-  //
   // `userStatus` is derived from the /user cache entry, which nothing in a hidden
   // tab invalidates, so a token that expires while the tab is backgrounded leaves
   // the store reporting `authenticated` indefinitely: the UI stays logged in,
