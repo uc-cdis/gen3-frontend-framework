@@ -6,15 +6,13 @@ import React, {
   useState,
 } from 'react';
 import { useRouter } from 'next/router';
-import { getCookie, hasCookie } from 'cookies-next';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { useManageSession } from './hooks';
 import { showNotification } from '@mantine/notifications';
 import type { AuthTokenData, Session, SessionProviderProps } from './types';
-import { isUserOnPage, redirectTo } from './utils';
+import { isUserOnPage } from './utils';
 import {
   type CoreState,
-  GEN3_FENCE_API,
   GEN3_REDIRECT_URL,
   Modals,
   selectUserAuthStatus,
@@ -28,7 +26,7 @@ import { ACTIVITY_CHANNEL } from './constants';
 import { Center, Loader } from '@mantine/core';
 import { useThrottledCallback } from '@mantine/hooks';
 
-import { minutesToMilliseconds, withBasePath } from '../../utils';
+import { minutesToMilliseconds } from '../../utils';
 import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
 import { modals } from '@mantine/modals';
 
@@ -59,20 +57,13 @@ const ACTIVITY_EVENTS: ReadonlyArray<
   ['touchstart', { passive: true }],
 ];
 
-/**
- * Development-only "credentials login" leaves a client-readable cookie behind.
- * Its logout is client-side, so it keeps the SPA — and anything we render to
- * explain the logout — alive, where the Fence path replaces the document.
- */
-const isCredentialsLogin = () => hasCookie('credentials_token');
-
 export const logoutSession = async (basePath: string) => {
-  // logged in using credentials, then execute credentials logout first
-  if (process.env.NODE_ENV === 'development') {
-    const credentialsToken = getCookie('credentials_token');
-    if (credentialsToken) {
-      await fetch(`${basePath}/api/auth/credentialsLogout`);
-    }
+  const response = await fetch(`${basePath}/api/auth/sessionLogout`, {
+    method: 'POST',
+  });
+
+  if (!response.ok) {
+    throw new Error(`logout request failed (${response.status})`);
   }
 };
 
@@ -704,39 +695,36 @@ export const SessionProvider = ({
     if (endingSessionRef.current) return;
     endingSessionRef.current = true;
 
-    const credentialsLogin = isCredentialsLogin();
+    let logoutError: unknown;
 
     try {
       await logoutSession(routerRef.current.basePath);
+    } catch (error: unknown) {
+      logoutError = error;
+    }
+
+    try {
       // Settle the store before navigating: until this lands, `userStatus` still
       // reads authenticated and the rest of the app acts as if nothing happened.
       await getUserDetails();
     } catch (error: unknown) {
-      // Only worth surfacing on the credentials path — the Fence path replaces
-      // the document, so a notification there is never seen.
-      if (credentialsLogin) {
-        showNotification({
-          title: 'Logout Error',
-          message: `error logging out ${error instanceof Error ? error.message : String(error)}`,
-        });
-      }
+      logoutError ??= error;
     }
 
-    if (credentialsLogin) {
-      // Client-side redirect: the provider stays mounted, so release the guard
-      // once it lands or a later deliberate logout would be a no-op.
-      try {
-        await routerRef.current.push(GEN3_REDIRECT_URL);
-      } finally {
-        endingSessionRef.current = false;
-      }
-      return;
+    if (logoutError) {
+      showNotification({
+        title: 'Logout Error',
+        message: `error logging out ${logoutError instanceof Error ? logoutError.message : 'unknown error'}`,
+      });
     }
 
-    // need a fence redirect
-    redirectTo(
-      `${GEN3_FENCE_API}/logout?next=${withBasePath(routerRef.current.basePath, GEN3_REDIRECT_URL)}`,
-    );
+    // Logout is performed through our same-origin API, so this can remain a
+    // client-side navigation. The provider (and an expiry modal) survives it.
+    try {
+      await routerRef.current.push(GEN3_REDIRECT_URL);
+    } finally {
+      endingSessionRef.current = false;
+    }
   }, [getUserDetails]);
 
   /**
@@ -876,12 +864,7 @@ export const SessionProvider = ({
 
       if (timeSinceLastActivity >= activeLimit) {
         closeExpiryWarning();
-        // Only worth showing where the redirect is client-side: there the modal
-        // survives the navigation and is what tells the user why they were logged
-        // out
-        if (isCredentialsLogin()) {
-          coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
-        }
+        coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
         void endSession();
         return;
       }
@@ -897,11 +880,9 @@ export const SessionProvider = ({
           expiryWarningIdRef.current = modals.openContextModal({
             modal: 'sessionExpiringModal',
             title: 'Session Expiring',
-            // Dismissable only through its own Renew / Log out buttons, matching
-            // SessionExpiredModal. A stray Escape or click-outside used to close
-            // the modal while leaving our id set, which suppressed every later
-            // warning and logged the user out with no notice at all.
-            withCloseButton: false,
+            // Offer an explicit close control, but prevent accidental dismissal
+            // through Escape or a click outside the modal.
+            withCloseButton: true,
             closeOnClickOutside: false,
             closeOnEscape: false,
             // Belt and braces for a close we did not initiate (modals.closeAll
