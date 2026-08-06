@@ -25,8 +25,6 @@ const StudyRegistrationAccessRequestForm = ({
   return (
     <div className="flex justify-items-center w-full">
       <Box className="w-full bg-white rounded-md m-8 p-8 ">
-        {studyUID}
-
         <div className="max-w-4xl mx-auto">
           <FormContentViews
             formOutcome={formOutcome}
@@ -38,15 +36,11 @@ const StudyRegistrationAccessRequestForm = ({
             isLoading={isLoading}
           />
         </div>
-
         <div className="mt-12 pt-4 border-t border-neutral-100 max-w-4xl mx-auto">
           <Text className="text-xs text-neutral-500 leading-relaxed">
             {configStudyRegistrationForm.disclaimer}
           </Text>
         </div>
-        <pre>{JSON.stringify(formBody[1], null, 2)}</pre>
-        <hr />
-        <pre>{JSON.stringify(data, null, 2)}</pre>
       </Box>
     </div>
   );

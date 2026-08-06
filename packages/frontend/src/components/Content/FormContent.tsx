@@ -104,7 +104,7 @@ const FormContent = ({
           className={className}
           classNames={{
             label: 'text-sm font-bold',
-            input: 'max-w-[500px] mt-2',
+            input: 'max-w-lg mt-2',
             description: 'text-sm text-[var(--mantine-color-text)]',
           }}
           label={label}
@@ -169,12 +169,16 @@ const FormContent = ({
       const SelectElement = (
         <Select
           className={className}
+          classNames={{
+            label: 'text-sm font-bold',
+            root: 'max-w-lg mt-2',
+          }}
           data={data}
           defaultValue={initialValue}
           label={label}
           description={description}
           placeholder={placeholder}
-          // disabled={disabled || form.submitting}
+          disabled={disabled || form.submitting}
           required={required}
           key={form.key(keyString)}
           {...form.getInputProps(keyString)}
@@ -190,6 +194,10 @@ const FormContent = ({
       return (
         <TagsInput
           label={label}
+          classNames={{
+            label: 'text-sm font-bold whitespace-pre-line',
+            root: 'max-w-lg mt-2',
+          }}
           placeholder={placeholder}
           key={form.key(keyString)}
           {...form.getInputProps(keyString)}
@@ -203,7 +211,7 @@ const FormContent = ({
           className={className}
           classNames={{
             label: 'text-sm font-bold',
-            input: 'max-w-[500px] h-40 mt-2',
+            input: 'max-w-lg h-40 mt-2',
             description: 'text-sm text-[var(--mantine-color-text)]',
           }}
           label={label}

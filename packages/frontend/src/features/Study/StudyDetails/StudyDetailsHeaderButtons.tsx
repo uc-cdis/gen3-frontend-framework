@@ -76,7 +76,8 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
     if (requiresLogin) {
       return 'Login to Register This Study';
     }
-    if (userCanRegisterStudy) return 'Register Study';
+    if (userCanRegisterStudy(userInfo, studyRegistrationAuthZ))
+      return 'Register Study';
     return `Request Access to Register this Study`;
   }, [requiresLogin, studyUID]);
 

@@ -20,5 +20,6 @@ export interface studyRegistrationAccessRequestFormOutcomeProps extends Gen3AppC
 export enum FormOutcome {
   pending = 'pending',
   success = 'success',
-  duplicateSubmission = 'duplicateSubmission',
+  error = 'error',
+  userNotLoggedIn = 'userNotLoggedIn',
 }

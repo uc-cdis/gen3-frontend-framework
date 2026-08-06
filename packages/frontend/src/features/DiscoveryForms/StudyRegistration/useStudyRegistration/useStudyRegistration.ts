@@ -52,7 +52,6 @@ export const useStudyRegistration = (
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        setIsError(false);
         const response = await fetch(
           config.mdsURL +
             '/metadata?data=True&_guid_type=unregistered_discovery_metadata&limit=2000&offset=0',
@@ -60,6 +59,8 @@ export const useStudyRegistration = (
 
         if (!response.ok) {
           setIsError(true);
+          setFormOutcome(FormOutcome.error);
+          setFormError('HTTP error! status: ${response.status}');
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const json = await response.json();
@@ -70,7 +71,8 @@ export const useStudyRegistration = (
         setStudies(rawStudies);
       } catch (err: any) {
         if (err.name !== 'AbortError') {
-          setIsError(true);
+          setFormError(`HTTP error! status: ${err}`);
+          throw new Error(`HTTP error! status: ${err}`);
         }
       } finally {
         setIsLoading(false);
@@ -99,7 +101,9 @@ export const useStudyRegistration = (
   };
 
   const formBody = useMemo(() => {
-    if (!studies.length || !userInfo) return config.form;
+    if (!studies.length || !userInfo) {
+      return config.form;
+    }
     // Filter based on active user permissions
     const registerableStudies = studies.filter((study) =>
       userCanRegisterStudy(userInfo as ActiveUser, study.registration_authz),
@@ -109,14 +113,10 @@ export const useStudyRegistration = (
       registerableStudies,
       toString(studyUID),
     );
-    // console.log('organizedRegistrableStudies', organizedRegistrableStudies);
     const registerableStudyData = organizedRegistrableStudies.map((study) => ({
       label: `${study.project_number || 'N/A'} : ${study.study_metadata?.minimal_info?.study_name || 'N/A'} : ${study.study_metadata?.metadata_location?.nih_application_id || 'N/A'}`,
       value: study._hdp_uid,
     }));
-    console.log('registerableStudyData[0]', registerableStudyData[0]);
-    console.log('userInfo', userInfo);
-    console.log('config.form', config.form);
     // Autofill values for form:
     return config.form.map((item: any) =>
       item?.variable === 'study_id'
@@ -129,11 +129,10 @@ export const useStudyRegistration = (
     );
   }, [studies, userInfo, config.form]);
 
-  const [regRequestPending, setRegRequestPending] = useState(false);
   const formOnSubmit = async (formValues: FormOnSubmitReturnProps) => {
-    console.log('formValues', formValues);
-    alert('called formOnSubmit' + JSON.stringify(formValues));
-    setRegRequestPending(true);
+    if (typeof userInfo?.username !== 'string')
+      setFormOutcome(FormOutcome.userNotLoggedIn);
+    setIsLoading(true);
     const cedarUserUUID = formValues.cedar_uuid;
     const studyID = formValues.study_id;
     const ctgovID = formValues.clinical_trials_id;
@@ -155,7 +154,6 @@ export const useStudyRegistration = (
 
     preprocessStudyRegistrationMetadata(
       config,
-      // props.user.username,
       userInfo.username as string,
       studyID,
       valuesToUpdate,
@@ -165,54 +163,32 @@ export const useStudyRegistration = (
           config.cedarWrapperURL,
           cedarUserUUID,
           preprocessedMetadata,
-          createCedarQuery, // <--- Pass the trigger function here
+          createCedarQuery,
         ),
       )
+      /*
       .then((updatedMetadataToRegister) =>
-        updateStudyInMDS(
+          updateStudyInMDS(
           config.mdsURL, // Pass base MDS URL from config
           studyID,
           updatedMetadataToRegister,
           updateMdsQuery, // Pass trigger function
         ),
-      )
+      )*/
       .then((mdsResponse) => {
         console.log('Successfully updated study in MDS:', mdsResponse);
+        setIsLoading(false);
+        // setFormOutcome(FormOutcome.success);
+        setFormError(`Study registration pipeline failed`);
+        setFormOutcome(FormOutcome.error);
       })
       .catch((err) => {
+        setIsLoading(false);
+        setFormOutcome(FormOutcome.error);
+        setFormError(`'Study registration pipeline failed:', ${err}`);
         console.error('Study registration pipeline failed:', err);
       });
   };
-  /*         createCEDARInstance(cedarUserUUID, preprocessedMetadata).then(
-          (updatedMetadataToRegister) =>
-            updateStudyInMDS(studyID, updatedMetadataToRegister).then(() =>
-              setFormSubmissionStatus({ status: 'success' }),
-            ),
-          (err) =>
-            setFormSubmissionStatus({ status: 'error', text: err.message }),
-        ),
-      (err) => setFormSubmissionStatus({ status: 'error', text: err.message }),
-    ); */
-
-  /*     preprocessStudyRegistrationMetadata(
-      props.user.username,
-      studyID,
-      valuesToUpdate,
-    ).then(
-      (preprocessedMetadata) =>
-        createCEDARInstance(cedarUserUUID, preprocessedMetadata).then(
-          (updatedMetadataToRegister) =>
-            updateStudyInMDS(studyID, updatedMetadataToRegister).then(() =>
-              setFormSubmissionStatus({ status: 'success' }),
-            ),
-          (err) =>
-            setFormSubmissionStatus({ status: 'error', text: err.message }),
-        ),
-      (err) => setFormSubmissionStatus({ status: 'error', text: err.message }),
-    );
-
- */
-
   return {
     formError,
     formOutcome,
