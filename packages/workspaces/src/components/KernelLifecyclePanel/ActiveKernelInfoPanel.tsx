@@ -2,10 +2,7 @@ import React from 'react';
 import { formatUptimeInMinutes } from '@gen3/core';
 import { Badge, Button, Divider, Stack, Text } from '@mantine/core';
 import { KernelRow, KernelSpecEntry } from '../../core/types';
-import {
-  useLazyKernelPackagesQuery,
-  useTerminateKernelMutation,
-} from '../../core/jegGatewayApi';
+import { useTerminateKernelMutation } from '../../core/jegGatewayApi';
 
 interface RunningKernelPanelProps extends KernelRow {
   onOpenNotebook?: (kernelId: string) => void;
@@ -25,11 +22,6 @@ const ActiveKernelInfoPanel = ({
 }: RunningKernelPanelProps) => {
   const [terminateKernel, { isLoading: isTerminatingLoading }] =
     useTerminateKernelMutation();
-
-  const [getKernelPackages, results] = useLazyKernelPackagesQuery();
-
-  // oxlint-disable-next-line no-console
-  console.log('kernelPackages', results);
 
   const isStaleOrIdle = executionState === 'idle';
   return (
@@ -131,15 +123,6 @@ const ActiveKernelInfoPanel = ({
           fullWidth
         >
           {forceTerminate ? 'Force Terminate' : 'Terminate'}
-        </Button>
-        <Button
-          onClick={() => getKernelPackages(kernelId)}
-          loading={isTerminatingLoading}
-          variant="outline"
-          color="primary.4"
-          fullWidth
-        >
-          Get Packages
         </Button>
       </div>
     </div>

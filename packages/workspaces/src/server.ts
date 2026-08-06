@@ -6,7 +6,6 @@ import { default as workspaceAssetsApi } from './api/workspaceAssetsApi';
 import { default as workspaceGatewayApiHandler } from './api/workspaceGatewayApiHandler';
 import { default as kernelApiHandler } from './api/kernelApiHandler';
 import { default as hatcheryApiHandler } from './api/hatcheryApiHandler';
-import { handle as kernelPackagesApiHandler } from './api/kernelPackagesApi';
 
 export {
   GEN3_HATCHERY_API,
@@ -17,5 +16,4 @@ export {
   workspaceGatewayApiHandler,
   kernelApiHandler,
   hatcheryApiHandler,
-  kernelPackagesApiHandler,
 };
