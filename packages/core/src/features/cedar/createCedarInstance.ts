@@ -35,8 +35,6 @@ export const createCEDARInstance = async (
     },
   };
 
-  console.log('createCedar payload', payload);
-
   try {
     // Call the mutation trigger passed in from the component
     const data = await createCedarQuery({
@@ -51,8 +49,9 @@ export const createCEDARInstance = async (
 
     return updatedMetadataToRegister;
   } catch (err: any) {
-    throw new Error(
-      `Request to create CEDAR instance failed: ${err.message || err}`,
-    );
+    const errorMsg = JSON.stringify(err);
+    return {
+      error: `Request to create CEDAR instance failed: ${errorMsg}`,
+    };
   }
 };

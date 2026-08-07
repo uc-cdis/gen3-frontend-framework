@@ -16,7 +16,6 @@ interface FormContentViewsProps {
   onSubmit: (formValues: FormOnSubmitReturnProps) => Promise<void>;
   isLoading: boolean;
 }
-
 export const FormContentViews = ({
   formOutcome,
   formError,
@@ -26,6 +25,14 @@ export const FormContentViews = ({
   onSubmit,
   isLoading,
 }: FormContentViewsProps) => {
+  console.log('formOutcome', formOutcome);
+  console.log('formError', formError);
+  console.log('studyUID', studyUID);
+  console.log('formBody', formBody);
+  console.log('config', config);
+  console.log('onSubmit', onSubmit);
+  console.log('isLoading', isLoading);
+
   if (isLoading) {
     return (
       <Center h="50vh">
@@ -42,23 +49,23 @@ export const FormContentViews = ({
   }
   if (formOutcome === FormOutcome.error) {
     return (
-      <>
+      <div className="[&>div]:flex-col">
         <StudyRegistrationAccessRequestOutcome
           config={config[FormOutcome.error]}
         />
-        <p className="text-center mt-16">
-          {formError
-            ? `Form Error: ${formError}.`
-            : `No Form Error information available.`}
-        </p>
-      </>
-    );
-  }
-  if (formOutcome === FormOutcome.userNotLoggedIn) {
-    return (
-      <StudyRegistrationAccessRequestOutcome
-        config={config[FormOutcome.userNotLoggedIn]}
-      />
+        <div className="mt-6">
+          <div className="max-w-lg m-auto text-center">
+            {formError ? (
+              <>
+                <strong>Form Error:</strong>
+                <div>{formError}</div>
+              </>
+            ) : (
+              `No Form Error information available.`
+            )}
+          </div>
+        </div>
+      </div>
     );
   }
   return (
