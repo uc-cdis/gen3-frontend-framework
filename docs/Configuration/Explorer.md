@@ -401,6 +401,36 @@ The supported values are:
 
 Facets without `defaultSort` continue to use `value-dsc`.
 
+### Enum Facet Match Mode
+
+Enum facets combine multiple selected values with OR logic by default: a case
+matches when it contains any selected value. For a multivalued enum field, an
+individual facet can optionally let users switch between **Match any** (OR) and
+**Match all** (AND). Enable the selector with `showMatchModeSelector` in that
+field's `fieldsConfig` entry:
+
+```json
+{
+  "filters": {
+    "tabs": [
+      {
+        "title": "Clinical Criteria",
+        "fields": ["risk_criteria"],
+        "fieldsConfig": {
+          "risk_criteria": {
+            "showMatchModeSelector": true
+          }
+        }
+      }
+    ]
+  }
+}
+```
+
+The selector is disabled by default, and facets without this setting retain the
+existing Match any behavior. Match all is most useful for multivalued fields; on
+a single-valued field, distinct values cannot normally match simultaneously.
+
 ![MultiSelectFacet](images/Explorer/MultiSelectFacet.png)
 
 ### Export Cohort Datafiles to Data Library

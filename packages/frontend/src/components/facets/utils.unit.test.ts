@@ -1,9 +1,17 @@
 import type { FacetDefinition, HistogramDataArray } from '@gen3/core';
-import { classifyFacets, mapFacetSortToSortType } from './utils';
+import {
+  classifyFacets,
+  mapFacetSortToSortType,
+  updateFacetEnum,
+} from './utils';
 import type { FacetSortType } from './types';
 
 jest.mock('@gen3/core', () => ({
+  extractEnumFilterValue: (filter: { operands: Array<string | number> }) =>
+    filter.operands,
   fieldNameToLabel: (field: string) => field,
+  isOperatorWithFieldAndArrayOfOperands: (filter: unknown) =>
+    typeof filter === 'object' && filter !== null && 'operands' in filter,
 }));
 
 describe('mapFacetSortToSortType', () => {
@@ -33,7 +41,7 @@ describe('mapFacetSortToSortType', () => {
 });
 
 describe('classifyFacets', () => {
-  it('preserves the configured default sort on the facet definition', () => {
+  it('preserves configured enum display options on the facet definition', () => {
     const data = {
       status: [
         { key: 'True', count: 2 },
@@ -46,11 +54,64 @@ describe('classifyFacets', () => {
         index: 'case',
         type: 'enum',
         defaultSort: 'label-asc',
+        showMatchModeSelector: true,
       },
     } satisfies Record<string, FacetDefinition>;
 
     const facets = classifyFacets(data, 'case', [], config);
 
     expect(facets.status.defaultSort).toBe('label-asc');
+    expect(facets.status.showMatchModeSelector).toBe(true);
+  });
+});
+
+describe('updateFacetEnum', () => {
+  it('continues to combine selected values with OR by default', () => {
+    const updateFacetFilters = jest.fn();
+    const clearFilters = jest.fn();
+
+    updateFacetEnum(
+      'status',
+      ['active', 'inactive'],
+      updateFacetFilters,
+      clearFilters,
+    );
+
+    expect(updateFacetFilters).toHaveBeenCalledWith('status', {
+      operator: 'in',
+      field: 'status',
+      operands: ['active', 'inactive'],
+    });
+    expect(clearFilters).not.toHaveBeenCalled();
+  });
+
+  it('creates an intersection when match-all mode is selected', () => {
+    const updateFacetFilters = jest.fn();
+    const clearFilters = jest.fn();
+
+    updateFacetEnum(
+      'criteria',
+      ['criterion 1', 'criterion 2'],
+      updateFacetFilters,
+      clearFilters,
+      'and',
+    );
+
+    expect(updateFacetFilters).toHaveBeenCalledWith('criteria', {
+      operator: 'and',
+      operands: [
+        {
+          operator: 'in',
+          field: 'criteria',
+          operands: ['criterion 1'],
+        },
+        {
+          operator: 'in',
+          field: 'criteria',
+          operands: ['criterion 2'],
+        },
+      ],
+    });
+    expect(clearFilters).not.toHaveBeenCalled();
   });
 });

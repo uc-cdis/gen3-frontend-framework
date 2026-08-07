@@ -168,7 +168,7 @@ const FacetControlsHeader = ({
                 if (toggleExpandFilter) toggleExpandFilter(field, true);
                 if (toggleSettings) toggleSettings();
               }}
-              aria-label="Search"
+              aria-label="Filter settings"
               className={header.iconStyle}
             >
               <Icon
