@@ -10,8 +10,8 @@ jest.mock('@gen3/core', () => ({
   extractEnumFilterValue: (filter: { operands: Array<string | number> }) =>
     filter.operands,
   fieldNameToLabel: (field: string) => field,
-  isOperatorWithFieldAndArrayOfOperands: (filter: unknown) =>
-    typeof filter === 'object' && filter !== null && 'operands' in filter,
+  isOperatorWithFieldAndArrayOfOperands:
+    jest.requireActual('@gen3/core').isOperatorWithFieldAndArrayOfOperands,
 }));
 
 describe('mapFacetSortToSortType', () => {
