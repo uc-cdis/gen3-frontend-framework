@@ -92,6 +92,7 @@
     "minisearch": "^7.1.2",
     "next-compose-plugins": "^2.2.1",
     "postcss-selector-parser": "^6.1.4",
+    "react-icons": "^5.5.0",
     "react-minisearch": "^7.1.4",
     "rehype-sanitize": "^6.0.0",
     "typescript-pluralize": "^1.0.1",
