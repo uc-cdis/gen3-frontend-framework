@@ -8,7 +8,7 @@ import { isCedarUUIDValid, isClinicalTrialIDValid } from './formValidators';
 interface FormPropsBody extends Omit<FormContentProps, 'keyString' | 'form'> {
   readonly errorText: string; // text to display on error
   readonly variable?: string; // form feild variable name
-  readonly initialValue?: string | boolean; // optional starting value
+  readonly required?: boolean;
 }
 
 export interface FormOnSubmitReturnProps {
@@ -49,7 +49,7 @@ const Form = ({
   const initialValues: { [key: string]: string | boolean } = {};
   const validate: FormValidateInput<any> = {};
 
-  const bodyWithKey: Omit<FormContentProps, 'form'>[] = body.map(
+  const bodyWithKey: (FormPropsBody & { keyString: string })[] = body.map(
     (item, index) => {
       const itemKey =
         item.variable ||

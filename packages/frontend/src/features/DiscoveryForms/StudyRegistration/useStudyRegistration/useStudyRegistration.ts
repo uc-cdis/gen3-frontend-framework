@@ -91,7 +91,7 @@ export const useStudyRegistration = (
   }, [router.isReady, router.query]);
 
   // Helper func for setting study from router query as the first one shown
-  const moveStudyToFront = (studies: JSONObject[], studyUID: String) => {
+  const moveStudyToFront = (studies: JSONObject[], studyUID: string) => {
     const targetIndex = studies.findIndex((item) => item._hdp_uid === studyUID);
     if (targetIndex > 0) {
       const [targetItem] = studies.splice(targetIndex, 1);
@@ -113,10 +113,15 @@ export const useStudyRegistration = (
       registerableStudies,
       toString(studyUID),
     );
-    const registerableStudyData = organizedRegistrableStudies.map((study) => ({
-      label: `${study.project_number || 'N/A'} : ${study.study_metadata?.minimal_info?.study_name || 'N/A'} : ${study.study_metadata?.metadata_location?.nih_application_id || 'N/A'}`,
-      value: study._hdp_uid,
-    }));
+    const registerableStudyData = organizedRegistrableStudies.map((study) => {
+      const metadata = study.study_metadata as Record<string, any> | undefined;
+      return {
+        label: `${study.project_number || 'N/A'} : ${
+          metadata?.minimal_info?.study_name || 'N/A'
+        } : ${metadata?.metadata_location?.nih_application_id || 'N/A'}`,
+        value: study._hdp_uid,
+      };
+    });
     // Autofill values for form:
     return config.form.map((item: any) =>
       item?.variable === 'study_id'

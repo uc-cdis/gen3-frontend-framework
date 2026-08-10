@@ -57,10 +57,12 @@ export const preprocessStudyRegistrationMetadata = async (
       // add all repository_study_ids as separate objects
       let tempStudyIDObj: any = [];
       if (updatedValues.repository_study_ids?.length > 0) {
-        tempStudyIDObj = updatedValues.repository_study_ids.map((studyId) => ({
-          repository_name: updatedValues.repository,
-          repository_study_ID: studyId,
-        }));
+        tempStudyIDObj = (updatedValues.repository_study_ids as string[]).map(
+          (studyId) => ({
+            repository_name: updatedValues.repository,
+            repository_study_ID: studyId,
+          }),
+        );
       } else if (updatedValues.repository) {
         tempStudyIDObj = [
           {
