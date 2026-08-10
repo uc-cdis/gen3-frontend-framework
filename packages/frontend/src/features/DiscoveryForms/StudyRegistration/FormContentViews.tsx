@@ -1,18 +1,22 @@
 import React from 'react';
-import { FormOutcome } from './types';
+import {
+  FormOutcome,
+  studyRegistrationAccessRequestFormOutcomeProps,
+} from './types';
 import Form, {
   FormOnSubmitReturnProps,
   FormProps,
 } from '../../../components/Content/Form';
 import StudyRegistrationAccessRequestOutcome from './StudyRegistrationAccessRequestOutcome';
 import { Center, Loader } from '@mantine/core';
+import { StudyRegistrationFormConfig } from '../../../pages/StudyForms/StudyRegistration/types';
 
 interface FormContentViewsProps {
   formOutcome: FormOutcome;
   formError?: string;
   studyUID: string | null;
   formBody: FormProps['body'];
-  config: any;
+  config: StudyRegistrationFormConfig;
   onSubmit: (formValues: FormOnSubmitReturnProps) => Promise<void>;
   isLoading: boolean;
 }
@@ -25,14 +29,6 @@ export const FormContentViews = ({
   onSubmit,
   isLoading,
 }: FormContentViewsProps) => {
-  console.log('formOutcome', formOutcome);
-  console.log('formError', formError);
-  console.log('studyUID', studyUID);
-  console.log('formBody', formBody);
-  console.log('config', config);
-  console.log('onSubmit', onSubmit);
-  console.log('isLoading', isLoading);
-
   if (isLoading) {
     return (
       <Center h="50vh">
@@ -43,7 +39,11 @@ export const FormContentViews = ({
   if (formOutcome === FormOutcome.success) {
     return (
       <StudyRegistrationAccessRequestOutcome
-        config={config[FormOutcome.success]}
+        outcomeConfig={
+          config[
+            FormOutcome.success
+          ] as studyRegistrationAccessRequestFormOutcomeProps
+        }
       />
     );
   }
@@ -51,7 +51,11 @@ export const FormContentViews = ({
     return (
       <div className="[&>div]:flex-col">
         <StudyRegistrationAccessRequestOutcome
-          config={config[FormOutcome.error]}
+          outcomeConfig={
+            config[
+              FormOutcome.error
+            ] as studyRegistrationAccessRequestFormOutcomeProps
+          }
         />
         <div className="mt-6">
           <div className="max-w-lg m-auto text-center">
@@ -61,7 +65,7 @@ export const FormContentViews = ({
                 <div>{formError}</div>
               </>
             ) : (
-              `No Form Error information available.`
+              `No form error information available.`
             )}
           </div>
         </div>

@@ -1,5 +1,3 @@
-// import { UpdateStudyInMdsMutationTriggerType } from './mdsApi';
-
 export const updateStudyInMDS = async (
   mdsURL: string,
   metadataID: string,

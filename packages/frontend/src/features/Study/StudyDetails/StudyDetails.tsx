@@ -26,7 +26,6 @@ const StudyDetails = () => {
   const pushUrl = (path: string) =>
     router.push(path, undefined, { shallow: true });
   const studyId = toString(studyDetails[index]);
-  console.log('config', config);
 
   useEffect(() => {
     if (studyId) {

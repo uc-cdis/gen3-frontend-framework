@@ -1,14 +1,13 @@
-// StudyRegistrationAccessRequestForm.tsx
 import React from 'react';
-import { Box, Text } from '@mantine/core';
 import {
   NavPageLayout,
   NavPageLayoutProps,
 } from '../../../features/Navigation';
 import StudyRegistrationForm from '../../../features/DiscoveryForms/StudyRegistration';
+import { StudyRegistrationFormConfig } from './types';
 
 interface StudyRegistrationFormPageProps extends NavPageLayoutProps {
-  configStudyRegistrationForm: any;
+  configStudyRegistrationForm: StudyRegistrationFormConfig;
   studyName: string;
 }
 

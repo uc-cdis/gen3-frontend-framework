@@ -12,7 +12,7 @@ export interface CreateCedarPayload {
         study_description?: string;
       };
     };
-    clinicaltrials_gov?: any;
+    clinicaltrials_gov?: string;
   };
 }
 
@@ -29,7 +29,7 @@ export const cedarApi = gen3Api.injectEndpoints({
       query: ({ cedarWrapperURL, payload }) => ({
         url: `${cedarWrapperURL}/create`,
         method: 'POST',
-        body: payload, // RTK Query handles JSON stringifying and application/json headers
+        body: payload,
       }),
     }),
   }),

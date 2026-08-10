@@ -23,11 +23,11 @@ export enum FormContentType {
   Email = 'Email', // mantine TextInput set to validate email
   Checkbox = 'Checkbox', // mantine Checkbox
   Textarea = 'Textarea', // mantine Textarea
-  RadioGroup = 'RadioGroup',
-  Select = 'Select',
-  Tags = 'Tags',
-  CedarUserUUID = 'CedarUserUUID',
-  ClinicalTrialID = 'ClinicalTrialID', // mantine Radio.Group
+  RadioGroup = 'RadioGroup', // mantine Radio.Group
+  Select = 'Select', // mantine Select
+  Tags = 'Tags', // mantine Tags
+  CedarUserUUID = 'CedarUserUUID', // Cedar User ID text input with validation
+  ClinicalTrialID = 'ClinicalTrialID', // ClinicalTrials.gov ID text input with validation
 }
 
 /**

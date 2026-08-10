@@ -6,11 +6,11 @@ import TextContent, {
 import { studyRegistrationAccessRequestFormOutcomeProps } from './types';
 
 const StudyRegistrationAccessRequestOutcome = ({
-  config,
+  outcomeConfig,
 }: {
-  config: studyRegistrationAccessRequestFormOutcomeProps;
+  outcomeConfig: studyRegistrationAccessRequestFormOutcomeProps;
 }) => {
-  const { content, button } = config;
+  const { content, button } = outcomeConfig;
   return (
     <div className="w-full max-w-[500px] m-auto text-center">
       {content?.map((item: TextContentProps, index: number) => (

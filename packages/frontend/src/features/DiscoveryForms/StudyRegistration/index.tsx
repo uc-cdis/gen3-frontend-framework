@@ -1,11 +1,11 @@
 import React from 'react';
-import { Box, Text } from '@mantine/core';
-import { NavPageLayoutProps } from '../../../features/Navigation';
+import { Box } from '@mantine/core';
 import { useStudyRegistration } from './useStudyRegistration/useStudyRegistration';
 import { FormContentViews } from './FormContentViews';
+import { StudyRegistrationFormConfig } from '../../../pages/StudyForms/StudyRegistration/types';
 
 interface StudyRegistrationAccessRequestFormProps {
-  configStudyRegistrationForm: any;
+  configStudyRegistrationForm: StudyRegistrationFormConfig;
 }
 
 const StudyRegistrationAccessRequestForm = ({
@@ -19,7 +19,6 @@ const StudyRegistrationAccessRequestForm = ({
     formBody,
     formOnSubmit,
     isLoading,
-    data,
   } = useStudyRegistration(configStudyRegistrationForm);
 
   return (
@@ -35,11 +34,6 @@ const StudyRegistrationAccessRequestForm = ({
             onSubmit={formOnSubmit}
             isLoading={isLoading}
           />
-        </div>
-        <div className="mt-12 pt-4 border-t border-neutral-100 max-w-4xl mx-auto">
-          <Text className="text-xs text-neutral-500 leading-relaxed">
-            {configStudyRegistrationForm.disclaimer}
-          </Text>
         </div>
       </Box>
     </div>
