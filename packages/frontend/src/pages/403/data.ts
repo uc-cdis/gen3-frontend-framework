@@ -9,9 +9,8 @@ import { GEN3_COMMONS_NAME } from '@gen3/core';
 export const Custom403PageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async () => {
-  
   try {
-    const config403: Config403Props = 
+    const config403: Config403Props =
       await ContentSource.getContentDatabase().get(
         `${GEN3_COMMONS_NAME}/403.json`,
       );
@@ -23,7 +22,8 @@ export const Custom403PageGetServerSideProps: GetServerSideProps<
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
-        ...{ config403: config403, form403: workspaceProps?.requestAccessForm },
+        config403: config403,
+        form403: workspaceProps?.requestAccessForm,
       },
     };
   } catch (err) {
@@ -32,13 +32,13 @@ export const Custom403PageGetServerSideProps: GetServerSideProps<
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
         config403: {
-          "content": [
+          content: [
             {
-              "type": "markdown",
-              "text": "# 403: Not Authorized \n You are not authorized to access this page. If you believe this is an error, contact your administrator or support.",
-              "className": "text-center"
-            }
-          ]
+              type: 'markdown',
+              text: '# 403: Not Authorized \n You are not authorized to access this page. If you believe this is an error, contact your administrator or support.',
+              className: 'text-center',
+            },
+          ],
         },
       },
     };

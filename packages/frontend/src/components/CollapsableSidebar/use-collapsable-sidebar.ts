@@ -13,13 +13,13 @@ function getAutoWidthDuration(width: number | string) {
 
 export function getElementWidth(
   el:
-    | React.RefObject<HTMLElement | null>
-    | { current?: { scrollWidth: number } },
+    React.RefObject<HTMLElement | null> | { current?: { scrollWidth: number } },
 ) {
-  return el?.current ? el.current.scrollWidth : 'auto';
+  return el.current ? el.current.scrollWidth : 'auto';
 }
 
-const raf = typeof window !== 'undefined' && window.requestAnimationFrame;
+const raf =
+  typeof window !== 'undefined' ? window.requestAnimationFrame : undefined;
 
 interface UseCollapsableSidebar {
   opened: boolean;

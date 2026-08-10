@@ -48,7 +48,7 @@ export function withJupyterWorkspaces(
     webpack(config: Configuration, ctx: WebpackConfigContext) {
       config.resolve = config.resolve ?? {};
       config.resolve.alias = {
-        ...(config.resolve.alias ?? {}),
+        ...config.resolve.alias,
         react: nodePath.dirname(require.resolve('react/package.json')),
         'react-dom': nodePath.dirname(
           require.resolve('react-dom/package.json'),

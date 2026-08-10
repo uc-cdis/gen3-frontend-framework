@@ -10,8 +10,8 @@ import { getCookie, hasCookie } from 'cookies-next';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { useManageSession } from './hooks';
 import { showNotification } from '@mantine/notifications';
-import { Session, SessionProviderProps } from './types';
-import { isUserOnPage } from './utils';
+import type { AuthTokenData, Session, SessionProviderProps } from './types';
+import { isUserOnPage, redirectTo } from './utils';
 import {
   type CoreState,
   GEN3_FENCE_API,
@@ -28,43 +28,51 @@ import { ACTIVITY_CHANNEL } from './constants';
 import { Center, Loader } from '@mantine/core';
 import { useThrottledCallback } from '@mantine/hooks';
 
-import { MinutesToMilliseconds } from '../../utils';
+import { minutesToMilliseconds, withBasePath } from '../../utils';
 import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
 import { modals } from '@mantine/modals';
 
 const ACTIVITY_THROTTLE_TIMEOUT = 7000;
 
-export const logoutSession = async () => {
+// Foregrounding a tab re-derives the refresh schedule from the real token; this
+// keeps tab-flipping from turning into one request per flip.
+const VISIBILITY_RECHECK_THROTTLE_MILLISECONDS = 10000;
+
+/**
+ * Events that count as user activity.
+ *
+ * `keydown` rather than `keypress`: the latter is deprecated and never fires for
+ * arrows, backspace, delete or tab, so editing with those looked like inactivity.
+ * `scroll` does not bubble, so it is registered in the capture phase to also see
+ * scrolling inside nested containers; it and `touchstart` are passive so activity
+ * tracking cannot delay scrolling.
+ */
+const ACTIVITY_EVENTS: ReadonlyArray<
+  readonly [type: string, options?: AddEventListenerOptions]
+> = [
+  ['mousedown'],
+  ['keydown'],
+  ['updateUserActivity'],
+  ['scroll', { passive: true, capture: true }],
+  ['touchstart', { passive: true }],
+];
+
+/**
+ * Development-only "credentials login" leaves a client-readable cookie behind.
+ * Its logout is client-side, so it keeps the SPA — and anything we render to
+ * explain the logout — alive, where the Fence path replaces the document.
+ */
+const isCredentialsLogin = () => hasCookie('credentials_token');
+
+export const logoutSession = async (basePath: string) => {
   // logged in using credentials, then execute credentials logout first
   if (process.env.NODE_ENV === 'development') {
-    const accessToken = getCookie('credentials_token');
-    if (accessToken) {
-      await fetch('/api/auth/credentialsLogout');
+    const credentialsToken = getCookie('credentials_token');
+    if (credentialsToken) {
+      await fetch(`${basePath}/api/auth/credentialsLogout`);
     }
   }
 };
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function useOnline() {
-  const [isOnline, setIsOnline] = useState(
-    typeof navigator !== 'undefined' ? navigator.onLine : false,
-  );
-
-  const setOnline = () => setIsOnline(true);
-  const setOffline = () => setIsOnline(false);
-
-  useEffect(() => {
-    window.addEventListener('online', setOnline);
-    window.addEventListener('offline', setOffline);
-
-    return () => {
-      window.removeEventListener('online', setOnline);
-      window.removeEventListener('offline', setOffline);
-    };
-  }, []);
-
-  return isOnline;
-}
 
 export const SessionContext = React.createContext<Session | undefined>(
   undefined,
@@ -74,13 +82,25 @@ export const SessionContext = React.createContext<Session | undefined>(
  *  We eventually want to use the session token to determine if the user is logged in
  *  as opposed to the user status since that check will happen on the server using httpOnly cookies
  *  and verification of the session token
+ *
+ * @param basePath - Next.js `router.basePath`: '' when the app is served from the
+ *   root and already leading-slashed otherwise. Required for the API route to
+ *   resolve under a basePath deployment.
  */
-export const getSession = async () => {
+export const getSession = async (
+  basePath: string = '',
+): Promise<AuthTokenData> => {
   try {
-    const res = await fetch('/api/auth/sessionToken', { cache: 'no-store' });
+    const res = await fetch(`${basePath}/api/auth/sessionToken`, {
+      cache: 'no-store',
+    });
     if (res.status === 200) {
-      return await res.json();
+      return (await res.json()) as AuthTokenData;
     }
+    // A non-200 means we could not determine the token state — report that as
+    // 'error' rather than as a missing token so callers can retry instead of
+    // treating it as a definitive answer.
+    return { status: 'error' };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (_error: unknown) {
     return { status: 'error' };
@@ -93,22 +113,52 @@ export const useSession = (
 ) => {
   const router = useRouter();
   const session = useContext(SessionContext);
+
+  // Kept in a ref so the redirect effect below does not re-run every render
+  // when the caller passes an inline function.
+  const onUnauthenticatedRef = useRef(onUnauthenticated);
+  useEffect(() => {
+    onUnauthenticatedRef.current = onUnauthenticated;
+  }, [onUnauthenticated]);
+
+  const isUnauthenticated =
+    required &&
+    session !== undefined &&
+    !session.pending &&
+    session.status !== 'issued';
+
+  // Fires once per unauthenticated transition. `router` has to be a dependency,
+  // and the pages router hands back a new object on every route change, so
+  // without the ref a navigation would re-run this and stack a second redirect
+  // (or a second `onUnauthenticated`, which for a delayed handler means a second
+  // timer).
+  const redirectHandledRef = useRef(false);
+
+  // Navigating is a side effect: doing it in the render body warns in React,
+  // runs twice under StrictMode, and can loop when the target route also
+  // renders a `required` consumer. Effects don't run on the server, so this
+  // also replaces the previous explicit SSR guard.
+  useEffect(() => {
+    if (!isUnauthenticated) {
+      redirectHandledRef.current = false;
+      return;
+    }
+    if (redirectHandledRef.current) return;
+    redirectHandledRef.current = true;
+
+    if (onUnauthenticatedRef.current) {
+      onUnauthenticatedRef.current();
+      return;
+    }
+    void router.push('/Login');
+  }, [isUnauthenticated, router]);
+
   if (!session) {
     throw new Error(
       '[gen3]: `useSession` must be wrapped in a <SessionProvider />',
     );
   }
 
-  if (required && !session.pending && session.status !== 'issued') {
-    if (onUnauthenticated) {
-      onUnauthenticated();
-    } else {
-      if (typeof window === 'undefined')
-        // route is not available on SSR
-        return session;
-      router.push('Login');
-    }
-  }
   return session;
 };
 
@@ -120,25 +170,7 @@ export const useIsAuthenticated = () => {
   };
 };
 
-const refreshSession = (
-  getUserDetails: () => void,
-  mostRecentSessionRefreshTimestamp: number,
-  updateSessionRefreshTimestamp: (arg0: number) => void,
-): void => {
-  const timeSinceLastSessionUpdate =
-    Date.now() - mostRecentSessionRefreshTimestamp;
-  // don't hit Fence to refresh tokens too frequently
-
-  if (timeSinceLastSessionUpdate < UPDATE_SESSION_LIMIT) {
-    return;
-  }
-
-  // hitting Fence endpoint refreshes the token
-  updateSessionRefreshTimestamp(Date.now());
-  getUserDetails();
-};
-
-type IntervalFunction = () => unknown | void;
+type IntervalFunction = () => void;
 
 const useInterval = (callback: IntervalFunction, delay: number | null) => {
   const savedCallback = useRef<IntervalFunction | null>(null);
@@ -160,17 +192,75 @@ const useInterval = (callback: IntervalFunction, delay: number | null) => {
   }, [delay]);
 };
 
-const UPDATE_SESSION_LIMIT = MinutesToMilliseconds(1);
+// Refreshing against the token's own `exp` means we hit Fence's /user endpoint at most
+// once per token lifetime instead of on a fixed clock that can drift into
+// (or past) the actual expiry.
+const REFRESH_MARGIN_MILLISECONDS = minutesToMilliseconds(2);
+// How soon we retry once, and only once, after a cycle that didn't produce a
+// healthy token: hitting /user reissues the cookie, so one prompt attempt often
+// fixes things. Repeating it at this rate would not, hence the backoff below.
+const MIN_REFRESH_DELAY_MILLISECONDS = 5000;
+// Backoff for every subsequent unhealthy cycle. Without it, a cause that a
+// refresh cannot fix — an unreachable endpoint, a skewed browser clock, a token
+// Fence will not renew — turns into a tight poll against /user.
+const REFRESH_RETRY_BASE_MILLISECONDS = 30000;
+const REFRESH_RETRY_MAX_MILLISECONDS = minutesToMilliseconds(5);
+
+const MILLISECONDS_PER_MINUTE = minutesToMilliseconds(1);
 
 /**
- * SessionProvider creates a React context which keeps track of wether the user is authenticated
- * and if their session is stale and logs them out if they do not preform an action in an alotted amount of time
- * @param children - Pass in a child session if one exists
- * @param session - Pass in a cached session if one exists
- * @param updateSessionTime - Interval of time between fetching session token
- * @param inactiveTimeLimit - Amount of time user is allowed to be inactive before getting logged out if user is tabbed away from page
- * @param workspaceInactivityTimeLimit - Amount of time user is allowed to be inactive if user is tabbed into the site
- * @param logoutInactiveUsers - Whether to log out users that are determined to be inactive or not
+ * Delay before the next refresh of a healthy token, or a negative/small number
+ * when the token does not look healthy (see `unhealthyRefreshDelay`).
+ *
+ * `exp * 1000 - Date.now()` mixes the server's clock with the browser's, so a
+ * skewed browser clock makes the result wrong in both directions. A clock that
+ * is behind the server's inflates it, which would schedule the refresh past the
+ * real expiry and silently log the user out — and re-reading the token later
+ * yields the same wrong answer, so nothing recovers from it. The remaining
+ * lifetime can never exceed the token's full lifetime, so `iat` gives us a
+ * skew-free upper bound. A clock that is ahead deflates the result instead,
+ * which is handled by backing off rather than refreshing on a tight loop.
+ */
+const refreshDelayFromToken = (session: AuthTokenData): number => {
+  const wallClockDelay =
+    (session.expires ?? 0) * 1000 - Date.now() - REFRESH_MARGIN_MILLISECONDS;
+
+  if (!session.issued || !session.expires) return wallClockDelay;
+
+  const lifetime = (session.expires - session.issued) * 1000;
+  return Math.min(wallClockDelay, lifetime - REFRESH_MARGIN_MILLISECONDS);
+};
+
+/**
+ * Delay after `failures` consecutive cycles that did not yield a healthy,
+ * future-dated token: prompt for the first, backing off for the rest.
+ */
+const unhealthyRefreshDelay = (failures: number) =>
+  failures <= 0
+    ? MIN_REFRESH_DELAY_MILLISECONDS
+    : Math.min(
+        REFRESH_RETRY_MAX_MILLISECONDS,
+        REFRESH_RETRY_BASE_MILLISECONDS * 2 ** (failures - 1),
+      );
+
+/**
+ * SessionProvider creates a React context which keeps track of whether the user is
+ * authenticated, refreshes their access token ahead of its expiry, and logs them
+ * out if they do not act within an allotted amount of time.
+ *
+ * See {@link SessionConfiguration} for what each option means; all times are in
+ * minutes.
+ *
+ * @param children - Subtree that gets access to the session context
+ * @param updateSessionTime - How often the inactivity check runs, and so the
+ *   resolution of every inactivity decision. `0` disables activity monitoring
+ * @param inactiveTimeLimit - Inactivity allowed before logout, off a workspace page
+ * @param workspaceInactivityTimeLimit - Inactivity allowed before logout on a
+ *   workspace page. `0` (the default) means no limit there
+ * @param logoutInactiveUsers - Whether inactive users are logged out at all
+ * @param monitorWorkspace - Whether to poll running/configured workspaces
+ * @param expireWarningMinutes - How far ahead of the inactivity logout to warn;
+ *   clamped to fit the poll interval and the inactivity window
  * @returns a Session context that can be used to keep track of user session activity
  */
 export const SessionProvider = ({
@@ -185,8 +275,11 @@ export const SessionProvider = ({
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
 
-  const { isSuccess: isGetCSRFSuccess, isError: isGetCSRFError } =
-    useGetCSRFQuery();
+  const {
+    isSuccess: isGetCSRFSuccess,
+    isError: isGetCSRFError,
+    isFetching: isFetchingCSRF,
+  } = useGetCSRFQuery();
   useWorkspaceResourceMonitor(monitorWorkspace); // monitor workspaces if any are running or configured
 
   const [getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
@@ -195,111 +288,356 @@ export const SessionProvider = ({
   );
 
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
+    // oxlint-disable-next-line react/react-compiler
     useState(Date.now());
+
+  // Token metadata (issued / expires / userContext) read from
+  // /api/auth/sessionToken. Surfaced on the context so consumers of `Session`
+  // actually receive the fields the type promises.
+  const [authTokenData, setAuthTokenData] = useState<
+    AuthTokenData | undefined
+  >();
+
+  // Guards async continuations and timers that can outlive the provider.
+  const isMountedRef = useRef(true);
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
 
   // Initialize BroadcastChannel for cross-tab communication
   // any user event on one tab or window will update mostRecentActivityTimestamp
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      broadcastChannelRef.current = new BroadcastChannel(ACTIVITY_CHANNEL);
+    // Cross-tab activity sync is an enhancement, not a requirement: it is
+    // unavailable on Safari < 15.4 and in non-DOM environments, and the session
+    // has to keep working without it.
+    if (
+      typeof window === 'undefined' ||
+      typeof BroadcastChannel === 'undefined'
+    )
+      return;
 
-      // Listen for activity updates from other tabs
-      const handleActivityMessage = (event: MessageEvent) => {
-        if (event.data.type === 'activity-update') {
-          setMostRecentActivityTimestamp(event.data.timestamp);
-        }
-      };
-
-      broadcastChannelRef.current.addEventListener(
-        'message',
-        handleActivityMessage,
-      );
-
-      return () => {
-        if (broadcastChannelRef.current) {
-          broadcastChannelRef.current.removeEventListener(
-            'message',
-            handleActivityMessage,
-          );
-          broadcastChannelRef.current.close();
-        }
-      };
+    let channel: BroadcastChannel;
+    try {
+      channel = new BroadcastChannel(ACTIVITY_CHANNEL);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_error: unknown) {
+      return;
     }
+    broadcastChannelRef.current = channel;
+
+    // Listen for activity updates from other tabs. Anything on the origin can
+    // post here, so treat the payload as untrusted: a malformed message must not
+    // throw, and a future-dated timestamp must not be able to hold the
+    // inactivity clock open forever.
+    const handleActivityMessage = (event: MessageEvent) => {
+      const data = event.data as
+        { type?: unknown; timestamp?: unknown } | null | undefined;
+      if (data?.type !== 'activity-update') return;
+      if (typeof data.timestamp !== 'number' || Number.isNaN(data.timestamp))
+        return;
+      setMostRecentActivityTimestamp(Math.min(data.timestamp, Date.now()));
+    };
+
+    channel.addEventListener('message', handleActivityMessage);
+
+    return () => {
+      channel.removeEventListener('message', handleActivityMessage);
+      channel.close();
+      broadcastChannelRef.current = null;
+    };
   }, []);
 
-  const [
-    mostRecentSessionRefreshTimestamp,
-    setMostRecentSessionRefreshTimestamp,
-  ] = useState(Date.now());
-
-  const expireWarningMilliseconds = MinutesToMilliseconds(expireWarningMinutes);
-  const [expiryWarningShown, setExpiryWarningShown] = useState<string | null>(
-    null,
-  );
+  const expireWarningMilliseconds = minutesToMilliseconds(expireWarningMinutes);
 
   const inactiveTimeLimitMilliseconds =
-    MinutesToMilliseconds(inactiveTimeLimit);
+    minutesToMilliseconds(inactiveTimeLimit);
 
-  const workspaceInactivityTimeLimitMilliseconds = MinutesToMilliseconds(
+  const workspaceInactivityTimeLimitMilliseconds = minutesToMilliseconds(
     workspaceInactivityTimeLimit,
   );
   const updateSessionIntervalMilliseconds =
-    MinutesToMilliseconds(updateSessionTime);
+    minutesToMilliseconds(updateSessionTime);
 
   // update session status using the user status
 
   const sessionInfo = useManageSession(userStatus);
 
+  // Timers read the login state through a ref so a refresh scheduled while the
+  // user was logged in cannot keep firing after they log out.
+  const sessionStatusRef = useRef(sessionInfo.status);
+  useEffect(() => {
+    sessionStatusRef.current = sessionInfo.status;
+  }, [sessionInfo.status]);
+
   // for now, we are using the user status to determine if the user is logged in
   const updateSession = useCallback(() => {
-    const updateSessionWithUserStatus = async () => {
-      await getUserDetails();
-      setMostRecentSessionRefreshTimestamp(Date.now());
-    };
-
-    updateSessionWithUserStatus();
+    // The query holds its own error state; catch so a failure here cannot surface
+    // as an unhandled rejection.
+    void Promise.resolve(getUserDetails()).catch(() => undefined);
   }, [getUserDetails]);
 
-  const endSession = useCallback(async () => {
-    const isCredentialLogin = hasCookie('credentials_token');
+  // Read the token metadata and mirror it into state for the context value.
+  // `basePath` is fixed for the lifetime of the app, so depending on it does not
+  // churn this callback (or the refresh schedule derived from it).
+  const syncAuthTokenData = useCallback(async (): Promise<AuthTokenData> => {
+    const session = await getSession(router.basePath);
+    // Don't clobber known-good data with a failed lookup.
+    if (session.status !== 'error' && isMountedRef.current) {
+      setAuthTokenData(session);
+    }
+    return session;
+  }, [router.basePath]);
 
-    logoutSession()
-      .then(() => getUserDetails())
-      .catch((e) => {
+  // Proactive, expiry-driven token refresh.
+  //
+  // Fence reissues the access_token cookie every time /user is hit, so we
+  // schedule exactly one refresh per token lifetime — timed from the token's
+  // own `exp` claim (via /api/auth/sessionToken) rather than a fixed clock
+  // that can drift into, or past, the real expiry.
+  const refreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Consecutive cycles that did not yield a healthy token. In a ref so it
+  // survives re-derivations of the schedule: a tab foreground must not reset the
+  // backoff, or flipping tabs while the endpoint is down restarts fast retries.
+  const refreshFailuresRef = useRef(0);
+
+  // Set while a refresh cycle is running, so a concurrent re-derivation defers to
+  // it instead of racing to arm the timer off a staler read.
+  const refreshInFlightRef = useRef(false);
+
+  const clearScheduledRefresh = useCallback(() => {
+    if (refreshTimeoutRef.current) {
+      clearTimeout(refreshTimeoutRef.current);
+      refreshTimeoutRef.current = null;
+    }
+  }, []);
+
+  // A refresh cycle re-arms the timer that started it. The cycle is held in a ref
+  // so `armRefreshTimer` does not have to depend on it — every timer can only fire
+  // after the commit that assigns this, so it is always populated when read.
+  const performScheduledRefreshRef = useRef<(() => Promise<void>) | null>(null);
+
+  const armRefreshTimer = useCallback(
+    (delay: number) => {
+      clearScheduledRefresh();
+      if (!isMountedRef.current) return;
+      refreshTimeoutRef.current = setTimeout(() => {
+        void performScheduledRefreshRef.current?.();
+      }, delay);
+    },
+    [clearScheduledRefresh],
+  );
+
+  // Decide the next timer from a token read.
+  const scheduleFromTokenData = useCallback(
+    (session: AuthTokenData) => {
+      if (!isMountedRef.current) return;
+      if (sessionStatusRef.current !== 'issued') return;
+
+      // No cookie at all: there is nothing to renew, and the login state will
+      // settle to unauthenticated, which clears the schedule.
+      if (session.status === 'not present') return;
+
+      // `exp` at or before `iat` is a malformed token; no retry fixes that.
+      if (
+        session.issued &&
+        session.expires &&
+        session.expires <= session.issued
+      )
+        return;
+
+      if (session.status === 'expired' || session.status === 'invalid') {
+        // A definitive answer, but a single /user call can still re-authenticate
+        // through Fence's own session and reissue the cookie. Allow exactly one
+        // such attempt — beyond that the token is not coming back and polling
+        // would only hammer Fence.
+        if (refreshFailuresRef.current === 0) {
+          refreshFailuresRef.current = 1;
+          armRefreshTimer(MIN_REFRESH_DELAY_MILLISECONDS);
+        }
+        return;
+      }
+
+      if (session.expires) {
+        const delay = refreshDelayFromToken(session);
+        if (delay >= MIN_REFRESH_DELAY_MILLISECONDS) {
+          refreshFailuresRef.current = 0;
+          armRefreshTimer(delay);
+          return;
+        }
+      }
+
+      // Either the read failed ('error') or the token reads as already expiring.
+      // Refreshing may fix that; if it doesn't, doing it again at the same rate
+      // won't either, so each attempt costs more than the last.
+      armRefreshTimer(unhealthyRefreshDelay(refreshFailuresRef.current));
+      refreshFailuresRef.current += 1;
+    },
+    [armRefreshTimer],
+  );
+
+  const performScheduledRefresh = useCallback(async () => {
+    if (sessionStatusRef.current !== 'issued') return;
+
+    // The flag covers scheduling as well as the read, so a re-derivation cannot
+    // land between the two and arm a timer this cycle is about to replace.
+    refreshInFlightRef.current = true;
+    try {
+      let session: AuthTokenData = { status: 'error' };
+      try {
+        await getUserDetails();
+        session = await syncAuthTokenData();
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (_error: unknown) {
+        // Leave `session` as 'error' so we retry rather than abandon the chain.
+      }
+      scheduleFromTokenData(session);
+    } finally {
+      refreshInFlightRef.current = false;
+    }
+    // oxlint-disable-next-line react/react-compiler
+  }, [getUserDetails, syncAuthTokenData, scheduleFromTokenData]);
+
+  useEffect(() => {
+    performScheduledRefreshRef.current = performScheduledRefresh;
+  }, [performScheduledRefresh]);
+
+  // Re-derive the schedule from a freshly read token.
+  const rescheduleFromToken = useCallback(async () => {
+    if (refreshInFlightRef.current) return; // that cycle schedules from its own read
+    refreshInFlightRef.current = true;
+    try {
+      scheduleFromTokenData(await syncAuthTokenData());
+    } finally {
+      refreshInFlightRef.current = false;
+    }
+    // oxlint-disable-next-line react/react-compiler
+  }, [scheduleFromTokenData, syncAuthTokenData]);
+
+  // Seed (and cancel) the schedule as login state changes.
+  useEffect(() => {
+    if (sessionInfo.status !== 'issued') {
+      clearScheduledRefresh();
+      return;
+    }
+
+    refreshFailuresRef.current = 0; // a fresh login starts from a clean backoff
+    void rescheduleFromToken();
+
+    return () => {
+      clearScheduledRefresh();
+    };
+  }, [sessionInfo.status, rescheduleFromToken, clearScheduledRefresh]);
+
+  // Catch up if the scheduled setTimeout was throttled while the tab was
+  // backgrounded (browsers can pause/delay timers in inactive tabs well
+  // beyond our refresh margin). Re-derive the schedule from the real token
+  // expiry as soon as the tab is visible again.
+  const lastVisibilityRecheckRef = useRef(0);
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    if (sessionInfo.status !== 'issued') return;
+
+    const handleVisibility = () => {
+      if (document.visibilityState !== 'visible') return;
+
+      const now = Date.now();
+      if (
+        now - lastVisibilityRecheckRef.current <
+        VISIBILITY_RECHECK_THROTTLE_MILLISECONDS
+      )
+        return;
+      lastVisibilityRecheckRef.current = now;
+
+      void rescheduleFromToken();
+    };
+
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () =>
+      document.removeEventListener('visibilitychange', handleVisibility);
+  }, [sessionInfo.status, rescheduleFromToken]);
+
+  // Read through a ref so `endSession` — and therefore the context value — does
+  // not change identity every time the router does, i.e. on every navigation.
+  const routerRef = useRef(router);
+  useEffect(() => {
+    routerRef.current = router;
+  }, [router]);
+
+  // Logout ends in a navigation, and navigation is asynchronous, so the page
+  // stays live for a while afterwards. Without this guard the inactivity tick can
+  // re-enter and start a second logout in that window.
+  const endingSessionRef = useRef(false);
+
+  const endSession = useCallback(async (): Promise<void> => {
+    if (endingSessionRef.current) return;
+    endingSessionRef.current = true;
+
+    const credentialsLogin = isCredentialsLogin();
+
+    try {
+      await logoutSession(routerRef.current.basePath);
+      // Settle the store before navigating: until this lands, `userStatus` still
+      // reads authenticated and the rest of the app acts as if nothing happened.
+      await getUserDetails();
+    } catch (error: unknown) {
+      // Only worth surfacing on the credentials path — the Fence path replaces
+      // the document, so a notification there is never seen.
+      if (credentialsLogin) {
         showNotification({
           title: 'Logout Error',
-          message: `error logging out ${e.message}`,
+          message: `error logging out ${error instanceof Error ? error.message : String(error)}`,
         });
-      })
-      .finally(() => {
-        if (isCredentialLogin) {
-          router.push(GEN3_REDIRECT_URL);
-        } else {
-          router.push(`${GEN3_FENCE_API}/logout?next=${GEN3_REDIRECT_URL}`);
-        }
-      });
-  }, [getUserDetails, router]);
+      }
+    }
+
+    if (credentialsLogin) {
+      // Client-side redirect: the provider stays mounted, so release the guard
+      // once it lands or a later deliberate logout would be a no-op.
+      try {
+        await routerRef.current.push(GEN3_REDIRECT_URL);
+      } finally {
+        endingSessionRef.current = false;
+      }
+      return;
+    }
+
+    // need a fence redirect
+    redirectTo(
+      `${GEN3_FENCE_API}/logout?next=${withBasePath(routerRef.current.basePath, GEN3_REDIRECT_URL)}`,
+    );
+  }, [getUserDetails]);
 
   /**
    * Check if the user session has ended
    */
   const isSessionActive = useThrottledCallback(() => {
-    //Check session token, this call updates info
-    getUserDetails(undefined, true).then((obj) => {
-      // use cache value to prevent excessive calls to /user/user
-      //check to make sure logged-out users are logged out
-      if (
-        obj?.data?.loginStatus != 'authenticated' &&
-        userStatus === 'authenticated'
-      ) {
-        coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
-      }
-    });
+    // Check session token, this call updates info
+    void getUserDetails(undefined, true)
+      .then((obj) => {
+        // use cache value to prevent excessive calls to /user/user
+        // check to make sure logged-out users are logged out
+        if (
+          obj.data?.loginStatus !== 'authenticated' &&
+          userStatus === 'authenticated'
+        ) {
+          coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
+        }
+      })
+      .catch(() => {
+        // A failed check is not evidence of a dead session, and the query keeps
+        // its own error state. Swallow it rather than reject unhandled.
+      });
   }, ACTIVITY_THROTTLE_TIMEOUT); // set the time between api calls
 
-  const updateUserActivity = useThrottledCallback(() => {
+  // Unthrottled: programmatic renewals (the expiry warning's "Renew" button)
+  // must always reset the inactivity clock, even inside a throttle window.
+  const recordActivity = useCallback(() => {
     const timestamp = Date.now();
     setMostRecentActivityTimestamp(timestamp);
 
@@ -309,33 +647,84 @@ export const SessionProvider = ({
         timestamp,
       });
     }
+  }, []);
+
+  const updateUserActivity = useThrottledCallback(() => {
+    recordActivity();
     if (sessionInfo.status === 'issued') isSessionActive();
   }, ACTIVITY_THROTTLE_TIMEOUT);
+
+  // The warning modal id lives in a ref, not state, so the interval callback and
+  // the unmount cleanup always see the current value.
+  const expiryWarningIdRef = useRef<string | null>(null);
+
+  const closeExpiryWarning = useCallback(() => {
+    if (expiryWarningIdRef.current) {
+      modals.close(expiryWarningIdRef.current);
+      expiryWarningIdRef.current = null;
+    }
+  }, []);
+
+  // Don't leave the warning modal orphaned if the provider unmounts.
+  useEffect(() => closeExpiryWarning, [closeExpiryWarning]);
+
+  const renewSession = useCallback(() => {
+    closeExpiryWarning();
+    recordActivity(); // the point of "Renew": restart the inactivity clock
+    updateSession();
+  }, [closeExpiryWarning, recordActivity, updateSession]);
+
+  const logoutFromWarning = useCallback(() => {
+    closeExpiryWarning();
+    void endSession();
+  }, [closeExpiryWarning, endSession]);
+
+  // How far ahead of the inactivity limit the warning should appear.
+  //
+  // The window must be at least one poll wide, otherwise the tick that would
+  // show the warning is the same tick that logs the user out, and it must leave
+  // at least one poll of the inactivity window ahead of it, otherwise it fires
+  // immediately after login. When the inactivity limit is too short to satisfy
+  // both, there is no room for a warning and it is skipped.
+  const warningLeadMilliseconds = useCallback(
+    (activeLimitMilliseconds: number) => {
+      if (
+        expireWarningMilliseconds <= 0 ||
+        updateSessionIntervalMilliseconds <= 0
+      )
+        return 0;
+      const lead = Math.max(
+        expireWarningMilliseconds,
+        updateSessionIntervalMilliseconds,
+      );
+      return Math.min(
+        lead,
+        activeLimitMilliseconds - updateSessionIntervalMilliseconds,
+      );
+    },
+    [expireWarningMilliseconds, updateSessionIntervalMilliseconds],
+  );
 
   // Fetch session once on mount to establish initial auth state, then schedule expiry timers
   useEffect(() => {
     updateSession();
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Activity monitoring — only active while the user is logged in.
-  // Re-registers listeners whenever login state or the handler reference changes,
-  // which also fixes the stale closure bug (updateUserActivity captures sessionInfo).
+  // Re-registers listeners whenever the login state or the handler reference changes.
   useEffect(() => {
     if (updateSessionIntervalMilliseconds <= 0) return;
     if (sessionInfo.status !== 'issued') return;
 
-    window.addEventListener('mousedown', updateUserActivity);
-    window.addEventListener('keypress', updateUserActivity);
-    window.addEventListener('updateUserActivity', updateUserActivity);
-    window.addEventListener('scroll', updateUserActivity);
-    window.addEventListener('touchstart', updateUserActivity);
+    ACTIVITY_EVENTS.forEach(([type, options]) =>
+      window.addEventListener(type, updateUserActivity, options),
+    );
 
     return () => {
-      window.removeEventListener('mousedown', updateUserActivity);
-      window.removeEventListener('keypress', updateUserActivity);
-      window.removeEventListener('updateUserActivity', updateUserActivity);
-      window.removeEventListener('scroll', updateUserActivity);
-      window.removeEventListener('touchstart', updateUserActivity);
+      ACTIVITY_EVENTS.forEach(([type, options]) =>
+        window.removeEventListener(type, updateUserActivity, options),
+      );
     };
   }, [
     sessionInfo.status,
@@ -345,78 +734,95 @@ export const SessionProvider = ({
 
   useInterval(
     () => {
+      const { pathname } = router;
       if (sessionInfo.status !== 'issued') return; // no need to update session if user is not logged in
-      if (isUserOnPage('Login') /* || this.popupShown */) return;
+      if (isUserOnPage('Login', pathname)) return;
+      if (!logoutInactiveUsers) return;
 
       const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
 
-      if (logoutInactiveUsers) {
-        const onWorkspacePage = isUserOnPage('Workspace');
-        const activeLimit = onWorkspacePage
-          ? workspaceInactivityTimeLimitMilliseconds
-          : inactiveTimeLimitMilliseconds;
+      const activeLimit = isUserOnPage('Workspace', pathname)
+        ? workspaceInactivityTimeLimitMilliseconds
+        : inactiveTimeLimitMilliseconds;
 
-        // Skip workspace-specific limit if it's disabled (0)
-        if (onWorkspacePage && workspaceInactivityTimeLimitMilliseconds <= 0) {
-          // No workspace inactivity limit configured — don't log out
-        } else if (timeSinceLastActivity >= activeLimit) {
+      // A limit of 0 means no inactivity logout for this kind of page
+      if (activeLimit <= 0) return;
+
+      if (timeSinceLastActivity >= activeLimit) {
+        closeExpiryWarning();
+        // Only worth showing where the redirect is client-side: there the modal
+        // survives the navigation and is what tells the user why they were logged
+        // out. On the Fence path the document is replaced, so it would only flash.
+        if (isCredentialsLogin()) {
           coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
-          endSession().then(() => console.log('ending session'));
-          return;
-        } else if (
-          expireWarningMilliseconds > 0 &&
-          !expiryWarningShown &&
-          timeSinceLastActivity >= activeLimit - expireWarningMilliseconds
-        ) {
-          // Show warning before session expires, giving user a chance to act
+        }
+        void endSession();
+        return;
+      }
 
-          const expireModalId = modals.openContextModal({
+      const warningLead = warningLeadMilliseconds(activeLimit);
+
+      if (
+        warningLead > 0 &&
+        timeSinceLastActivity >= activeLimit - warningLead
+      ) {
+        if (!expiryWarningIdRef.current) {
+          // Show warning before session expires, giving user a chance to act
+          expiryWarningIdRef.current = modals.openContextModal({
             modal: 'sessionExpiringModal',
             title: 'Session Expiring',
+            // Dismissable only through its own Renew / Log out buttons, matching
+            // SessionExpiredModal. A stray Escape or click-outside used to close
+            // the modal while leaving our id set, which suppressed every later
+            // warning and logged the user out with no notice at all.
+            withCloseButton: false,
+            closeOnClickOutside: false,
+            closeOnEscape: false,
+            // Belt and braces for a close we did not initiate (modals.closeAll
+            // elsewhere, say) so the id never outlives the modal.
+            onClose: () => {
+              expiryWarningIdRef.current = null;
+            },
             innerProps: {
-              minutesRemaining: expireWarningMinutes,
-              onRenew: () => {
-                getUserDetails();
-              },
-              onLogout: () => {
-                endSession();
-              },
+              minutesRemaining: Math.max(
+                1,
+                Math.round(warningLead / MILLISECONDS_PER_MINUTE),
+              ),
+              onRenew: renewSession,
+              onLogout: logoutFromWarning,
             },
           });
-          setExpiryWarningShown(expireModalId);
-          return;
         }
-
-        // Reset warning flag once user becomes active again
-        if (
-          expiryWarningShown &&
-          timeSinceLastActivity < activeLimit - expireWarningMilliseconds
-        ) {
-          modals.close(expiryWarningShown);
-          setExpiryWarningShown(null);
-        }
+        return;
       }
-      // fetching a userState will renew the session (rate-limited by refreshSession)
-      refreshSession(
-        async () => {
-          await getUserDetails();
-        },
-        mostRecentSessionRefreshTimestamp,
-        (ts: number) => setMostRecentSessionRefreshTimestamp(ts),
-      );
+
+      // Take the warning down once the user is active again
+      closeExpiryWarning();
+
+      // Token refresh is handled by the exp-driven scheduler above — this
+      // interval only tracks inactivity/logout timing.
     },
     updateSessionIntervalMilliseconds > 0
       ? updateSessionIntervalMilliseconds
       : null,
   );
 
+  // Token metadata is only meaningful while logged in — deriving it here rather
+  // than clearing the state on logout keeps the two in sync without an extra render.
+  // `sessionInfo` is spread last so the login-derived `status` stays
+  // authoritative over the token's own status field.
   const value: Session = useDeepCompareMemo(() => {
+    const tokenData =
+      sessionInfo.status === 'issued' ? authTokenData : undefined;
     return {
+      issued: tokenData?.issued,
+      expires: tokenData?.expires,
+      userContext: tokenData?.userContext,
       ...sessionInfo,
       updateSession,
       endSession,
     };
-  }, [sessionInfo, updateSession, endSession]);
+  }, [authTokenData, sessionInfo, updateSession, endSession]);
 
   if (isGetCSRFError) {
     return (
@@ -426,16 +832,26 @@ export const SessionProvider = ({
     );
   }
 
-  if (isGetCSRFSuccess)
+  if (isGetCSRFSuccess) {
     return (
       <SessionContext.Provider value={value}>
         {children}
       </SessionContext.Provider>
     );
-  else
-    return (
-      <Center h="100vh">
-        <Loader />
-      </Center>
-    );
+  } else {
+    if (isFetchingCSRF) {
+      return (
+        <Center h="100vh">
+          <Loader />
+        </Center>
+      );
+    } else // error
+    {
+      return (
+        <Center h="100vh">
+          {`Error from the commons services. They do not seem to be running`}
+        </Center>
+      );
+    }
+  }
 };

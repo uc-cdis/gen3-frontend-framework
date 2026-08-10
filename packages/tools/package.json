@@ -1,15 +1,15 @@
 {
   "name": "@gen3/toolsff",
-  "version": "0.12.53",
+  "version": "0.12.56",
   "description": "tools for processing Gen3 commons content: color theme, icons, sharedFilters",
   "main": "index.js",
   "type": "module",
   "engines": {
-    "npm": ">=11.9.0",
-    "node": ">=24.15.0"
+    "npm": ">=11.16.0",
+    "node": ">=24.18.0"
   },
   "scripts": {
-    "lint": "eslint --ext .js,.ts src",
+    "lint": "oxlint src",
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rm -rf ./dist",
     "build": "rollup --config rollup.config.js",
@@ -28,7 +28,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@iconify/tools": "^5.0.3",
-    "axios": "^1.13.5",
+    "axios": "^1.18.0",
     "tinycolor2": "^1.6.0",
     "undici": "^6.21.1"
   },
@@ -40,12 +40,5 @@
   },
   "files": [
     "dist"
-  ],
-  "overrides": {
-    "@iconify/tools": {
-      "cheerio": "^1.0.0-rc.12",
-      "undici": "^6.21.1",
-      "axios": "^1.8.2"
-    }
-  }
+  ]
 }

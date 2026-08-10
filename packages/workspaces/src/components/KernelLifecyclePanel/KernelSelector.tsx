@@ -18,12 +18,7 @@ const KernelSelector = ({
   onKernelSelectionChange,
   disabled = false,
 }: KernelSelectorProps) => {
-  const {
-    data: kernelSpecs,
-    isLoading,
-    isError,
-    error,
-  } = useKernalSpecsQuery();
+  const { data: kernelSpecs, isLoading, isError } = useKernalSpecsQuery();
 
   const [selectedKernelName, setSelectedKernelName] = useState<string>(
     kernelSpecs?.[0]?.name || 'python3',

@@ -57,7 +57,7 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
         '/study-reg',
       );
     } else {
-      router.push(
+      void router.push(
         {
           pathname: '/study-reg/request-access',
           query: {

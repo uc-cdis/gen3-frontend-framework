@@ -52,9 +52,8 @@ const CredentialsLogin = ({ handleLogin }: CredentialsLoginProps) => {
     async (credentials: string) => {
       setIsLoading(true);
       const updateSession = sessionContext?.updateSession ?? (() => null);
-      const loginEndpoint = basePath
-        ? `/${basePath}/api/auth/credentialsLogin`
-        : '/api/auth/credentialsLogin';
+      // router.basePath is '' when unset and already leading-slashed when set
+      const loginEndpoint = `${basePath}/api/auth/credentialsLogin`;
       try {
         const parsedCredentials = JSON.parse(credentials);
         const response = await fetch(loginEndpoint, {

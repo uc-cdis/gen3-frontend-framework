@@ -1,5 +1,5 @@
 import React from 'react';
-import { Gen3User, type JWTSessionStatus, LoginStatus } from '@gen3/core';
+import { type JWTSessionStatus, type LoginStatus } from '@gen3/core';
 
 export interface AuthTokenData {
   issued?: number;
@@ -10,32 +10,39 @@ export interface AuthTokenData {
 
 export interface Session extends AuthTokenData {
   userStatus?: LoginStatus;
-  user?: Gen3User;
   updateSession: () => void;
-  endSession: () => void;
+  /** Resolves once logout has completed and the redirect has been initiated. */
+  endSession: () => Promise<void>;
   pending: boolean;
 }
 
 export interface SessionConfiguration {
   /**
-   * A time interval (in minutes) after which the session will be re-fetched.
-   * If set to `0` (default), the session is not polled.
+   * How often (in minutes) the inactivity check runs. Defaults to `5` minutes.
+   *
+   * This is the resolution of every inactivity decision: a user is logged out
+   * somewhere between `inactiveTimeLimit` and `inactiveTimeLimit` plus this
+   * interval. Setting it to `0` turns off activity tracking and inactivity
+   * logout entirely, whatever `logoutInactiveUsers` says.
    */
   updateSessionTime?: number;
 
   /**
-   * number of seconds after which the session will be considered inactive.
+   * Number of minutes of inactivity after which the user is logged out.
+   * `0` disables inactivity logout on non-workspace pages.
    */
   inactiveTimeLimit?: number;
 
   /**
-   * number of seconds after which the session will be considered inactive if using a workspace.
+   * Number of minutes of inactivity after which the user is logged out while on
+   * a workspace page. Defaults to `0`, which means idle workspace sessions are
+   * never ended — set it explicitly if that is not what you want.
    */
   workspaceInactivityTimeLimit?: number;
   /**
    * logout the user if the session is inactive for the specified time defined by 'inactiveTimeLimit'.
    */
-  logoutInactiveUsers?: boolean;
+  logoutInactiveUsers?: boolean; // deprecated
 
   /**
    *  should workspaces be monitored?
@@ -48,8 +55,16 @@ export interface SessionConfiguration {
   monitorPayment?: boolean;
 
   /**
-   * Number of minutes before token expiry to show the session expiring warning modal.
-   * Defaults to 5 minutes.
+   * How many minutes before the *inactivity* logout to show the session expiring
+   * warning. Defaults to 5.
+   *
+   * The effective lead is widened to at least one `updateSessionTime` interval,
+   * since a window narrower than the poll can fall between ticks and never be
+   * shown, and it is capped so at least one interval of the inactivity window
+   * remains ahead of it, since a warning that starts at zero elapsed time fires
+   * immediately after login. Where the inactivity limit is too short to satisfy
+   * both, no warning is shown. The modal reports the effective lead, not this
+   * value.
    */
   expireWarningMinutes?: number;
 }

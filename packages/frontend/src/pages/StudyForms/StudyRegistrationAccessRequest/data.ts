@@ -18,10 +18,9 @@ export const RequestAccessFormPageGetServerSideProps: GetServerSideProps<
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
-        ...{
-          configStudyRegistrationRequestAccessForm:
-            configStudyRegistrationAccessRequestForm,
-        },
+
+        configStudyRegistrationRequestAccessForm:
+          configStudyRegistrationAccessRequestForm,
       },
     };
   } catch (err) {

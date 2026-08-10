@@ -22,11 +22,6 @@ interface LaunchKernelInput {
   kernelName: string;
 }
 
-interface GatewayConnectionStatus {
-  status: string;
-  message?: string;
-}
-
 export interface KernelLifecyclePanelProps {
   notice?: string | null;
   launching?: boolean;
@@ -66,12 +61,8 @@ const KernelLifecyclePanel = ({
 
   const numActiveKernels = useCoreSelector(selectAllJEGKernels)?.length || 0;
 
-  const {
-    gatewayServiceStatus,
-    gatewayStatus,
-    gatewayMessage,
-    setGatewayStatusAndMessage,
-  } = useGatewayConnectionStatus();
+  const { gatewayServiceStatus, gatewayStatus, setGatewayStatusAndMessage } =
+    useGatewayConnectionStatus();
 
   useEffect(() => {
     setGatewayStatusAndMessage('reconnecting');
@@ -84,12 +75,7 @@ const KernelLifecyclePanel = ({
     }
   }, [gatewayServiceStatus]);
 
-  const {
-    data: kernelSpecs,
-    isLoading,
-    isError,
-    error,
-  } = useKernalSpecsQuery();
+  const { data: kernelSpecs } = useKernalSpecsQuery();
 
   // get the function to launch kernels
   const [launchKernel, { isLoading: isLaunchingLoading }] =

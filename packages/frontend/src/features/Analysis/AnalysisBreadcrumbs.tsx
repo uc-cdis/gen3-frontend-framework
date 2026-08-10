@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
-import { CircleIcon, CloseIcon } from "../../types/icons";
-import { SelectionScreenContext } from "./context";
-import { AnalysisToolConfiguration } from "./types";
+import React, { useContext } from 'react';
+import { CircleIcon, CloseIcon } from '../../types/icons';
+import { SelectionScreenContext } from './context';
+import { AnalysisToolConfiguration } from './types';
 
 interface AnalysisBreadcrumbsProps {
   readonly registeredApps: AnalysisToolConfiguration[];
@@ -11,7 +11,7 @@ interface AnalysisBreadcrumbsProps {
 }
 
 const focusStyles =
-  "focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor";
+  'focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor';
 
 const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
   registeredApps,
@@ -27,7 +27,11 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
     !skipSelectionScreen && appInfo?.selectionScreen !== undefined;
 
   return (
-    <div className="w-full bg-primary px-4 py-2 flex items-center">
+    <nav
+      aria-label="Analysis breadcrumb"
+      className="w-full bg-primary px-4 py-2 flex items-center"
+    >
+      {' '}
       <button
         onClick={() => setActiveApp && setActiveApp(undefined)}
         className={`bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest rounded-md w-auto h-9 ${focusStyles}`}
@@ -37,7 +41,7 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
       </button>
       <span
         className={`p-2 mx-2 uppercase text-white ${
-          !displayAdditionalSteps ? "font-bold" : ""
+          !displayAdditionalSteps ? 'font-bold' : ''
         }`}
       >
         {onDemoApp ? `${appInfo?.title} Demo` : appInfo?.title}
@@ -47,29 +51,28 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
           {appInfo?.selectionScreen !== undefined && (
             <>
               <CircleIcon size={8} color="white" role="separator" />
-              <span
+              <button
                 className={`p-2 mx-2 uppercase cursor-pointer text-white ${
-                  selectionScreenOpen ? "font-bold" : ""
+                  selectionScreenOpen ? 'font-bold' : ''
                 }`}
-                role="button"
                 tabIndex={0}
                 onClick={() =>
                   setSelectionScreenOpen && setSelectionScreenOpen(true)
                 }
                 onKeyDown={(e) =>
-                  e.key === "Enter"
+                  e.key === 'Enter'
                     ? setSelectionScreenOpen && setSelectionScreenOpen(true)
                     : null
                 }
               >
                 Selection
-              </span>
+              </button>
             </>
           )}
           {!selectionScreenOpen && (
             <>
-              <CircleIcon size={8} color="white" role="separator" />
-              <span className="p-2 mx-2 uppercase font-bold text-white">
+              <CircleIcon size={8} color="accent.4" aria-hidden={true} />
+              <span className="p-2 mx-2 uppercase font-bold text-accent-contrast-lighter">
                 Results
               </span>
             </>
@@ -77,7 +80,7 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
         </>
       )}
       <div className="ml-auto mr-0">{rightComponent}</div>
-    </div>
+    </nav>
   );
 };
 

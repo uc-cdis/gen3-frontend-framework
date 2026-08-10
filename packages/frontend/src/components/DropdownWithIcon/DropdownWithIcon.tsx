@@ -1,5 +1,5 @@
-import React, { ReactNode, useRef, JSX } from 'react';
-import { Button, FloatingPosition, Menu, Tooltip, } from '@mantine/core';
+import React, { JSX, ReactNode, useRef } from 'react';
+import { Button, FloatingPosition, Menu, Tooltip } from '@mantine/core';
 import { focusStyles } from '../../utils';
 import { IoMdArrowDropdown as DropdownIcon } from 'react-icons/io';
 
@@ -166,7 +166,7 @@ export const DropdownWithIcon = ({
                 }}
                 key={`${title}-${idx}`}
                 data-testid={`${title}-${idx}`}
-                leftSection={icon && icon}
+                leftSection={icon}
                 disabled={disabled}
               >
                 {title}

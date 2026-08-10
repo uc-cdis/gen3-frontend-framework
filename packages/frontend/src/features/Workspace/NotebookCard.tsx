@@ -82,7 +82,7 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
           </Text>
         </Group>
       </Card.Section>
-      <div className="flex mx-8 justify-center border-1 border-base"></div>
+      <div className="flex mx-8 justify-center border-1 border-base" />
       <Group className="mt-2 p-2" justify="center">
         <Tooltip label={LaunchDisabledMessage[payModelStatus]}>
           <Button

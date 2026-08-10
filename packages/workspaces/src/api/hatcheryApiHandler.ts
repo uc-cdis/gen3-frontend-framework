@@ -14,6 +14,7 @@ const upstreamHandler = createHatcheryProxyHandler({
   getToken: (req) => getAccessToken(req.headers['cookie'] ?? '') ?? null,
 });
 
+// oxlint-disable-next-line no-unused-vars
 function decodeJwtUsername(jwt: string): string {
   try {
     const payload = jwt.split('.')[1];
@@ -33,9 +34,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  // oxlint-disable-next-line no-unused-vars
   const action = req.query.action?.[0];
 
   // Intercept res.send to capture response body for logging
+  // oxlint-disable-next-line no-unused-vars
   let capturedBody = '';
   const originalSend = res.send.bind(res) as typeof res.send;
   res.send = (body: unknown) => {

@@ -212,6 +212,41 @@ install_ingress() {
   info "Ingress controller installed and ready"
 }
 
+# ── Helper: apply manifest with retry ────────────────────────────────────────
+#
+# On Kind, kube-proxy's iptables rules for the ingress-nginx-controller-admission
+# Service can lag a few seconds behind the controller pod reporting Ready. An
+# `kubectl apply` on an Ingress right after that triggers the validating webhook,
+# which fails with a connection-refused error until the Service is routable.
+# Retry specifically on that failure mode instead of failing the whole script.
+
+apply_with_retry() {
+  local yaml="$1"
+  local max_attempts=10
+  local delay=3
+  local attempt=1
+  local output
+
+  while (( attempt <= max_attempts )); do
+    if output="$(kubectl apply -f - <<<"$yaml" 2>&1)"; then
+      echo "$output"
+      return 0
+    fi
+    if echo "$output" | grep -q "ingress-nginx-controller-admission"; then
+      warn "Ingress admission webhook not reachable yet (attempt $attempt/$max_attempts). Retrying in ${delay}s..."
+      sleep "$delay"
+      ((attempt++))
+      continue
+    fi
+    echo "$output" >&2
+    return 1
+  done
+
+  error "Ingress admission webhook still unreachable after $max_attempts attempts."
+  error "Check: kubectl get pods -n ingress-nginx"
+  return 1
+}
+
 # ── Step 3: Setup SSL ────────────────────────────────────────────────────────
 
 setup_ssl() {
@@ -284,9 +319,47 @@ setup_ssl() {
 
   # ── Apply ingress ──
 
-  info "Applying ingress configuration for $HOSTNAME..."
+  # ── Apply ingress (skip if another Ingress already claims this host+path) ──
+  #
+  # The Gen3 Helm chart deploys its own Ingress (typically named revproxy-dev)
+  # for this host. Creating a second Ingress with the same host/path is
+  # rejected by the nginx admission webhook as an ambiguous route. When that
+  # Ingress already exists, mirror the mkcert certificate into whatever
+  # secretName it references instead of creating a competing Ingress.
 
-  cat <<EOF | kubectl apply -f -
+  local existing_ingress
+  existing_ingress="$(kubectl get ingress -A \
+    -o jsonpath='{range .items[*]}{.metadata.namespace}{"/"}{.metadata.name}{" "}{.spec.rules[*].host}{"\n"}{end}' \
+    2>/dev/null | awk -v host="$HOSTNAME" -v self="default/ingress-nginx-controller" \
+      '$2 == host && $1 != self {print $1; exit}')"
+
+  if [[ -n "$existing_ingress" ]]; then
+    local existing_ns="${existing_ingress%%/*}"
+    local existing_name="${existing_ingress#*/}"
+    warn "Ingress '$existing_ingress' already routes host $HOSTNAME (likely deployed via the Gen3 Helm chart)."
+
+    local existing_tls_secret
+    existing_tls_secret="$(kubectl get ingress "$existing_name" -n "$existing_ns" \
+      -o jsonpath='{.spec.tls[0].secretName}' 2>/dev/null)"
+
+    if [[ -n "$existing_tls_secret" ]]; then
+      info "Mirroring mkcert certificate into secret '$existing_tls_secret' (used by $existing_ingress)..."
+      if kubectl get secret "$existing_tls_secret" -n "$existing_ns" >/dev/null 2>&1; then
+        kubectl delete secret "$existing_tls_secret" -n "$existing_ns"
+      fi
+      kubectl create secret tls "$existing_tls_secret" -n "$existing_ns" \
+        --cert="$SSL_CERT_DIR/cert.pem" \
+        --key="$SSL_CERT_DIR/key.pem"
+      info "Secret '$existing_tls_secret' updated with mkcert certificate."
+    else
+      warn "$existing_ingress has no tls.secretName set; leaving it unmodified."
+    fi
+
+    warn "Skipping creation of a separate ingress-nginx-controller Ingress to avoid a host/path conflict."
+  else
+    info "Applying ingress configuration for $HOSTNAME..."
+
+    apply_with_retry "$(cat <<EOF
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -313,8 +386,10 @@ spec:
             port:
               number: 80
 EOF
+)"
 
-  info "Ingress applied"
+    info "Ingress applied"
+  fi
   echo
   info "Verify secrets:"
   kubectl get secrets | grep -E "(tls|ca)" || true
@@ -343,7 +418,7 @@ setup_csp() {
   # Apply ingress with CSP headers
   info "Applying ingress with Content-Security-Policy headers..."
 
-  cat <<EOF | kubectl apply -f -
+  apply_with_retry "$(cat <<EOF
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -371,6 +446,7 @@ spec:
             port:
               number: 80
 EOF
+)"
 
   info "CSP configuration applied"
   info "Workspace iframes from https://localhost:3010 are now allowed"
@@ -385,11 +461,16 @@ setup_coredns() {
   info "Resolving host.docker.internal from Kind node (${CLUSTER_NAME}-control-plane)..."
   local host_ip
   host_ip="$(docker exec "${CLUSTER_NAME}-control-plane" \
-    python3 -c "import socket; print(socket.gethostbyname('host.docker.internal'))" 2>/dev/null)" || {
+    getent ahostsv4 host.docker.internal 2>/dev/null | awk 'NR==1{print $1}')" || {
     error "Failed to resolve host.docker.internal from the Kind node."
     error "Ensure Docker Desktop is running and the cluster is up."
     exit 1
   }
+  if [[ -z "$host_ip" ]]; then
+    error "Failed to resolve host.docker.internal from the Kind node."
+    error "Ensure Docker Desktop is running and the cluster is up."
+    exit 1
+  fi
   info "host.docker.internal -> $host_ip"
 
   # Fetch the current Corefile

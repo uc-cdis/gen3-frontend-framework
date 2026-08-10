@@ -225,7 +225,7 @@ const BoxQQSection: React.FC<Readonly<BoxQQPlotProps>> = ({
           <Menu.Dropdown data-testid="dropdown-menu-options">
             <Menu.Item
               onClick={async () => {
-                Promise.all([
+                void Promise.all([
                   handleDownloadSVG(
                     boxDownloadChartRef,
                     `${boxPlotDownloadName}.svg`,
@@ -241,7 +241,7 @@ const BoxQQSection: React.FC<Readonly<BoxQQPlotProps>> = ({
             </Menu.Item>
             <Menu.Item
               onClick={async () => {
-                Promise.all([
+                void Promise.all([
                   handleDownloadPNG(
                     boxDownloadChartRef,
                     `${boxPlotDownloadName}.png`,

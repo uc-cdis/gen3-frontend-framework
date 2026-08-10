@@ -77,28 +77,26 @@ interface DownloadButtonProps {
  * @category Buttons
  */
 
-export const DownloadButton = (
-  {
-    ref,
-    endpoint = '',
-    disabled = false,
-    inactiveText,
-    activeText,
-    params = {},
-    method = 'POST',
-    customStyle,
-    setActive,
-    onClick,
-    showLoading = true,
-    showIcon = true,
-    preventClickEvent = false,
-    active,
-    Modal400 = Modals.GeneralErrorModal,
-    Modal403 = Modals.NoAccessModal,
-    toolTip,
-    ...buttonProps
-  }: DownloadButtonProps
-) => {
+export const DownloadButton = ({
+  ref,
+  endpoint = '',
+  disabled = false,
+  inactiveText,
+  activeText,
+  params,
+  method = 'POST',
+  customStyle,
+  setActive,
+  onClick,
+  showLoading = true,
+  showIcon = true,
+  preventClickEvent = false,
+  active,
+  Modal400 = Modals.GeneralErrorModal,
+  Modal403 = Modals.NoAccessModal,
+  toolTip,
+  ...buttonProps
+}: DownloadButtonProps) => {
   const text = active ? activeText : inactiveText;
   const dispatch = useCoreDispatch();
   const Icon = active ? (
@@ -127,7 +125,7 @@ export const DownloadButton = (
           }
           dispatch(hideModal());
           if (setActive) setActive(true);
-          download({
+          void download({
             endpoint,
             params,
             method,

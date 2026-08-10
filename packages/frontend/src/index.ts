@@ -123,6 +123,7 @@ import {
 } from './components/InfoRolloverButton';
 
 import { TailwindConfig } from './utils/tailwindConfig';
+import typographyPlugin from './vendor/tailwindcss-typography/index.js';
 
 import sessionToken from './api/auth/sessionToken';
 import sessionLogout from './api/auth/sessionLogout';
@@ -218,6 +219,7 @@ export {
   LoginPage,
   LoginPageGetServerSideProps,
   TailwindConfig,
+  typographyPlugin,
   Gen3Provider,
   getNavPageLayoutPropsFromConfig,
   AuthzPage,

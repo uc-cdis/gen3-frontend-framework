@@ -1,22 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { NavPageLayout } from '../../features/Navigation';
-import { Custom403PageProps, Config403Props } from './types';
-import { requestAccessFormProps } from '../../features/Workspace/types';
+import type { Config403Props, Custom403PageProps } from './types';
+import type { requestAccessFormProps } from '../../features/Workspace/types';
 import TextContent from '../../components/Content/TextContent';
-import Form, { FormProps, FormOnSubmitReturnProps } from '../../components/Content/Form';
+import type {
+  FormOnSubmitReturnProps,
+  FormProps,
+} from '../../components/Content/Form';
+import Form from '../../components/Content/Form';
 import Image from 'next/image';
-import { Button, Title, Loader } from '@mantine/core';
+import { Button, Loader, Title } from '@mantine/core';
 import {
   type CoreState,
-  selectUserDetails,
-  useCoreSelector,
   getRemoteSupportServiceRegistry,
   type HttpError,
   isHttpStatusError,
+  selectUserDetails,
+  useCoreSelector,
   useCreateRequestMutation,
   useUserRequestQuery,
 } from '@gen3/core';
+import { useRouter } from 'next/router';
+import { withBasePath } from '../../utils/strings';
 
 const Custom403Page = ({
   headerProps,
@@ -24,8 +30,14 @@ const Custom403Page = ({
   config403,
   form403,
 }: Custom403PageProps) => {
-  // custom 403 page for workspace request access 
-  const onWorkspace = usePathname() === '/Workspace';
+  // custom 403 page for workspace request access
+  const onPageList: string[] =
+    form403?.onPage && form403.onPage.length > 0
+      ? form403.onPage
+      : ['/Workspace'];
+  const onPagePath = usePathname();
+  const onPage = form403?.enabled && onPageList.includes(onPagePath);
+  const { basePath } = useRouter();
 
   const userInfo = useCoreSelector((state: CoreState) =>
     selectUserDetails(state),
@@ -34,11 +46,15 @@ const Custom403Page = ({
   const [formSuccess, setFormSuccess] = useState(false);
 
   // check requester to see if user has already submitted workspace request for access
-  const { data, isLoading, isError } = useUserRequestQuery({policy_ids: ["workspace_accessor"]});
+  const { data, isLoading, isError } = useUserRequestQuery({
+    policy_ids: ['workspace_accessor'],
+  });
 
   useEffect(() => {
     if (!isLoading && isError) {
-      setFormError('Unable to load data from Requester, form may not submit correctly. Try refreshing this page');
+      setFormError(
+        'Unable to load data from Requester, form may not submit correctly. Try refreshing this page',
+      );
     }
     if (data && data.length > 0) {
       setFormSuccess(true);
@@ -65,8 +81,8 @@ const Custom403Page = ({
       );
 
     return requestQuery({
-        resource_paths: ["/workspace"],
-      })
+      resource_paths: ['/workspace'],
+    })
       .unwrap()
       .then((request) => {
         return zendeskRequestAction(
@@ -88,27 +104,37 @@ const Custom403Page = ({
           },
           form403.remoteSupportService.configuration,
         );
-      }).then(() => {
+      })
+      .then(() => {
         setFormSuccess(true);
       })
       .catch((error: unknown) => {
         if (isHttpStatusError(error)) {
           const httpError = error as HttpError;
-          setFormError(`[${httpError.status}]: Error while submitting resource request`);
+          setFormError(
+            `[${httpError.status}]: Error while submitting resource request`,
+          );
         } else if (error instanceof Error) {
-          setFormError(`Error while submitting resource request: ${error.message}`);
+          setFormError(
+            `Error while submitting resource request: ${error.message}`,
+          );
         } else {
           setFormError('Unknown error while submitting resource request');
         }
       });
-  }
+  };
 
   const main403Template = (config: Config403Props) => {
     return (
       <div className="w-full max-w-[500px] m-auto text-center">
         {config?.topIcon && (
           <div className="bg-white rounded-lg inline-block p-3">
-            <Image src={config.topIcon.src} alt={config.topIcon.alt} width={36} height={36}/>
+            <Image
+              src={withBasePath(basePath, config.topIcon.src)}
+              alt={config.topIcon.alt}
+              width={36}
+              height={36}
+            />
           </div>
         )}
         {config?.content?.map((content, index) => (
@@ -121,43 +147,50 @@ const Custom403Page = ({
             href={config.button.href}
             target="_blank"
             className="mt-3"
-          >{config.button.text}</Button>
+          >
+            {config.button.text}
+          </Button>
         )}
       </div>
     );
-  }
+  };
 
   const autoFillValues = (body: FormProps['body']) => {
-    return body.map((item)=> {
+    return body.map((item) => {
       // replace userEmail with users email
       if (item.initialValue === 'userEmail') {
-        return {...item, initialValue: userInfo?.email};
+        return { ...item, initialValue: userInfo?.email };
       }
       return item;
     });
-  }
-  const workspaceRequestForm = (formConfig: requestAccessFormProps)=> {
+  };
+  const workspaceRequestForm = (formConfig: requestAccessFormProps) => {
     if (formSuccess) {
       return main403Template(formConfig.success);
-    } 
+    }
     const autoFillValuesStatic = autoFillValues(formConfig.form);
     return (
       <div className="mx-20 sm:mt-8 2xl:mt-10 w-full bg-base-max">
-        <Title size="h2" className="mb-5 pb-2 text-primary m_8a5d1357 mantine-Title-root">{formConfig.label}</Title>
-        {userInfo?.email && !isLoading ? ( 
+        <Title
+          size="h2"
+          className="mb-5 pb-2 text-primary m_8a5d1357 mantine-Title-root"
+        >
+          {formConfig.label}
+        </Title>
+        {userInfo?.email && !isLoading ? (
           <Form
             className="*:mt-5 mb-5"
             body={autoFillValuesStatic}
             submitButtonText={formConfig.submitButtonText}
             errorMessage={formError}
             onSubmit={formOnSubmit}
-            />
-          ): (
-            <Loader />
-          )
-        }
-      </div>);
-  }
+          />
+        ) : (
+          <Loader />
+        )}
+      </div>
+    );
+  };
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
@@ -168,10 +201,9 @@ const Custom403Page = ({
         ...(config403?.headerMetadata ? config403.headerMetadata : {}),
       }}
     >
-      {form403?.enabled && userInfo?.email && onWorkspace ?
-        workspaceRequestForm(form403)
-      : main403Template(config403)
-      }
+      {userInfo?.email && onPage
+        ? workspaceRequestForm(form403)
+        : main403Template(config403)}
     </NavPageLayout>
   );
 };

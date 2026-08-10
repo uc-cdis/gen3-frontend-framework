@@ -1,16 +1,20 @@
-
-import { DataDictionary, DictionaryEntry, DDLink, DDLinkWithSubgroup } from './types';
+import {
+  DataDictionary,
+  DDLink,
+  DDLinkWithSubgroup,
+  DictionaryEntry,
+} from './types';
 
 interface linkProps extends DDLink, DDLinkWithSubgroup {}
 
 interface nodeLinkListProps extends linkProps {
-    source: nodesDictionaryEntry, 
-    target: nodesDictionaryEntry, 
-    exists: number;
+  source: nodesDictionaryEntry;
+  target: nodesDictionaryEntry;
+  exists: number;
 }
 
 interface nodeExtendedPropsLinksRequiered extends nodesDictionaryEntry {
-    links: linkProps[];
+  links: linkProps[];
 }
 interface nodesDictionaryEntry extends DictionaryEntry {
   name?: string;
@@ -26,7 +30,7 @@ interface createNodesAndEdgesProps {
 }
 
 interface nameEdgesInProps {
-    [key: string]: nodeLinkListProps[];
+  [key: string]: nodeLinkListProps[];
 }
 
 /**
@@ -36,13 +40,19 @@ interface nameEdgesInProps {
  * @param {string} sourceId - source id for subgroup links
  * This function traverse links recursively and return all nested subgroup lnks
  */
-const getSubgroupLinks = (link: linkProps, nameToNode: nodesDataDictionary, sourceId: string) => {
+const getSubgroupLinks = (
+  link: linkProps,
+  nameToNode: nodesDataDictionary,
+  sourceId: string,
+) => {
   let subgroupLinks: nodeLinkListProps[] = [];
   if (link.subgroup) {
     link.subgroup.forEach((sgLink) => {
       const sgTempLink = sgLink as linkProps;
       if (sgTempLink.subgroup) {
-        subgroupLinks = subgroupLinks.concat(getSubgroupLinks(sgTempLink, nameToNode, sourceId));
+        subgroupLinks = subgroupLinks.concat(
+          getSubgroupLinks(sgTempLink, nameToNode, sourceId),
+        );
       } else {
         subgroupLinks.push({
           source: nameToNode[sourceId],
@@ -55,7 +65,6 @@ const getSubgroupLinks = (link: linkProps, nameToNode: nodesDataDictionary, sour
   }
   return subgroupLinks;
 };
-
 
 /**
  * Given a data dictionary that defines a set of nodes
@@ -73,13 +82,21 @@ const getSubgroupLinks = (link: linkProps, nameToNode: nodesDataDictionary, sour
  * @param nodesToHide: Array of nodes to hide from graph
  * @returns { nodes, edges } Object containing nodes and edges
  */
-export function createNodesAndEdges(props: createNodesAndEdgesProps, createAll: boolean, nodesToHide = ['program']) {
+export function createNodesAndEdges(
+  props: createNodesAndEdgesProps,
+  createAll: boolean,
+  nodesToHide = ['program'],
+) {
   const { dictionary } = props;
-  const nodes:nodesDictionaryEntry[] = Object.keys(dictionary).filter(
-    (key) => !key.startsWith('_') && dictionary[key].type === 'object'
-      && dictionary[key].category !== 'internal' && !nodesToHide.includes(key),
-  ).map(
-    (key) => {
+  const nodes: nodesDictionaryEntry[] = Object.keys(dictionary)
+    .filter(
+      (key) =>
+        !key.startsWith('_') &&
+        dictionary[key].type === 'object' &&
+        dictionary[key].category !== 'internal' &&
+        !nodesToHide.includes(key),
+    )
+    .map((key) => {
       let count = 0;
       if (props.counts_search) {
         count = props.counts_search[`_${key}_count`];
@@ -89,29 +106,46 @@ export function createNodesAndEdges(props: createNodesAndEdgesProps, createAll: 
         count,
         ...dictionary[key],
       };
+    })
+    .filter((node) => createAll || node.count !== 0);
+
+  const nameToNode = nodes.reduce(
+    (db: nodesDataDictionary, node: nodesDictionaryEntry) => {
+      db[node.id] = node;
+      return db;
     },
-  ).filter(
-    (node) => createAll || node.count !== 0,
+    {},
   );
 
-  const nameToNode = nodes.reduce((db: nodesDataDictionary, node:nodesDictionaryEntry) => { db[node.id] = node; return db; }, {});
+  const hideDb = nodesToHide.reduce((db: { [key: string]: boolean }, name) => {
+    db[name] = true;
+    return db;
+  }, {});
 
-  const hideDb = nodesToHide.reduce((db: {[key: string]: boolean}, name) => { db[name] = true; return db; }, {});
-
-  const edges = nodes.filter((node): node is nodeExtendedPropsLinksRequiered => node.links !== undefined && node.links.length > 0)
-    .reduce( // add each node's links to the edge list
+  const edges = nodes
+    .filter(
+      (node): node is nodeExtendedPropsLinksRequiered =>
+        node.links !== undefined && node.links.length > 0,
+    )
+    .reduce(
+      // add each node's links to the edge list
       (list: nodeLinkListProps[], node) => {
-        const newLinks = node.links.map(
-          (link) => ({
-            source: node, target: nameToNode[link.target_type], exists: 1, ...link,
-          }),
-        );
+        const newLinks = node.links.map((link) => ({
+          source: node,
+          target: nameToNode[link.target_type],
+          exists: 1,
+          ...link,
+        }));
         return list.concat(newLinks);
-      }, [])
-    .reduce( // add link subgroups to the edge list
+      },
+      [],
+    )
+    .reduce(
+      // add link subgroups to the edge list
       (list: nodeLinkListProps[], link) => {
         let result = list;
-        if (link.target) { // "subgroup" link entries in dictionary are not links themselves ...
+        if (link.target) {
+          // "subgroup" link entries in dictionary are not links themselves ...
           result.push(link);
         }
         if (link.subgroup) {
@@ -119,29 +153,36 @@ export function createNodesAndEdges(props: createNodesAndEdgesProps, createAll: 
           result = result.concat(sgLinks);
         }
         return result;
-      }, [])
+      },
+      [],
+    )
     .filter(
-    // target type exist and is not in hide list
-      (link) => (link.target && link.target.id in nameToNode && !(link.target.id in hideDb)))
-    .map(
-      (link) => {
+      // target type exist and is not in hide list
+      (link) =>
+        link.target &&
+        link.target.id in nameToNode &&
+        !(link.target.id in hideDb),
+    )
+    .map((link) => {
       // decorate each link with its "exists" count if available
       //  (number of instances of link between source and target types in the data)
-        const res = link;
-        res.exists = props.links_search
-          ? props.links_search[`${res.source.id}_${res.name}_to_${res.target.id}_link`]
-          : 0;
-        return res;
-      })
+      const res = link;
+      res.exists = props.links_search
+        ? props.links_search[
+            `${res.source.id}_${res.name}_to_${res.target.id}_link`
+          ]
+        : 0;
+      return res;
+    })
     .filter(
-    // filter out if no instances of this link exists and createAll is not specified
+      // filter out if no instances of this link exists and createAll is not specified
       (link) => createAll || link.exists || link.exists === undefined,
     );
   return {
     nodes,
     edges,
   };
-};
+}
 
 /**
  * Find the root of the given graph (no edges out)
@@ -150,22 +191,26 @@ export function createNodesAndEdges(props: createNodesAndEdgesProps, createAll: 
  * @param edges
  * @return {string} rootName or null if no root
  */
-export function findRoot(nodes: nodesDictionaryEntry[], edges: nodeLinkListProps[]) {
+export function findRoot(
+  nodes: nodesDictionaryEntry[],
+  edges: nodeLinkListProps[],
+) {
   const couldBeRoot = edges.reduce(
     (db, edge) => {
       // At some point the d3 force layout converts
       //   edge.source and edge.target into node references ...
-      const sourceName = typeof edge.source === 'object' ? edge.source.id : edge.source;
+      const sourceName =
+        typeof edge.source === 'object' ? edge.source.id : edge.source;
       if (db[sourceName]) {
         db[sourceName] = false;
       }
       return db;
     },
     // initialize emptyDb - any node could be the root
-    nodes.reduce((emptyDb: {[key: string]: boolean}, node) => { 
-      const res = emptyDb; 
-      res[node.id] = true; 
-      return res; 
+    nodes.reduce((emptyDb: { [key: string]: boolean }, node) => {
+      const res = emptyDb;
+      res[node.id] = true;
+      return res;
     }, {}),
   );
   const rootNode = nodes.find((n) => couldBeRoot[n.id]);
@@ -182,13 +227,19 @@ export function findRoot(nodes: nodesDictionaryEntry[], edges: nodeLinkListProps
  * @param hierarchy
  * @return {map}
  */
-function getTreeHierarchyHelper(node: string, name2EdgesIn: nameEdgesInProps, hierarchy: Map<any, any>) {
+function getTreeHierarchyHelper(
+  node: string,
+  name2EdgesIn: nameEdgesInProps,
+  hierarchy: Map<any, any>,
+) {
   const descendants = new Set();
   descendants.add(node);
   hierarchy.set(node, descendants);
   name2EdgesIn[node].forEach((edge) => {
-    const sourceName = typeof edge.source === 'object' ? edge.source.id : edge.source;
-    if (!hierarchy.get(sourceName)) { // don't want to visit node again
+    const sourceName =
+      typeof edge.source === 'object' ? edge.source.id : edge.source;
+    if (!hierarchy.get(sourceName)) {
+      // don't want to visit node again
       hierarchy = getTreeHierarchyHelper(sourceName, name2EdgesIn, hierarchy);
       descendants.add(sourceName);
       hierarchy.get(sourceName).forEach((n: any) => {
@@ -224,11 +275,14 @@ export function getTreeHierarchy(root: string, name2EdgesIn: nameEdgesInProps) {
  *          treeLevel2Names is an array of arrays of node names,
  *          and name2Level is a mapping of node name to level
  */
-export function nodesBreadthFirst(nodes: nodesDictionaryEntry[], edges: nodeLinkListProps[]) {
+export function nodesBreadthFirst(
+  nodes: nodesDictionaryEntry[],
+  edges: nodeLinkListProps[],
+) {
   const result: {
-    bfOrder: string[],
-    treeLevel2Names: Array<string[]>,
-    name2Level: {[key: string]: number},
+    bfOrder: string[];
+    treeLevel2Names: Array<string[]>;
+    name2Level: { [key: string]: number };
   } = {
     bfOrder: [],
     treeLevel2Names: [],
@@ -240,7 +294,8 @@ export function nodesBreadthFirst(nodes: nodesDictionaryEntry[], edges: nodeLink
     (db: nameEdgesInProps, edge: nodeLinkListProps) => {
       // At some point the d3 force layout converts edge.source
       //   and edge.target into node references ...
-      const targetName = typeof edge.target === 'object' ? edge.target.id : edge.target;
+      const targetName =
+        typeof edge.target === 'object' ? edge.target.id : edge.target;
       if (db[targetName]) {
         db[targetName].push(edge);
       } else {
@@ -249,17 +304,19 @@ export function nodesBreadthFirst(nodes: nodesDictionaryEntry[], edges: nodeLink
       return db;
     },
     // initialize emptyDb - include nodes that have no incoming edges (leaves)
-    nodes.reduce((emptyDb: {[key: string]: []}, node: nodesDictionaryEntry) => { 
-      const res = emptyDb; 
-      res[node.id] = []; 
-      return res; 
-    }, {}),
+    nodes.reduce(
+      (emptyDb: { [key: string]: [] }, node: nodesDictionaryEntry) => {
+        const res = emptyDb;
+        res[node.id] = [];
+        return res;
+      },
+      {},
+    ),
   );
 
   // root node has no edges coming out of it, just edges coming in
   const root = findRoot(nodes, edges);
   if (!root) {
-    console.log('Could not find root of given graph');
     return result;
   }
 
@@ -272,7 +329,7 @@ export function nodesBreadthFirst(nodes: nodesDictionaryEntry[], edges: nodeLink
     name2EdgesIn[root] = [];
   }
 
-  const name2ActualLvl: {[key: string]: number} = {};
+  const name2ActualLvl: { [key: string]: number } = {};
   const hierarchy = getTreeHierarchy(root, name2EdgesIn);
   // Run through this once to determine the actual level of each node
   for (let head = 0; head < queue.length; head += 1) {
@@ -284,7 +341,8 @@ export function nodesBreadthFirst(nodes: nodesDictionaryEntry[], edges: nodeLink
     name2EdgesIn[query].forEach((edge) => {
       // At some point the d3 force layout converts edge.source
       //   and edge.target into node references ...
-      const sourceName = typeof edge.source === 'object' ? edge.source.id : edge.source;
+      const sourceName =
+        typeof edge.source === 'object' ? edge.source.id : edge.source;
       if (name2EdgesIn[sourceName]) {
         const isAncestor = hierarchy.get(sourceName).has(query);
         // only push node if it is not an ancestor of the current node, or else --> cycle
@@ -292,10 +350,8 @@ export function nodesBreadthFirst(nodes: nodesDictionaryEntry[], edges: nodeLink
           queue.push({ query: sourceName, level: level + 1 });
         }
       } else {
-        console.log(`Edge comes from unknown node ${sourceName}`);
       }
-    },
-    );
+    });
   }
 
   // Reset and run for real
@@ -312,60 +368,64 @@ export function nodesBreadthFirst(nodes: nodesDictionaryEntry[], edges: nodeLink
     }
     result.treeLevel2Names[level].push(query);
     result.name2Level[query] = level;
-    name2EdgesIn[query].forEach(
-      (edge) => {
-        // At some point the d3 force layout converts edge.source
-        //   and edge.target into node references ...
-        const sourceName = typeof edge.source === 'object' ? edge.source.id : edge.source;
-        if (name2EdgesIn[sourceName]) {
-          if (!processedNodes.has(sourceName) && name2ActualLvl[sourceName] === (level + 1)) {
-            //
-            // edge source has not yet been processed via another link from the source
-            // to a node higher in the graph
-            //
-            processedNodes.add(sourceName); // don't double-queue a node
-            queue.push({ query: sourceName, level: level + 1 });
-          }
-        } else {
-          console.log(`Edge comes from unknown node ${sourceName}`);
+    name2EdgesIn[query].forEach((edge) => {
+      // At some point the d3 force layout converts edge.source
+      //   and edge.target into node references ...
+      const sourceName =
+        typeof edge.source === 'object' ? edge.source.id : edge.source;
+      if (name2EdgesIn[sourceName]) {
+        if (
+          !processedNodes.has(sourceName) &&
+          name2ActualLvl[sourceName] === level + 1
+        ) {
+          //
+          // edge source has not yet been processed via another link from the source
+          // to a node higher in the graph
+          //
+          processedNodes.add(sourceName); // don't double-queue a node
+          queue.push({ query: sourceName, level: level + 1 });
         }
-      },
-    );
+      } else {
+      }
+    });
   }
   return result;
 }
 
-
-const placeNodesOnGraph = (treeLevel2Names: string[][], dictionary: DataDictionary)=> {
+const placeNodesOnGraph = (
+  treeLevel2Names: string[][],
+  dictionary: DataDictionary,
+) => {
   let currentX = 0;
   let currentY = 0;
   const xSpacing = 300;
   const ySpacing = 100;
 
-  const positions: { //TODO set this to proper type
+  const positions: {
+    //TODO set this to proper type
     id: string;
-    name?: string; 
+    name?: string;
     symbol?: string;
     symbolSize?: number;
     itemStyle?: object;
-    x: number; 
-    y: number 
+    x: number;
+    y: number;
   }[] = [];
 
   treeLevel2Names.forEach((level, leftToRightIndex) => {
     // find longest name in level
-    const longestName = level.reduce((longest, id) => { 
-      const nameLength = dictionary[id]?.title?.length; 
-      return (nameLength && nameLength > longest) ? nameLength : longest; 
+    const longestName = level.reduce((longest, id) => {
+      const nameLength = dictionary[id]?.title?.length;
+      return nameLength && nameLength > longest ? nameLength : longest;
     }, 0);
-    level.forEach((id, topToBottomIndex) => {
+    level.forEach((id) => {
       positions.push({
         id: id,
         name: dictionary[id].title,
         x: currentX,
         y: currentY,
       });
-//TODO start here get lines to cerve and spacing done properly
+      //TODO start here get lines to cerve and spacing done properly
       //add point for routing lines, left and right of all items
       // left point only if has parents to left
       if (dictionary[id].links?.length && dictionary[id].links.length > 0) {
@@ -374,7 +434,7 @@ const placeNodesOnGraph = (treeLevel2Names: string[][], dictionary: DataDictiona
           //name: `${id}-point-l`,
           symbolSize: 0,
           symbol: 'none',
-          x: currentX - (xSpacing / 2),
+          x: currentX - xSpacing / 2,
           y: currentY,
         });
       }
@@ -384,22 +444,22 @@ const placeNodesOnGraph = (treeLevel2Names: string[][], dictionary: DataDictiona
         //name: `${id}-point-r`,
         symbolSize: 0,
         symbol: 'none',
-        x: currentX + (longestName * 30) + (xSpacing / 2),
+        x: currentX + longestName * 30 + xSpacing / 2,
         y: currentY,
       });
       currentY += ySpacing;
     });
     // stepped pattern
     currentY = ySpacing * (leftToRightIndex + 1);
-    currentX +=  (longestName * 30) + xSpacing;
+    currentX += longestName * 30 + xSpacing;
   });
 
   return positions;
 };
 interface linksForGraphProps {
-    source: string;
-    target: string;
-};
+  source: string;
+  target: string;
+}
 
 const linksForGraph = (edges: nodeLinkListProps[]) => {
   /*return edges.map((edge) => {
@@ -408,7 +468,7 @@ const linksForGraph = (edges: nodeLinkListProps[]) => {
       target: edge.target.id,
     };
   });*/
-  const tempLinks:linksForGraphProps[] = [];
+  const tempLinks: linksForGraphProps[] = [];
   edges.forEach((edge) => {
     tempLinks.push({
       source: edge.source.id,
@@ -428,17 +488,19 @@ const linksForGraph = (edges: nodeLinkListProps[]) => {
 
 export const formatDataForGraph = (dictionary: DataDictionary) => {
   //TODO cash all this unchanging data
-  const { nodes, edges } = createNodesAndEdges({
-    dictionary: dictionary,
-  }, true, []);
+  const { nodes, edges } = createNodesAndEdges(
+    {
+      dictionary: dictionary,
+    },
+    true,
+    [],
+  );
   const nodeTree = nodesBreadthFirst(nodes, edges);
-  console.log('dictionary', dictionary);
-  console.log('nodes edges', nodes, edges);
-  console.log('nodesBreadthFirst', nodeTree);
+
   const graphData = placeNodesOnGraph(nodeTree.treeLevel2Names, dictionary);
-  console.log('placeNodesOnGraph', graphData);
+
   const graphLinks = linksForGraph(edges);
-  console.log('linksForGraph', graphLinks);
+
   return {
     data: graphData,
     links: graphLinks,

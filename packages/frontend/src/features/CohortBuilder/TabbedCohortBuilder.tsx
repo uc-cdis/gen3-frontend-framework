@@ -196,9 +196,13 @@ const TabbedCohortBuilder = ({
     } else {
       // Change initiated by user interaction
       if (activeTab !== routerTab) {
-        router.push({ query: { ...router.query, tab: activeTab } }, undefined, {
-          scroll: false,
-        });
+        void router.push(
+          { query: { ...router.query, tab: activeTab } },
+          undefined,
+          {
+            scroll: false,
+          },
+        );
       }
     }
     // https://github.com/vercel/next.js/discussions/29403#discussioncomment-1908563

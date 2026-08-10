@@ -78,6 +78,8 @@ const globals = {
 const external = [
   ...Object.keys(globals),
   'tailwindcss/plugin',
+  'tailwindcss/colors',
+  'postcss-selector-parser',
   '@iconify/react',
   'next/router',
   'next/dynamic',
@@ -115,6 +117,7 @@ const jsBundle = (input, baseName, additionalExternal) => ({
       dir: `dist/${baseName}/cjs`,
       format: 'cjs',
       globals,
+      interop: 'auto',
       sourcemap: true,
     },
     {

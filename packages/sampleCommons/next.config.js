@@ -9,7 +9,7 @@ const path = require('path');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { withJupyterWorkspaces } = require('@gen3/workspaces/server');
 
-const basePath = process.env.NEXT_PUBLIC_BASEPATH;
+const basePath = process.env.BASE_PATH || '';
 
 dns.setDefaultResultOrder('ipv4first');
 
@@ -35,16 +35,6 @@ const nextConfig = {
   productionBrowserSourceMaps: true,
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   basePath: basePath,
-  images: {
-    localPatterns: [
-      {
-        pathname: '/icons/**',
-      },
-      {
-        pathname: '/images/**',
-      },
-    ],
-  },
   logging: {
     fetches: {
       fullUrl: true,
@@ -59,7 +49,7 @@ const nextConfig = {
     config.resolve = config.resolve || {};
 
     config.resolve.alias = {
-      ...(config.resolve.alias || {}),
+      ...config.resolve.alias,
 
       '@gen3/core$': path.resolve(__dirname, '../core/src/index.ts'),
 
@@ -92,7 +82,7 @@ const nextConfig = {
       config.resolve.symlinks = true;
 
       config.watchOptions = {
-        ...(config.watchOptions || {}),
+        ...config.watchOptions,
         // Exclude non-@gen3 node_modules so file-level changes trigger HMR
         ignored: /node_modules[/\\](?!@gen3[/\\])/,
       };
@@ -101,7 +91,7 @@ const nextConfig = {
       // Exclude local @gen3 packages from managed-path snapshotting so webpack
       // watches individual file changes instead of package.json version bumps.
       config.snapshot = {
-        ...(config.snapshot || {}),
+        ...config.snapshot,
         managedPaths: [/^(.+?[\\/]node_modules[\\/])(?!@gen3[\\/])/],
         immutablePaths: [],
       };
@@ -162,6 +152,10 @@ const nextConfig = {
           destination: `${GEN3_TARGET}/manifests/:path*`,
         },
         {
+          source: '/dashboard/:path*',
+          destination: `${GEN3_TARGET}/dashboard/:path*`,
+        },
+        {
           source: '/requestor/:path*',
           destination: `${GEN3_TARGET}/requestor/:path*`,
         },
@@ -215,4 +209,4 @@ const nextConfig = {
 };
 
 // IMPORTANT: actually export your config (wrapped by plugins)
-module.exports = withMDX(withJupyterWorkspaces(nextConfig));
+module.exports = withMDX(nextConfig);

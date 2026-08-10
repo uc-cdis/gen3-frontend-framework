@@ -74,7 +74,7 @@ export const hatcheryApi = HatcheryWithTags.injectEndpoints({
         const query = hash ? `?id=${encodeURIComponent(hash)}` : '';
         return `${GEN3_HATCHERY_API}/status${query}`;
       },
-      transformErrorResponse: (error) => {
+      transformErrorResponse: (_error) => {
         return {
           status: HatcheryServiceState.error,
           idleTimeLimit: 0,

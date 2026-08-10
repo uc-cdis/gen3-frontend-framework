@@ -73,7 +73,7 @@ export const useAggMetaMDSProxy = ({
         setLoading(false);
       }
     };
-    fetchData();
+    void fetchData();
   }, [
     searchTerms,
     pagination,

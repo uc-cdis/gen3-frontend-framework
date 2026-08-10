@@ -1,12 +1,9 @@
 // StudyRegistrationAccessRequestForm.tsx
 import React from 'react';
-import { Box, Text } from '@mantine/core';
 import {
   NavPageLayout,
   NavPageLayoutProps,
 } from '../../../features/Navigation';
-import { useStudyRegistration } from '../../../features/DiscoveryForms/StudyRegistrationAccessRequest/useStudyRegistration';
-import { FormContentViews } from '../../../features/DiscoveryForms/StudyRegistrationAccessRequest/FormContentViews';
 import StudyRegistrationAccessRequestForm from '../../../features/DiscoveryForms/StudyRegistrationAccessRequest';
 
 interface StudyRegistrationAccessRequestFormPageProps extends NavPageLayoutProps {

@@ -40,7 +40,7 @@ const MetadataSchemaPanel = ({
   if (isLoading) {
     return (
       <Center className="mt-10">
-        <Loader></Loader>
+        <Loader />
       </Center>
     );
   }

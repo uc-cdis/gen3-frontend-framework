@@ -150,7 +150,7 @@ const CompactDictionaryPanel = ({
                         <Table.Tr>
                           <Table.Th>Field</Table.Th>
                           <Table.Th>Type</Table.Th>
-                          {!isCompact && <Table.Th></Table.Th>}
+                          {!isCompact && <Table.Th />}
                         </Table.Tr>
                       </Table.Thead>
                       <Table.Tbody>

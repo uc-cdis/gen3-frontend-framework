@@ -90,7 +90,7 @@ const useAuthorizationState = () => {
 
   useEffect(() => {
     if (loginStatus && loginStatus !== 'pending') {
-      refetch();
+      void refetch();
     }
   }, [loginStatus, refetch]);
 
@@ -106,7 +106,6 @@ const useAuthorizationState = () => {
 
 const NavigationBar = ({
   logo = undefined,
-  title = undefined,
   items = [],
   classNames = {},
   hideUnauthorizedLinks = false,

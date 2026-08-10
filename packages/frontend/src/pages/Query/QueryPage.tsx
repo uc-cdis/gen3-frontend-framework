@@ -12,7 +12,6 @@ const QueryPage = ({
   footerProps,
   configuration: queryProps,
 }: QueryPageLayoutProps): JSX.Element => {
-  console.log(queryProps);
   return (
     <FixedNavPageLayout
       {...{ headerProps, footerProps }}

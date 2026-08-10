@@ -233,7 +233,7 @@ function filterAndAnnotateSpecs(
         display_name: displayNames[specName] ?? rawSpec.spec.display_name,
         // Inject billing metadata into spec.metadata (available to browser)
         metadata: {
-          ...(rawSpec.spec.metadata ?? {}),
+          ...rawSpec.spec.metadata,
           costPerHour: costPerHour[specName] ?? 0,
           nodeType: nodeType[specName] ?? 'unknown',
         },
@@ -527,7 +527,7 @@ async function handleKernelLaunch(
   const enrichedBody = {
     ...launchBody,
     env: {
-      ...((launchBody.env as Record<string, string>) ?? {}),
+      ...(launchBody.env as Record<string, string>),
       GEN3_API_KEY_ID: fenceCreds.key_id,
       GEN3_API_KEY_SECRET: fenceCreds.api_key, // pragma: allowlist secret
       NAMESPACE: process.env.NAMESPACE || 'jupyter-pods',

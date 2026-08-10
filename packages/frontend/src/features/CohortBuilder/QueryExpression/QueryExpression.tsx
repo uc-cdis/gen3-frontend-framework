@@ -159,7 +159,7 @@ const QueryExpression = ({
         useFormatFilters: () => (value: string, _field: string) =>
           Promise.resolve(value),
 
-        ...(hooks ?? {}),
+        ...hooks,
       }}
     >
       <QueryExpressionSection index={index} />

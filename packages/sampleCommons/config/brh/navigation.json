@@ -1,7 +1,7 @@
 {
   "navigation": {
     "classNames": {
-      "root": "pl-1 mr-6 bg-base-max text-primary opacity-100 hover:opacity-100",
+      "root": "pl-1 bg-base-max text-primary opacity-100 hover:opacity-100",
       "item": "py-2 px-4 hover:bg-base-lightest hover:text-base-contrast",
       "navigationPanel": "bg-base-max text-primary-darker"
     },
@@ -23,6 +23,12 @@
         "href": "/Workspace",
         "icon": "gen3:workspace",
         "tooltip": "Gen3 workspaces are secure data analysis environments in the cloud that can access data from one or more data resources."
+      },
+      {
+        "name": "Analysis",
+        "href": "/Analysis",
+        "icon": "gen3:analysis",
+        "tooltip": "Analysis Tools"
       },
       {
         "name": "Notebooks",

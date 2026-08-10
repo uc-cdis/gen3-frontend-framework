@@ -44,6 +44,7 @@ const ActionMenu = ({ items }: ActionMenuProps) => {
               </Menu.Item>
             ) : (
               <Menu.Item
+                key={`${x.name}-${index}`}
                 onClick={() =>
                   x?.modal &&
                   modals.openContextModal({

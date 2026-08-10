@@ -16,19 +16,12 @@ const ActiveKernelInfoPanel = ({
   kernelName,
   executionState,
   uptimeMinutes,
-  onOpenNotebook,
   forceTerminate = false,
   rowSpec,
   connections = 0,
 }: RunningKernelPanelProps) => {
-  const [
-    terminateKernel,
-    {
-      isLoading: isTerminatingLoading,
-      isError: isTerminatingError,
-      error: terminatingError,
-    },
-  ] = useTerminateKernelMutation();
+  const [terminateKernel, { isLoading: isTerminatingLoading }] =
+    useTerminateKernelMutation();
 
   const isStaleOrIdle = executionState === 'idle';
   return (
@@ -61,7 +54,7 @@ const ActiveKernelInfoPanel = ({
                     )*/}
         </div>
         <Badge color={isStaleOrIdle ? 'utility.2' : 'utility.6'}>
-          <Text size="xs" tt="uppercase" fw={600} c="base-contrast.4"></Text>
+          <Text size="xs" tt="uppercase" fw={600} c="base-contrast.4" />
           {isStaleOrIdle ? 'Idle' : 'Active'}
         </Badge>
       </div>
