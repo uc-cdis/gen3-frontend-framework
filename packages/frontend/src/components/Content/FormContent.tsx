@@ -26,8 +26,8 @@ export enum FormContentType {
   RadioGroup = 'RadioGroup', // mantine Radio.Group
   Select = 'Select', // mantine Select
   Tags = 'Tags', // mantine Tags
-  CedarUserUUID = 'CedarUserUUID', // Cedar User ID text input with validation
-  ClinicalTrialID = 'ClinicalTrialID', // ClinicalTrials.gov ID text input with validation
+  CedarUserUUID = 'CedarUserUUID', // Cedar User ID text input
+  ClinicalTrialID = 'ClinicalTrialID', // ClinicalTrials.gov ID text input
 }
 
 /**
