@@ -6,6 +6,7 @@ import {
   MdExpandMore as ExpandMoreIcon,
   MdFlip as FlipIcon,
   MdSearch as SearchIcon,
+  MdSettings as SettingsIcon,
 } from 'react-icons/md';
 import { FaUndo as UndoIcon } from 'react-icons/fa';
 import { fieldNameToLabel } from '@gen3/core';
@@ -171,10 +172,9 @@ const FacetControlsHeader = ({
               aria-label="Filter settings"
               className={header.iconStyle}
             >
-              <Icon
-                width={12}
-                height={12}
-                icon="gen3:settings"
+              <SettingsIcon
+                size="1.35em"
+                className={header.iconStyle}
                 aria-hidden="true"
               />
             </FacetIconButton>
