@@ -272,7 +272,7 @@ const unhealthyRefreshDelay = (failures: number) =>
  * @param children - Subtree that gets access to the session context
  * @param updateSessionTime - How often the inactivity check runs, and so the
  *   resolution of every inactivity decision. `0` disables activity monitoring
- * @param inactiveTimeLimit - Inactivity allowed before logout, off a workspace page
+ * @param inactiveTimeLimit - Inactivity allowed before logout, except for Workspace pages
  * @param workspaceInactivityTimeLimit - Inactivity allowed before logout on a
  *   workspace page. `0` (the default) means no limit there
  * @param logoutInactiveUsers - Whether inactive users are logged out at all
