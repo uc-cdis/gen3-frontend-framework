@@ -1,6 +1,6 @@
 import React from 'react';
 import { Center, Group, Loader, Stack, Tabs, Text } from '@mantine/core';
-import { useGetMetadataByIdQuery } from '@gen3/core';
+import { useGetMetadataByIdQuery, useGetMetadataByUrlQuery } from '@gen3/core';
 import { MetadataElement, MetadataPropertiesConfiguration } from './types';
 import MetadataPropertiesTable from './MetadataPropertiesTable';
 import { ErrorCard } from '../../../components/MessageCards';
@@ -34,8 +34,15 @@ const MetadataSchemaPanel = ({
   schemaID,
   definitionsFieldName,
   fontSize = 'sm',
+  schemaUrl = undefined
 }: MetadataPropertiesConfiguration) => {
-  const { data, isLoading, isError } = useGetMetadataByIdQuery(schemaID);
+  const { data, isLoading, isError } = (() =>  {
+    if(schemaUrl) {
+      return useGetMetadataByUrlQuery(schemaUrl);
+    } else {
+      return useGetMetadataByIdQuery(schemaID);
+    }
+  })();
 
   if (isLoading) {
     return (
