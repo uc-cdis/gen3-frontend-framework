@@ -191,7 +191,7 @@ export const useStudyRegistration = (
     } catch (err: unknown) {
       console.error('Study registration pipeline failed:', err);
       // Extract readable error string
-      const message = err instanceof Error && err?.message || String(err);
+      const message = err instanceof Error && err.message || String(err);
       setFormOutcome(FormOutcome.error);
       setFormError(message);
     } finally {
