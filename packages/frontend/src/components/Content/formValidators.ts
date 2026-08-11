@@ -1,4 +1,4 @@
-import { JSONObject } from "@gen3/core";
+import type { JSONObject } from "@gen3/core";
 import { toString } from "lodash";
 
 type Validator = (value: unknown) => string | null;
@@ -17,7 +17,7 @@ const validateCedarUUID = (
   errorText: string = 'Invalid Cedar User UUID',
 ): Validator => {
   return (value: unknown) => {
-    if (!value || String(value).trim() === '') return null;
+    if (!value || toString(value).trim() === '') return null;
     return CEDAR_UUID_REGEX.test(toString(value)) ? null : errorText;
   };
 };
@@ -26,7 +26,7 @@ const isCedarUUIDValid = (
   errorText: string = 'Valid Cedar User UUID required',
 ): Validator => {
   return (value: unknown) => {
-    if (!value || String(value).trim() === '') return errorText;
+    if (!value || toString(value).trim() === '') return errorText;
     return validateCedarUUID(errorText)(value);
   };
 };
@@ -36,7 +36,7 @@ const validateClinicalTrialID = (
   errorText: string = 'Invalid ClinicalTrials.gov ID',
 ): AsyncValidator => {
   return async (value: unknown, _, __, signal?: AbortSignal) => {
-    const ctID = String(value || '').trim();
+    const ctID = toString(value || '').trim();
     if (!ctID) return null; // Pass empty values for optional fields
     try {
       const resp = await fetch(
@@ -49,8 +49,8 @@ const validateClinicalTrialID = (
         return null; // Valid
       }
       return errorText;
-    } catch (error: any) {
-      if (error?.name === 'AbortError') return null; // Request canceled by newer blur/change event
+    } catch (error: unknown) {
+      if (error instanceof Error && error?.name === 'AbortError') return null; // Request canceled by newer blur/change event
       return 'Unable to verify ClinicalTrials.gov ID';
     }
   };
@@ -61,7 +61,7 @@ const isClinicalTrialIDValid = (
   errorText: string = 'Valid ClinicalTrials.gov ID required',
 ): AsyncValidator => {
   return async (value: unknown, values, path, signal) => {
-    if (!value || String(value).trim() === '') return errorText;
+    if (!value || toString(value).trim() === '') return errorText;
     return validateClinicalTrialID(errorText)(value, values, path, signal);
   };
 };
