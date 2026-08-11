@@ -87,14 +87,6 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
     }
   };
 
-  console.log('icon', icon);
-  console.log('icon instanceof String', icon instanceof String);
-  console.log('icon instanceof String', typeof icon);
-  console.log(
-    'withBasePath(basePath, icon as string)',
-    withBasePath(basePath, icon as string),
-  );
-
   return (
     <Stack key={title} className="rounded-sm rounded-t-md bg-base-max p-0">
       <div className="relative h-[28em]">
@@ -153,7 +145,7 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
           {(onButtonClick || href) && (
             <CardActionButton
               href={href}
-              onClick={handleClick}
+              onClick={onButtonClick ? handleClick : undefined}
               label={
                 btnText
                   ? btnText

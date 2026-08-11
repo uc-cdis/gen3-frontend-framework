@@ -1,7 +1,7 @@
 import React from 'react';
 import { Center, Group, Loader, Stack, Tabs, Text } from '@mantine/core';
 import { useGetMetadataByIdQuery, useGetMetadataByUrlQuery } from '@gen3/core';
-import { MetadataElement, MetadataPropertiesConfiguration } from './types';
+import type { MetadataElement, MetadataPropertiesConfiguration } from './types';
 import MetadataPropertiesTable from './MetadataPropertiesTable';
 import { ErrorCard } from '../../../components/MessageCards';
 
@@ -34,15 +34,23 @@ const MetadataSchemaPanel = ({
   schemaID,
   definitionsFieldName,
   fontSize = 'sm',
-  schemaUrl = undefined
+  schemaUrl = undefined,
 }: MetadataPropertiesConfiguration) => {
-  const { data, isLoading, isError } = (() =>  {
-    if(schemaUrl) {
-      return useGetMetadataByUrlQuery(schemaUrl);
-    } else {
-      return useGetMetadataByIdQuery(schemaID);
-    }
-  })();
+  const {
+    data: dataByUrl,
+    isLoading: isLoadingByUrl,
+    isError: isErrorByUrl,
+  } = useGetMetadataByUrlQuery(schemaUrl!, { skip: !schemaUrl });
+
+  const {
+    data: dataById,
+    isLoading: isLoadingById,
+    isError: isErrorById,
+  } = useGetMetadataByIdQuery(schemaID!, { skip: !!schemaUrl });
+
+  const data = schemaUrl ? dataByUrl : dataById;
+  const isLoading = schemaUrl ? isLoadingByUrl : isLoadingById;
+  const isError = schemaUrl ? isErrorByUrl : isErrorById;
 
   if (isLoading) {
     return (
