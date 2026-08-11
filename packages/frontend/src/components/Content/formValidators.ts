@@ -1,7 +1,10 @@
+import { JSONObject } from "@gen3/core";
+import { toString } from "lodash";
+
 type Validator = (value: unknown) => string | null;
 type AsyncValidator = (
   value: unknown,
-  values?: any,
+  values?: JSONObject,
   path?: string,
   signal?: AbortSignal,
 ) => Promise<string | null>;
@@ -15,7 +18,7 @@ const validateCedarUUID = (
 ): Validator => {
   return (value: unknown) => {
     if (!value || String(value).trim() === '') return null;
-    return CEDAR_UUID_REGEX.test(String(value)) ? null : errorText;
+    return CEDAR_UUID_REGEX.test(toString(value)) ? null : errorText;
   };
 };
 
