@@ -42,7 +42,6 @@ const validateClinicalTrialID = (
       );
       if (!resp.ok) return 'Unable to verify ClinicalTrials.gov ID';
       const respJson = await resp.json();
-      console.log('respJson', respJson);
       if (respJson?.protocolSection?.identificationModule?.nctId === ctID) {
         return null; // Valid
       }

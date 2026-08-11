@@ -66,6 +66,9 @@ const Form = ({
           const isvalidEmail = item.errorText || 'Invalid email';
           validate[itemKey] = isEmail(isvalidEmail);
         }
+        if (item.type === FormContentType.ClinicalTrialID) {
+          validate[itemKey] = isClinicalTrialIDValid(item.errorText);
+        }
         if (item.required) {
           switch (item.type) {
             case FormContentType.CedarUserUUID: {
