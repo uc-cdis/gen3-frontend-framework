@@ -2,7 +2,7 @@
  * Unit tests for session.tsx
  *
  * Coverage targets:
- *  - logoutSession            – credentials vs. non-credentials logout path
+ *  - logoutSession            – same-origin logout API behavior
  *  - useSession               – throws without provider, required redirect (once
  *    per transition), custom handler
  *  - useIsAuthenticated       – isAuthenticated flag and userContext passthrough
@@ -51,11 +51,6 @@ jest.mock('next/router', () => ({
       return routerState.pathname;
     },
   })),
-}));
-
-jest.mock('cookies-next', () => ({
-  getCookie: jest.fn(),
-  hasCookie: jest.fn(),
 }));
 
 jest.mock('@gen3/core', () => ({
@@ -158,14 +153,6 @@ jest.mock('../hooks', () => ({
   useManageSession: jest.fn(),
 }));
 
-// Only the full-page navigation is stubbed; isUserOnPage stays real so the page
-// matching the inactivity rules depend on is exercised, not mocked away.
-const mockRedirectTo = jest.fn((_url: string) => undefined);
-jest.mock('../utils', () => ({
-  ...jest.requireActual('../utils'),
-  redirectTo: (url: string) => mockRedirectTo(url),
-}));
-
 // ---------------------------------------------------------------------------
 // Imports (after mocks are registered)
 // ---------------------------------------------------------------------------
@@ -219,6 +206,7 @@ const setupDefaultCoreMocks = (
   coreMock.useCoreDispatch.mockReturnValue(jest.fn());
   // Default: session token is 'not present' — no expiry timers are scheduled
   global.fetch = jest.fn().mockResolvedValue({
+    ok: true,
     status: 200,
     json: jest.fn().mockResolvedValue({ status: 'not present' }),
   });
@@ -256,52 +244,27 @@ beforeEach(() => {
 
 describe('logoutSession', () => {
   const fetchMock = jest.fn();
-  const originalEnv = process.env.NODE_ENV;
-
-  beforeAll(() => {
-    Object.defineProperty(process.env, 'NODE_ENV', {
-      value: 'development',
-      writable: true,
-      configurable: true,
-    });
-    jest.resetModules(); // clear the module cache so re-require picks up new env
-  });
-
-  afterAll(() => {
-    Object.defineProperty(process.env, 'NODE_ENV', {
-      value: originalEnv,
-      writable: true,
-      configurable: true,
-    });
-  });
 
   beforeEach(() => {
     global.fetch = fetchMock;
   });
 
-  it('calls /api/auth/credentialsLogout when credentials_token cookie is present', async () => {
-    const { getCookie } = jest.requireMock('cookies-next') as {
-      getCookie: jest.Mock;
-    };
-    getCookie.mockReturnValue('my-access-token');
-    fetchMock.mockResolvedValue({ ok: true });
+  it('posts to the same-origin logout API under the configured base path', async () => {
+    fetchMock.mockResolvedValue({ ok: true, status: 200 });
 
-    // Re-import logoutSession after mocks are configured
-    const { logoutSession: logoutSessionFresh } = await import('../session');
-    await logoutSessionFresh('');
+    await logoutSession('/commons');
 
-    expect(fetchMock).toHaveBeenCalledWith('/api/auth/credentialsLogout');
+    expect(fetchMock).toHaveBeenCalledWith('/commons/api/auth/sessionLogout', {
+      method: 'POST',
+    });
   });
 
-  it('does NOT call /api/auth/credentialsLogout when credentials_token is absent', async () => {
-    const { getCookie } = jest.requireMock('cookies-next') as {
-      getCookie: jest.Mock;
-    };
-    getCookie.mockReturnValue(undefined);
+  it('rejects when the logout API fails', async () => {
+    fetchMock.mockResolvedValue({ ok: false, status: 502 });
 
-    await logoutSession('');
-
-    expect(fetchMock).not.toHaveBeenCalled();
+    await expect(logoutSession('')).rejects.toThrow(
+      'logout request failed (502)',
+    );
   });
 });
 
@@ -1173,6 +1136,224 @@ describe('SessionProvider – refresh scheduling resilience', () => {
     });
     expect(fetchMock).toHaveBeenCalledTimes(readsAfterMount + 2);
   });
+
+  it('still attempts recovery on a token that expired while the tab was hidden', async () => {
+    const getUserDetails = setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+
+    // The endpoint is down, which is what a hidden tab's late-firing timers look
+    // like: each unhealthy cycle spends another step of the backoff.
+    global.fetch = jest.fn().mockResolvedValue({
+      status: 500,
+      json: jest.fn().mockResolvedValue({ message: 'boom' }),
+    });
+
+    render(
+      <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+    await act(async () => {});
+
+    await act(async () => {
+      jest.advanceTimersByTime(5000); // burn the prompt attempt, engaging the backoff
+    });
+
+    // The tab comes back, and the token turned out to have expired meanwhile.
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    global.fetch = jest.fn().mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue({
+        status: 'expired',
+        issued: nowSeconds - 20 * 60,
+        expires: nowSeconds - 60,
+      }),
+    });
+    getUserDetails.mockClear();
+
+    await act(async () => {
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+
+    // An expired token gets its recovery attempt even though the backoff counter
+    // was already spent — sharing that counter meant nothing was armed here.
+    getUserDetails.mockClear();
+    await act(async () => {
+      jest.advanceTimersByTime(5000);
+    });
+    expect(getUserDetails).toHaveBeenCalledTimes(1);
+
+    // Still exactly one: Fence did not reissue, so polling stops.
+    getUserDetails.mockClear();
+    await act(async () => {
+      jest.advanceTimersByTime(10 * 60 * 1000);
+    });
+    expect(getUserDetails).not.toHaveBeenCalled();
+  });
+
+  it('settles the login state when the token no longer backs it', async () => {
+    const getUserDetails = setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+
+    // Healthy at mount, so the refresh is armed ~18 minutes out and nothing else
+    // is due.
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    global.fetch = jest.fn().mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue({
+        status: 'issued',
+        issued: nowSeconds,
+        expires: nowSeconds + 20 * 60,
+      }),
+    });
+
+    render(
+      <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+    await act(async () => {});
+
+    // The cookie is gone by the time the tab is foregrounded. `userStatus` is
+    // derived from a cached /user response, so without an explicit request the
+    // store keeps reporting an authenticated session against no token at all.
+    global.fetch = jest.fn().mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue({ status: 'not present' }),
+    });
+    getUserDetails.mockClear();
+
+    await act(async () => {
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+
+    // Asked for immediately, not on some later timer.
+    expect(getUserDetails).toHaveBeenCalledTimes(1);
+  });
+
+  it('refreshes anyway when the armed timer never fires', async () => {
+    const getUserDetails = setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+
+    // Reissued on every read, as Fence does when /user is hit, so a refresh that
+    // lands leaves a healthy token behind rather than one still inside the margin.
+    global.fetch = jest.fn().mockImplementation(() => {
+      const seconds = Math.floor(Date.now() / 1000);
+      return Promise.resolve({
+        status: 200,
+        json: jest.fn().mockResolvedValue({
+          status: 'issued',
+          issued: seconds,
+          expires: seconds + 20 * 60,
+        }),
+      });
+    });
+
+    // Stand in for a suspended tab: the long refresh timer is never delivered,
+    // while short timers and intervals keep working. Before the heartbeat this
+    // silently cost the user their session — nothing else was watching.
+    const realSetTimeout = global.setTimeout;
+    const setTimeoutSpy = jest
+      .spyOn(global, 'setTimeout')
+      .mockImplementation(((
+        fn: Parameters<typeof setTimeout>[0],
+        ms?: number,
+        ...rest: unknown[]
+      ) =>
+        (ms ?? 0) > 60000
+          ? (0 as unknown as ReturnType<typeof setTimeout>)
+          : realSetTimeout(fn, ms, ...rest)) as unknown as typeof setTimeout);
+
+    try {
+      render(
+        <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
+          <div />
+        </SessionProvider>,
+      );
+      await act(async () => {});
+      getUserDetails.mockClear();
+
+      // The 18 minute deadline passes with no timer to announce it
+      await act(async () => {
+        jest.advanceTimersByTime(17 * 60 * 1000);
+      });
+      expect(getUserDetails).not.toHaveBeenCalled();
+
+      // The heartbeat notices once it is past the deadline plus its grace window
+      await act(async () => {
+        jest.advanceTimersByTime(2 * 60 * 1000);
+      });
+      expect(getUserDetails).toHaveBeenCalled();
+
+      // ...and having rescheduled, it does not then refresh on every tick
+      getUserDetails.mockClear();
+      await act(async () => {
+        jest.advanceTimersByTime(60 * 1000);
+      });
+      expect(getUserDetails).not.toHaveBeenCalled();
+    } finally {
+      setTimeoutSpy.mockRestore();
+    }
+  });
+
+  it('re-derives the schedule on focus and on regaining the network', async () => {
+    setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+
+    // Healthy token, so the armed timer is ~18 minutes out and cannot itself add
+    // reads within the window this test advances.
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    const fetchMock = jest.fn().mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue({
+        status: 'issued',
+        issued: nowSeconds,
+        expires: nowSeconds + 20 * 60,
+      }),
+    });
+    global.fetch = fetchMock;
+
+    render(
+      <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+    await act(async () => {});
+
+    const readsAfterMount = fetchMock.mock.calls.length;
+
+    // A window raised above another application never changes document visibility
+    await act(async () => {
+      window.dispatchEvent(new Event('focus'));
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(readsAfterMount + 1);
+
+    // Signals that arrive together share one throttle rather than stacking reads
+    await act(async () => {
+      window.dispatchEvent(new Event('online'));
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(readsAfterMount + 1);
+
+    // Coming back from an outage that outlasted the throttle is its own catch-up
+    await act(async () => {
+      jest.advanceTimersByTime(11000);
+      window.dispatchEvent(new Event('online'));
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(readsAfterMount + 2);
+  });
 });
 
 // ===========================================================================
@@ -1314,10 +1495,6 @@ describe('SessionProvider – cross-tab activity channel', () => {
 // ===========================================================================
 
 describe('SessionProvider – inactivity warning', () => {
-  const cookiesMock = jest.requireMock('cookies-next') as {
-    hasCookie: jest.Mock;
-  };
-
   /** innerProps of the most recent openContextModal call */
   const lastInnerProps = (): ExpiringModalInnerProps => {
     const calls = mockOpenContextModal.mock.calls;
@@ -1332,9 +1509,6 @@ describe('SessionProvider – inactivity warning', () => {
       status: 'issued',
       pending: false,
     });
-    // Take the credentials-logout path so logout uses router.push instead of
-    // assigning window.location.href, which jsdom cannot do.
-    cookiesMock.hasCookie.mockReturnValue(true);
   });
 
   afterEach(() => {
@@ -1454,7 +1628,7 @@ describe('SessionProvider – inactivity warning', () => {
     expect(mockRouterPush).toHaveBeenCalled();
   });
 
-  it('opens the warning so only its own buttons can dismiss it', async () => {
+  it('opens the warning with an explicit close button', async () => {
     render(
       <SessionProvider
         updateSessionTime={1}
@@ -1470,11 +1644,11 @@ describe('SessionProvider – inactivity warning', () => {
       jest.advanceTimersByTime(2 * 60 * 1000);
     });
 
-    // An Escape or click-outside dismissal leaves the provider holding an id for a
-    // modal that is gone, which suppresses every later warning
+    // The header close button offers an intentional dismissal while Escape and
+    // click-outside remain disabled to avoid closing it accidentally.
     expect(mockOpenContextModal).toHaveBeenCalledWith(
       expect.objectContaining({
-        withCloseButton: false,
+        withCloseButton: true,
         closeOnClickOutside: false,
         closeOnEscape: false,
         onClose: expect.any(Function),
@@ -1516,7 +1690,7 @@ describe('SessionProvider – inactivity warning', () => {
     expect(mockRouterPush).not.toHaveBeenCalled();
   });
 
-  it('shows the timeout modal on a client-side logout redirect', async () => {
+  it('shows the timeout modal and preserves it across the logout navigation', async () => {
     const dispatch = jest.fn();
     coreMock.useCoreDispatch.mockReturnValue(dispatch);
 
@@ -1535,18 +1709,16 @@ describe('SessionProvider – inactivity warning', () => {
       jest.advanceTimersByTime(3 * 60 * 1000);
     });
 
-    // The credentials redirect is client-side, so the modal survives it and is
-    // what tells the user why they were logged out.
+    // The same-origin logout keeps the redirect client-side, so the modal survives.
     expect(dispatch).toHaveBeenCalledWith(
       expect.objectContaining({ type: 'SHOW_MODAL' }),
     );
     expect(mockRouterPush).toHaveBeenCalled();
   });
 
-  it('does not show the timeout modal when the document is about to be replaced', async () => {
+  it('also shows the timeout modal for a Fence-backed session', async () => {
     const dispatch = jest.fn();
     coreMock.useCoreDispatch.mockReturnValue(dispatch);
-    cookiesMock.hasCookie.mockReturnValue(false); // Fence logout
 
     render(
       <SessionProvider
@@ -1563,13 +1735,10 @@ describe('SessionProvider – inactivity warning', () => {
       jest.advanceTimersByTime(3 * 60 * 1000);
     });
 
-    // A full page load is coming, so the modal would only flash
-    expect(dispatch).not.toHaveBeenCalledWith(
+    expect(dispatch).toHaveBeenCalledWith(
       expect.objectContaining({ type: 'SHOW_MODAL' }),
     );
-    expect(mockRedirectTo).toHaveBeenCalledWith(
-      expect.stringContaining('fence.example.com/logout'),
-    );
+    expect(mockRouterPush).toHaveBeenCalledWith('https://example.com');
   });
 });
 
@@ -1578,10 +1747,6 @@ describe('SessionProvider – inactivity warning', () => {
 // ===========================================================================
 
 describe('SessionProvider – endSession', () => {
-  const cookiesMock = jest.requireMock('cookies-next') as {
-    hasCookie: jest.Mock;
-  };
-
   /** Renders the provider and hands back the context's endSession + its value */
   const renderWithCapture = async () => {
     const captured: {
@@ -1614,7 +1779,6 @@ describe('SessionProvider – endSession', () => {
       status: 'issued',
       pending: false,
     });
-    cookiesMock.hasCookie.mockReturnValue(true);
 
     const { captured } = await renderWithCapture();
 
@@ -1632,7 +1796,6 @@ describe('SessionProvider – endSession', () => {
       status: 'issued',
       pending: false,
     });
-    cookiesMock.hasCookie.mockReturnValue(true);
 
     const { captured } = await renderWithCapture();
     getUserDetails.mockClear();
@@ -1653,7 +1816,6 @@ describe('SessionProvider – endSession', () => {
       status: 'issued',
       pending: false,
     });
-    cookiesMock.hasCookie.mockReturnValue(true);
 
     const { captured } = await renderWithCapture();
 
@@ -1668,19 +1830,17 @@ describe('SessionProvider – endSession', () => {
     expect(mockRouterPush).toHaveBeenCalledTimes(2);
   });
 
-  it('settles the auth store before navigating away to Fence', async () => {
+  it('settles the auth store before navigating after logout', async () => {
     const getUserDetails = setupDefaultCoreMocks();
     hooksMock.useManageSession.mockReturnValue({
       status: 'issued',
       pending: false,
     });
-    cookiesMock.hasCookie.mockReturnValue(false); // Fence logout
-
     // How many getUserDetails calls had landed when we navigated away
     let userDetailCallsAtRedirect = -1;
-    mockRedirectTo.mockImplementation(() => {
+    mockRouterPush.mockImplementationOnce(() => {
       userDetailCallsAtRedirect = getUserDetails.mock.calls.length;
-      return undefined;
+      return Promise.resolve(true);
     });
 
     const { captured } = await renderWithCapture();
@@ -1693,9 +1853,7 @@ describe('SessionProvider – endSession', () => {
     // Until getUserDetails lands, userStatus still reads authenticated and the
     // rest of the app behaves as though nothing happened
     expect(userDetailCallsAtRedirect).toBe(1);
-    expect(mockRedirectTo).toHaveBeenCalledWith(
-      'https://fence.example.com/logout?next=https://example.com',
-    );
+    expect(mockRouterPush).toHaveBeenCalledWith('https://example.com');
   });
 
   it('keeps the context value stable across navigations', async () => {

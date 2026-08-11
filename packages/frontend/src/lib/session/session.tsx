@@ -6,15 +6,13 @@ import React, {
   useState,
 } from 'react';
 import { useRouter } from 'next/router';
-import { getCookie, hasCookie } from 'cookies-next';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { useManageSession } from './hooks';
 import { showNotification } from '@mantine/notifications';
 import type { AuthTokenData, Session, SessionProviderProps } from './types';
-import { isUserOnPage, redirectTo } from './utils';
+import { isUserOnPage } from './utils';
 import {
   type CoreState,
-  GEN3_FENCE_API,
   GEN3_REDIRECT_URL,
   Modals,
   selectUserAuthStatus,
@@ -28,15 +26,17 @@ import { ACTIVITY_CHANNEL } from './constants';
 import { Center, Loader } from '@mantine/core';
 import { useThrottledCallback } from '@mantine/hooks';
 
-import { minutesToMilliseconds, withBasePath } from '../../utils';
+import { minutesToMilliseconds } from '../../utils';
 import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
 import { modals } from '@mantine/modals';
 
 const ACTIVITY_THROTTLE_TIMEOUT = 7000;
 
-// Foregrounding a tab re-derives the refresh schedule from the real token; this
-// keeps tab-flipping from turning into one request per flip.
-const VISIBILITY_RECHECK_THROTTLE_MILLISECONDS = 10000;
+// Coming back to the page re-derives the refresh schedule from the real token.
+// Several signals mean "we are back" and can arrive together, so they share one
+// throttle: this keeps tab- and window-flipping from turning into one request per
+// flip.
+const CATCH_UP_THROTTLE_MILLISECONDS = 10000;
 
 /**
  * Events that count as user activity.
@@ -57,20 +57,13 @@ const ACTIVITY_EVENTS: ReadonlyArray<
   ['touchstart', { passive: true }],
 ];
 
-/**
- * Development-only "credentials login" leaves a client-readable cookie behind.
- * Its logout is client-side, so it keeps the SPA — and anything we render to
- * explain the logout — alive, where the Fence path replaces the document.
- */
-const isCredentialsLogin = () => hasCookie('credentials_token');
-
 export const logoutSession = async (basePath: string) => {
-  // logged in using credentials, then execute credentials logout first
-  if (process.env.NODE_ENV === 'development') {
-    const credentialsToken = getCookie('credentials_token');
-    if (credentialsToken) {
-      await fetch(`${basePath}/api/auth/credentialsLogout`);
-    }
+  const response = await fetch(`${basePath}/api/auth/sessionLogout`, {
+    method: 'POST',
+  });
+
+  if (!response.ok) {
+    throw new Error(`logout request failed (${response.status})`);
   }
 };
 
@@ -206,6 +199,31 @@ const MIN_REFRESH_DELAY_MILLISECONDS = 5000;
 const REFRESH_RETRY_BASE_MILLISECONDS = 30000;
 const REFRESH_RETRY_MAX_MILLISECONDS = minutesToMilliseconds(5);
 
+/**
+ * How often the heartbeat re-checks the refresh deadline against the wall clock.
+ *
+ * The scheduled `setTimeout` is still the primary mechanism — it is precise and
+ * costs nothing until it fires. This supervises it: a deadline can be missed
+ * because the timer was never armed (a branch that returned early, a race between
+ * a cycle and a re-derivation) or because the tab was suspended long enough for
+ * the browser to deliver it late. Each tick is cheap — it compares two numbers
+ * and does nothing unless a deadline is actually overdue — so a frequency this
+ * high costs nothing in the common case.
+ *
+ * It does not, and cannot, refresh while the page is frozen: no timer in the
+ * document runs then. What it bounds is how long an overdue refresh stays
+ * overdue once the page is running again.
+ */
+const REFRESH_HEARTBEAT_INTERVAL_MILLISECONDS = 30000;
+
+/**
+ * How far past the deadline the heartbeat waits before stepping in, so a timer
+ * that is about to fire on its own is left to do it. One interval: if the timeout
+ * is going to fire, it has already had a full tick's worth of slack.
+ */
+const REFRESH_HEARTBEAT_GRACE_MILLISECONDS =
+  REFRESH_HEARTBEAT_INTERVAL_MILLISECONDS;
+
 const MILLISECONDS_PER_MINUTE = minutesToMilliseconds(1);
 
 /**
@@ -214,7 +232,7 @@ const MILLISECONDS_PER_MINUTE = minutesToMilliseconds(1);
  *
  * `exp * 1000 - Date.now()` mixes the server's clock with the browser's, so a
  * skewed browser clock makes the result wrong in both directions. A clock that
- * is behind the server's inflates it, which would schedule the refresh past the
+ * is behind the server inflates it, which would schedule the refresh past the
  * real expiry and silently log the user out — and re-reading the token later
  * yields the same wrong answer, so nothing recovers from it. The remaining
  * lifetime can never exceed the token's full lifetime, so `iat` gives us a
@@ -254,7 +272,7 @@ const unhealthyRefreshDelay = (failures: number) =>
  * @param children - Subtree that gets access to the session context
  * @param updateSessionTime - How often the inactivity check runs, and so the
  *   resolution of every inactivity decision. `0` disables activity monitoring
- * @param inactiveTimeLimit - Inactivity allowed before logout, off a workspace page
+ * @param inactiveTimeLimit - Inactivity allowed before logout, except for Workspace pages
  * @param workspaceInactivityTimeLimit - Inactivity allowed before logout on a
  *   workspace page. `0` (the default) means no limit there
  * @param logoutInactiveUsers - Whether inactive users are logged out at all
@@ -381,6 +399,19 @@ export const SessionProvider = ({
     void Promise.resolve(getUserDetails()).catch(() => undefined);
   }, [getUserDetails]);
 
+  // `userStatus` is derived from the /user cache entry, which nothing in a hidden
+  // tab invalidates, so a token that expires while the tab is backgrounded leaves
+  // the store reporting `authenticated` indefinitely: the UI stays logged in,
+  // every request 401s, and no logout or re-login is ever prompted. This request
+  // resolves that — Fence either reissues the cookie off its own session, or
+  // answers unauthenticated and the store settles, which drops
+  // `sessionInfo.status` off 'issued' and tears the schedule down.
+  const resettleLoginState = useCallback(() => {
+    // Same shape as `updateSession`: the query owns its error state, so swallow
+    // the rejection rather than let it surface unhandled.
+    void Promise.resolve(getUserDetails()).catch(() => undefined);
+  }, [getUserDetails]);
+
   // Read the token metadata and mirror it into state for the context value.
   // `basePath` is fixed for the lifetime of the app, so depending on it does not
   // churn this callback (or the refresh schedule derived from it).
@@ -406,15 +437,31 @@ export const SessionProvider = ({
   // backoff, or flipping tabs while the endpoint is down restarts fast retries.
   const refreshFailuresRef = useRef(0);
 
+  // Whether the one recovery attempt for a definitively dead token has been
+  // spent. Deliberately *not* the backoff counter above: a tab that sat hidden
+  // long enough for the token to expire has usually burned that counter on
+  // late-firing timers, and sharing it meant the expired branch below found it
+  // non-zero and armed nothing at all — the user came back to a dead session
+  // that never tried to recover. Reset when the tab is foregrounded and on a
+  // fresh login, so returning to a stale tab always gets an attempt.
+  const expiredRecoveryAttemptedRef = useRef(false);
+
   // Set while a refresh cycle is running, so a concurrent re-derivation defers to
   // it instead of racing to arm the timer off a staler read.
   const refreshInFlightRef = useRef(false);
+
+  // When the armed refresh is due, as an absolute timestamp, or null when nothing
+  // is owed. The `setTimeout` above carries the same information as a duration,
+  // but a duration cannot be re-checked: it is only ever right if the callback
+  // runs when it was promised. This is what the heartbeat compares against.
+  const refreshDueAtRef = useRef<number | null>(null);
 
   const clearScheduledRefresh = useCallback(() => {
     if (refreshTimeoutRef.current) {
       clearTimeout(refreshTimeoutRef.current);
       refreshTimeoutRef.current = null;
     }
+    refreshDueAtRef.current = null;
   }, []);
 
   // A refresh cycle re-arms the timer that started it. The cycle is held in a ref
@@ -426,6 +473,7 @@ export const SessionProvider = ({
     (delay: number) => {
       clearScheduledRefresh();
       if (!isMountedRef.current) return;
+      refreshDueAtRef.current = Date.now() + delay;
       refreshTimeoutRef.current = setTimeout(() => {
         void performScheduledRefreshRef.current?.();
       }, delay);
@@ -434,14 +482,23 @@ export const SessionProvider = ({
   );
 
   // Decide the next timer from a token read.
+  //
+  // `loginStateIsFresh` says whether the caller has just been to /user, so the
+  // dead-token branches below can skip re-settling a login state that is already
+  // current instead of spending a second request on it.
   const scheduleFromTokenData = useCallback(
-    (session: AuthTokenData) => {
+    (session: AuthTokenData, loginStateIsFresh = false) => {
       if (!isMountedRef.current) return;
       if (sessionStatusRef.current !== 'issued') return;
 
-      // No cookie at all: there is nothing to renew, and the login state will
-      // settle to unauthenticated, which clears the schedule.
-      if (session.status === 'not present') return;
+      // No cookie at all: there is nothing to renew. The login state does not
+      // settle to unauthenticated on its own — it is derived from a cached /user
+      // response — so ask for it rather than leaving the app acting logged in
+      // against a token that is not there.
+      if (session.status === 'not present') {
+        if (!loginStateIsFresh) resettleLoginState();
+        return;
+      }
 
       // `exp` at or before `iat` is a malformed token; no retry fixes that.
       if (
@@ -453,11 +510,16 @@ export const SessionProvider = ({
 
       if (session.status === 'expired' || session.status === 'invalid') {
         // A definitive answer, but a single /user call can still re-authenticate
-        // through Fence's own session and reissue the cookie. Allow exactly one
-        // such attempt — beyond that the token is not coming back and polling
-        // would only hammer Fence.
-        if (refreshFailuresRef.current === 0) {
-          refreshFailuresRef.current = 1;
+        // through Fence's own session and reissue the cookie — and that same call
+        // is what tells the store the session is gone when it cannot. Either way
+        // the app stops believing a dead token is live.
+        if (!loginStateIsFresh) resettleLoginState();
+
+        // Backstop for when that request does not move the login state at all
+        // (an unreachable endpoint leaves it authenticated): retry the full cycle
+        // once. Anything beyond that is polling a token that is not coming back.
+        if (!expiredRecoveryAttemptedRef.current) {
+          expiredRecoveryAttemptedRef.current = true;
           armRefreshTimer(MIN_REFRESH_DELAY_MILLISECONDS);
         }
         return;
@@ -467,6 +529,7 @@ export const SessionProvider = ({
         const delay = refreshDelayFromToken(session);
         if (delay >= MIN_REFRESH_DELAY_MILLISECONDS) {
           refreshFailuresRef.current = 0;
+          expiredRecoveryAttemptedRef.current = false;
           armRefreshTimer(delay);
           return;
         }
@@ -478,11 +541,16 @@ export const SessionProvider = ({
       armRefreshTimer(unhealthyRefreshDelay(refreshFailuresRef.current));
       refreshFailuresRef.current += 1;
     },
-    [armRefreshTimer],
+    [armRefreshTimer, resettleLoginState],
   );
 
   const performScheduledRefresh = useCallback(async () => {
     if (sessionStatusRef.current !== 'issued') return;
+
+    // This cycle consumes the deadline. `scheduleFromTokenData` sets the next one,
+    // or deliberately leaves it unset for a token that is not coming back — which
+    // is also what stops the heartbeat below from retrying such a token forever.
+    refreshDueAtRef.current = null;
 
     // The flag covers scheduling as well as the read, so a re-derivation cannot
     // land between the two and arm a timer this cycle is about to replace.
@@ -496,7 +564,9 @@ export const SessionProvider = ({
       } catch (_error: unknown) {
         // Leave `session` as 'error' so we retry rather than abandon the chain.
       }
-      scheduleFromTokenData(session);
+      // This cycle opened with a /user call, so the login state is already as
+      // current as a request can make it.
+      scheduleFromTokenData(session, true);
     } finally {
       refreshInFlightRef.current = false;
     }
@@ -519,6 +589,30 @@ export const SessionProvider = ({
     // oxlint-disable-next-line react/react-compiler
   }, [scheduleFromTokenData, syncAuthTokenData]);
 
+  // Supervise the armed timer against the wall clock.
+  //
+  // A deadline held only as a `setTimeout` duration is right exactly once — if the
+  // callback runs when it was promised. It may not: a suspended tab gets its
+  // timers delivered late, and an early return elsewhere can leave no timer armed
+  // at all. Re-reading the deadline on a short interval makes a missed refresh
+  // self-correcting instead of permanent, and puts a bound on how late it can be
+  // that does not depend on how long the tab was away.
+  const heartbeatTick = useCallback(() => {
+    const dueAt = refreshDueAtRef.current;
+    if (dueAt === null) return; // nothing owed, or deliberately not rescheduled
+    if (refreshInFlightRef.current) return; // that cycle owns the next deadline
+    if (Date.now() < dueAt + REFRESH_HEARTBEAT_GRACE_MILLISECONDS) return;
+
+    void performScheduledRefreshRef.current?.();
+  }, []);
+
+  useInterval(
+    heartbeatTick,
+    sessionInfo.status === 'issued'
+      ? REFRESH_HEARTBEAT_INTERVAL_MILLISECONDS
+      : null,
+  );
+
   // Seed (and cancel) the schedule as login state changes.
   useEffect(() => {
     if (sessionInfo.status !== 'issued') {
@@ -527,6 +621,7 @@ export const SessionProvider = ({
     }
 
     refreshFailuresRef.current = 0; // a fresh login starts from a clean backoff
+    expiredRecoveryAttemptedRef.current = false;
     void rescheduleFromToken();
 
     return () => {
@@ -534,32 +629,51 @@ export const SessionProvider = ({
     };
   }, [sessionInfo.status, rescheduleFromToken, clearScheduledRefresh]);
 
-  // Catch up if the scheduled setTimeout was throttled while the tab was
-  // backgrounded (browsers can pause/delay timers in inactive tabs well
-  // beyond our refresh margin). Re-derive the schedule from the real token
-  // expiry as soon as the tab is visible again.
-  const lastVisibilityRecheckRef = useRef(0);
+  // Catch up when the page comes back to life, from any of the three directions it
+  // can: the tab is shown again, the window regains focus, or the network returns.
+  //
+  // These are not redundant. `visibilitychange` misses a window that stayed
+  // visible while another application sat on top of it — hidden from the user, and
+  // on some platforms throttled, without ever being `hidden` to the document.
+  // `online` covers an outage that outlasted the token, where nothing about the
+  // page's visibility changed at all. Whichever arrives first does the work and
+  // the shared throttle below silences the rest.
+  const lastCatchUpAtRef = useRef(0);
   useEffect(() => {
     if (typeof document === 'undefined') return;
     if (sessionInfo.status !== 'issued') return;
 
-    const handleVisibility = () => {
-      if (document.visibilityState !== 'visible') return;
-
+    const catchUp = () => {
       const now = Date.now();
-      if (
-        now - lastVisibilityRecheckRef.current <
-        VISIBILITY_RECHECK_THROTTLE_MILLISECONDS
-      )
+      if (now - lastCatchUpAtRef.current < CATCH_UP_THROTTLE_MILLISECONDS)
         return;
-      lastVisibilityRecheckRef.current = now;
+      lastCatchUpAtRef.current = now;
+
+      // Coming back is the moment a dead token is worth one more attempt: this is
+      // the case the shared backoff counter used to swallow. Bounded by the
+      // throttle above, so flipping between tabs or windows cannot turn it into a
+      // poll. The backoff counter itself is deliberately left alone — a failing
+      // endpoint must not get fast retries again just because we came back.
+      expiredRecoveryAttemptedRef.current = false;
 
       void rescheduleFromToken();
     };
 
-    document.addEventListener('visibilitychange', handleVisibility);
-    return () =>
-      document.removeEventListener('visibilitychange', handleVisibility);
+    // A visibility change also fires on the way *out*, which is not a catch-up.
+    const catchUpIfVisible = () => {
+      if (document.visibilityState !== 'visible') return;
+      catchUp();
+    };
+
+    document.addEventListener('visibilitychange', catchUpIfVisible);
+    window.addEventListener('focus', catchUp);
+    window.addEventListener('online', catchUp);
+
+    return () => {
+      document.removeEventListener('visibilitychange', catchUpIfVisible);
+      window.removeEventListener('focus', catchUp);
+      window.removeEventListener('online', catchUp);
+    };
   }, [sessionInfo.status, rescheduleFromToken]);
 
   // Read through a ref so `endSession` — and therefore the context value — does
@@ -578,39 +692,36 @@ export const SessionProvider = ({
     if (endingSessionRef.current) return;
     endingSessionRef.current = true;
 
-    const credentialsLogin = isCredentialsLogin();
+    let logoutError: unknown;
 
     try {
       await logoutSession(routerRef.current.basePath);
+    } catch (error: unknown) {
+      logoutError = error;
+    }
+
+    try {
       // Settle the store before navigating: until this lands, `userStatus` still
       // reads authenticated and the rest of the app acts as if nothing happened.
       await getUserDetails();
     } catch (error: unknown) {
-      // Only worth surfacing on the credentials path — the Fence path replaces
-      // the document, so a notification there is never seen.
-      if (credentialsLogin) {
-        showNotification({
-          title: 'Logout Error',
-          message: `error logging out ${error instanceof Error ? error.message : String(error)}`,
-        });
-      }
+      logoutError ??= error;
     }
 
-    if (credentialsLogin) {
-      // Client-side redirect: the provider stays mounted, so release the guard
-      // once it lands or a later deliberate logout would be a no-op.
-      try {
-        await routerRef.current.push(GEN3_REDIRECT_URL);
-      } finally {
-        endingSessionRef.current = false;
-      }
-      return;
+    if (logoutError) {
+      showNotification({
+        title: 'Logout Error',
+        message: `error logging out ${logoutError instanceof Error ? logoutError.message : 'unknown error'}`,
+      });
     }
 
-    // need a fence redirect
-    redirectTo(
-      `${GEN3_FENCE_API}/logout?next=${withBasePath(routerRef.current.basePath, GEN3_REDIRECT_URL)}`,
-    );
+    // Logout is performed through our same-origin API, so this can remain a
+    // client-side navigation. The provider (and an expiry modal) survives it.
+    try {
+      await routerRef.current.push(GEN3_REDIRECT_URL);
+    } finally {
+      endingSessionRef.current = false;
+    }
   }, [getUserDetails]);
 
   /**
@@ -750,12 +861,7 @@ export const SessionProvider = ({
 
       if (timeSinceLastActivity >= activeLimit) {
         closeExpiryWarning();
-        // Only worth showing where the redirect is client-side: there the modal
-        // survives the navigation and is what tells the user why they were logged
-        // out. On the Fence path the document is replaced, so it would only flash.
-        if (isCredentialsLogin()) {
-          coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
-        }
+        coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
         void endSession();
         return;
       }
@@ -771,11 +877,9 @@ export const SessionProvider = ({
           expiryWarningIdRef.current = modals.openContextModal({
             modal: 'sessionExpiringModal',
             title: 'Session Expiring',
-            // Dismissable only through its own Renew / Log out buttons, matching
-            // SessionExpiredModal. A stray Escape or click-outside used to close
-            // the modal while leaving our id set, which suppressed every later
-            // warning and logged the user out with no notice at all.
-            withCloseButton: false,
+            // Offer an explicit close control, but prevent accidental dismissal
+            // through Escape or a click outside the modal.
+            withCloseButton: true,
             closeOnClickOutside: false,
             closeOnEscape: false,
             // Belt and braces for a close we did not initiate (modals.closeAll
