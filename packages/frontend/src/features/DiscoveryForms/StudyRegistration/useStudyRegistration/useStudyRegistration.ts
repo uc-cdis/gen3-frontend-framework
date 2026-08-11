@@ -8,7 +8,7 @@ import {
   JSONObject,
   useUpdateStudyInMDSMutation,
 } from '@gen3/core';
-import { FormOutcome } from '../types';
+import { FormOutcome, StudyRegistrationServiceResponse } from '../types';
 import {
   FormOnSubmitReturnProps,
   FormProps,
@@ -53,7 +53,7 @@ export const useStudyRegistration = (
 
         if (!response.ok) {
           setFormOutcome(FormOutcome.error);
-          setFormError('HTTP error! status: ${response.status}');
+          setFormError(`HTTP error! status: ${response.status}`);
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const json = await response.json();
@@ -71,12 +71,12 @@ export const useStudyRegistration = (
         setIsLoading(false);
       }
     };
-    fetchData();
+    void fetchData();
   }, []);
 
   // Get values from router query
   useEffect(() => {
-    if (router.isReady && router.query) {
+    if (router.isReady) {
       const { query } = router;
       if (query.studyUID) setStudyUID(query.studyUID as string);
     }
@@ -93,7 +93,7 @@ export const useStudyRegistration = (
   };
 
   const formBody = useMemo(() => {
-    if (!studies.length || !userInfo) {
+    if (!studies.length) {
       return config.form;
     }
     // Filter based on active user permissions
@@ -162,9 +162,9 @@ export const useStudyRegistration = (
         cedarUserUUID,
         preprocessedMetadata,
         createCedarQuery,
-      );
+      ) as StudyRegistrationServiceResponse;
       // Check the returned result object
-      if (cedarResponse?.error) {
+      if (cedarResponse.error) {
         setFormOutcome(FormOutcome.error);
         setFormError(cedarResponse.error);
         setIsLoading(false);
@@ -177,8 +177,8 @@ export const useStudyRegistration = (
         studyID,
         cedarResponse,
         updateMdsQuery,
-      );
-      if (mdsResponse?.error) {
+      ) as StudyRegistrationServiceResponse;
+      if (mdsResponse.error) {
         setFormOutcome(FormOutcome.error);
         setFormError(mdsResponse.error);
         setIsLoading(false);
@@ -188,10 +188,10 @@ export const useStudyRegistration = (
         setIsLoading(false);
         setFormOutcome(FormOutcome.success);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Study registration pipeline failed:', err);
       // Extract readable error string
-      const message = err?.message || String(err);
+      const message = err instanceof Error && err?.message || String(err);
       setFormOutcome(FormOutcome.error);
       setFormError(message);
     } finally {

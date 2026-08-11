@@ -23,3 +23,8 @@ export enum FormOutcome {
   error = 'error',
   userNotLoggedIn = 'userNotLoggedIn',
 }
+
+export interface StudyRegistrationServiceResponse extends Record<string, unknown> {
+  error?: string;
+  [key: string]: unknown;
+}
