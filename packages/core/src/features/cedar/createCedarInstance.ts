@@ -1,11 +1,12 @@
-import { CreateCedarMutationTriggerType, CreateCedarPayload } from './cedarApi';
+import type { CreateCedarMutationTriggerType, CreateCedarPayload } from './cedarApi';
+import type { MetadataToRegister } from './types';
 
 export const createCEDARInstance = async (
   cedarWrapperURL: string,
   cedarUserUUID: string,
-  metadataToRegister: any,
+  metadataToRegister: MetadataToRegister,
   createCedarQuery: CreateCedarMutationTriggerType,
-): Promise<any> => {
+): Promise<unknown> => {
   const STUDY_DATA_FIELD = 'gen3_discovery';
 
   // Deep clone to prevent mutating original metadata
@@ -45,10 +46,10 @@ export const createCEDARInstance = async (
     updatedMetadataToRegister[
       STUDY_DATA_FIELD
     ].study_metadata.metadata_location.cedar_study_level_metadata_template_instance_ID =
-      data?.cedar_instance_id || '';
+      data.cedar_instance_id || '';
 
     return updatedMetadataToRegister;
-  } catch (err: any) {
+  } catch (err: unknown) {
     const errorMsg = JSON.stringify(err);
     return {
       error: `Request to create CEDAR instance failed: ${errorMsg}`,
