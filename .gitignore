@@ -45,3 +45,5 @@ packages/sampleCommons/config/bdc
 *~
 
 # documentation local notes
+# Skip claude for now
+/CLAUDE.md
