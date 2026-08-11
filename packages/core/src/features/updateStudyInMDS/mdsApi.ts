@@ -3,7 +3,7 @@ import { gen3Api } from '../gen3';
 export interface UpdateMdsStudyArgs {
   mdsURL: string;
   metadataID: string;
-  metadataToUpdate: Record<string, any>;
+  metadataToUpdate: Record<string, unknown>;
 }
 
 export const mdsApi = gen3Api.injectEndpoints({
