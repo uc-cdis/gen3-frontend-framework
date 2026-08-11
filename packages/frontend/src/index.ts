@@ -28,6 +28,8 @@ import {
   UploadJSONButton,
 } from './components/Buttons';
 
+import PanelErrorBoundary from './components/PanelErrorBoundary';
+
 import CountsValue from './components/counts/CountsValue';
 
 import SegmentedControl from './components/SegmentedControl';
@@ -138,7 +140,6 @@ import {
 import type { AuthorizedRoutesConfig, RouteConfig } from './lib/authz/type';
 import { DefaultAuthorizedRoutesConfig } from './lib/authz/type';
 import OverflowTooltippedLabel from './components/OverflowTooltippedLabel';
-import PanelErrorBoundary from './components/PanelErrorBoundary';
 import NavigationRail, {
   NavigationRailItem,
 } from './components/NavigationRail';

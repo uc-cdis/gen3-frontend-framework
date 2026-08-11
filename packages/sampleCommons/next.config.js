@@ -209,4 +209,4 @@ const nextConfig = {
 };
 
 // IMPORTANT: actually export your config (wrapped by plugins)
-module.exports = withMDX(nextConfig);
+module.exports = withMDX(withJupyterWorkspaces(nextConfig));
