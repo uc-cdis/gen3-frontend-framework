@@ -1,7 +1,7 @@
 import React from 'react';
 import { Center, Group, Loader, Stack, Tabs, Text } from '@mantine/core';
 import { useGetMetadataByIdQuery, useGetMetadataByUrlQuery } from '@gen3/core';
-import { MetadataElement, MetadataPropertiesConfiguration } from './types';
+import type { MetadataElement, MetadataPropertiesConfiguration } from './types';
 import MetadataPropertiesTable from './MetadataPropertiesTable';
 import { ErrorCard } from '../../../components/MessageCards';
 
