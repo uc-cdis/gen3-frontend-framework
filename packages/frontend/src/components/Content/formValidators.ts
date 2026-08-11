@@ -50,7 +50,7 @@ const validateClinicalTrialID = (
       }
       return errorText;
     } catch (error: unknown) {
-      if (error instanceof Error && error?.name === 'AbortError') return null; // Request canceled by newer blur/change event
+      if (error instanceof Error && error.name === 'AbortError') return null; // Request canceled by newer blur/change event
       return 'Unable to verify ClinicalTrials.gov ID';
     }
   };
