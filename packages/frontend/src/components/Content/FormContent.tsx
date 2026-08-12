@@ -1,5 +1,5 @@
 import React from 'react';
-
+import type { UseFormReturnType } from '@mantine/form';
 import TextContent, { TextContentProps, ContentType } from './TextContent';
 import {
   Checkbox,
@@ -11,7 +11,6 @@ import {
   Textarea,
   Tooltip,
 } from '@mantine/core';
-import { UseFormReturnType } from '@mantine/form';
 
 /**
  * Enum representing various content types for form-based data.
@@ -48,7 +47,7 @@ export interface FormContentProps extends Omit<
   readonly required?: boolean; // optional is requiered adds star to indicate requiered feild
   readonly tooltip?: string; // optional tooltip wrapper
   readonly keyString: string; // form key, when form is submitted key assigend to the value
-  readonly form: UseFormReturnType<any, (values: any) => any>; // @mantine/form form object
+  readonly form: UseFormReturnType<any>; // @mantine/form form object
 }
 
 /**

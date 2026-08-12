@@ -1,8 +1,9 @@
 import React from 'react';
-
-import FormContent, { FormContentProps, FormContentType } from './FormContent';
+import type { FormContentProps } from './FormContent';
+import FormContent, { FormContentType } from './FormContent';
 import { Button, Text } from '@mantine/core';
-import { useForm, FormValidateInput, isEmail, isNotEmpty } from '@mantine/form';
+import type { FormValidateInput } from '@mantine/form';
+import { useForm, isEmail, isNotEmpty } from '@mantine/form';
 import { isCedarUUIDValid, isClinicalTrialIDValid } from './formValidators';
 
 interface FormPropsBody extends Omit<FormContentProps, 'keyString' | 'form'> {
@@ -23,7 +24,9 @@ export interface FormProps {
   readonly submitButtonText?: string; // submit Button Text defalts to Submit
   readonly showResetButton?: boolean; // Determines if the reset button should be visible
   readonly body: FormPropsBody[]; // array of FormContent
-  readonly onSubmit: (values: FormOnSubmitReturnProps) => void | Promise<any>; // function to trigger on form submit
+  readonly onSubmit: (
+    values: FormOnSubmitReturnProps,
+  ) => void | Promise<unknown>; // function to trigger on form submit
   readonly errorMessage?: string; // error messaage to display above submit button
 }
 
@@ -46,8 +49,8 @@ const Form = ({
   onSubmit,
   errorMessage,
 }: FormProps) => {
-  const initialValues: { [key: string]: string | boolean } = {};
-  const validate: FormValidateInput<any> = {};
+  const initialValues: FormOnSubmitReturnProps = {};
+  const validate: FormValidateInput<FormOnSubmitReturnProps> = {};
 
   const bodyWithKey: (FormPropsBody & { keyString: string })[] = body.map(
     (item, index) => {
@@ -101,7 +104,7 @@ const Form = ({
     },
   );
 
-  const form = useForm({
+  const form = useForm<FormOnSubmitReturnProps>({
     mode: 'uncontrolled',
     validateInputOnBlur: true,
     initialValues,
@@ -110,7 +113,7 @@ const Form = ({
 
   return (
     <form onSubmit={form.onSubmit(onSubmit)} className={className}>
-      {bodyWithKey?.map((content, index) => (
+      {bodyWithKey.map((content, index) => (
         <FormContent {...content} form={form} key={index} />
       ))}
       {errorMessage && <Text c="red">{errorMessage}</Text>}
