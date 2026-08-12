@@ -2,19 +2,13 @@ import React, { useMemo } from 'react';
 import { Button, CopyButton } from '@mantine/core';
 import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
 import { FiLogIn as LoginIcon } from 'react-icons/fi';
-import {
-  AuthzMapping,
-  CoreState,
-  selectUserDetails,
-  useCoreSelector,
-  UserProfile,
-} from '@gen3/core';
+import { selectUserDetails, useCoreSelector } from '@gen3/core';
 import { useDiscoveryContext } from '../../Discovery/DiscoveryProvider';
 import { useRouter } from 'next/router';
 import { useStudyContext } from '../StudyProvider';
 import { toString } from 'lodash';
 import { userCanRegisterStudy } from '../../DiscoveryForms/StudyRegistration/userCanRegisterStudy';
-
+import type { CoreState, UserProfile } from '@gen3/core';
 interface StudyDetailsHeaderButtonsProps {
   onClose: () => void;
   permalink: string;
@@ -30,13 +24,13 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   const requiresLogin = !userInfo.active;
 
   const { discoveryConfig: config } = useDiscoveryContext();
-  const index = config?.minimalFieldMapping?.uid ?? 'unknown';
-  const { studyDetails, setStudyDetails } = useStudyContext();
+  const index = config.minimalFieldMapping.uid;
+  const { studyDetails } = useStudyContext();
   const studyUID = toString(studyDetails[index]);
-  const studyName = studyDetails?.study_metadata?.minimal_info?.study_name;
+  const studyName = studyDetails.study_metadata?.minimal_info?.study_name;
   const studyRegistrationAuthZ = studyDetails.registration_authz;
-  const studyProjectNumber = studyDetails?.project_number;
-  const showSubmitButton = config.detailView?.showSubmitButton;
+  const studyProjectNumber = studyDetails.project_number;
+  const showSubmitButton = config.detailView.showSubmitButton;
   const router = useRouter();
   const isStudyRegisterable = userCanRegisterStudy(
     userInfo,
@@ -45,9 +39,9 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
 
   const handleRegisterButtonClick = () => {
     if (requiresLogin) {
-      router.push('/Login');
+      void router.push('/Login');
     } else if (isStudyRegisterable) {
-      router.push(
+      void router.push(
         {
           pathname: '/study-reg',
           query: {
@@ -83,7 +77,7 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
     } else {
       return `Request Access to Register this Study`;
     }
-  }, [requiresLogin, studyUID]);
+  }, [requiresLogin, isStudyRegisterable]);
 
   return (
     <>
