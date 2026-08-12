@@ -456,8 +456,14 @@ export const SessionProvider = ({
   // runs when it was promised. This is what the heartbeat compares against.
   const refreshDueAtRef = useRef<number | null>(null);
 
+  // Debug-only: when the last refresh cycle actually completed. Not used by
+  // any scheduling logic — purely for the console logging below.
+  const lastRefreshedAtRef = useRef<number | null>(null);
+
   const clearScheduledRefresh = useCallback(() => {
     if (refreshTimeoutRef.current) {
+      // eslint-disable-next-line no-console
+      console.log('[session-refresh] clearing scheduled refresh timer');
       clearTimeout(refreshTimeoutRef.current);
       refreshTimeoutRef.current = null;
     }
@@ -473,7 +479,12 @@ export const SessionProvider = ({
     (delay: number) => {
       clearScheduledRefresh();
       if (!isMountedRef.current) return;
-      refreshDueAtRef.current = Date.now() + delay;
+      const dueAt = Date.now() + delay;
+      refreshDueAtRef.current = dueAt;
+      // eslint-disable-next-line no-console
+      console.log(
+        `[session-refresh] armed: next refresh in ${(delay / 1000).toFixed(1)}s, due at ${new Date(dueAt).toISOString()}`,
+      );
       refreshTimeoutRef.current = setTimeout(() => {
         void performScheduledRefreshRef.current?.();
       }, delay);
@@ -488,6 +499,22 @@ export const SessionProvider = ({
   // current instead of spending a second request on it.
   const scheduleFromTokenData = useCallback(
     (session: AuthTokenData, loginStateIsFresh = false) => {
+      // eslint-disable-next-line no-console
+      console.log('[session-refresh] scheduleFromTokenData', {
+        status: session.status,
+        issued: session.issued
+          ? new Date(session.issued * 1000).toISOString()
+          : undefined,
+        expires: session.expires
+          ? new Date(session.expires * 1000).toISOString()
+          : undefined,
+        remainingSeconds: session.expires
+          ? Math.round(session.expires - Date.now() / 1000)
+          : undefined,
+        loginStateIsFresh,
+        failures: refreshFailuresRef.current,
+      });
+
       if (!isMountedRef.current) return;
       if (sessionStatusRef.current !== 'issued') return;
 
@@ -545,7 +572,24 @@ export const SessionProvider = ({
   );
 
   const performScheduledRefresh = useCallback(async () => {
-    if (sessionStatusRef.current !== 'issued') return;
+    // eslint-disable-next-line no-console
+    console.log('[session-refresh] performScheduledRefresh: firing', {
+      sessionStatus: sessionStatusRef.current,
+      lastRefreshedAt: lastRefreshedAtRef.current
+        ? new Date(lastRefreshedAtRef.current).toISOString()
+        : null,
+      msSinceLastRefresh: lastRefreshedAtRef.current
+        ? Date.now() - lastRefreshedAtRef.current
+        : null,
+    });
+
+    if (sessionStatusRef.current !== 'issued') {
+      // eslint-disable-next-line no-console
+      console.log(
+        '[session-refresh] performScheduledRefresh: skipped, session not issued',
+      );
+      return;
+    }
 
     // This cycle consumes the deadline. `scheduleFromTokenData` sets the next one,
     // or deliberately leaves it unset for a token that is not coming back — which
@@ -560,9 +604,20 @@ export const SessionProvider = ({
       try {
         await getUserDetails();
         session = await syncAuthTokenData();
+        lastRefreshedAtRef.current = Date.now();
+        // eslint-disable-next-line no-console
+        console.log(
+          '[session-refresh] performScheduledRefresh: /user call completed',
+          { status: session.status },
+        );
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (_error: unknown) {
+      } catch (error: unknown) {
         // Leave `session` as 'error' so we retry rather than abandon the chain.
+        // eslint-disable-next-line no-console
+        console.log(
+          '[session-refresh] performScheduledRefresh: /user call failed',
+          error,
+        );
       }
       // This cycle opened with a /user call, so the login state is already as
       // current as a request can make it.
@@ -599,10 +654,25 @@ export const SessionProvider = ({
   // that does not depend on how long the tab was away.
   const heartbeatTick = useCallback(() => {
     const dueAt = refreshDueAtRef.current;
+    const now = Date.now();
+    // eslint-disable-next-line no-console
+    console.log('[session-refresh] heartbeat', {
+      dueAt: dueAt ? new Date(dueAt).toISOString() : null,
+      remainingSeconds: dueAt ? Math.round((dueAt - now) / 1000) : null,
+      refreshInFlight: refreshInFlightRef.current,
+      lastRefreshedAt: lastRefreshedAtRef.current
+        ? new Date(lastRefreshedAtRef.current).toISOString()
+        : null,
+    });
+
     if (dueAt === null) return; // nothing owed, or deliberately not rescheduled
     if (refreshInFlightRef.current) return; // that cycle owns the next deadline
-    if (Date.now() < dueAt + REFRESH_HEARTBEAT_GRACE_MILLISECONDS) return;
+    if (now < dueAt + REFRESH_HEARTBEAT_GRACE_MILLISECONDS) return;
 
+    // eslint-disable-next-line no-console
+    console.log(
+      '[session-refresh] heartbeat: deadline overdue, forcing refresh',
+    );
     void performScheduledRefreshRef.current?.();
   }, []);
 
