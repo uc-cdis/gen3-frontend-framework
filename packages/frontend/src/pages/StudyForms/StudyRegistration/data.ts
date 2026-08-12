@@ -4,13 +4,14 @@ import ContentSource from '../../../lib/content';
 import { getNavPageLayoutPropsFromConfig } from '../../../lib/common/staticProps';
 
 import { GEN3_COMMONS_NAME } from '@gen3/core';
+import { StudyRegistrationFormConfig } from './types';
 
 export const RequestAccessFormPageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async () => {
   try {
     //TODO: TYPE THIS ANY
-    const configStudyRegistrationForm: any =
+    const configStudyRegistrationForm: StudyRegistrationFormConfig =
       await ContentSource.getContentDatabase().get(
         `${GEN3_COMMONS_NAME}/studyRegistrationForm.json`,
       );
@@ -18,9 +19,7 @@ export const RequestAccessFormPageGetServerSideProps: GetServerSideProps<
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
-        ...{
-          configStudyRegistrationForm: configStudyRegistrationForm,
-        },
+        configStudyRegistrationForm,
       },
     };
   } catch (err) {
