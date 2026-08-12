@@ -1,8 +1,9 @@
 // FormContentViews.stories.tsx
 import React from 'react';
-import type { Meta } from '@storybook/nextjs';
 import { FormContentViews } from './FormContentViews';
 import { FormOutcome } from './types';
+import type { FormPropsBody } from '../../../components/Content/Form';
+import type { Meta } from '@storybook/nextjs';
 
 const mockFormBody = [
   {
@@ -319,12 +320,12 @@ const mockConfig = {
   },
 };
 
-const meta: any = {
+const meta: unknown = {
   title: 'DiscoveryForms/StudyRegistration',
   component: FormContentViews,
   args: {
     studyUID: 'STUDY-123',
-    formBody: mockFormBody as any,
+    formBody: mockFormBody as FormPropsBody[],
     config: mockConfig,
     onSubmit: async (values) => alert(`Submitted ${JSON.stringify(values)}`),
     isLoading: false,
