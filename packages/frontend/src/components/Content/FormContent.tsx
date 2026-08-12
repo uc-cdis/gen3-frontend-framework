@@ -47,7 +47,10 @@ export interface FormContentProps extends Omit<
   readonly required?: boolean; // optional is requiered adds star to indicate requiered feild
   readonly tooltip?: string; // optional tooltip wrapper
   readonly keyString: string; // form key, when form is submitted key assigend to the value
-  readonly form: UseFormReturnType<any, (values: any) => any>; // @mantine/form form object
+  readonly form: UseFormReturnType<
+    Record<string, unknown>,
+    (values: Record<string, unknown>) => Record<string, unknown>
+  >; // @mantine/form form object
 }
 
 /**

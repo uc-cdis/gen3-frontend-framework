@@ -116,7 +116,12 @@ const Form = ({
       {bodyWithKey.map((content, index) => (
         <FormContent
           {...content}
-          form={form as unknown as UseFormReturnType<any, (values: any) => any>}
+          form={
+            form as unknown as UseFormReturnType<
+              Record<string, unknown>,
+              (values: Record<string, unknown>) => Record<string, unknown>
+            >
+          }
           key={index}
         />
       ))}
