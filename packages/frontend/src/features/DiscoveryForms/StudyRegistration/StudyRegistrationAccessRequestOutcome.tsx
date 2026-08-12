@@ -1,9 +1,8 @@
 import { Button } from '@mantine/core';
 import React from 'react';
-import TextContent, {
-  TextContentProps,
-} from '../../../components/Content/TextContent';
-import { studyRegistrationAccessRequestFormOutcomeProps } from './types';
+import TextContent from '../../../components/Content/TextContent';
+import type { TextContentProps } from '../../../components/Content/TextContent';
+import type { studyRegistrationAccessRequestFormOutcomeProps } from './types';
 
 const StudyRegistrationAccessRequestOutcome = ({
   outcomeConfig,

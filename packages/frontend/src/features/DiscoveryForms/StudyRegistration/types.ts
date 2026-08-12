@@ -1,8 +1,6 @@
-import { type NavPageLayoutProps } from '../../Navigation';
-import { TextContentProps } from '../../../components/Content/TextContent';
-import { Gen3AppConfigData } from '../../../lib/content/types';
-import { WorkspaceConfig } from '../../Workspace';
-import { ButtonVariant } from '@mantine/core';
+import type { TextContentProps } from '../../../components/Content/TextContent';
+import type { Gen3AppConfigData } from '../../../lib/content/types';
+import type { ButtonVariant } from '@mantine/core';
 
 export interface ConfigStudyRegistrationAccessRequestFormProps extends Gen3AppConfigData {
   content?: ReadonlyArray<TextContentProps>;
@@ -24,7 +22,10 @@ export enum FormOutcome {
   userNotLoggedIn = 'userNotLoggedIn',
 }
 
-export interface StudyRegistrationServiceResponse extends Record<string, unknown> {
+export interface StudyRegistrationServiceResponse extends Record<
+  string,
+  unknown
+> {
   error?: string;
   [key: string]: unknown;
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import { Box } from '@mantine/core';
 import { useStudyRegistration } from './useStudyRegistration/useStudyRegistration';
 import { FormContentViews } from './FormContentViews';
-import { StudyRegistrationFormConfig } from '../../../pages/StudyForms/StudyRegistration/types';
+import type { StudyRegistrationFormConfig } from '../../../pages/StudyForms/StudyRegistration/types';
 
 interface StudyRegistrationAccessRequestFormProps {
   configStudyRegistrationForm: StudyRegistrationFormConfig;
