@@ -1,15 +1,15 @@
 import React from 'react';
-import {
-  FormOutcome,
-  studyRegistrationAccessRequestFormOutcomeProps,
-} from './types';
-import Form, {
+
+import Form from '../../../components/Content/Form';
+import StudyRegistrationAccessRequestOutcome from './StudyRegistrationAccessRequestOutcome';
+import { Center, Loader } from '@mantine/core';
+import { FormOutcome } from './types';
+import type {
   FormOnSubmitReturnProps,
   FormProps,
 } from '../../../components/Content/Form';
-import StudyRegistrationAccessRequestOutcome from './StudyRegistrationAccessRequestOutcome';
-import { Center, Loader } from '@mantine/core';
-import { StudyRegistrationFormConfig } from '../../../pages/StudyForms/StudyRegistration/types';
+import type { StudyRegistrationFormConfig } from '../../../pages/StudyForms/StudyRegistration/types';
+import type { studyRegistrationAccessRequestFormOutcomeProps } from './types';
 
 interface FormContentViewsProps {
   formOutcome: FormOutcome;
