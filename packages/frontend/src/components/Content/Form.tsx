@@ -2,7 +2,7 @@ import React from 'react';
 import type { FormContentProps } from './FormContent';
 import FormContent, { FormContentType } from './FormContent';
 import { Button, Text } from '@mantine/core';
-import type { FormValidateInput } from '@mantine/form';
+import type { FormValidateInput, UseFormReturnType } from '@mantine/form';
 import { useForm, isEmail, isNotEmpty } from '@mantine/form';
 import { isCedarUUIDValid, isClinicalTrialIDValid } from './formValidators';
 
@@ -114,7 +114,11 @@ const Form = ({
   return (
     <form onSubmit={form.onSubmit(onSubmit)} className={className}>
       {bodyWithKey.map((content, index) => (
-        <FormContent {...content} form={form} key={index} />
+        <FormContent
+          {...content}
+          form={form as unknown as UseFormReturnType<any, (values: any) => any>}
+          key={index}
+        />
       ))}
       {errorMessage && <Text c="red">{errorMessage}</Text>}
       <Button
