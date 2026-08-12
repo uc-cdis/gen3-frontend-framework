@@ -20,6 +20,7 @@
     "lint-fix": "oxlint . --fix",
     "analyze": "lerna run analyze --scope=@gen3/samplecommons",
     "build": "lerna run build",
+    "build:app:turbopack": "lerna run build:turbopack --scope=@gen3/samplecommons",
     "build:docker": "docker build -t gen3:fef .",
     "build:pkg": "lerna run build --include-dependencies --stream --ignore=@gen3/samplecommons",
     "build:tools": "lerna run build --scope=@gen3/toolsff --stream",
