@@ -1,10 +1,10 @@
-import { UserProfile, AuthzMapping } from '@gen3/core';
+import type { UserProfile, AuthzMapping } from '@gen3/core';
 
 export type ActiveUser = Partial<UserProfile> & { active: boolean };
 
 export const userCanRegisterStudy = (
-  userInfo: ActiveUser,
-  studyRegistrationAuthZ: any,
+  userInfo: ActiveUser | undefined,
+  studyRegistrationAuthZ: string | undefined,
 ) => {
   const actions =
     userInfo?.authz && studyRegistrationAuthZ
@@ -12,12 +12,11 @@ export const userCanRegisterStudy = (
       : undefined;
   const method = 'access';
   const service = 'study_registration';
-  return (
-    actions !== undefined &&
-    actions.some(
-      (x) =>
-        (x.service === service || x.service === '*') &&
-        (x.method === method || x.method === '*'),
-    )
-  );
+ return (
+  actions?.some(
+    (x) =>
+      (x.service === service || x.service === '*') &&
+      (x.method === method || x.method === '*'),
+  ) ?? false
+);
 };

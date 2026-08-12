@@ -1,10 +1,10 @@
-import { GetServerSideProps } from 'next';
-import { NavPageLayoutProps } from '../../../features/Navigation';
+import type { GetServerSideProps } from 'next';
+import type { NavPageLayoutProps } from '../../../features/Navigation';
 import ContentSource from '../../../lib/content';
 import { getNavPageLayoutPropsFromConfig } from '../../../lib/common/staticProps';
 
 import { GEN3_COMMONS_NAME } from '@gen3/core';
-import { StudyRegistrationFormConfig } from './types';
+import type { StudyRegistrationFormConfig } from './types';
 
 export const RequestAccessFormPageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
