@@ -1,4 +1,6 @@
-const LIMIT = 2000; // required or else mds defaults to returning 10 records
+import { toString } from 'lodash';
+import type { StudyRegistrationFormConfig } from '../../../../pages/StudyForms/StudyRegistration/types';
+
 const STUDY_DATA_FIELD = 'gen3_discovery';
 const TAG_FIELD = 'tags';
 
@@ -10,7 +12,7 @@ interface valuesToUpdate {
 }
 
 export const preprocessStudyRegistrationMetadata = async (
-  config: any,
+  config: StudyRegistrationFormConfig,
   username: string,
   metadataID: string,
   updatedValues: valuesToUpdate,
@@ -26,9 +28,9 @@ export const preprocessStudyRegistrationMetadata = async (
     }
     const studyMetadata = await queryRes.json();
     const studyRegistrationValidationField =
-      config?.studyRegistrationValidationField;
+      config.studyRegistrationValidationField as string;
     const studyRegistrationTrackingField =
-      config?.studyRegistrationTrackingField;
+      config.studyRegistrationTrackingField as string;
 
     const metadataToUpdate = { ...studyMetadata };
     metadataToUpdate._guid_type = GUIDType;
@@ -55,8 +57,13 @@ export const preprocessStudyRegistrationMetadata = async (
         .data_repositories.length === 0
     ) {
       // add all repository_study_ids as separate objects
-      let tempStudyIDObj: any = [];
-      if (updatedValues.repository_study_ids?.length > 0) {
+      let tempStudyIDObj: {
+        repository_name: string;
+        repository_study_link?: string;
+        repository_study_ID: string;
+        repository_persistent_ID?: string;
+      }[] = [];
+      if (updatedValues.repository_study_ids.length > 0) {
         tempStudyIDObj = (updatedValues.repository_study_ids as string[]).map(
           (studyId) => ({
             repository_name: updatedValues.repository,
@@ -102,9 +109,8 @@ export const preprocessStudyRegistrationMetadata = async (
     if (updatedValues.clinical_trials_id) {
       metadataToUpdate.clinicaltrials_gov = updatedValues.clinicaltrials_gov;
     }
-    console.log('metadataToUpdate', metadataToUpdate);
     return metadataToUpdate;
-  } catch (err) {
-    throw new Error(`Request for query MDS failed: ${err}`);
+  } catch (err: unknown) {
+    throw new Error(`Request for query MDS failed: ${toString(err)}`);
   }
 };
