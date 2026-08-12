@@ -98,7 +98,7 @@ export const useStudyRegistration = (
     }
     // Filter based on active user permissions
     const registerableStudies = studies.filter((study) =>
-      userCanRegisterStudy(userInfo as ActiveUser, study.registration_authz),
+      userCanRegisterStudy(userInfo as ActiveUser, study.registration_authz as string),
     );
     // Set pre-selected study as the first item in array
     const organizedRegistrableStudies = moveStudyToFront(
