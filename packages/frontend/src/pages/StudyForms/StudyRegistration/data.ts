@@ -10,7 +10,6 @@ export const RequestAccessFormPageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async () => {
   try {
-    //TODO: TYPE THIS ANY
     const configStudyRegistrationForm: StudyRegistrationFormConfig =
       await ContentSource.getContentDatabase().get(
         `${GEN3_COMMONS_NAME}/studyRegistrationForm.json`,

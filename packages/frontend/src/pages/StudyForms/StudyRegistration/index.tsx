@@ -1,10 +1,8 @@
 import React from 'react';
-import {
-  NavPageLayout,
-  NavPageLayoutProps,
-} from '../../../features/Navigation';
+import { NavPageLayout } from '../../../features/Navigation';
 import StudyRegistrationForm from '../../../features/DiscoveryForms/StudyRegistration';
-import { StudyRegistrationFormConfig } from './types';
+import type { StudyRegistrationFormConfig } from './types';
+import type { NavPageLayoutProps } from '../../../features/Navigation';
 
 interface StudyRegistrationFormPageProps extends NavPageLayoutProps {
   configStudyRegistrationForm: StudyRegistrationFormConfig;
