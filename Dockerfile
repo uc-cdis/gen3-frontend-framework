@@ -59,7 +59,7 @@ RUN WASM_ENV=/gen3/packages/sampleCommons/cockle_wasm_env && \
 # Copy source after install so the install layer stays cached on source-only changes
 COPY packages ./packages
 
-# Build JupyterLite static assets (outputs to public/ before Next.js build)
+# Build JupyterLite static assets
 RUN npm run build:jupyterlite
 
 # Build only sampleCommons and its dependencies — storybook is not needed
@@ -89,14 +89,8 @@ COPY --from=builder --chown=nextjs:nextjs /gen3/packages/sampleCommons/.next/sta
   ./packages/sampleCommons/.next/static
 COPY --from=builder --chown=nextjs:nextjs /gen3/packages/sampleCommons/config ./packages/sampleCommons/config
 COPY --from=builder --chown=nextjs:nextjs /gen3/packages/sampleCommons/public ./packages/sampleCommons/public
-
-# Copy jupyter assets only if they exist in the builder stage
-RUN --mount=from=builder,source=/gen3/packages/sampleCommons,target=/tmp/sampleCommons,readonly \
-    if [ -d /tmp/sampleCommons/jupyter-workspaces ]; then \
-      mkdir -p ./packages/sampleCommons; \
-      cp -a /tmp/sampleCommons/jupyter-workspaces ./packages/sampleCommons/jupyter-workspaces; \
-      chown -R nextjs:nextjs ./packages/sampleCommons/jupyter-workspaces; \
-    fi
+COPY --from=builder --chown=nextjs:nextjs /gen3/packages/sampleCommons/jupyter-workspaces \
+  ./packages/sampleCommons/jupyter-workspaces
 
 # Copy runtime script directly from build context (no need to stage through builder)
 COPY --chown=nextjs:nextjs start.sh ./start.sh
@@ -107,7 +101,8 @@ COPY --chown=nextjs:nextjs start.sh ./start.sh
 
 # Point app config/public to external volumes
 RUN ln -s ./packages/sampleCommons/config  /gen3/config \
-    && ln -s ./packages/sampleCommons/public /gen3/public
+    && ln -s ./packages/sampleCommons/public /gen3/public \
+    && ln -s ./packages/sampleCommons/jupyter-workspaces /gen3/jupyter-workspaces
 
 USER nextjs:nextjs
 
