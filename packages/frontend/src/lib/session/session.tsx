@@ -188,7 +188,14 @@ const useInterval = (callback: IntervalFunction, delay: number | null) => {
 // Refreshing against the token's own `exp` means we hit Fence's /user endpoint at most
 // once per token lifetime instead of on a fixed clock that can drift into
 // (or past) the actual expiry.
-const REFRESH_MARGIN_MILLISECONDS = minutesToMilliseconds(2);
+//
+// This targets `exp` itself, not a margin before it: Fence (with
+// RENEW_ACCESS_TOKEN_BEFORE_EXPIRATION unset/false, which we do not control)
+// only reissues the access_token cookie reactively, once it has actually
+// expired — a proactive call ahead of that reissues nothing and just gets read
+// again unchanged. This buffer only absorbs latency/clock difference between
+// the Next.js server and Fence, not the browser's clock — see `expiresInMs`.
+const REFRESH_BUFFER_MILLISECONDS = 2000;
 // How soon we retry once, and only once, after a cycle that didn't produce a
 // healthy token: hitting /user reissues the cookie, so one prompt attempt often
 // fixes things. Repeating it at this rate would not, hence the backoff below.
@@ -230,23 +237,29 @@ const MILLISECONDS_PER_MINUTE = minutesToMilliseconds(1);
  * Delay before the next refresh of a healthy token, or a negative/small number
  * when the token does not look healthy (see `unhealthyRefreshDelay`).
  *
- * `exp * 1000 - Date.now()` mixes the server's clock with the browser's, so a
- * skewed browser clock makes the result wrong in both directions. A clock that
- * is behind the server inflates it, which would schedule the refresh past the
- * real expiry and silently log the user out — and re-reading the token later
- * yields the same wrong answer, so nothing recovers from it. The remaining
- * lifetime can never exceed the token's full lifetime, so `iat` gives us a
- * skew-free upper bound. A clock that is ahead deflates the result instead,
- * which is handled by backing off rather than refreshing on a tight loop.
+ * `session.expiresInMs` is computed by the Next.js server (`exp * 1000 -
+ * Date.now()` against *its own* clock) and shipped as a ready-to-use relative
+ * delay, so the browser never has to diff a server-issued epoch against its
+ * own clock — a skewed browser clock cannot make this wrong. Older responses
+ * without the field (or a stale cached one) fall back to computing it here,
+ * which is exposed to that skew again.
+ *
+ * The remaining delay can never exceed the token's full lifetime, so `iat`
+ * gives us a skew-free upper bound in case `expiresInMs` is ever missing or
+ * wrong.
  */
 const refreshDelayFromToken = (session: AuthTokenData): number => {
-  const wallClockDelay =
-    (session.expires ?? 0) * 1000 - Date.now() - REFRESH_MARGIN_MILLISECONDS;
+  const serverRelativeDelay =
+    session.expiresInMs !== undefined
+      ? session.expiresInMs
+      : (session.expires ?? 0) * 1000 - Date.now();
 
-  if (!session.issued || !session.expires) return wallClockDelay;
+  const delay = serverRelativeDelay + REFRESH_BUFFER_MILLISECONDS;
+
+  if (!session.issued || !session.expires) return delay;
 
   const lifetime = (session.expires - session.issued) * 1000;
-  return Math.min(wallClockDelay, lifetime - REFRESH_MARGIN_MILLISECONDS);
+  return Math.min(delay, lifetime + REFRESH_BUFFER_MILLISECONDS);
 };
 
 /**

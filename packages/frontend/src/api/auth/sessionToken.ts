@@ -16,12 +16,20 @@ export interface JWTPayloadAndUser extends JWTPayload {
 
 /**
  * Claims the client needs from a token whose signature has already been verified.
+ *
+ * `expiresInMs` is computed here, against this server's own clock, rather than
+ * left for the client to compute from `expires` against its own — the browser's
+ * clock may be skewed from this server's, but this server's clock and `exp`
+ * (also stamped by a server) agree.
  */
 const tokenClaims = (accessToken: string) => {
   const decoded = decodeJwt(accessToken) as JWTPayloadAndUser;
+  const expires = decoded.exp;
   return {
     issued: decoded.iat,
-    expires: decoded.exp,
+    expires,
+    expiresInMs:
+      expires !== undefined ? expires * 1000 - Date.now() : undefined,
     userContext: decoded.context?.user,
   };
 };
