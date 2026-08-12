@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { GEN3_FENCE_API } from '@gen3/core';
+import { GEN3_FENCE_API, GEN3_FENCE_SERVICE } from '@gen3/core/server';
 import { serialize } from 'cookie';
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
@@ -10,7 +10,11 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  let logoutError: unknown;
+  const FENCE_API =
+    process.env.NODE_ENV === 'development'
+      ? GEN3_FENCE_API
+      : GEN3_FENCE_SERVICE;
+
   try {
     const fenceCookies = [
       req.cookies.fence && `fence=${encodeURIComponent(req.cookies.fence)}`,
@@ -18,23 +22,29 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
         `access_token=${encodeURIComponent(req.cookies.access_token)}`,
     ].filter((cookie): cookie is string => Boolean(cookie));
 
-    const fenceResponse = await fetch(`${GEN3_FENCE_API}/logout`, {
+    const fenceResponse = await fetch(`${FENCE_API}/logout`, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'text/html',
         ...(fenceCookies.length > 0 ? { Cookie: fenceCookies.join('; ') } : {}),
       },
+      redirect: 'manual',
     });
 
     if (!fenceResponse.ok) {
-      logoutError = new Error(`Fence logout failed (${fenceResponse.status})`);
+      console.warn(`Fence logout failed (${fenceResponse.status})`);
     }
   } catch (error: unknown) {
-    logoutError = error;
+    // GEN3_FENCE_SERVICE is an internal, cluster-only URL. Some deployments
+    // (e.g. local dev, or a frontend that isn't network-adjacent to Fence)
+    // cannot reach it at all — that must not block logout, since the part
+    // that matters to this app is clearing its own cookies below.
+    console.warn('Unable to reach Fence to complete logout', error);
   }
 
-  // Clear local authentication even if Fence is temporarily unavailable. This
-  // prevents a failed upstream request from leaving the browser authenticated.
+  // Clear local authentication regardless of whether Fence could be reached.
+  // This is what actually logs the user out of this app; telling Fence is
+  // best-effort on top of it.
   res.setHeader('Set-Cookie', [
     serialize('fence', '', {
       sameSite: 'lax',
@@ -59,11 +69,6 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       expires: new Date(0),
     }),
   ]);
-
-  if (logoutError) {
-    res.status(502).json({ error: 'Fence logout failed' });
-    return;
-  }
 
   res.status(200).json({ success: 'success' });
 }
