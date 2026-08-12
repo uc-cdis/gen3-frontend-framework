@@ -1,6 +1,7 @@
 import React from 'react';
 import type { UseFormReturnType } from '@mantine/form';
-import TextContent, { TextContentProps, ContentType } from './TextContent';
+import type { TextContentProps } from './TextContent';
+import TextContent, { ContentType } from './TextContent';
 import {
   Checkbox,
   Radio,
