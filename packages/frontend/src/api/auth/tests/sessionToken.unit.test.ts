@@ -80,9 +80,16 @@ const claimsFor = (overrides: Record<string, unknown> = {}) => ({
 
 beforeEach(() => {
   jest.clearAllMocks();
+  // `expiresInMs` is computed from this server's own clock; pin it so the
+  // expected value in each test is exact rather than a moving target.
+  jest.spyOn(Date, 'now').mockReturnValue(NOW_SECONDS * 1000);
   mockFetchJWTKey.mockResolvedValue('-----BEGIN PUBLIC KEY-----');
   mockJwtVerify.mockResolvedValue({ payload: {} });
   mockDecodeJwt.mockReturnValue(claimsFor());
+});
+
+afterEach(() => {
+  jest.restoreAllMocks();
 });
 
 // ---------------------------------------------------------------------------
@@ -96,6 +103,7 @@ describe('sessionToken handler', () => {
     expect(res.body).toEqual({
       issued: NOW_SECONDS,
       expires: NOW_SECONDS + 1200,
+      expiresInMs: 1200 * 1000,
       userContext: { name: 'alice' },
       status: 'issued',
     });
@@ -116,6 +124,7 @@ describe('sessionToken handler', () => {
     expect(res.body).toEqual({
       issued: NOW_SECONDS,
       expires: NOW_SECONDS - 60,
+      expiresInMs: -60 * 1000,
       userContext: { name: 'alice' },
       status: 'expired',
     });

@@ -44,7 +44,7 @@ const nextConfig = {
     fetches: {
       fullUrl: true,
     },
-    /*--
+    /* -- uncomment for more logging
     browserToTerminal: true,
     serverFunctions: true,
     incomingRequests: true,
