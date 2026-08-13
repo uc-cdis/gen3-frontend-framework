@@ -1,3 +1,5 @@
+import { SelectOptionItem } from '../../../components/Content/FormContent';
+
 export interface StudyRegistrationFormItem {
   type?: string;
   variable?: string;
@@ -7,7 +9,7 @@ export interface StudyRegistrationFormItem {
   initialValue?: unknown;
   placeholder?: string;
   className?: string;
-  data?: Array<Record<string, unknown>>;
+  dropdownData?: SelectOptionItem[];
   [key: string]: unknown;
 }
 

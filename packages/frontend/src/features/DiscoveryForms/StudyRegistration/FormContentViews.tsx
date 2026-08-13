@@ -1,5 +1,4 @@
 import React from 'react';
-
 import Form from '../../../components/Content/Form';
 import StudyRegistrationAccessRequestOutcome from './StudyRegistrationAccessRequestOutcome';
 import { Center, Loader } from '@mantine/core';
