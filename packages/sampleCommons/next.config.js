@@ -29,10 +29,11 @@ const nextConfig = {
   env: {
     version: process.env.npm_package_version,
   },
-  /* -- uncomment for logging in production */
+  /* -- uncomment for logging in production
   compiler: {
     removeConsole: false,
   },
+  --- */
   reactStrictMode: true,
   output: 'standalone',
   allowedDevOrigins: ['local.io', '*.local.io'],
@@ -43,9 +44,11 @@ const nextConfig = {
     fetches: {
       fullUrl: true,
     },
+    /* -- uncomment for more logging
     browserToTerminal: true,
     serverFunctions: true,
     incomingRequests: true,
+    --- */
   },
   webpack: (config, { dev }) => {
     config.infrastructureLogging = {
