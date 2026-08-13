@@ -44,7 +44,7 @@ export const sowerJobApi = gen3Api.injectEndpoints({
           if (_err instanceof Error) {
             errorMsg = _err.message;
           }
-          showNotification('Job Submission', errorMsg, 'error');
+          showNotification('unset', 'Job Submission', errorMsg, 'error');
         }
       },
     }),

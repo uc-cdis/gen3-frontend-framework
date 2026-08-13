@@ -1,4 +1,5 @@
-import { Middleware, type PayloadAction } from '@reduxjs/toolkit';
+import type { Middleware } from '@reduxjs/toolkit';
+import { type PayloadAction } from '@reduxjs/toolkit';
 import {
   addSowerJob,
   clearSowerJobsId,
@@ -14,7 +15,7 @@ import {
 } from './types';
 import { sowerJobApi } from './sowerApi';
 import { showNotification } from '../notifications';
-import { CoreState } from '../../reducers';
+import type { CoreState } from '../../reducers';
 
 const TERMINAL_STATUSES: SowerJobStatus[] = [
   SowerJobStatus.Completed,
@@ -129,6 +130,7 @@ const sowerJobsMiddleware: Middleware<object, CoreState, any> = (store) => {
         startPolling();
         if (notificationConfig.enabled) {
           showNotification(
+            'unused',
             'Monitoring Jobs',
             `Resuming monitoring of ${activeJobs.length} active jobs`,
             'info',
@@ -160,9 +162,15 @@ const sowerJobsMiddleware: Middleware<object, CoreState, any> = (store) => {
       startPolling();
       if (notificationConfig.enabled && notificationConfig.showJobStarted) {
         const { name } = action.payload;
-        showNotification('Job Started', `${name} has been submitted`, 'info', {
-          autoClose: notificationConfig.autoClose,
-        });
+        showNotification(
+          'unset',
+          'Job Started',
+          `${name} has been submitted`,
+          'info',
+          {
+            autoClose: notificationConfig.autoClose,
+          },
+        );
       }
     } else if (removeSowerJob.match(action) || clearSowerJobsId.match(action)) {
       if (Object.keys(state.sower.sowerJobs.jobs).length === 0) {
@@ -178,6 +186,7 @@ const sowerJobsMiddleware: Middleware<object, CoreState, any> = (store) => {
           notificationConfig.showJobCompleted
         ) {
           showNotification(
+            'unset',
             'Job Completed',
             `${prevJob.name} has completed successfully`,
             'success',
@@ -188,6 +197,7 @@ const sowerJobsMiddleware: Middleware<object, CoreState, any> = (store) => {
           notificationConfig.showJobFailed
         ) {
           showNotification(
+            'unset',
             'Job Failed',
             `${prevJob.name} encountered an error`,
             'error',
