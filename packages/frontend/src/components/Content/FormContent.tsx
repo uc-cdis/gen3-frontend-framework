@@ -174,7 +174,6 @@ const FormContent = ({
       return RadioGroupElement;
     }
     case FormContentType.Select: {
-      console.log('initialValue', initialValue);
       const SelectElement = (
         <Select
           className={className}
