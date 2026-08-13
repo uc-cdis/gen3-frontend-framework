@@ -10,7 +10,7 @@ export interface FormPropsBody extends Omit<
   FormContentProps,
   'keyString' | 'form'
 > {
-  readonly errorText: string; // text to display on error
+  readonly errorText?: string; // text to display on error
   readonly variable?: string; // form feild variable name
   readonly required?: boolean;
 }

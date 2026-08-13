@@ -12,11 +12,11 @@ export const userCanRegisterStudy = (
       : undefined;
   const method = 'access';
   const service = 'study_registration';
- return (
-  actions?.some(
-    (x) =>
-      (x.service === service || x.service === '*') &&
-      (x.method === method || x.method === '*'),
-  ) ?? false
-);
+  return (
+    actions?.some(
+      (x) =>
+        (x.service === service || x.service === '*') &&
+        (x.method === method || x.method === '*'),
+    ) ?? false
+  );
 };

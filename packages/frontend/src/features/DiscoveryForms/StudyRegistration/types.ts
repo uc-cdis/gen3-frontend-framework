@@ -29,3 +29,37 @@ export interface StudyRegistrationServiceResponse extends Record<
   error?: string;
   [key: string]: unknown;
 }
+
+export interface MinimalInfo {
+  study_name?: string;
+  [key: string]: unknown;
+}
+
+export interface MetadataLocation {
+  nih_application_id?: string;
+  [key: string]: unknown;
+}
+
+export interface StudyMetadata {
+  minimal_info?: MinimalInfo;
+  metadata_location?: MetadataLocation;
+  [key: string]: unknown;
+}
+
+export interface RegisterableStudy {
+  _hdp_uid: string;
+  project_number?: string;
+  registration_authz: string;
+  study_metadata?: StudyMetadata;
+}
+
+//** Types for Server Response */
+export interface UnregisteredStudiesfromMDS {
+  _guid_type: string;
+  nih_reporter: NihReporter;
+  gen3_discovery: RegisterableStudy;
+}
+
+export interface NihReporter {
+  project_title: string;
+}

@@ -30,6 +30,11 @@ export enum FormContentType {
   ClinicalTrialID = 'ClinicalTrialID', // ClinicalTrials.gov ID text input
 }
 
+export interface SelectOptionItem {
+  label: string;
+  value: string;
+}
+
 /**
  * Interface representing the properties for rendering form content.
  */
@@ -41,7 +46,7 @@ export interface FormContentProps extends Omit<
   readonly type?: FormContentType | ContentType; // type of content
   readonly label?: string; // form label requiered for form inputs
   readonly initialValue?: string; // optional initial value for form select component
-  readonly data?: string[]; // optional data for form select component
+  readonly dropdownData?: SelectOptionItem[]; // optional data for form select component
   readonly description?: string; // optional discritions to go above form feild and below label
   readonly placeholder?: string; // optional placeholder text
   readonly disabled?: boolean; // optional grays out and makes feild uneditable
@@ -78,7 +83,7 @@ const FormContent = ({
   text,
   label,
   initialValue,
-  data,
+  dropdownData,
   description,
   placeholder,
   disabled,
@@ -169,6 +174,7 @@ const FormContent = ({
       return RadioGroupElement;
     }
     case FormContentType.Select: {
+      console.log('initialValue', initialValue);
       const SelectElement = (
         <Select
           className={className}
@@ -176,7 +182,7 @@ const FormContent = ({
             label: 'text-sm font-bold',
             root: 'max-w-lg mt-2',
           }}
-          data={data}
+          data={dropdownData}
           defaultValue={initialValue}
           label={label}
           description={description}
