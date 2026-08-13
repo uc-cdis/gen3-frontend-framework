@@ -230,7 +230,7 @@ function TableHeader<TData extends MRT_RowData>({
           <TitleWrapper title={tableTitle} />
         </div>
       )}
-      {additionalControls && additionalControls}
+      {additionalControls}
       {tableTotalDetail && (
         <div className={detailClass}>
           <TotalDetailWrapper detail={tableTotalDetail} />

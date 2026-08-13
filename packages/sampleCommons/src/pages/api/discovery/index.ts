@@ -18,7 +18,11 @@ const mdsMetadataApi =
   'https://healdata.org/mds/metadata?data=True&_guid_type=unregistered_discovery_metadata&limit=2000&offset=0';
 
 // Main Function to Orchestrate Steps
-const processData = (data: Array<JSONObject>, reqBody: any) => {
+const processData = async (
+  data: Array<JSONObject>,
+  reqBody: any,
+  cookies: any,
+) => {
   const {
     pagination,
     searchTerms,
@@ -29,7 +33,7 @@ const processData = (data: Array<JSONObject>, reqBody: any) => {
     selectedAccessLevels,
     discoveryConfig,
   } = reqBody;
-  const preprocessedData = addAccessLevelsMetaData(data, discoveryConfig);
+  const preprocessedData = await addAccessLevelsMetaData(data, cookies);
   let processedData: Array<JSONObject> = preprocessedData;
   // Study access levels filtering (user selected data availability)
   processedData = filterByAccessLevels(processedData, selectedAccessLevels);
@@ -57,7 +61,6 @@ const processData = (data: Array<JSONObject>, reqBody: any) => {
     pagination.pageSize,
     pagination.offset,
   );
-
   return {
     hits: processedData.length,
     displayedData: paginatedData,
@@ -67,10 +70,11 @@ const processData = (data: Array<JSONObject>, reqBody: any) => {
 };
 
 export default async function handler(req: any, res: any) {
+  const cookies = req.headers.cookie || '';
   const currentTime = Date.now();
   // Check if cached data is still valid
   if (cachedData && currentTime - cacheTime < CACHE_DURATION) {
-    const processedData = processData(cachedData, req.body);
+    const processedData = await processData(cachedData, req.body, cookies);
     res.status(200).json(processedData);
   } else {
     try {
@@ -94,7 +98,7 @@ export default async function handler(req: any, res: any) {
       // Update the cache
       cachedData = combinedData;
       cacheTime = currentTime;
-      const processedData = processData(combinedData, req.body);
+      const processedData = await processData(combinedData, req.body, cookies);
       res.status(200).json(processedData);
     } catch (error) {
       console.error('Fetch error:', error);

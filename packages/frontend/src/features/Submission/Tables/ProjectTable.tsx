@@ -41,7 +41,8 @@ const ProjectTable = ({ columns }: ProjectTableConfig) => {
   };
 
   const { data, isLoading, isFetching, isError } = useGetProjectsDetailsQuery({
-    size: 10,
+    size: pagination.pageSize,
+    offset: pagination.pageSize * pagination.pageIndex,
     projectQuery: projectQuery,
     projectDetailsQuery: detailQuery,
   });
@@ -66,7 +67,9 @@ const ProjectTable = ({ columns }: ProjectTableConfig) => {
   const table = useMantineReactTable({
     columns: cols,
     data: data?.details ?? [],
-    manualSorting: true,
+    enableSorting: false,
+    enableColumnActions: false,
+    manualSorting: false,
     manualPagination: true,
     paginateExpandedRows: false,
     onPaginationChange: setPagination,

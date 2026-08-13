@@ -55,7 +55,7 @@ const createDownloadMenuButton = (
       actionArgs: {
         ...commonActionArgs,
         ...actionArgs,
-        ...(button.actionArgs ?? {}),
+        ...button.actionArgs,
       },
     } as DownloadButtonPropsWithAction;
   });
@@ -96,7 +96,6 @@ const DownloadsPanel = ({
   fields,
   filter,
   accessibility,
-  sort,
   indexPrefix = '',
 }: DownloadsPanelProps): JSX.Element => {
   const { status } = useSession(false);
@@ -161,7 +160,7 @@ const DownloadsPanel = ({
             tooltipText={button.tooltipText}
             disabled={disabled || !button.enabled}
             parameters={{
-              ...(button.actionArgs ?? {}),
+              ...button.actionArgs,
               ...commonActionArgs,
               index: index,
             }}
@@ -181,7 +180,7 @@ const DownloadsPanel = ({
             actionFunction={actionFunction}
             actionArgs={{
               ...actionArgs,
-              ...(button.actionArgs ?? {}),
+              ...button.actionArgs,
               ...commonActionArgs,
             }}
             key={button.title}
@@ -197,7 +196,7 @@ const DownloadsPanel = ({
           disabled={disabled || !button.enabled}
           actionFunction={actionFunction}
           actionArgs={{
-            ...(button.actionArgs ?? {}),
+            ...button.actionArgs,
             ...commonActionArgs,
             ...actionArgs,
           }}
@@ -213,7 +212,7 @@ const DownloadsPanel = ({
       {buttonElements}
     </div>
   ) : (
-    <React.Fragment></React.Fragment>
+    <React.Fragment />
   );
 };
 

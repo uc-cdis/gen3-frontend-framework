@@ -1,13 +1,15 @@
-import React, { ReactElement } from 'react';
+import type { ReactElement } from 'react';
+import React from 'react';
 import { Divider } from '@mantine/core';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
 import { extractClassName } from '../utils';
 import { LoginButtonVisibility } from '../../../components/Login/types';
-import { StylingOverrideWithMergeControl } from '../../../types';
+import type { StylingOverrideWithMergeControl } from '../../../types';
 import { IconButton } from './IconButton';
 import { AccountButton } from './AccountButton';
 import { LoginButton } from './LoginButton';
-import { isTopBarLinkButton, TopBarItems, TopBarProps } from './types';
+import type { TopBarItems, TopBarProps } from './types';
+import { isTopBarLinkButton } from './types';
 import { modals } from '@mantine/modals';
 
 const processTopBarItems = (
@@ -60,10 +62,10 @@ const processTopBarItems = (
               rightIcon={item.rightIcon}
               classNames={mergedClassnames}
               clickHandler={() =>
+                item?.modal &&
                 modals.openContextModal({
                   modal: item.modal,
                   innerProps: {},
-                  title: item.name,
                   size: 'xl',
                 })
               }
@@ -89,7 +91,7 @@ const TopBar = ({
   itemClassnames = {},
 }: TopBarProps) => {
   const classNamesDefaults = {
-    root: 'flex justify-end items-center align-middle w-100 bg-secondary-lighter',
+    root: 'flex justify-end items-center align-middle w-full bg-secondary-lighter',
     login: 'font-content hover:border-accent',
     divider: 'border-accent my-2',
   };

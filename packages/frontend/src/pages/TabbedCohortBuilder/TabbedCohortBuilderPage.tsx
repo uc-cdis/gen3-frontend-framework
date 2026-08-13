@@ -35,7 +35,7 @@ const TabbedCohortBuilderPage = ({
           <QueryExpression
             index={configuration.index}
             fieldsAreFlat={configuration.fieldsAreFlat}
-          ></QueryExpression>
+          />
         </div>
         <div className="w-full mt-80 mr-4">
           <TabbedCohortBuilder {...configuration} />

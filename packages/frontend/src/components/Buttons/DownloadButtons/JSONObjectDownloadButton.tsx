@@ -60,7 +60,7 @@ const JSONObjectDownloadButton: React.FC<JsonFileSaverProps> = ({
         classNames={{ root: 'bg-base-max' }}
         className="flex items-center gap-2"
       >
-        <Icon icon={icon} height="1.5rem"></Icon>
+        <Icon icon={icon} height="1.5rem" />
       </Button>
     </Tooltip>
   );

@@ -58,7 +58,7 @@ const RangeFacet = ({
     iconStyle: controlsIconStyle,
   },
 }: RangeFacetCardProps) => {
-  const { data, rangeFilters, isSuccess } = hooks.useGetFacetData(field);
+  const { rangeFilters, isSuccess } = hooks.useGetFacetData(field);
   const [minMaxValue, setMinMaxValue] = React.useState<
     FromToRangeValues<number>
   >({

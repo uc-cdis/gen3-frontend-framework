@@ -17,7 +17,6 @@ const registeredButtonActions: Record<string, ActionCreatorFactoryItem> = {};
 
 export const NullButtonAction: ActionButtonWithArgsFunction = (
   _params,
-  done,
 ): Promise<void> => {
   return new Promise<void>((done) => {
     if (done) done();

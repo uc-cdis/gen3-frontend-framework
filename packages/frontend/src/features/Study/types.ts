@@ -80,6 +80,7 @@ export interface StudyDetailTab {
 }
 
 export interface StudyDetailView {
+  showSubmitButton?: boolean;
   headerField: string;
   subHeaderField: string;
   tabs: StudyDetailTab[];

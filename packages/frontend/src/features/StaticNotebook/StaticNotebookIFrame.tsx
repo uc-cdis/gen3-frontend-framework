@@ -40,7 +40,7 @@ const StaticNotebookIFrame = ({ notebook }: StaticNotebookViewerProps) => {
   }, []);
 
   return (
-    <div className="flex w-full">
+    <div className="flex w-full h-full">
       <div className="flex justify-items-center w-full h-full">
         <iframe
           ref={iframeRef}
@@ -51,7 +51,7 @@ const StaticNotebookIFrame = ({ notebook }: StaticNotebookViewerProps) => {
           width="100%"
           height="100%"
           title="client notebook"
-        ></iframe>
+        />
       </div>
     </div>
   );

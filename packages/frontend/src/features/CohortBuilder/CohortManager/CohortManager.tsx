@@ -1,5 +1,14 @@
 import React, { ReactElement, useCallback, useMemo, useState } from 'react';
-import { Button, ComboboxItem, Group, Select, Text, TextInput, Tooltip, useMantineTheme, } from '@mantine/core';
+import {
+  Button,
+  ComboboxItem,
+  Group,
+  Select,
+  Text,
+  TextInput,
+  Tooltip,
+  useMantineTheme,
+} from '@mantine/core';
 
 import {
   Cohort,
@@ -14,7 +23,7 @@ import {
   useCoreSelector,
 } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
-import { AddIcon, CloseIcon, CopyIcon, } from '../../../types/icons';
+import { AddIcon, CloseIcon, CopyIcon } from '../../../types/icons';
 
 import { Icon } from '@iconify-icon/react';
 
@@ -34,7 +43,7 @@ interface CohortManagerProps {
 }
 
 const CohortManagerPanel = ({
-  size = "md",
+  size = 'md',
   rightPanel,
   customActions,
   showDefaultActions = {
@@ -46,12 +55,12 @@ const CohortManagerPanel = ({
 }: CohortManagerProps) => {
   const coreDispatch = useCoreDispatch();
   const [isEditing, setIsEditing] = useState(false);
-  const [editingLabel, setEditingLabel] = useState("");
+  const [editingLabel, setEditingLabel] = useState('');
   const allCohorts: Array<Cohort> = useCoreSelector(selectAllCohorts);
   const currentCohort = useCoreSelector(selectCurrentCohort);
 
   const theme = useMantineTheme();
-  const iconSize = IconSize[size] || IconSize["sm"];
+  const iconSize = IconSize[size] || IconSize['sm'];
   const startEditing = () => {
     setIsEditing(true);
     setEditingLabel(currentCohort.name);
@@ -59,21 +68,21 @@ const CohortManagerPanel = ({
 
   const cancelEditing = () => {
     setIsEditing(false);
-    setEditingLabel("");
+    setEditingLabel('');
   };
 
   const saveEdit = () => {
-    if (editingLabel.trim() === "" || !currentCohort.name) return;
+    if (editingLabel.trim() === '' || !currentCohort.name) return;
 
     coreDispatch(
       updateCohortName({ id: currentCohort.id, name: editingLabel }),
     );
     setIsEditing(false);
-    setEditingLabel("");
+    setEditingLabel('');
   };
 
   const handleCreateNew = () => {
-    coreDispatch(createNewCohort({ name: "New Cohort", setAsCurrent: true }));
+    coreDispatch(createNewCohort({ name: 'New Cohort', setAsCurrent: true }));
   };
 
   const handleDuplicate = () => {
@@ -109,10 +118,10 @@ const CohortManagerPanel = ({
       children: (
         <Text size="sm">
           Are you sure you want to delete your cohort? Deleted cohorts cannot be
-          restored.{" "}
+          restored.{' '}
         </Text>
       ),
-      labels: { confirm: "Delete Cohort", cancel: "Cancel" },
+      labels: { confirm: 'Delete Cohort', cancel: 'Cancel' },
       confirmProps: { color: theme.colors.accent[4] },
       onConfirm: () => {
         coreDispatch(
@@ -129,7 +138,11 @@ const CohortManagerPanel = ({
     <Group gap="xs" className="bg-primary flex pt-4 pl-4 p-4 mb-4">
       {!isEditing ? (
         <Group>
-          <Tooltip label="A cohort saves a set of filters which generates subjects." position="top" withArrow>
+          <Tooltip
+            label="A cohort saves a set of filters which generates subjects."
+            position="top"
+            withArrow
+          >
             <Select
               data={selectData}
               value={currentCohort?.id ?? null}
@@ -157,12 +170,12 @@ const CohortManagerPanel = ({
             onChange={(e) => setEditingLabel(e.target.value)}
             placeholder="Enter new name"
             onKeyDown={(e) => {
-              if (e.key === "Enter" && editingLabel.trim()) saveEdit();
-              if (e.key === "Escape") cancelEditing();
+              if (e.key === 'Enter' && editingLabel.trim()) saveEdit();
+              if (e.key === 'Escape') cancelEditing();
             }}
-            autoFocus
+
             style={{ flex: 1 }}
-          ></TextInput>
+          />
           <Tooltip label="Apply rename" position="bottom" withArrow>
             <Button
               variant="action"
@@ -171,7 +184,7 @@ const CohortManagerPanel = ({
               data-testid="completeCohortRenameButton"
               aria-label="Complete rename cohort"
               disabled={
-                editingLabel.trim() === "" ||
+                editingLabel.trim() === '' ||
                 editingLabel.trim() === currentCohort?.name
               }
               size={`compact-${size}`}
@@ -255,7 +268,7 @@ const CohortManagerPanel = ({
 };
 
 const CohortManager = ({
-  size = "md",
+  size = 'md',
   rightPanel,
   customActions,
   showDefaultActions,

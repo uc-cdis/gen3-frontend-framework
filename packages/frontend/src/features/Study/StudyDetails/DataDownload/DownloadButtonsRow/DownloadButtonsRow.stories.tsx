@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta } from '@storybook/nextjs';
 import DownloadButtonsRow from './DownloadButtonsRow';
 
 const meta: any = {

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { isEqual } from 'lodash';
 import {
-  Checkbox,
-  TextInput,
-  Select,
-  Tooltip,
-  NumberInput,
   ActionIcon,
+  Checkbox,
+  NumberInput,
+  Select,
+  TextInput,
+  Tooltip,
 } from '@mantine/core';
 import {
   MdExpandMore as DropdownIcon,
@@ -113,7 +113,6 @@ const FormElement = (props: FormElementProps) => {
         </>
       );
     default:
-      console.log(`Field ${props?.field} not supported`, props);
       return (
         <>
           <FormLabel {...props} />

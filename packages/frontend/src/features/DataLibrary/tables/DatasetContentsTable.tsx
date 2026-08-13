@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
-import { MantineReactTable, MRT_RowSelectionState, MRT_Updater, useMantineReactTable, } from 'mantine-react-table-open';
+import {
+  MantineReactTable,
+  MRT_RowSelectionState,
+  MRT_Updater,
+  useMantineReactTable,
+} from 'mantine-react-table-open';
 import { Button, Stack, Tooltip } from '@mantine/core';
 import { MdOutlineRemoveCircle as RemoveIcon } from 'react-icons/md';
 import AdditionalDataTable from './AdditionalDataTable';
 import { DatalistMembers } from '../types';
 import { commonTableSettings } from './tableSettings';
-import { getNumberOfDataSetItemsSelected, useDataLibrarySelection, } from '../selection/SelectionContext';
+import {
+  getNumberOfDataSetItemsSelected,
+  useDataLibrarySelection,
+} from '../selection/SelectionContext';
 import { selectAllDatasetMembers } from '../selection/selection';
 import FilesTable from './FilesTable';
 import EmptyList from '../EmptyList';
@@ -45,7 +53,7 @@ const DataSetContentsTable = ({
   listId,
   data,
   removeList,
-  size = 'sm',
+  size,
 }: ListsTableProps) => {
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
 

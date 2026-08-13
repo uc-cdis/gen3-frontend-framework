@@ -1,12 +1,29 @@
-import React, { ReactElement, useState } from 'react';
-import { GraphiQL } from 'graphiql';
+import type { ReactElement } from 'react';
+import React, { useState } from 'react';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
 import type { Fetcher } from '@graphiql/toolkit';
 import { SegmentedControl, Text } from '@mantine/core';
-import { GEN3_API, selectCSRFToken, selectHeadersWithCSRFToken, useCoreSelector, } from '@gen3/core';
-import { GqlQueryEditorProps } from './types';
-import 'graphiql/setup-workers/webpack';
+import {
+  GEN3_API,
+  selectCSRFToken,
+  selectHeadersWithCSRFToken,
+  useCoreSelector,
+} from '@gen3/core';
+import type { GqlQueryEditorProps } from './types';
+import dynamic from 'next/dynamic';
 import { getCookie } from 'cookies-next';
+
+// Disable SSR for the GraphiQL component
+const GraphiQL = dynamic(
+  () =>
+    // @ts-expect-error side-effect-only module has no exports/types
+    import('graphiql/setup-workers/webpack').then(() =>
+      import('graphiql').then((mod) => mod.GraphiQL),
+    ),
+  {
+    ssr: false,
+  },
+);
 
 /**
  * Fetches graphql data from a graphql endpoint if one is specified, or guppy by default.

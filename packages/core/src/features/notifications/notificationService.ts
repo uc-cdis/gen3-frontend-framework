@@ -14,6 +14,7 @@ export interface NotificationOptions {
  * Notification handler function signature
  */
 export type NotificationHandler = (
+  id: string,
   title: string,
   message: string,
   type: NotificationType,
@@ -57,13 +58,14 @@ class NotificationService {
    * Show a notification using the registered handler
    */
   public showNotification(
+    id: string,
     title: string,
     message: string,
     type: NotificationType,
     options?: NotificationOptions,
   ): void {
     if (this.handler) {
-      this.handler(title, message, type, options);
+      this.handler(id, title, message, type, options);
     } else {
       // Fallback for when no handler is registered (e.g., log to console)
       console.log(`Notification [${type}]: ${title} - ${message}`);
@@ -76,12 +78,13 @@ export const notificationService = NotificationService.getInstance();
 
 // Export convenience methods
 export const showNotification = (
+  id: string,
   title: string,
   message: string,
   type: NotificationType,
   options?: NotificationOptions,
 ): void => {
-  notificationService.showNotification(title, message, type, options);
+  notificationService.showNotification(id, title, message, type, options);
 };
 
 export default notificationService;

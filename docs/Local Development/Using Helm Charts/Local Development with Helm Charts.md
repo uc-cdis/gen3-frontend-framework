@@ -16,7 +16,8 @@ document to your desired port.
 ### Setting up Gen3 Helm Charts
 The first set is setting up the Gen3 Helm Charts.
 
-Follow the instructions in the [Gen3 Helm Charts](https://github.com/uc-cdis/gen3-helm/blob/master/docs/gen3_developer_environments.md) **stop at Installing Gen3**.
+Follow the instructions in
+the [Gen3 Helm Charts](https://docs.gen3.org/gen3-resources/operator-guide/helm/helm-deploy-example/)
 
 Follow the instructions in [Gen3 Helm Charts Local Development](https://github.com/uc-cdis/gen3-helm?tab=readme-ov-file#local-development) **steps 1-3** for setting up the Gen3 Helm Charts.
 

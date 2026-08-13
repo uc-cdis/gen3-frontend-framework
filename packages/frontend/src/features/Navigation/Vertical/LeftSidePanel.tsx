@@ -40,7 +40,7 @@ const LeftSidePanel = ({
 
   useDeepCompareEffect(() => {
     if (loggedIn && !isAuthzResourcesFetching && !isAuthzResourcesError) {
-      refetch();
+      void refetch();
     }
   }, [loggedIn, isAuthzResourcesFetching, isAuthzResourcesError, refetch]);
   return (

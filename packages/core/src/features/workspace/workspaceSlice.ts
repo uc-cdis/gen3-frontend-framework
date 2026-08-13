@@ -25,7 +25,7 @@ const initialState: WorkspaceState = {
 };
 
 const slice = createSlice({
-  name: 'ActiveWorkspace',
+  name: 'activeWorkspace',
   initialState,
   reducers: {
     setActiveWorkspaceId: (state, action: PayloadAction<WorkspaceId>) => {
@@ -33,13 +33,20 @@ const slice = createSlice({
       return state;
     },
     clearActiveWorkspaceId: (state) => {
-      return { ...state, id: NO_WORKSPACE_ID };
+      return {
+        ...state,
+        id: NO_WORKSPACE_ID,
+        status: WorkspaceStatus.NotFound,
+      };
     },
     setActiveWorkspaceStatus: (
       state,
       action: PayloadAction<WorkspaceStatus>,
     ) => {
-      return { ...state, status: action.payload };
+      return {
+        ...state,
+        status: action.payload,
+      };
     },
     setRequestedWorkspaceStatus: (
       state,

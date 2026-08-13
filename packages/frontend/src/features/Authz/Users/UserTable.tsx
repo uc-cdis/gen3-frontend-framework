@@ -65,7 +65,7 @@ const UserTable = ({
         >
           Details
         </Menu.Item>
-        <Menu.Item onClick={() => console.info('Delete')}>Delete</Menu.Item>
+        <Menu.Item onClick={() => {}}>Delete</Menu.Item>
       </React.Fragment>
     ),
     enableRowSelection: true,

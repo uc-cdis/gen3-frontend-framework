@@ -288,6 +288,49 @@ The details configuration has the following members:
 * closeOnClickOutside - close when anywhere outside the modal is closed
 * size - size of the modal
 
+### Sub Tables
+
+There is support for a sub tables that appear under the row when its clicked. The tables content is rendered using ```subTables```.
+
+![Explorer SubTable Collapsed](images/Explorer/Explorer_sub_table_collapsed.png)
+![Explorer SubTable Open](images/Explorer/Explorer_sub_table_open.png)
+
+The basic configuration is:
+
+```json
+"subTables": [
+        {
+          "root": "subRows",
+          "label": "Oncology Primary",
+          "defaultIfEmpty": "NULL",
+          "fields": [
+            "CancerStages",
+            "ICDOSites"
+          ],
+          "columns":{
+            "ICDOSites": {
+              "field": "ICDOSites",
+              "title": "ICDOSites"
+            },
+            "CancerStages": {
+              "field": "CancerStages",
+              "title": "CancerStages"
+            }
+          }
+        }
+      ]
+
+```
+
+The configuration has the following members:
+
+* root - parents feild that containes the data that is displayed in the Sub Table
+* label - title at top of table 
+* defaultIfEmpty - value for empty fields defaults to '' 
+* fields - fields to use for columns
+* columns - (Optional) table columns field to match fields above title to override what's displayed
+
+
 ## Selection Facet
 
 A new facet UI is available instead of the enumerated facet, which can be used when the number of facet keys becomes
@@ -325,6 +368,38 @@ quite large. To enable it, in the filters->tabs section of the config file:
 add a ```fieldsConfig``` entry. The format is _field_ name then _type_. In the example above the```gender``` field is
 switch to use ```multiselect```. Note that ```multiselect``` is the only type supported. The selection is a dropdown that
 is also searchable.
+
+### Default Facet Sorting
+
+Enum facets are sorted by value count descending by default. To use a different initial sort order for an individual
+facet, set `defaultSort` in that field's `fieldsConfig` entry within the relevant `filters.tabs` entry:
+
+```json
+{
+  "filters": {
+    "tabs": [
+      {
+        "title": "Subjects",
+        "fields": ["gender"],
+        "fieldsConfig": {
+          "gender": {
+            "defaultSort": "label-asc"
+          }
+        }
+      }
+    ]
+  }
+}
+```
+
+The supported values are:
+
+* `value-asc` - value count ascending
+* `value-dsc` - value count descending
+* `label-asc` - label ascending
+* `label-desc` - label descending
+
+Facets without `defaultSort` continue to use `value-dsc`.
 
 ![MultiSelectFacet](images/Explorer/MultiSelectFacet.png)
 
