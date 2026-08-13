@@ -23,7 +23,7 @@ import {
   type MRT_RowSelectionState,
   type MRT_SortingState,
   useMantineReactTable,
-} from 'mantine-react-table';
+} from 'mantine-react-table-open';
 import { TableIcons } from '../../../components/Tables/TableIcons';
 import {
   ExplorerTableProps,
@@ -91,7 +91,6 @@ const ExplorerTable = ({
   index,
   tableConfig,
   accessibility,
-  classNames,
   size = 'sm',
   additionalControls,
   tableTotalDetail,
@@ -143,12 +142,10 @@ const ExplorerTable = ({
       typeof updater === 'function' ? updater(columnVisibility) : updater;
 
     setColumnVisibility({
-      ...{
-        ...newState,
-        'mrt-row-expand': false,
-        'mrt-row-actions': true,
-        ...lockedVisibility,
-      },
+      ...newState,
+      'mrt-row-expand': false,
+      'mrt-row-actions': true,
+      ...lockedVisibility,
     });
   };
 
@@ -157,7 +154,7 @@ const ExplorerTable = ({
   );
 
   const handleSearchOrPageChange = useCallback(
-    (params: TableSearchOrPaginationProps) => null,
+    (_params: TableSearchOrPaginationProps) => null,
     [],
   );
 
@@ -417,7 +414,7 @@ const ExplorerTable = ({
             panelProps={{
               index,
               tableConfig,
-              ...(tableConfig?.detailsConfig?.params ?? {}),
+              ...tableConfig?.detailsConfig?.params,
               accessibility,
             }}
           />

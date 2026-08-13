@@ -6,7 +6,7 @@ const HighlightSearchTerm = (
 ) => {
   if (!value) return;
   if (Array.isArray(value)) {
-    value = value.join('').replace(/  +/g, ' ');
+    value = value.join(', ').replace(/  +/g, ' ');
   }
   const matchIndex =
     typeof value === 'string'

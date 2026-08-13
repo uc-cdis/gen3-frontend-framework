@@ -27,7 +27,7 @@ export const removeQueryParamsFromRouter = (
     // Remove all
     Object.keys(router.query).forEach((param) => delete router.query[param]);
   }
-  router.replace(
+  void router.replace(
     {
       pathname: router.pathname,
       query: router.query,

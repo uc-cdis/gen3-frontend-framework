@@ -35,7 +35,7 @@ export const DropdownPanel = <T extends FacetType = FacetType>({
   allFiltersCollapsed,
   toggleAllFiltersExpanded,
   clearAllFilters,
-  onAccessChange = (value: Accessibility) => null,
+  onAccessChange = (_value: Accessibility) => null,
   accessLevel = Accessibility.ALL,
   showAccessLevel = false,
   valueLabel = undefined as FacetValueLabel | undefined,

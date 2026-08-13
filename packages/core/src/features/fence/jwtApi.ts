@@ -1,7 +1,7 @@
 import { gen3Api } from '../gen3';
 
 export interface JWTKeys {
-  keys: ReadonlyArray<string[2]>
+  keys: ReadonlyArray<string[2]>;
 }
 
 // extending the gen3API to add a tag to the endpoints
@@ -23,6 +23,4 @@ export const jwtApi = credentialsWithTags.injectEndpoints({
   }),
 });
 
-export const {
-  useGetJWKKeysQuery,
-} = jwtApi;
+export const { useGetJWKKeysQuery, useLazyGetJWKKeysQuery } = jwtApi;

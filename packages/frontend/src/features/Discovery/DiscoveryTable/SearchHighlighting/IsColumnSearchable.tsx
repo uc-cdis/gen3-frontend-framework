@@ -1,4 +1,4 @@
-import { DiscoveryConfig, DiscoveryIndexConfig } from '../../types';
+import { DiscoveryIndexConfig } from '../../types';
 
 export const IsColumnSearchable = (
   column: any,

@@ -2,9 +2,9 @@ import uniq from 'lodash/uniq';
 import sum from 'lodash/sum';
 import { JSONPath } from 'jsonpath-plus';
 import {
-  type ResourceAuthzMapping,
-  type JSONObject,
   type AggregationsData,
+  type JSONObject,
+  type ResourceAuthzMapping,
 } from '@gen3/core';
 import { SummaryStatisticsConfig } from '../Statistics';
 import { SummaryStatistics } from '../Statistics/types';
@@ -155,7 +155,7 @@ export const processAuthorizations = (
       let authMapping = {};
       if (isMesh) {
         let commonsURL = study.commons_url as string; // TODO: configure this value
-        if (commonsURL && commonsURL.startsWith('http')) {
+        if (commonsURL?.startsWith('http')) {
           commonsURL = new URL(commonsURL).hostname;
         }
         authMapping =

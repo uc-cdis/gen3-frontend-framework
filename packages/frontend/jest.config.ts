@@ -23,9 +23,14 @@ const jestConfig: JestConfigWithTsJest = {
     ],
     '<rootDir>/../../node_modules/(flat|jsonpath-plus)/.+\\.(j|t)s?$':
       'ts-jest',
+    // msw and parts of its dependency tree (rettime, until-async,
+    // @open-draft/*) ship ESM only, which Jest's CJS runtime cannot require.
+    // swc rewrites them to CommonJS on the fly.
+    '^.+\\.m?js$': ['@swc/jest', { module: { type: 'commonjs' } }],
   },
   transformIgnorePatterns: [
     '<rootDir>/../../node_modules/(?!(flat|jsonpath-plus))',
+    'node_modules/(?!(flat|jsonpath-plus|msw|@mswjs|@open-draft|rettime|until-async|headers-polyfill|strict-event-emitter)/)',
   ],
 };
 

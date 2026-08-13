@@ -26,6 +26,7 @@ export interface StudyPageConfig {
     field: string;
     className?: string;
   };
+  showSubmitButton?: boolean;
   downloadLinks?: DataDownloadLinks;
   downloadLinkFields?: DownloadLinkFields;
   classNames?: Record<string, string>;
@@ -79,10 +80,9 @@ export interface StudyDetailTab {
 }
 
 export interface StudyDetailView {
-  header: {
-    field: string;
-    className?: string;
-  };
+  showSubmitButton?: boolean;
+  headerField: string;
+  subHeaderField: string;
   tabs: StudyDetailTab[];
 }
 

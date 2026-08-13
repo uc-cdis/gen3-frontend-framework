@@ -343,6 +343,7 @@ describe('useFirstTimeUse', () => {
       );
     });
 
+    // oxlint-disable-next-line jest/no-disabled-tests
     it.skip('should hide modal after marking as seen', async () => {
       // TODO: This test has isolation issues when run with other tests
       // but passes when run individually. The hook logic is correct.
@@ -387,6 +388,7 @@ describe('useFirstTimeUse', () => {
       });
     });
 
+    // oxlint-disable-next-line jest/no-disabled-tests
     it.skip('should handle localStorage read errors gracefully', async () => {
       // TODO: This test has isolation issues when run with other tests
       // but passes when run individually. The hook logic is correct.
@@ -444,6 +446,7 @@ describe('useFirstTimeUse', () => {
       );
     });
 
+    // oxlint-disable-next-line jest/no-disabled-tests
     it.skip('should handle invalid JSON in localStorage gracefully', async () => {
       // TODO: This test has isolation issues when run with other tests
       // but passes when run individually. The hook logic is correct.

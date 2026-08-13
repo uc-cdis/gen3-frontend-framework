@@ -55,7 +55,7 @@ export class CohortStorage<
     try {
       const db = await this.getDb();
       const tx = db.transaction(this.storeName, 'readwrite');
-      tx.objectStore(this.storeName).put(cohort);
+      await tx.objectStore(this.storeName).put(cohort);
       await tx.done;
       return { status: 200, message: 'cohort added' };
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -239,7 +239,7 @@ export class CohortStorage<
         modifiedDatetime: timestamp,
       };
 
-      store.put(updated);
+      await store.put(updated);
       await tx.done;
       return { status: 200, message: 'success' };
     } catch (error: unknown) {
@@ -275,7 +275,7 @@ export class CohortStorage<
         };
       }
 
-      store.delete(id);
+      await store.delete(id);
       await tx.done;
       return { status: 200, message: `${id} deleted` };
     } catch (error: unknown) {
@@ -297,7 +297,7 @@ export class CohortStorage<
       const db = await this.getDb();
       const tx = db.transaction(this.storeName, 'readwrite');
       const store = tx.objectStore(this.storeName);
-      store.clear();
+      await store.clear();
       await tx.done;
       return { status: 200, message: `all cohorts deleted` };
     } catch (error: unknown) {
