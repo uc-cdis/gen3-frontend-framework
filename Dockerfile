@@ -23,7 +23,6 @@ RUN npm config set fetch-retries 5 && \
 RUN apk add --no-cache python3 py3-pip bash curl bzip2
 
 # Stub that satisfies prepare_wasm.js without the glibc-linked micromamba binary.
-# Reads package info from the pre-downloaded cockle_wasm_env/conda-meta/ directory.
 COPY docker/micromamba-stub.py /usr/local/bin/micromamba
 RUN chmod +x /usr/local/bin/micromamba
 
@@ -43,7 +42,6 @@ RUN --mount=type=cache,target=/root/.npm \
 
 # Download cockle WASM packages from emscripten-forge so prepare_wasm.js reuses
 # the existing env instead of running micromamba create.
-# Package versions are pinned — keep in sync with packages/sampleCommons/cockle-config.json.
 RUN WASM_ENV=/gen3/packages/sampleCommons/cockle_wasm_env && \
     mkdir -p "$WASM_ENV" && \
     for URL in \
