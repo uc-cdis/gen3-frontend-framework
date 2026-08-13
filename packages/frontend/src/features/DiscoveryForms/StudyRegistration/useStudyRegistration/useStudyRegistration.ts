@@ -138,7 +138,6 @@ export const useStudyRegistration = (
             ...item,
             dropdownData: registerableStudyData as SelectOptionItem[],
             initialValue: registerableStudyData[0]?.value,
-            errorText: toString(item.errorText),
             type: item.type as FormContentType,
           }
         : {
@@ -146,7 +145,6 @@ export const useStudyRegistration = (
             dropdownData: item.dropdownData
               ? item.dropdownData
               : ([] as SelectOptionItem[]),
-            errorText: toString(item.errorText),
             initialValue: toString(item.initialValue),
             type: item.type as FormContentType,
           },

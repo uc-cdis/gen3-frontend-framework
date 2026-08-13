@@ -1,5 +1,5 @@
-import type { JSONObject } from "@gen3/core";
-import { toString } from "lodash";
+import type { JSONObject } from '@gen3/core';
+import { toString } from 'lodash';
 
 type Validator = (value: unknown) => string | null;
 type AsyncValidator = (
@@ -14,7 +14,7 @@ const CEDAR_UUID_REGEX =
   /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/i;
 
 const validateCedarUUID = (
-  errorText: string = 'Invalid Cedar User UUID',
+  errorText = 'Invalid Cedar User UUID',
 ): Validator => {
   return (value: unknown) => {
     if (!value || toString(value).trim() === '') return null;
