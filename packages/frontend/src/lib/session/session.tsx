@@ -32,6 +32,12 @@ import { modals } from '@mantine/modals';
 
 const ACTIVITY_THROTTLE_TIMEOUT = 7000;
 
+// Verbose session/refresh/inactivity console logging, off by default. Every
+// call site below is guarded by this flag with an `if` rather than a wrapper
+// function, so when it is disabled the log payload — object literals, date
+// formatting — is never constructed, not just never printed.
+const SESSION_DEBUG_LOGGING = process.env.NEXT_PUBLIC_SESSION_DEBUG === 'true';
+
 // Coming back to the page re-derives the refresh schedule from the real token.
 // Several signals mean "we are back" and can arrive together, so they share one
 // throttle: this keeps tab- and window-flipping from turning into one request per
@@ -475,8 +481,10 @@ export const SessionProvider = ({
 
   const clearScheduledRefresh = useCallback(() => {
     if (refreshTimeoutRef.current) {
-      // eslint-disable-next-line no-console
-      console.log('[session-refresh] clearing scheduled refresh timer');
+      if (SESSION_DEBUG_LOGGING) {
+        // eslint-disable-next-line no-console
+        console.log('[session-refresh] clearing scheduled refresh timer');
+      }
       clearTimeout(refreshTimeoutRef.current);
       refreshTimeoutRef.current = null;
     }
@@ -494,10 +502,12 @@ export const SessionProvider = ({
       if (!isMountedRef.current) return;
       const dueAt = Date.now() + delay;
       refreshDueAtRef.current = dueAt;
-      // eslint-disable-next-line no-console
-      console.log(
-        `[session-refresh] armed: next refresh in ${(delay / 1000).toFixed(1)}s, due at ${new Date(dueAt).toISOString()}`,
-      );
+      if (SESSION_DEBUG_LOGGING) {
+        // eslint-disable-next-line no-console
+        console.log(
+          `[session-refresh] armed: next refresh in ${(delay / 1000).toFixed(1)}s, due at ${new Date(dueAt).toISOString()}`,
+        );
+      }
       refreshTimeoutRef.current = setTimeout(() => {
         void performScheduledRefreshRef.current?.();
       }, delay);
@@ -512,21 +522,23 @@ export const SessionProvider = ({
   // current instead of spending a second request on it.
   const scheduleFromTokenData = useCallback(
     (session: AuthTokenData, loginStateIsFresh = false) => {
-      // eslint-disable-next-line no-console
-      console.log('[session-refresh] scheduleFromTokenData', {
-        status: session.status,
-        issued: session.issued
-          ? new Date(session.issued * 1000).toISOString()
-          : undefined,
-        expires: session.expires
-          ? new Date(session.expires * 1000).toISOString()
-          : undefined,
-        remainingSeconds: session.expires
-          ? Math.round(session.expires - Date.now() / 1000)
-          : undefined,
-        loginStateIsFresh,
-        failures: refreshFailuresRef.current,
-      });
+      if (SESSION_DEBUG_LOGGING) {
+        // eslint-disable-next-line no-console
+        console.log('[session-refresh] scheduleFromTokenData', {
+          status: session.status,
+          issued: session.issued
+            ? new Date(session.issued * 1000).toISOString()
+            : undefined,
+          expires: session.expires
+            ? new Date(session.expires * 1000).toISOString()
+            : undefined,
+          remainingSeconds: session.expires
+            ? Math.round(session.expires - Date.now() / 1000)
+            : undefined,
+          loginStateIsFresh,
+          failures: refreshFailuresRef.current,
+        });
+      }
 
       if (!isMountedRef.current) return;
       if (sessionStatusRef.current !== 'issued') return;
@@ -585,22 +597,26 @@ export const SessionProvider = ({
   );
 
   const performScheduledRefresh = useCallback(async () => {
-    // eslint-disable-next-line no-console
-    console.log('[session-refresh] performScheduledRefresh: firing', {
-      sessionStatus: sessionStatusRef.current,
-      lastRefreshedAt: lastRefreshedAtRef.current
-        ? new Date(lastRefreshedAtRef.current).toISOString()
-        : null,
-      msSinceLastRefresh: lastRefreshedAtRef.current
-        ? Date.now() - lastRefreshedAtRef.current
-        : null,
-    });
+    if (SESSION_DEBUG_LOGGING) {
+      // eslint-disable-next-line no-console
+      console.log('[session-refresh] performScheduledRefresh: firing', {
+        sessionStatus: sessionStatusRef.current,
+        lastRefreshedAt: lastRefreshedAtRef.current
+          ? new Date(lastRefreshedAtRef.current).toISOString()
+          : null,
+        msSinceLastRefresh: lastRefreshedAtRef.current
+          ? Date.now() - lastRefreshedAtRef.current
+          : null,
+      });
+    }
 
     if (sessionStatusRef.current !== 'issued') {
-      // eslint-disable-next-line no-console
-      console.log(
-        '[session-refresh] performScheduledRefresh: skipped, session not issued',
-      );
+      if (SESSION_DEBUG_LOGGING) {
+        // eslint-disable-next-line no-console
+        console.log(
+          '[session-refresh] performScheduledRefresh: skipped, session not issued',
+        );
+      }
       return;
     }
 
@@ -618,19 +634,23 @@ export const SessionProvider = ({
         await getUserDetails();
         session = await syncAuthTokenData();
         lastRefreshedAtRef.current = Date.now();
-        // eslint-disable-next-line no-console
-        console.log(
-          '[session-refresh] performScheduledRefresh: /user call completed',
-          { status: session.status },
-        );
+        if (SESSION_DEBUG_LOGGING) {
+          // eslint-disable-next-line no-console
+          console.log(
+            '[session-refresh] performScheduledRefresh: /user call completed',
+            { status: session.status },
+          );
+        }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error: unknown) {
         // Leave `session` as 'error' so we retry rather than abandon the chain.
-        // eslint-disable-next-line no-console
-        console.log(
-          '[session-refresh] performScheduledRefresh: /user call failed',
-          error,
-        );
+        if (SESSION_DEBUG_LOGGING) {
+          // eslint-disable-next-line no-console
+          console.log(
+            '[session-refresh] performScheduledRefresh: /user call failed',
+            error,
+          );
+        }
       }
       // This cycle opened with a /user call, so the login state is already as
       // current as a request can make it.
@@ -668,24 +688,28 @@ export const SessionProvider = ({
   const heartbeatTick = useCallback(() => {
     const dueAt = refreshDueAtRef.current;
     const now = Date.now();
-    // eslint-disable-next-line no-console
-    console.log('[session-refresh] heartbeat', {
-      dueAt: dueAt ? new Date(dueAt).toISOString() : null,
-      remainingSeconds: dueAt ? Math.round((dueAt - now) / 1000) : null,
-      refreshInFlight: refreshInFlightRef.current,
-      lastRefreshedAt: lastRefreshedAtRef.current
-        ? new Date(lastRefreshedAtRef.current).toISOString()
-        : null,
-    });
+    if (SESSION_DEBUG_LOGGING) {
+      // eslint-disable-next-line no-console
+      console.log('[session-refresh] heartbeat', {
+        dueAt: dueAt ? new Date(dueAt).toISOString() : null,
+        remainingSeconds: dueAt ? Math.round((dueAt - now) / 1000) : null,
+        refreshInFlight: refreshInFlightRef.current,
+        lastRefreshedAt: lastRefreshedAtRef.current
+          ? new Date(lastRefreshedAtRef.current).toISOString()
+          : null,
+      });
+    }
 
     if (dueAt === null) return; // nothing owed, or deliberately not rescheduled
     if (refreshInFlightRef.current) return; // that cycle owns the next deadline
     if (now < dueAt + REFRESH_HEARTBEAT_GRACE_MILLISECONDS) return;
 
-    // eslint-disable-next-line no-console
-    console.log(
-      '[session-refresh] heartbeat: deadline overdue, forcing refresh',
-    );
+    if (SESSION_DEBUG_LOGGING) {
+      // eslint-disable-next-line no-console
+      console.log(
+        '[session-refresh] heartbeat: deadline overdue, forcing refresh',
+      );
+    }
     void performScheduledRefreshRef.current?.();
   }, []);
 
@@ -833,10 +857,12 @@ export const SessionProvider = ({
   // must always reset the inactivity clock, even inside a throttle window.
   const recordActivity = useCallback(() => {
     const timestamp = Date.now();
-    // eslint-disable-next-line no-console
-    console.log(
-      `[session-inactivity] activity recorded at ${new Date(timestamp).toISOString()}`,
-    );
+    if (SESSION_DEBUG_LOGGING) {
+      // eslint-disable-next-line no-console
+      console.log(
+        `[session-inactivity] activity recorded at ${new Date(timestamp).toISOString()}`,
+      );
+    }
     setMostRecentActivityTimestamp(timestamp);
 
     if (broadcastChannelRef.current) {
@@ -867,16 +893,20 @@ export const SessionProvider = ({
   useEffect(() => closeExpiryWarning, [closeExpiryWarning]);
 
   const renewSession = useCallback(() => {
-    // eslint-disable-next-line no-console
-    console.log('[session-inactivity] renew requested from expiry warning');
+    if (SESSION_DEBUG_LOGGING) {
+      // eslint-disable-next-line no-console
+      console.log('[session-inactivity] renew requested from expiry warning');
+    }
     closeExpiryWarning();
     recordActivity(); // the point of "Renew": restart the inactivity clock
     updateSession();
   }, [closeExpiryWarning, recordActivity, updateSession]);
 
   const logoutFromWarning = useCallback(() => {
-    // eslint-disable-next-line no-console
-    console.log('[session-inactivity] logout requested from expiry warning');
+    if (SESSION_DEBUG_LOGGING) {
+      // eslint-disable-next-line no-console
+      console.log('[session-inactivity] logout requested from expiry warning');
+    }
     closeExpiryWarning();
     void endSession();
   }, [closeExpiryWarning, endSession]);
@@ -947,27 +977,31 @@ export const SessionProvider = ({
         ? workspaceInactivityTimeLimitMilliseconds
         : inactiveTimeLimitMilliseconds;
 
-      // eslint-disable-next-line no-console
-      console.log('[session-inactivity] tick', {
-        pathname,
-        lastActivityAt: new Date(mostRecentActivityTimestamp).toISOString(),
-        idleSeconds: Math.round(timeSinceLastActivity / 1000),
-        activeLimitSeconds: Math.round(activeLimit / 1000),
-        warningShown: expiryWarningIdRef.current !== null,
-      });
+      if (SESSION_DEBUG_LOGGING) {
+        // eslint-disable-next-line no-console
+        console.log('[session-inactivity] tick', {
+          pathname,
+          lastActivityAt: new Date(mostRecentActivityTimestamp).toISOString(),
+          idleSeconds: Math.round(timeSinceLastActivity / 1000),
+          activeLimitSeconds: Math.round(activeLimit / 1000),
+          warningShown: expiryWarningIdRef.current !== null,
+        });
+      }
 
       // A limit of 0 means no inactivity logout for this kind of page
       if (activeLimit <= 0) return;
 
       if (timeSinceLastActivity >= activeLimit) {
-        // eslint-disable-next-line no-console
-        console.log(
-          '[session-inactivity] idle limit exceeded, ending session',
-          {
-            idleSeconds: Math.round(timeSinceLastActivity / 1000),
-            activeLimitSeconds: Math.round(activeLimit / 1000),
-          },
-        );
+        if (SESSION_DEBUG_LOGGING) {
+          // eslint-disable-next-line no-console
+          console.log(
+            '[session-inactivity] idle limit exceeded, ending session',
+            {
+              idleSeconds: Math.round(timeSinceLastActivity / 1000),
+              activeLimitSeconds: Math.round(activeLimit / 1000),
+            },
+          );
+        }
         closeExpiryWarning();
         coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
         void endSession();
@@ -981,13 +1015,15 @@ export const SessionProvider = ({
         timeSinceLastActivity >= activeLimit - warningLead
       ) {
         if (!expiryWarningIdRef.current) {
-          // eslint-disable-next-line no-console
-          console.log('[session-inactivity] showing expiry warning', {
-            minutesRemaining: Math.max(
-              1,
-              Math.round(warningLead / MILLISECONDS_PER_MINUTE),
-            ),
-          });
+          if (SESSION_DEBUG_LOGGING) {
+            // eslint-disable-next-line no-console
+            console.log('[session-inactivity] showing expiry warning', {
+              minutesRemaining: Math.max(
+                1,
+                Math.round(warningLead / MILLISECONDS_PER_MINUTE),
+              ),
+            });
+          }
           // Show warning before session expires, giving user a chance to act
           expiryWarningIdRef.current = modals.openContextModal({
             modal: 'sessionExpiringModal',
@@ -1016,7 +1052,7 @@ export const SessionProvider = ({
       }
 
       // Take the warning down once the user is active again
-      if (expiryWarningIdRef.current) {
+      if (expiryWarningIdRef.current && SESSION_DEBUG_LOGGING) {
         // eslint-disable-next-line no-console
         console.log(
           '[session-inactivity] user active again, closing expiry warning',
