@@ -143,7 +143,7 @@ export const useStudyRegistration = (
           }
         : {
             ...item,
-            dropdownData: item?.dropdownData
+            dropdownData: item.dropdownData
               ? item.dropdownData
               : ([] as SelectOptionItem[]),
             errorText: toString(item.errorText),
