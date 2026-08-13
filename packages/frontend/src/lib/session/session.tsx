@@ -833,6 +833,10 @@ export const SessionProvider = ({
   // must always reset the inactivity clock, even inside a throttle window.
   const recordActivity = useCallback(() => {
     const timestamp = Date.now();
+    // eslint-disable-next-line no-console
+    console.log(
+      `[session-inactivity] activity recorded at ${new Date(timestamp).toISOString()}`,
+    );
     setMostRecentActivityTimestamp(timestamp);
 
     if (broadcastChannelRef.current) {
@@ -863,12 +867,16 @@ export const SessionProvider = ({
   useEffect(() => closeExpiryWarning, [closeExpiryWarning]);
 
   const renewSession = useCallback(() => {
+    // eslint-disable-next-line no-console
+    console.log('[session-inactivity] renew requested from expiry warning');
     closeExpiryWarning();
     recordActivity(); // the point of "Renew": restart the inactivity clock
     updateSession();
   }, [closeExpiryWarning, recordActivity, updateSession]);
 
   const logoutFromWarning = useCallback(() => {
+    // eslint-disable-next-line no-console
+    console.log('[session-inactivity] logout requested from expiry warning');
     closeExpiryWarning();
     void endSession();
   }, [closeExpiryWarning, endSession]);
@@ -939,10 +947,27 @@ export const SessionProvider = ({
         ? workspaceInactivityTimeLimitMilliseconds
         : inactiveTimeLimitMilliseconds;
 
+      // eslint-disable-next-line no-console
+      console.log('[session-inactivity] tick', {
+        pathname,
+        lastActivityAt: new Date(mostRecentActivityTimestamp).toISOString(),
+        idleSeconds: Math.round(timeSinceLastActivity / 1000),
+        activeLimitSeconds: Math.round(activeLimit / 1000),
+        warningShown: expiryWarningIdRef.current !== null,
+      });
+
       // A limit of 0 means no inactivity logout for this kind of page
       if (activeLimit <= 0) return;
 
       if (timeSinceLastActivity >= activeLimit) {
+        // eslint-disable-next-line no-console
+        console.log(
+          '[session-inactivity] idle limit exceeded, ending session',
+          {
+            idleSeconds: Math.round(timeSinceLastActivity / 1000),
+            activeLimitSeconds: Math.round(activeLimit / 1000),
+          },
+        );
         closeExpiryWarning();
         coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
         void endSession();
@@ -956,6 +981,13 @@ export const SessionProvider = ({
         timeSinceLastActivity >= activeLimit - warningLead
       ) {
         if (!expiryWarningIdRef.current) {
+          // eslint-disable-next-line no-console
+          console.log('[session-inactivity] showing expiry warning', {
+            minutesRemaining: Math.max(
+              1,
+              Math.round(warningLead / MILLISECONDS_PER_MINUTE),
+            ),
+          });
           // Show warning before session expires, giving user a chance to act
           expiryWarningIdRef.current = modals.openContextModal({
             modal: 'sessionExpiringModal',
@@ -984,6 +1016,12 @@ export const SessionProvider = ({
       }
 
       // Take the warning down once the user is active again
+      if (expiryWarningIdRef.current) {
+        // eslint-disable-next-line no-console
+        console.log(
+          '[session-inactivity] user active again, closing expiry warning',
+        );
+      }
       closeExpiryWarning();
 
       // Token refresh is handled by the exp-driven scheduler above — this
