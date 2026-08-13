@@ -21,7 +21,7 @@ const ProtectedContent = ({ children, referer }: ProtectedContentProps) => {
   const onUnauthenticated = () => {
     if (typeof window !== 'undefined')
       // route not available on SSR
-      router.push({
+      void router.push({
         pathname: '/Login',
         query: { referer: redirect?.includes('Login') ? '' : redirect },
       });
@@ -32,11 +32,13 @@ const ProtectedContent = ({ children, referer }: ProtectedContentProps) => {
       onUnauthenticated();
     }, 2000);
   };
-  const [stableStatus, setStableStatus] = useState<JWTSessionStatus | undefined>();
+  const [stableStatus, setStableStatus] = useState<
+    JWTSessionStatus | undefined
+  >();
 
   const { status, pending } = useSession(true, delayRedirect);
   useEffect(() => {
-    if (!pending && (stableStatus !== status)) {
+    if (!pending && stableStatus !== status) {
       // only update stableStatus if the session is not pending
       // this prevents flickering of the status
       setStableStatus(status);

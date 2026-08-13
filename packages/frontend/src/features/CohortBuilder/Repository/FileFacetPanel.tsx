@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, JSX } from 'react';
 import {
   useDeepCompareCallback,
   useDeepCompareEffect,

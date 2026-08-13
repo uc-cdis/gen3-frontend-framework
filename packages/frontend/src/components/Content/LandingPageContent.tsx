@@ -1,21 +1,29 @@
 import * as React from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
-import { Title, TitleOrder } from '@mantine/core';
-import { IconType } from 'react-icons';
+import type { TitleOrder } from '@mantine/core';
+import { Title } from '@mantine/core';
+import type { IconType } from 'react-icons';
 import { Gen3Button, Gen3ButtonReverse } from '../Buttons/Gen3Button';
 
-import { MdFormatQuote, MdGroup, MdOutlineBarChart, MdOutlineSearch, } from 'react-icons/md';
+import {
+  MdFormatQuote,
+  MdGroup,
+  MdOutlineBarChart,
+  MdOutlineSearch,
+} from 'react-icons/md';
 import { FaGraduationCap, FaRegQuestionCircle, FaVideo } from 'react-icons/fa';
 import Gen3Link from '../../features/Navigation/Gen3Link';
 import TextContent, { ContentType } from './TextContent';
-import { Gen3AppConfigData } from '../../lib/content/types';
+import type { Gen3AppConfigData } from '../../lib/content/types';
+import { withBasePath } from '../../utils/strings';
 
 export interface LandingPageContentProp {
   content: LandingPageProps;
 }
 
-export interface leftRightProps {
+export interface LeftRightProps {
   readonly text?: string;
   readonly type?: ContentType;
   readonly link?: {
@@ -36,8 +44,8 @@ export interface LandingPageProps extends Gen3AppConfigData {
       readonly level: TitleOrder;
     };
     readonly splitarea?: {
-      readonly left: leftRightProps[];
-      readonly right: leftRightProps[];
+      readonly left: LeftRightProps[];
+      readonly right: LeftRightProps[];
     };
     readonly break?: string;
     readonly cardsArea?: {
@@ -63,6 +71,7 @@ export interface LandingPageProps extends Gen3AppConfigData {
  * located at sampleCommons/config/{commons}/landingPage.json
  */
 const LandingPageContent = ({ content }: LandingPageContentProp) => {
+  const { basePath } = useRouter();
   return (
     <div className="sm:mt-8 2xl:mt-10 w-full bg-base-max">
       {content?.body?.map((component, index) => {
@@ -80,20 +89,20 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                 className={`${
                   index % 2 === 0 ? 'text-primary' : 'text-primary-lighter'
                 }}`}
-              ></span>
+              />
               {component.title.text}
             </Title>
           );
         }
         if (component.splitarea) {
-          const splitareaJsx = (area: leftRightProps[]) =>
+          const splitareaJsx = (area: LeftRightProps[]) =>
             area.map((obj, index) => {
               if (obj.text) {
                 return (
                   <TextContent
                     text={obj.text}
                     key={index}
-                    type={obj?.type ?? ContentType.Html}
+                    type={obj.type ?? ContentType.Html}
                     className="prose sm:prose-base 2xl:prose-lg mb-5 !mt-0"
                   />
                 );
@@ -107,7 +116,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                   >
                     <Gen3Link
                       className="flex items-center"
-                      href={obj.link.href}
+                      href={withBasePath(basePath, obj.link.href)}
                       linkType={obj.link.linkType}
                       text={obj.link.text}
                       showExternalIcon
@@ -118,7 +127,11 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
               if (obj.image) {
                 return (
                   <div key={index} className="h-full relative">
-                    <Image src={obj.image.src} alt={obj.image.alt} fill />
+                    <Image
+                      src={withBasePath(basePath, obj.image.src)}
+                      alt={obj.image.alt}
+                      fill
+                    />
                   </div>
                 );
               }
@@ -170,7 +183,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                       key={index}
                     >
                       <Gen3Link
-                        href={card.href}
+                        href={withBasePath(basePath, card.href)}
                         linkType={card.linkType}
                         text={card.btnText}
                       />

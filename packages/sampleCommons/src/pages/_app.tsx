@@ -1,8 +1,14 @@
 import whyDidYouRender from '@welldone-software/why-did-you-render';
-import App, { AppContext, AppInitialProps, AppProps } from 'next/app';
+import type { AppContext, AppInitialProps, AppProps } from 'next/app';
+import App from 'next/app';
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { MantineProvider, mergeThemeOverrides } from '@mantine/core';
 
+import type {
+  RegisteredIcons,
+  SessionConfiguration,
+  TenStringArray,
+} from '@gen3/frontend/app';
 import {
   type AuthorizedRoutesConfig,
   createMantineTheme,
@@ -11,12 +17,9 @@ import {
   Gen3Provider,
   type ModalsConfig,
   registerCohortBuilderDefaultPreviewRenderers,
-  RegisteredIcons,
   registerExplorerDefaultCellRenderers,
   registerIGVApp,
   registerMetadataSchemaApp,
-  SessionConfiguration,
-  TenStringArray,
 } from '@gen3/frontend/app';
 import { registerDefaultRemoteSupport, setDRSHostnames } from '@gen3/core';
 
@@ -25,7 +28,9 @@ import { registerCustomExplorerDetailsPanels } from '@/lib/CohortBuilder/FileDet
 
 import '../styles/globals.css';
 import '@fontsource/montserrat';
-import '@fontsource/source-sans-pro';
+// source-sans-pro is frozen at a fontsource build that ships no `types`/`exports`,
+// unlike montserrat/poppins — import the stylesheet directly so it type-resolves.
+import '@fontsource/source-sans-pro/index.css';
 import '@fontsource/poppins';
 import drsHostnames from '../../config/drsHostnames.json';
 import { loadContent } from '@/lib/content/loadContent';
@@ -90,11 +95,13 @@ const Gen3App = ({
       setMantineTheme(mergedTheme);
     }
     console.log('Gen3 App initialized');
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    // oxlint-disable-next-line react/react-compiler
     setIsClient(true); // Only on client-side
   }, []);
   return (

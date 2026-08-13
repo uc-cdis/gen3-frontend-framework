@@ -53,6 +53,8 @@ export enum WorkspaceStatus {
   NotFound = 'Not Found',
   Errored = 'Errored',
   StatusError = 'Status Error',
+  LaunchError = 'Launching Error',
+  TerminateError = 'Terminating Error',
 }
 
 /**
@@ -100,4 +102,13 @@ export interface WorkspaceStatusResponse {
   idleTimeLimit?: number;
   lastActivityTime: number;
   workspaceType?: string;
+}
+
+export interface KernelStatus {
+  id: string;
+  name: string;
+  connections: number;
+  executionState: string;
+  lastActivity: string;
+  lastUpdate: number;
 }

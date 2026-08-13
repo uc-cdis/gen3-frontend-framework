@@ -1,4 +1,5 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import { SerializedError } from '@reduxjs/toolkit';
 
 export type JSONValue =
   | string
@@ -233,6 +234,21 @@ export function isFetchParseError(error: unknown): error is ParsingError {
     'originalStatus' in error &&
     'status' in error &&
     error['status'] === 'PARSING_ERROR'
+  );
+}
+
+/**
+ * Type predicate to narrow an unknown error to a `SerializedError`
+ */
+export function isSerializedError(error: unknown): error is SerializedError {
+  return (
+    typeof error === 'object' &&
+    error != null &&
+    !('status' in error) &&
+    ('message' in error ||
+      'name' in error ||
+      'code' in error ||
+      'stack' in error)
   );
 }
 

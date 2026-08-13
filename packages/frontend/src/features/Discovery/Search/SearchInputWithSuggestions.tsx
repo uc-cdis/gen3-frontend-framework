@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { MdSearch as SearchIcon, MdClose as CloseIcon } from 'react-icons/md';
+import React from 'react';
+import { MdClose as CloseIcon, MdSearch as SearchIcon } from 'react-icons/md';
 import { Autocomplete } from '@mantine/core';
 import { SearchInputProps } from './types';
 

@@ -177,7 +177,7 @@ export const explorerApi = explorerTags.injectEndpoints({
         offset = 0,
         size = 20,
         accessibility = Accessibility.ALL,
-        format = undefined,
+        format,
         indexPrefix = '',
         filterName = 'filter',
       }: RawDataAndTotalCountsParams) => {
@@ -231,7 +231,7 @@ export const explorerApi = explorerTags.injectEndpoints({
       },
       // return . separated fields as proper values
       transformResponse: (response: Record<string, any>, _meta, args) => {
-        const containsDots = args?.fields?.filter((f) => f.includes('.'));
+        const containsDots = args.fields?.filter((f) => f.includes('.'));
         // check if dot seperated in arry and not object
         if (containsDots && containsDots.length > 0 && response.data) {
           const containsDotsUniqueBase = containsDots.reduce((acc, field) => {
@@ -324,7 +324,7 @@ export const explorerApi = explorerTags.injectEndpoints({
 
         // check for totals
         const count =
-          response?.data?.[`${args?.indexPrefix ?? ''}_aggregation`][args.type]
+          response.data?.[`${args?.indexPrefix ?? ''}_aggregation`][args.type]
             ?._totalCount ?? null;
 
         return {
@@ -341,7 +341,7 @@ export const explorerApi = explorerTags.injectEndpoints({
         filters,
         accessibility = Accessibility.ALL,
         filterSelf = false,
-        queryId = undefined,
+        queryId,
         indexPrefix = '',
         filterName = 'filter',
       }: QueryAggsParams) => {
@@ -369,10 +369,10 @@ export const explorerApi = explorerTags.injectEndpoints({
       query: ({
         type,
         mainField,
-        termsFields = undefined,
-        missingFields = undefined,
-        numericAggAsText = false,
-        filters = undefined,
+        termsFields,
+        missingFields,
+        numericAggAsText,
+        filters,
         accessibility = Accessibility.ALL,
         indexPrefix = '',
         filterName = 'filter',
@@ -383,11 +383,11 @@ export const explorerApi = explorerTags.injectEndpoints({
         };
 
         const query = `query getSubAggs ( ${
-          filters ?? `$${filterName}: JSON,`
+          filters && `$${filterName}: JSON,`
         } $nestedAggFields: JSON) {
     ${indexPrefix}_aggregation {
       ${type} ( ${
-        filters ?? `filter: $${filterName}, filterSelf: false,`
+        filters && `filter: $${filterName}, filterSelf: false,`
       } nestedAggFields: $nestedAggFields, accessibility: ${accessibility}) {
       _totalCounts
         ${nestedHistogramQueryStrForEachField(mainField, numericAggAsText)}
@@ -418,7 +418,7 @@ export const explorerApi = explorerTags.injectEndpoints({
         type,
         filters,
         accessibility = Accessibility.ALL,
-        queryId = undefined,
+        queryId,
         indexPrefix = '',
         filterName = 'filter',
       }: QueryCountsParams) => {
@@ -464,8 +464,9 @@ export const explorerApi = explorerTags.injectEndpoints({
         args,
       ): number => {
         return (
-          response?.data[`${args?.indexPrefix ?? ''}_aggregation`][args.type]
-            ?._totalCount ?? 0
+          response?.data?.[`${args?.indexPrefix ?? ''}_aggregation`]?.[
+            args.type
+          ]?._totalCount ?? 0
         );
       },
       providesTags: ['COUNTS'],
@@ -497,9 +498,7 @@ export const explorerApi = explorerTags.injectEndpoints({
         return {
           query: query,
           variables: {
-            ...(gqlFilters && {
-              [filterName]: gqlFilters,
-            }),
+            [filterName]: gqlFilters,
           },
         };
       },
@@ -545,7 +544,7 @@ export const explorerApi = explorerTags.injectEndpoints({
         rangeBaseName,
         index,
         indexPrefix,
-        accessibility = Accessibility.ALL,
+        accessibility,
         isNested = true,
         asTextHistogram = false,
       }: RangeQueryRequest) => {
@@ -651,7 +650,7 @@ export const buildGetAggregationQuery = (
   filters: FilterSet,
   accessibility = Accessibility.ALL,
   filterSelf: boolean = false,
-  queryId: string | undefined = undefined,
+  queryId?: string,
   indexPrefix: string = '',
   filterName: string = 'filter',
 ): GraphQLQuery => {
@@ -683,7 +682,7 @@ export const buildGetStatsAggregationQuery = (
   filters: FilterSet,
   accessibility = Accessibility.ALL,
   filterSelf: boolean = false,
-  queryId: string | undefined = undefined,
+  queryId?: string,
   indexPrefix: string = '',
   filterName: string = 'filter',
 ): GraphQLQuery => {

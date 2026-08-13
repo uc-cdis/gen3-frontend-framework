@@ -14,7 +14,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true,
     "paths": {
       "@/*": ["./src/*"],
@@ -28,9 +28,8 @@
       "@gen3/frontend/explorerRenderers": [
         "../frontend/src/exports/explorerRenderers.ts"
       ],
-      "@gen3/frontend/features": [
-        "../frontend/src/features/index.ts"
-      ]
+      "@gen3/workspaces": ["../workspaces/src/*"],
+      "@gen3/workspaces/server": ["../workspaces/src/server.ts"]
     },
     "plugins": [
       {

@@ -1,4 +1,7 @@
 import { Gen3AppConfigData } from '../../lib/content/types';
+import { FormProps } from '../../components/Content/Form';
+import { Config403Props } from '../../pages/403/types';
+import { RemoteSupportConfiguration } from '@gen3/core';
 
 export interface WorkspaceAdditionalInfo {
   title?: string;
@@ -36,10 +39,25 @@ export interface LaunchStepIndicatorConfiguration {
   }>;
 }
 
+export interface SupportServiceConfiguration {
+  service: string;
+  subject?: string;
+  configuration: RemoteSupportConfiguration;
+}
+
+export interface requestAccessFormProps extends Omit<FormProps, 'body'> {
+  enabled: boolean;
+  label: string;
+  form: FormProps['body'];
+  success: Config403Props;
+  remoteSupportService: SupportServiceConfiguration;
+  onPage?: string[];
+}
+
 export interface WorkspaceConfig extends Gen3AppConfigData {
-  title?: string;
   workspaceInfo?: Record<string, WorkspaceAdditionalInfo>;
   launchStepIndicatorConfig: LaunchStepIndicatorConfiguration;
   requirePayModel?: boolean;
   externalLoginsNotUsed?: boolean;
+  requestAccessForm?: requestAccessFormProps;
 }

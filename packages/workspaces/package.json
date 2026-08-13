@@ -1,0 +1,72 @@
+{
+  "name": "@gen3/workspaces",
+  "version": "0.12.60",
+  "description": "Workspaces for Gen3",
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "author": "Center for Translational Data Science",
+  "engines": {
+    "npm": ">=11.16.0",
+    "node": ">=24.18.0"
+  },
+  "main": "dist/index/cjs/index.js",
+  "module": "dist/index/esm/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "gen3-build-jupyterlite": "dist/jupyterlite-builds/scripts/build-jupyterlite.sh",
+    "gen3-sync-jupyter-assets": "dist/jupyterlite-builds/scripts/sync-jupyter-assets-into-package.sh",
+    "gen3-validate-jupyterlite": "dist/jupyterlite-builds/scripts/validate-jupyterlite-assets.sh"
+  },
+  "scripts": {
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "compile": "tsc",
+    "types": "tsc --emitDeclarationOnly",
+    "clean": "rm -rf dist",
+    "rollup": "rollup --config rollup.config.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run compile && npm run types && npm run rollup",
+    "build:clean": "npm run clean && npm run build",
+    "dev": "echo no dev tasks",
+    "build:jupyterlite:free": "bash scripts/build-jupyterlite.sh free",
+    "build:jupyterlite:remote": "bash scripts/build-jupyterlite.sh remote",
+    "build:jupyterlite:all": "npm run build:jupyterlite:free && npm run build:jupyterlite:remote && npm run validate:jupyterlite:assets",
+    "validate:jupyterlite:assets": "bash scripts/validate-jupyterlite-assets.sh --free-dir jupyterlite-builds/free-private/site --remote-dir jupyterlite-builds/remote-private/site"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index/cjs/index.js"
+      }
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server/esm/server.js",
+      "require": "./dist/server/cjs/server.js"
+    },
+    "./jupyterlite-builds/*": "./dist/jupyterlite-builds/*"
+  },
+  "dependencies": {
+    "@gen3/core": "^0.12.60",
+    "@gen3/frontend": "^0.12.60",
+    "camelcase-keys": "^10.0.2"
+  },
+  "peerDependencies": {
+    "@mantine/core": "^9.4.0",
+    "@mantine/dates": "^9.4.0",
+    "@mantine/form": "^9.4.0",
+    "@mantine/hooks": "^9.4.0",
+    "@mantine/modals": "^9.4.0",
+    "@mantine/notifications": "^9.4.0",
+    "mantine-react-table-open": "^9.0.3",
+    "next": "^16.3.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tailwindcss": "^3.4.18"
+  }
+}

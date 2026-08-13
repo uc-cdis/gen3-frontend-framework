@@ -21,6 +21,9 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
+    // oxlint's type-aware pass (tsgolint) resolves this tsconfig for test files
+    // too, and does not auto-include node_modules/@types the way tsc does.
+    "types": ["jest", "node", "@testing-library/jest-dom"],
     // "noUnusedLocals": true, // TODO: enable
     // "noUnusedParameters": true,
     // "noImplicitReturns": true,

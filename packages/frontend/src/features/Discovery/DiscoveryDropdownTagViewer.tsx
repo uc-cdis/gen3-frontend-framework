@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { JSX, useEffect, useRef, useState } from 'react';
 import { Group, MultiSelect } from '@mantine/core';
-import _ from 'lodash';
 import { categoryObject } from './types';
 import { useDiscoveryContext } from './DiscoveryProvider';
 
@@ -35,11 +34,7 @@ interface MultiSelectContainerProps {
   category: categoryObject;
 }
 const MultiSelectContainer = ({ category }: MultiSelectContainerProps) => {
-  const {
-    discoveryConfig: discoveryConfig,
-    selectedTags,
-    setSelectedTags,
-  } = useDiscoveryContext();
+  const { selectedTags, setSelectedTags } = useDiscoveryContext();
 
   const containerData = category.tags.map((tag) => ({
     value: tag,
@@ -62,7 +57,9 @@ const MultiSelectContainer = ({ category }: MultiSelectContainerProps) => {
 
   const handleChange = (value: string[]) => {
     const previousValues = prevSelectionsRef.current;
-    const removedTags = previousValues.filter((tag) => !value.includes(tag));
+    const removedTags = previousValues.filter(
+      (tag: string) => !value.includes(tag),
+    );
     const addedTags = value.filter((tag) => !previousValues.includes(tag));
     setSelectedTags((prev) => {
       const updated = { ...prev };

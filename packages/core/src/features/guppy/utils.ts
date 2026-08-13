@@ -106,7 +106,7 @@ export const downloadFromGuppyToBlob = async ({
       }
 
       let jsonData = await response.json();
-      if (parameters?.rootPath && parameters.rootPath) {
+      if (parameters?.rootPath) {
         // if rootPath is provided, extract the data from the rootPath
         jsonData = JSONPath({
           json: jsonData,
@@ -158,7 +158,7 @@ export const downloadJSONDataFromGuppy = async ({
     } as RequestInit);
 
     let jsonData = await response.json();
-    if (parameters?.rootPath && parameters.rootPath) {
+    if (parameters?.rootPath) {
       // if rootPath is provided, extract the data from the rootPath
       jsonData = JSONPath({
         json: jsonData,

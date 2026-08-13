@@ -15,7 +15,10 @@ import {
   userAuthApiReducerPath,
 } from './features/user/userSliceRTK';
 import { cohortReducers } from './features/cohort/reducers';
-import { sowerJobsListSliceReducer } from './features/sower/jobsListSlice';
+import { sowerReducer } from './features/sower/reducers';
+import { workspaceKernelReducer } from './features/workspace/jegKernelSlice.ts';
+import { tieredWorkspaceReducer } from './features/workspace/tieredWorkspaceSlice';
+import { jegActiveWorkspaceReducer } from './features/workspace/jegWorkspaceSlice.ts';
 
 export const rootReducer = combineReducers({
   gen3Services: gen3ServicesReducer,
@@ -25,10 +28,13 @@ export const rootReducer = combineReducers({
   modals: modalReducer,
   cohorts: cohortReducers,
   activeWorkspace: activeWorkspaceReducer,
-  sowerJobsList: sowerJobsListSliceReducer,
+  tieredWorkspace: tieredWorkspaceReducer,
+  workspaceKernels: workspaceKernelReducer,
+  jegActiveWorkspace: jegActiveWorkspaceReducer,
   [guppyApiSliceReducerPath]: guppyApiReducer,
   [userAuthApiReducerPath]: userAuthApiReducer,
   [cartReducerPath]: cartReducer,
+  sower: sowerReducer,
 });
 
 export type CoreState = ReturnType<typeof rootReducer>;

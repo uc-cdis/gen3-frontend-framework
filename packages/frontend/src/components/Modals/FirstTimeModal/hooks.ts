@@ -199,7 +199,7 @@ export function useFirstTimeUse() {
       return false;
     };
 
-    checkAllStores().then((seen) => {
+    void checkAllStores().then((seen) => {
       setShowModal(!seen);
       setIsLoading(false);
     });
