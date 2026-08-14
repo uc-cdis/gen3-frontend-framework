@@ -12,8 +12,8 @@ describe('isUserOnPage', () => {
   it.each([
     ['/Login', 'Login'],
     ['/login', 'Login'],
-    ['/Workspace', 'Workspace'],
-    ['/Workspaces', 'Workspace'],
+    ['Workspaces', 'Workspace'],
+    ['Workspace', 'Workspace'],
     ['/Workspace/[id]', 'Workspace'],
     ['/admin/Workspace/Notebooks', 'Workspace'],
   ])('matches %s against %s', (pathname, pageName) => {
