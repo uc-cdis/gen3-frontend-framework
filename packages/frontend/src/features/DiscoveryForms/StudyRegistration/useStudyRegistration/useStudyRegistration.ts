@@ -88,7 +88,6 @@ export const useStudyRegistration = (
   // Helper func for setting study from router query as the first one shown
   const moveStudyToFront = useCallback(
     (studies: RegisterableStudy[], studyUID: string) => {
-      console.log('studies', studies);
       const targetIndex = studies.findIndex(
         (item) => item._hdp_uid === studyUID,
       );
