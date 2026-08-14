@@ -1,4 +1,3 @@
-// FormContentViews.stories.tsx
 import React from 'react';
 import { FormContentViews } from './FormContentViews';
 import { FormOutcome } from './types';

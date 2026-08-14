@@ -1,5 +1,5 @@
-import { toString } from "lodash";
-import type { UpdateStudyInMdsMutationTriggerType } from "./mdsApi";
+import { toString } from 'lodash';
+import type { UpdateStudyInMdsMutationTriggerType } from './mdsApi';
 
 export const updateStudyInMDS = async (
   mdsURL: string,
@@ -16,8 +16,8 @@ export const updateStudyInMDS = async (
 
     return response;
   } catch (error: unknown) {
-  throw new Error(
-    `Request for update study data failed: ${(error instanceof Error && error.message) || toString(error)}`,
-  );
-}
+    throw new Error(
+      `Request for update study data failed: ${(error instanceof Error && error.message) || toString(error)}`,
+    );
+  }
 };
