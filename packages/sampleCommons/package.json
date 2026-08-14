@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "analyze": "ANALYZE=true npm run build",
-    "build": "next build",
+    "build": "next build --webpack",
     "build:turbopack": "next build",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",

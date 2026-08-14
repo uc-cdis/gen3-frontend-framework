@@ -691,6 +691,7 @@ export const SessionProvider = ({
     if (SESSION_DEBUG_LOGGING) {
       // eslint-disable-next-line no-console
       console.log('[session-refresh] heartbeat', {
+        currentTime: new Date(now).toISOString(),
         dueAt: dueAt ? new Date(dueAt).toISOString() : null,
         remainingSeconds: dueAt ? Math.round((dueAt - now) / 1000) : null,
         refreshInFlight: refreshInFlightRef.current,
@@ -973,7 +974,21 @@ export const SessionProvider = ({
 
       const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
 
-      const activeLimit = isUserOnPage(pathname, 'Workspace')
+      if (SESSION_DEBUG_LOGGING) {
+        // eslint-disable-next-line no-console
+        console.log(
+          '[workspace-test]',
+          pathname,
+          isUserOnPage('Workspace', pathname),
+        );
+
+        console.log(
+          '[workspace-test] workspaceInactivityTimeLimitMilliseconds',
+          workspaceInactivityTimeLimitMilliseconds,
+        );
+      }
+
+      const activeLimit = isUserOnPage('Workspace', pathname)
         ? workspaceInactivityTimeLimitMilliseconds
         : inactiveTimeLimitMilliseconds;
 
