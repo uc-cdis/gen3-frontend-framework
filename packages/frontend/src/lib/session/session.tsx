@@ -982,6 +982,7 @@ export const SessionProvider = ({
           isUserOnPage('Workspace', pathname),
         );
 
+        // oxlint-disable-next-line no-console
         console.log(
           '[workspace-test] workspaceInactivityTimeLimitMilliseconds',
           workspaceInactivityTimeLimitMilliseconds,
