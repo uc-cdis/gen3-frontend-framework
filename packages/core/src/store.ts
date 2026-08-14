@@ -1,7 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { CoreState, rootReducer } from './reducers';
-import { registerGetState } from './storeRef';
 import { gen3ServicesReducerMiddleware } from './features/gen3/gen3Api';
 import { guppyAPISliceMiddleware } from './features/guppy/guppyApi';
 import { userAuthApiMiddleware } from './features/user/userSliceRTK';
@@ -69,7 +68,6 @@ export const setupCoreStore = (preloadedState?: Partial<CoreState>) =>
   });
 
 export const coreStore = setupCoreStore();
-registerGetState(coreStore.getState.bind(coreStore));
 
 setupListeners(coreStore.dispatch);
 
