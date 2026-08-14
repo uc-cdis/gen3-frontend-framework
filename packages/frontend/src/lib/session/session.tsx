@@ -969,7 +969,7 @@ export const SessionProvider = ({
     () => {
       const { pathname } = router;
       if (sessionInfo.status !== 'issued') return; // no need to update session if user is not logged in
-      if (isUserOnPage(pathname, 'Login')) return;
+      if (isUserOnPage('Login', pathname)) return;
       if (!logoutInactiveUsers) return;
 
       const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
