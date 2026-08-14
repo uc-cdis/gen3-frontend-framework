@@ -15,7 +15,7 @@ const mockFormBody = [
     label: 'Study',
     initialValue: 'HDP01266',
     required: true,
-    data: [
+    dropdownData: [
       {
         label:
           '1R43AR082729-01 : Ultrasound Stimulated Chondrogenic Stem Cell Therapy for Osteoarthritis : 10701506',
@@ -62,7 +62,7 @@ const mockFormBody = [
     label: 'Study Data Repository',
     initialValue: '',
     placeholder: 'Select a data repository',
-    data: [
+    dropdownData: [
       {
         value: 'BioSystics-AP',
         label: 'BioSystics-AP',
