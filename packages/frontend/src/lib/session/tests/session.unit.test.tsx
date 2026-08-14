@@ -686,8 +686,9 @@ describe('SessionProvider – expiry-driven refresh scheduling', () => {
       configurable: true,
     });
 
-    // Token expires 20 minutes from now — the scheduler should fire ~2
-    // minutes early (REFRESH_MARGIN_MILLISECONDS), not on updateSessionTime's clock.
+    // Token expires 20 minutes from now. Fence only reissues the access_token
+    // cookie reactively, once it has actually expired, so the scheduler targets
+    // `expires` itself (plus REFRESH_BUFFER_MILLISECONDS), not a margin before it.
     const expiresSeconds = Math.floor(Date.now() / 1000) + 20 * 60;
     global.fetch = jest.fn().mockResolvedValue({
       status: 200,
@@ -707,15 +708,15 @@ describe('SessionProvider – expiry-driven refresh scheduling', () => {
     await act(async () => {});
     getUserDetails.mockClear();
 
-    // Not yet due — well short of the 18-minute scheduled delay.
+    // Not yet due — short of the ~20-minute scheduled delay.
     await act(async () => {
-      jest.advanceTimersByTime(5 * 60 * 1000);
+      jest.advanceTimersByTime(19 * 60 * 1000);
     });
     expect(getUserDetails).not.toHaveBeenCalled();
 
-    // Advance past the scheduled refresh (expires - REFRESH_MARGIN_MILLISECONDS).
+    // Advance past the scheduled refresh (expires + REFRESH_BUFFER_MILLISECONDS).
     await act(async () => {
-      jest.advanceTimersByTime(15 * 60 * 1000);
+      jest.advanceTimersByTime(2 * 60 * 1000);
     });
 
     expect(getUserDetails).toHaveBeenCalled();
@@ -863,22 +864,23 @@ describe('SessionProvider – refresh scheduling resilience', () => {
     expect(getUserDetails).toHaveBeenCalled();
   });
 
-  it('backs off instead of tight-looping on an already-expiring token', async () => {
+  it('backs off instead of tight-looping on a token whose expiry never clears the retry floor', async () => {
     const getUserDetails = setupDefaultCoreMocks();
     hooksMock.useManageSession.mockReturnValue({
       status: 'issued',
       pending: false,
     });
 
-    // Inside the 2 minute refresh margin, and Fence is not moving the expiry
-    // forward: the wall-clock delay stays negative on every read.
+    // A hair from expiry — once REFRESH_BUFFER_MILLISECONDS is added this still
+    // comes in under the retry floor — and Fence is not moving the expiry
+    // forward: the computed delay stays under the floor on every read.
     const nowSeconds = Math.floor(Date.now() / 1000);
     global.fetch = jest.fn().mockResolvedValue({
       status: 200,
       json: jest.fn().mockResolvedValue({
         status: 'issued',
         issued: nowSeconds - 20 * 60,
-        expires: nowSeconds + 30,
+        expires: nowSeconds + 1,
       }),
     });
 
@@ -917,8 +919,10 @@ describe('SessionProvider – refresh scheduling resilience', () => {
     });
 
     // Browser clock is an hour behind the server, so the raw `exp - now`
-    // arithmetic claims ~78 minutes remain on a 20 minute token. The refresh has
-    // to happen within one lifetime, not when the skewed clock says.
+    // arithmetic claims ~78 minutes remain on a 20 minute token — this response
+    // has no `expiresInMs`, so the client falls back to computing it against its
+    // own (skewed) clock. The refresh has to happen within one lifetime, not
+    // when the skewed clock says.
     const serverNowSeconds = Math.floor(Date.now() / 1000) + 60 * 60;
     global.fetch = jest.fn().mockResolvedValue({
       status: 200,
@@ -938,14 +942,14 @@ describe('SessionProvider – refresh scheduling resilience', () => {
     await act(async () => {});
     getUserDetails.mockClear();
 
-    // Bounded to lifetime - margin == 18 minutes
+    // Bounded to lifetime + REFRESH_BUFFER_MILLISECONDS == ~20 minutes
     await act(async () => {
-      jest.advanceTimersByTime(17 * 60 * 1000);
+      jest.advanceTimersByTime(20 * 60 * 1000);
     });
     expect(getUserDetails).not.toHaveBeenCalled();
 
     await act(async () => {
-      jest.advanceTimersByTime(2 * 60 * 1000);
+      jest.advanceTimersByTime(10 * 1000);
     });
     expect(getUserDetails).toHaveBeenCalled();
   });
@@ -1245,7 +1249,7 @@ describe('SessionProvider – refresh scheduling resilience', () => {
     });
 
     // Reissued on every read, as Fence does when /user is hit, so a refresh that
-    // lands leaves a healthy token behind rather than one still inside the margin.
+    // lands leaves a fresh ~20-minute deadline behind rather than a stale one.
     global.fetch = jest.fn().mockImplementation(() => {
       const seconds = Math.floor(Date.now() / 1000);
       return Promise.resolve({
@@ -1282,15 +1286,15 @@ describe('SessionProvider – refresh scheduling resilience', () => {
       await act(async () => {});
       getUserDetails.mockClear();
 
-      // The 18 minute deadline passes with no timer to announce it
+      // The ~20 minute deadline passes with no timer to announce it
       await act(async () => {
-        jest.advanceTimersByTime(17 * 60 * 1000);
+        jest.advanceTimersByTime(20 * 60 * 1000);
       });
       expect(getUserDetails).not.toHaveBeenCalled();
 
       // The heartbeat notices once it is past the deadline plus its grace window
       await act(async () => {
-        jest.advanceTimersByTime(2 * 60 * 1000);
+        jest.advanceTimersByTime(60 * 1000);
       });
       expect(getUserDetails).toHaveBeenCalled();
 

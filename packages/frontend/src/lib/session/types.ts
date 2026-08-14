@@ -4,6 +4,13 @@ import { type JWTSessionStatus, type LoginStatus } from '@gen3/core';
 export interface AuthTokenData {
   issued?: number;
   expires?: number;
+  /**
+   * Milliseconds until `expires`, computed server-side (`exp * 1000 -
+   * Date.now()` against the Next.js server's own clock). Lets the client
+   * schedule its refresh off a ready-to-use relative delay instead of diffing
+   * this server-issued epoch against its own, possibly skewed, clock.
+   */
+  expiresInMs?: number;
   status: JWTSessionStatus;
   userContext?: Record<string, string>;
 }

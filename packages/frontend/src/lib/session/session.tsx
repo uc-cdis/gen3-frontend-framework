@@ -32,6 +32,12 @@ import { modals } from '@mantine/modals';
 
 const ACTIVITY_THROTTLE_TIMEOUT = 7000;
 
+// Verbose session/refresh/inactivity console logging, off by default. Every
+// call site below is guarded by this flag with an `if` rather than a wrapper
+// function, so when it is disabled the log payload — object literals, date
+// formatting — is never constructed, not just never printed.
+const SESSION_DEBUG_LOGGING = process.env.NEXT_PUBLIC_SESSION_DEBUG === 'true';
+
 // Coming back to the page re-derives the refresh schedule from the real token.
 // Several signals mean "we are back" and can arrive together, so they share one
 // throttle: this keeps tab- and window-flipping from turning into one request per
@@ -188,7 +194,14 @@ const useInterval = (callback: IntervalFunction, delay: number | null) => {
 // Refreshing against the token's own `exp` means we hit Fence's /user endpoint at most
 // once per token lifetime instead of on a fixed clock that can drift into
 // (or past) the actual expiry.
-const REFRESH_MARGIN_MILLISECONDS = minutesToMilliseconds(2);
+//
+// This targets `exp` itself, not a margin before it: Fence (with
+// RENEW_ACCESS_TOKEN_BEFORE_EXPIRATION unset/false, which we do not control)
+// only reissues the access_token cookie reactively, once it has actually
+// expired — a proactive call ahead of that reissues nothing and just gets read
+// again unchanged. This buffer only absorbs latency/clock difference between
+// the Next.js server and Fence, not the browser's clock — see `expiresInMs`.
+const REFRESH_BUFFER_MILLISECONDS = 2000;
 // How soon we retry once, and only once, after a cycle that didn't produce a
 // healthy token: hitting /user reissues the cookie, so one prompt attempt often
 // fixes things. Repeating it at this rate would not, hence the backoff below.
@@ -230,23 +243,29 @@ const MILLISECONDS_PER_MINUTE = minutesToMilliseconds(1);
  * Delay before the next refresh of a healthy token, or a negative/small number
  * when the token does not look healthy (see `unhealthyRefreshDelay`).
  *
- * `exp * 1000 - Date.now()` mixes the server's clock with the browser's, so a
- * skewed browser clock makes the result wrong in both directions. A clock that
- * is behind the server inflates it, which would schedule the refresh past the
- * real expiry and silently log the user out — and re-reading the token later
- * yields the same wrong answer, so nothing recovers from it. The remaining
- * lifetime can never exceed the token's full lifetime, so `iat` gives us a
- * skew-free upper bound. A clock that is ahead deflates the result instead,
- * which is handled by backing off rather than refreshing on a tight loop.
+ * `session.expiresInMs` is computed by the Next.js server (`exp * 1000 -
+ * Date.now()` against *its own* clock) and shipped as a ready-to-use relative
+ * delay, so the browser never has to diff a server-issued epoch against its
+ * own clock — a skewed browser clock cannot make this wrong. Older responses
+ * without the field (or a stale cached one) fall back to computing it here,
+ * which is exposed to that skew again.
+ *
+ * The remaining delay can never exceed the token's full lifetime, so `iat`
+ * gives us a skew-free upper bound in case `expiresInMs` is ever missing or
+ * wrong.
  */
 const refreshDelayFromToken = (session: AuthTokenData): number => {
-  const wallClockDelay =
-    (session.expires ?? 0) * 1000 - Date.now() - REFRESH_MARGIN_MILLISECONDS;
+  const serverRelativeDelay =
+    session.expiresInMs !== undefined
+      ? session.expiresInMs
+      : (session.expires ?? 0) * 1000 - Date.now();
 
-  if (!session.issued || !session.expires) return wallClockDelay;
+  const delay = serverRelativeDelay + REFRESH_BUFFER_MILLISECONDS;
+
+  if (!session.issued || !session.expires) return delay;
 
   const lifetime = (session.expires - session.issued) * 1000;
-  return Math.min(wallClockDelay, lifetime - REFRESH_MARGIN_MILLISECONDS);
+  return Math.min(delay, lifetime + REFRESH_BUFFER_MILLISECONDS);
 };
 
 /**
@@ -456,8 +475,16 @@ export const SessionProvider = ({
   // runs when it was promised. This is what the heartbeat compares against.
   const refreshDueAtRef = useRef<number | null>(null);
 
+  // Debug-only: when the last refresh cycle actually completed. Not used by
+  // any scheduling logic — purely for the console logging below.
+  const lastRefreshedAtRef = useRef<number | null>(null);
+
   const clearScheduledRefresh = useCallback(() => {
     if (refreshTimeoutRef.current) {
+      if (SESSION_DEBUG_LOGGING) {
+        // eslint-disable-next-line no-console
+        console.log('[session-refresh] clearing scheduled refresh timer');
+      }
       clearTimeout(refreshTimeoutRef.current);
       refreshTimeoutRef.current = null;
     }
@@ -473,7 +500,14 @@ export const SessionProvider = ({
     (delay: number) => {
       clearScheduledRefresh();
       if (!isMountedRef.current) return;
-      refreshDueAtRef.current = Date.now() + delay;
+      const dueAt = Date.now() + delay;
+      refreshDueAtRef.current = dueAt;
+      if (SESSION_DEBUG_LOGGING) {
+        // eslint-disable-next-line no-console
+        console.log(
+          `[session-refresh] armed: next refresh in ${(delay / 1000).toFixed(1)}s, due at ${new Date(dueAt).toISOString()}`,
+        );
+      }
       refreshTimeoutRef.current = setTimeout(() => {
         void performScheduledRefreshRef.current?.();
       }, delay);
@@ -488,6 +522,24 @@ export const SessionProvider = ({
   // current instead of spending a second request on it.
   const scheduleFromTokenData = useCallback(
     (session: AuthTokenData, loginStateIsFresh = false) => {
+      if (SESSION_DEBUG_LOGGING) {
+        // eslint-disable-next-line no-console
+        console.log('[session-refresh] scheduleFromTokenData', {
+          status: session.status,
+          issued: session.issued
+            ? new Date(session.issued * 1000).toISOString()
+            : undefined,
+          expires: session.expires
+            ? new Date(session.expires * 1000).toISOString()
+            : undefined,
+          remainingSeconds: session.expires
+            ? Math.round(session.expires - Date.now() / 1000)
+            : undefined,
+          loginStateIsFresh,
+          failures: refreshFailuresRef.current,
+        });
+      }
+
       if (!isMountedRef.current) return;
       if (sessionStatusRef.current !== 'issued') return;
 
@@ -545,7 +597,28 @@ export const SessionProvider = ({
   );
 
   const performScheduledRefresh = useCallback(async () => {
-    if (sessionStatusRef.current !== 'issued') return;
+    if (SESSION_DEBUG_LOGGING) {
+      // eslint-disable-next-line no-console
+      console.log('[session-refresh] performScheduledRefresh: firing', {
+        sessionStatus: sessionStatusRef.current,
+        lastRefreshedAt: lastRefreshedAtRef.current
+          ? new Date(lastRefreshedAtRef.current).toISOString()
+          : null,
+        msSinceLastRefresh: lastRefreshedAtRef.current
+          ? Date.now() - lastRefreshedAtRef.current
+          : null,
+      });
+    }
+
+    if (sessionStatusRef.current !== 'issued') {
+      if (SESSION_DEBUG_LOGGING) {
+        // eslint-disable-next-line no-console
+        console.log(
+          '[session-refresh] performScheduledRefresh: skipped, session not issued',
+        );
+      }
+      return;
+    }
 
     // This cycle consumes the deadline. `scheduleFromTokenData` sets the next one,
     // or deliberately leaves it unset for a token that is not coming back — which
@@ -560,9 +633,24 @@ export const SessionProvider = ({
       try {
         await getUserDetails();
         session = await syncAuthTokenData();
+        lastRefreshedAtRef.current = Date.now();
+        if (SESSION_DEBUG_LOGGING) {
+          // eslint-disable-next-line no-console
+          console.log(
+            '[session-refresh] performScheduledRefresh: /user call completed',
+            { status: session.status },
+          );
+        }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (_error: unknown) {
+      } catch (error: unknown) {
         // Leave `session` as 'error' so we retry rather than abandon the chain.
+        if (SESSION_DEBUG_LOGGING) {
+          // eslint-disable-next-line no-console
+          console.log(
+            '[session-refresh] performScheduledRefresh: /user call failed',
+            error,
+          );
+        }
       }
       // This cycle opened with a /user call, so the login state is already as
       // current as a request can make it.
@@ -599,10 +687,29 @@ export const SessionProvider = ({
   // that does not depend on how long the tab was away.
   const heartbeatTick = useCallback(() => {
     const dueAt = refreshDueAtRef.current;
+    const now = Date.now();
+    if (SESSION_DEBUG_LOGGING) {
+      // eslint-disable-next-line no-console
+      console.log('[session-refresh] heartbeat', {
+        dueAt: dueAt ? new Date(dueAt).toISOString() : null,
+        remainingSeconds: dueAt ? Math.round((dueAt - now) / 1000) : null,
+        refreshInFlight: refreshInFlightRef.current,
+        lastRefreshedAt: lastRefreshedAtRef.current
+          ? new Date(lastRefreshedAtRef.current).toISOString()
+          : null,
+      });
+    }
+
     if (dueAt === null) return; // nothing owed, or deliberately not rescheduled
     if (refreshInFlightRef.current) return; // that cycle owns the next deadline
-    if (Date.now() < dueAt + REFRESH_HEARTBEAT_GRACE_MILLISECONDS) return;
+    if (now < dueAt + REFRESH_HEARTBEAT_GRACE_MILLISECONDS) return;
 
+    if (SESSION_DEBUG_LOGGING) {
+      // eslint-disable-next-line no-console
+      console.log(
+        '[session-refresh] heartbeat: deadline overdue, forcing refresh',
+      );
+    }
     void performScheduledRefreshRef.current?.();
   }, []);
 
@@ -750,6 +857,12 @@ export const SessionProvider = ({
   // must always reset the inactivity clock, even inside a throttle window.
   const recordActivity = useCallback(() => {
     const timestamp = Date.now();
+    if (SESSION_DEBUG_LOGGING) {
+      // eslint-disable-next-line no-console
+      console.log(
+        `[session-inactivity] activity recorded at ${new Date(timestamp).toISOString()}`,
+      );
+    }
     setMostRecentActivityTimestamp(timestamp);
 
     if (broadcastChannelRef.current) {
@@ -780,12 +893,20 @@ export const SessionProvider = ({
   useEffect(() => closeExpiryWarning, [closeExpiryWarning]);
 
   const renewSession = useCallback(() => {
+    if (SESSION_DEBUG_LOGGING) {
+      // eslint-disable-next-line no-console
+      console.log('[session-inactivity] renew requested from expiry warning');
+    }
     closeExpiryWarning();
     recordActivity(); // the point of "Renew": restart the inactivity clock
     updateSession();
   }, [closeExpiryWarning, recordActivity, updateSession]);
 
   const logoutFromWarning = useCallback(() => {
+    if (SESSION_DEBUG_LOGGING) {
+      // eslint-disable-next-line no-console
+      console.log('[session-inactivity] logout requested from expiry warning');
+    }
     closeExpiryWarning();
     void endSession();
   }, [closeExpiryWarning, endSession]);
@@ -847,19 +968,40 @@ export const SessionProvider = ({
     () => {
       const { pathname } = router;
       if (sessionInfo.status !== 'issued') return; // no need to update session if user is not logged in
-      if (isUserOnPage('Login', pathname)) return;
+      if (isUserOnPage(pathname, 'Login')) return;
       if (!logoutInactiveUsers) return;
 
       const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
 
-      const activeLimit = isUserOnPage('Workspace', pathname)
+      const activeLimit = isUserOnPage(pathname, 'Workspace')
         ? workspaceInactivityTimeLimitMilliseconds
         : inactiveTimeLimitMilliseconds;
+
+      if (SESSION_DEBUG_LOGGING) {
+        // eslint-disable-next-line no-console
+        console.log('[session-inactivity] tick', {
+          pathname,
+          lastActivityAt: new Date(mostRecentActivityTimestamp).toISOString(),
+          idleSeconds: Math.round(timeSinceLastActivity / 1000),
+          activeLimitSeconds: Math.round(activeLimit / 1000),
+          warningShown: expiryWarningIdRef.current !== null,
+        });
+      }
 
       // A limit of 0 means no inactivity logout for this kind of page
       if (activeLimit <= 0) return;
 
       if (timeSinceLastActivity >= activeLimit) {
+        if (SESSION_DEBUG_LOGGING) {
+          // eslint-disable-next-line no-console
+          console.log(
+            '[session-inactivity] idle limit exceeded, ending session',
+            {
+              idleSeconds: Math.round(timeSinceLastActivity / 1000),
+              activeLimitSeconds: Math.round(activeLimit / 1000),
+            },
+          );
+        }
         closeExpiryWarning();
         coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
         void endSession();
@@ -873,6 +1015,15 @@ export const SessionProvider = ({
         timeSinceLastActivity >= activeLimit - warningLead
       ) {
         if (!expiryWarningIdRef.current) {
+          if (SESSION_DEBUG_LOGGING) {
+            // eslint-disable-next-line no-console
+            console.log('[session-inactivity] showing expiry warning', {
+              minutesRemaining: Math.max(
+                1,
+                Math.round(warningLead / MILLISECONDS_PER_MINUTE),
+              ),
+            });
+          }
           // Show warning before session expires, giving user a chance to act
           expiryWarningIdRef.current = modals.openContextModal({
             modal: 'sessionExpiringModal',
@@ -901,6 +1052,12 @@ export const SessionProvider = ({
       }
 
       // Take the warning down once the user is active again
+      if (expiryWarningIdRef.current && SESSION_DEBUG_LOGGING) {
+        // eslint-disable-next-line no-console
+        console.log(
+          '[session-inactivity] user active again, closing expiry warning',
+        );
+      }
       closeExpiryWarning();
 
       // Token refresh is handled by the exp-driven scheduler above — this
