@@ -1,9 +1,9 @@
 import React from 'react';
-import { MRT_Icons } from 'mantine-react-table';
+import { MRT_Icons } from 'mantine-react-table-open';
 import {
-  TiArrowUnsorted as Unsorted,
   TiArrowSortedDown as SortDsc,
   TiArrowSortedUp as SortAsc,
+  TiArrowUnsorted as Unsorted,
 } from 'react-icons/ti';
 
 import { FiMoreVertical as ColumnMenu } from 'react-icons/fi';

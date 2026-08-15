@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, JSX } from 'react';
 import { FacetDefinition, FacetType, fieldNameToLabel } from '@gen3/core';
 import { createFacetCard } from './createFacetCard';
 import { FacetHooks, FacetValueLabel } from './types';
@@ -17,7 +17,7 @@ const FiltersPanel = <T extends FacetType = FacetType>({
 }: FiltersPanelProps<T>): JSX.Element => {
   const [ref, rect] = useResizeObserver();
   const maxHeight = useMemo(() => {
-    const calcHeight = ref?.current?.getBoundingClientRect().top;
+    const calcHeight = rect.height;
     return !calcHeight || isNaN(calcHeight) ? undefined : calcHeight;
   }, [ref]);
 

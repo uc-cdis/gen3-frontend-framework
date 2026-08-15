@@ -24,6 +24,7 @@
     "declarationMap": true,
     "sourceMap": true,
     "skipLibCheck": true,
-    "lib": ["dom", "esnext"]
+    "lib": ["dom", "esnext"],
+    "types": ["jest", "node"]
   }
 }

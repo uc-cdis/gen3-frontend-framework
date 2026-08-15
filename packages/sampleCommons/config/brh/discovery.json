@@ -9,7 +9,7 @@
         "dataLoader": {
           "dataFetchFunction": "AggMDSAllLocal"
         },
-        "aiSearch": true,
+        "aiSearch": false,
         "advSearchFilters": {
           "enabled": false,
           "field": "advSearchFilters",
@@ -57,30 +57,30 @@
             "collapsibleButtonText": "Data Commons"
           }
         },
-          "exportFromDiscovery" : {
-            "enabled" : "true",
-            "exportDataFields" : {
-              "dataObjectFieldName": "__manifest"
-            },
-            "buttons": [
-              {
-                "type" : "manifest",
-                "label" : "Manifest"
-              },
-              {
-                "type" : "addToDataLibrary"
-              }
-            ]
+        "exportFromDiscovery": {
+          "enabled": "true",
+          "exportDataFields": {
+            "dataObjectFieldName": "__manifest"
           },
-          "exportToWorkspace": {
-            "enabled": true,
-            "manifestFieldName": "__manifest",
-            "enableDownloadManifest": true,
-            "downloadManifestButtonText": "Download",
-            "documentationLinks": {
-              "gen3Client": "https://docs.gen3.org/gen3-resources/tools/data-client/",
-              "gen3Workspaces": "https://docs.gen3.org/gen3-resources/user-guide/analyze-data/"
+          "buttons": [
+            {
+              "type": "manifest",
+              "label": "Manifest"
+            },
+            {
+              "type": "addToDataLibrary"
             }
+          ]
+        },
+        "exportToWorkspace": {
+          "enabled": true,
+          "manifestFieldName": "__manifest",
+          "enableDownloadManifest": true,
+          "downloadManifestButtonText": "Download",
+          "documentationLinks": {
+            "gen3Client": "https://docs.gen3.org/gen3-resources/tools/data-client/",
+            "gen3Workspaces": "https://docs.gen3.org/gen3-resources/user-guide/analyze-data/"
+          }
         },
         "authorization": {
           "enabled": true,

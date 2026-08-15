@@ -2,13 +2,13 @@ import React, { useMemo } from 'react';
 import {
   MantineReactTable,
   MRT_Cell,
-  MRT_Row,
   MRT_ColumnDef,
+  MRT_Row,
   useMantineReactTable,
-} from 'mantine-react-table';
+} from 'mantine-react-table-open';
 import { MetadataElement } from './types';
 import { List } from '@mantine/core';
-import { FaCircle as DiscIcon, FaCheck as Check } from 'react-icons/fa';
+import { FaCheck as Check, FaCircle as DiscIcon } from 'react-icons/fa';
 import { TableIcons } from '../../../components/Tables/TableIcons';
 
 type PropertyTableRowData = Pick<
@@ -127,7 +127,7 @@ const MetadataPropertiesTable = ({
     },
     mantineTableHeadRowProps: {
       style: {
-        '--mrt-base-background-color': 'var(--mantine-color-accent-cool-2)',
+        '--mrt-base-background-color': 'var(--mantine-color-accentCool-2)',
         fontSize: `var(--mantine-font-size-${fontSize})`,
       },
     },

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Center, Group, Loader, Stack, Tabs, Text } from '@mantine/core';
-import { useGetMetadataByIdQuery } from '@gen3/core';
-import { MetadataElement, MetadataPropertiesConfiguration } from './types';
+import { useGetMetadataByIdQuery, useGetMetadataByUrlQuery } from '@gen3/core';
+import type { MetadataElement, MetadataPropertiesConfiguration } from './types';
 import MetadataPropertiesTable from './MetadataPropertiesTable';
 import { ErrorCard } from '../../../components/MessageCards';
 
@@ -34,13 +34,28 @@ const MetadataSchemaPanel = ({
   schemaID,
   definitionsFieldName,
   fontSize = 'sm',
+  schemaUrl = undefined,
 }: MetadataPropertiesConfiguration) => {
-  const { data, isLoading, isError } = useGetMetadataByIdQuery(schemaID);
+  const {
+    data: dataByUrl,
+    isLoading: isLoadingByUrl,
+    isError: isErrorByUrl,
+  } = useGetMetadataByUrlQuery(schemaUrl!, { skip: !schemaUrl });
+
+  const {
+    data: dataById,
+    isLoading: isLoadingById,
+    isError: isErrorById,
+  } = useGetMetadataByIdQuery(schemaID!, { skip: !!schemaUrl });
+
+  const data = schemaUrl ? dataByUrl : dataById;
+  const isLoading = schemaUrl ? isLoadingByUrl : isLoadingById;
+  const isError = schemaUrl ? isErrorByUrl : isErrorById;
 
   if (isLoading) {
     return (
       <Center className="mt-10">
-        <Loader></Loader>
+        <Loader />
       </Center>
     );
   }

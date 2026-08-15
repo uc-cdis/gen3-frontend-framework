@@ -1,5 +1,5 @@
-import React, { Dispatch, SetStateAction, forwardRef } from 'react';
-import { Button, ButtonProps, Loader, Tooltip } from '@mantine/core';
+import React, { Dispatch, SetStateAction } from 'react';
+import { Button, Loader, Tooltip } from '@mantine/core';
 import { FiDownload } from 'react-icons/fi';
 import download from '../../../utils/download';
 import { hideModal, Modals, useCoreDispatch } from '@gen3/core';
@@ -45,6 +45,7 @@ interface DownloadButtonProps {
   Modal403?: Modals;
   Modal400?: Modals;
   toolTip?: string;
+  ref: React.RefObject<HTMLButtonElement>;
 }
 
 /**
@@ -76,79 +77,70 @@ interface DownloadButtonProps {
  * @category Buttons
  */
 
-export const DownloadButton = forwardRef<
-  HTMLButtonElement,
-  DownloadButtonProps & ButtonProps
->(
-  (
-    {
-      endpoint = '',
-      disabled = false,
-      inactiveText,
-      activeText,
-      params = {},
-      method = 'POST',
-      customStyle,
-      setActive,
-      onClick,
-      showLoading = true,
-      showIcon = true,
-      preventClickEvent = false,
-      active,
-      Modal400 = Modals.GeneralErrorModal,
-      Modal403 = Modals.NoAccessModal,
-      toolTip,
-      ...buttonProps
-    }: DownloadButtonProps,
-    ref,
-  ) => {
-    const text = active ? activeText : inactiveText;
-    const dispatch = useCoreDispatch();
-    const Icon = active ? (
-      <Loader size="sm" className="p-1" />
-    ) : (
-      <FiDownload title="download" size={16} />
-    );
+export const DownloadButton = ({
+  ref,
+  endpoint = '',
+  disabled = false,
+  inactiveText,
+  activeText,
+  params,
+  method = 'POST',
+  customStyle,
+  setActive,
+  onClick,
+  showLoading = true,
+  showIcon = true,
+  preventClickEvent = false,
+  active,
+  Modal400 = Modals.GeneralErrorModal,
+  Modal403 = Modals.NoAccessModal,
+  toolTip,
+  ...buttonProps
+}: DownloadButtonProps) => {
+  const text = active ? activeText : inactiveText;
+  const dispatch = useCoreDispatch();
+  const Icon = active ? (
+    <Loader size="sm" className="p-1" />
+  ) : (
+    <FiDownload title="download" size={16} />
+  );
 
-    return (
-      <Tooltip disabled={!toolTip} label={toolTip}>
-        <Button
-          ref={ref}
-          leftSection={showIcon && inactiveText && <FiDownload />}
-          disabled={disabled}
-          className={
-            customStyle ||
-            `text-base-lightest ${
-              disabled ? 'bg-base' : 'bg-primary hover:bg-primary-darker'
-            } `
+  return (
+    <Tooltip disabled={!toolTip} label={toolTip}>
+      <Button
+        ref={ref}
+        leftSection={showIcon && inactiveText && <FiDownload />}
+        disabled={disabled}
+        className={
+          customStyle ||
+          `text-base-lightest ${
+            disabled ? 'bg-base' : 'bg-primary hover:bg-primary-darker'
+          } `
+        }
+        loading={showLoading && active}
+        onClick={() => {
+          if (!preventClickEvent && onClick) {
+            onClick();
+            return;
           }
-          loading={showLoading && active}
-          onClick={() => {
-            if (!preventClickEvent && onClick) {
-              onClick();
-              return;
-            }
-            dispatch(hideModal());
-            if (setActive) setActive(true);
-            download({
-              endpoint,
-              params,
-              method,
-              dispatch,
-              done: () => {
-                if (setActive) setActive(false);
-              },
-              Modal400,
-              Modal403,
-            });
-          }}
-          {...buttonProps}
-        >
-          {text || Icon}
-        </Button>
-      </Tooltip>
-    );
-  },
-);
-
-DownloadButton.displayName = 'DownloadButton';
+          dispatch(hideModal());
+          if (setActive) setActive(true);
+          void download({
+            endpoint,
+            params,
+            method,
+            dispatch,
+            done: () => {
+              if (setActive) setActive(false);
+            },
+            Modal400,
+            Modal403,
+          });
+        }}
+        {...buttonProps}
+      >
+        {text || Icon}
+      </Button>
+    </Tooltip>
+  );
+};

@@ -18,7 +18,7 @@ export const useGetCurrentCohort = () => {
 
 const CohortBuilder = ({
   explorerConfig,
-  sharedFiltersMap = null,
+  sharedFiltersMap,
   tabsLayout = 'left',
   enableCohortManager = true,
   activeTab,

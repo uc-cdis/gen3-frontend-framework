@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { DictionaryWithContext } from '../../features/Dictionary';
 import { NavPageLayout } from '../../features/Navigation';
 import { DictionaryPageProps } from './types';

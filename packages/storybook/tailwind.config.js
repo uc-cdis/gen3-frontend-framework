@@ -2,6 +2,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { GEN3_COMMONS_NAME } = require('@gen3/core');
 const plugin = require('tailwindcss/plugin');
+// Vendored copy of @tailwindcss/typography re-exported by @gen3/frontend so this
+// config doesn't pull the vulnerable postcss-selector-parser@6.0.10 pinned by the
+// real @tailwindcss/typography package (CVE-2026-9358).
+const { typographyPlugin } = require('@gen3/frontend');
 const themeColors = require(
   `./../sampleCommons/config/${GEN3_COMMONS_NAME}/themeColors.json`,
 );
@@ -15,6 +19,10 @@ module.exports = {
     './../frontend/src/pages/**/*.{js,ts,jsx,tsx}',
     './../frontend/src/components/**/*.{js,ts,jsx,tsx}',
     './../frontend/src/features/**/*.{js,ts,jsx,tsx}',
+
+    './../workspaces/src/pages/**/*.{js,ts,jsx,tsx}',
+    './../workspaces/src/components/**/*.{js,ts,jsx,tsx}',
+    './../workspaces/src/features/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
@@ -52,7 +60,7 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/forms'),
-    require('@tailwindcss/typography'),
+    typographyPlugin,
     require('@tailwindcss/forms')({
       strategy: 'class',
     }),
@@ -136,31 +144,31 @@ module.exports = {
   ],
   // Add any colors. fontSize, height used in a json config file here
   safelist: [
-    'accent-warm',
+    'accentWarm',
     'text-tiny',
     'text-xxs',
     'text-xxxs',
     'h-20',
     {
       pattern:
-        /bg-(primary|secondary|accent|accent-warm|accent-cool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
+        /bg-(primary|secondary|accent|accentWarm|accentCool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
     },
     {
       pattern:
-        /text-(primary|secondary|accent|accent-warm|accent-cool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
+        /text-(primary|secondary|accent|accentWarm|accentCool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
     },
     {
       pattern:
-        /border-(primary|secondary|accent|accent-warm|accent-cool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
+        /border-(primary|secondary|accent|accentWarm|accentCool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
     },
     {
-      pattern: /bg-(primary|secondary|accent|accent-warm|accent-cool|base)/,
+      pattern: /bg-(primary|secondary|accent|accentWarm|accentCool|base)/,
     },
     {
-      pattern: /text-(primary|secondary|accent|accent-warm|accent-cool|base)/,
+      pattern: /text-(primary|secondary|accent|accentWarm|accentCool|base)/,
     },
     {
-      pattern: /border-(primary|secondary|accent|accent-warm|accent-cool|base)/,
+      pattern: /border-(primary|secondary|accent|accentWarm|accentCool|base)/,
     },
   ],
 };

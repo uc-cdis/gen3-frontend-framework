@@ -63,6 +63,7 @@ const ClinicalDataAnalysis = ({
   );
   const currentCohortFilters = allCohortFilters[index] ?? EmptyFilterSet;
 
+  // oxlint-disable-next-line no-unused-vars
   const cohortFilters = useDeepCompareMemo(
     () =>
       filterSetToOperation(currentCohortFilters) ??

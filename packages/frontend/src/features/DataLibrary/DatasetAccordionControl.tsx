@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { JSX, useState } from 'react';
 import {
   Accordion,
   AccordionControlProps,
@@ -46,7 +46,7 @@ export const DatasetAccordionControl = ({
 }: DatasetAccordionControlProps): JSX.Element => {
   const [value, setValue] = useState<string | undefined>(undefined);
   const handleUpdateName = () => {
-    updateHandler({ name: value });
+    void updateHandler({ name: value });
     setValue(undefined);
   };
   const theme = useMantineTheme();

@@ -1,6 +1,6 @@
 import tw from 'tailwind-styled-components';
 import { Button, ButtonProps, Loader, Tooltip } from '@mantine/core';
-import React, { forwardRef } from 'react';
+import React from 'react';
 import { Icon } from '@iconify-icon/react';
 
 export const ADDITIONAL_DOWNLOAD_MESSAGE =
@@ -16,7 +16,6 @@ export type FunctionButtonVariants =
 export interface FunctionButtonProps extends ButtonProps {
   disabled?: boolean;
   $variant?: FunctionButtonVariants;
-  ref?: any;
   onClick?: () => void;
   tooltip?: string;
   multilineTooltip?: boolean;
@@ -26,6 +25,7 @@ export interface FunctionButtonProps extends ButtonProps {
   showDownloadIcon?: boolean;
   loaderSize?: number;
   downloadIconSize?: number;
+  ref?: React.RefObject<HTMLButtonElement>;
 }
 
 const StyledButton = tw(Button)<FunctionButtonProps>`
@@ -69,82 +69,78 @@ ${(p: FunctionButtonProps) =>
  * @param downloadIconSize - size of the download icon (defaults to 16)
  * @category Buttons
  */
-const FunctionButton = forwardRef<HTMLButtonElement, FunctionButtonProps>(
-  (
-    {
-      tooltip,
-      multilineTooltip = false,
-      isActive = false,
-      isDownload = false,
-      disableResponsiveIcon = false,
-      showDownloadIcon = false,
-      loaderSize = 16,
-      downloadIconSize = 16,
-      leftSection,
-      ...props
-    },
+const FunctionButton = (
+  {
     ref,
-  ) => {
-    const tooltipLabel = tooltip
-      ? tooltip
-      : isDownload && isActive
-        ? ADDITIONAL_DOWNLOAD_MESSAGE
-        : undefined;
+    tooltip,
+    multilineTooltip = false,
+    isActive = false,
+    isDownload = false,
+    disableResponsiveIcon = false,
+    showDownloadIcon = false,
+    loaderSize = 16,
+    downloadIconSize = 16,
+    leftSection,
+    ...props
+  }: FunctionButtonProps
+) => {
+  const tooltipLabel = tooltip
+    ? tooltip
+    : isDownload && isActive
+      ? ADDITIONAL_DOWNLOAD_MESSAGE
+      : undefined;
 
-    const getLeftSection = () => {
-      if (leftSection !== undefined) {
-        return leftSection;
-      }
+  const getLeftSection = () => {
+    if (leftSection !== undefined) {
+      return leftSection;
+    }
 
-      if (isActive) {
-        return <Loader size={loaderSize} color="currentColor" />;
-      }
+    if (isActive) {
+      return <Loader size={loaderSize} color="currentColor" />;
+    }
 
-      if (showDownloadIcon) {
-        return (
-          <Icon
-            icon="gen3:download"
-            width={downloadIconSize}
-            height={downloadIconSize}
-            aria-label="download"
-            className={`${
-              !disableResponsiveIcon ? 'hidden xl:block' : 'block'
-            }`}
-          />
-        );
-      }
-
-      return null;
-    };
-    const button = (
-      <StyledButton
-        ref={ref}
-        leftSection={getLeftSection()}
-        classNames={{
-          section: `mr-0 ${
-            isActive || disableResponsiveIcon ? 'mr-2' : 'xl:mr-2'
-          }`,
-          ...props.classNames,
-        }}
-        {...props}
-      />
-    );
-
-    if (tooltipLabel) {
+    if (showDownloadIcon) {
       return (
-        <Tooltip
-          label={tooltipLabel}
-          multiline={multilineTooltip}
-          w={multilineTooltip ? '400' : 'auto'}
-        >
-          {button}
-        </Tooltip>
+        <Icon
+          icon="gen3:download"
+          width={downloadIconSize}
+          height={downloadIconSize}
+          aria-label="download"
+          className={`${
+            !disableResponsiveIcon ? 'hidden xl:block' : 'block'
+          }`}
+        />
       );
     }
-    return button;
-  },
-);
 
-FunctionButton.displayName = 'FunctionButton';
+    return null;
+  };
+  const button = (
+    <StyledButton
+      ref={ref}
+      leftSection={getLeftSection()}
+      classNames={{
+        section: `mr-0 ${
+          isActive || disableResponsiveIcon ? 'mr-2' : 'xl:mr-2'
+        }`,
+        ...props.classNames,
+      }}
+      {...props}
+    />
+  );
+
+  if (tooltipLabel) {
+    return (
+      <Tooltip
+        label={tooltipLabel}
+        multiline={multilineTooltip}
+        w={multilineTooltip ? '400' : 'auto'}
+      >
+        {button}
+      </Tooltip>
+    );
+  }
+  return button;
+};
 
 export default FunctionButton;
