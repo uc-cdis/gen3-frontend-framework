@@ -25,12 +25,17 @@ const withMDX = require('@next/mdx')({
   },
 });
 
-const pkgPath = path.join(
-  path.dirname(require.resolve('@gen3/frontend')),
-  '..',
-  'package.json',
+const packageJson = require(
+  path.resolve(
+    __dirname,
+    '..',
+    '..',
+    'node_modules',
+    '@gen3',
+    'frontend',
+    'package.json',
+  ),
 );
-const packageJson = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {

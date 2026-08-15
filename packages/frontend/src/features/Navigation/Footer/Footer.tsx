@@ -15,6 +15,8 @@ const scaleY = {
 const STYLING_DEFAULTS = {
   root: 'bg-primary-lighter text-primary-contrast-lighter p-4 shadow-sm',
   layout: 'flex items-center justify-between',
+  version:
+    'flex justify-start items-center gap-x-2 text-primary-contrast-lighter',
 };
 
 const GEN3_VERSION = process.env.NEXT_PUBLIC_GEN3_VERSION || 'n/a';
@@ -47,7 +49,9 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
                     {leftSection && <FooterSection {...leftSection} />}
                     {rightSection && <FooterSection {...rightSection} />}
                   </div>
-                  <div className="flex justify-start items-center gap-x-2 text-primary-contrast">
+                  <div
+                    className={extractClassName('version', mergedClassNames)}
+                  >
                     <Text size="0.625rem">UI</Text>
                     <Text size="0.625rem" fw={600}>
                       v{GEN3_VERSION}

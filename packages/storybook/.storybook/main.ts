@@ -10,8 +10,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const require = createRequire(import.meta.url);
 
-console.log('__dirname:', __dirname);
-
 const packageJson = require(
   path.resolve(
     __dirname,
@@ -23,7 +21,6 @@ const packageJson = require(
     'frontend',
     'package.json',
   ),
-  // adjust the relative path to wherever node_modules lives from .storybook/
 );
 
 console.log('package', packageJson.version);
