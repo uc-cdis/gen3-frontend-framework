@@ -10,6 +10,24 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const require = createRequire(import.meta.url);
 
+console.log('__dirname:', __dirname);
+
+const packageJson = require(
+  path.resolve(
+    __dirname,
+    '..',
+    '..',
+    '..',
+    'node_modules',
+    '@gen3',
+    'frontend',
+    'package.json',
+  ),
+  // adjust the relative path to wherever node_modules lives from .storybook/
+);
+
+console.log('package', packageJson.version);
+
 const config: StorybookConfig = {
   stories: [
     '../../frontend/src/components/**/*.stories.@(js|jsx|mjs|ts|tsx)',
@@ -17,6 +35,10 @@ const config: StorybookConfig = {
     '../../frontend/src/pages/**/*.stories.@(js|jsx|mjs|ts|tsx)',
     '../../workspaces/src/components/**/*.stories.@(js|jsx|mjs|ts|tsx)',
   ],
+  env: (config) => ({
+    ...config,
+    NEXT_PUBLIC_GEN3_VERSION: packageJson.version,
+  }),
   addons: [
     getAbsolutePath('@storybook/addon-onboarding'),
     getAbsolutePath('@chromatic-com/storybook'),

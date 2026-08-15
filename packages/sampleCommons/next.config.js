@@ -4,6 +4,7 @@
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const dns = require('dns');
+const fs = require('fs');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require('path');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -24,10 +25,18 @@ const withMDX = require('@next/mdx')({
   },
 });
 
+const pkgPath = path.join(
+  path.dirname(require.resolve('@gen3/frontend')),
+  '..',
+  'package.json',
+);
+const packageJson = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
     version: process.env.npm_package_version,
+    NEXT_PUBLIC_GEN3_VERSION: packageJson.version,
   },
   /* -- uncomment for logging in production
   compiler: {
