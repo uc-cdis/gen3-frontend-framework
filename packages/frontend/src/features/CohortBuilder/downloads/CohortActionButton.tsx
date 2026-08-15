@@ -32,7 +32,7 @@ const CohortActionButton = ({
 
   const clickHandler = useCallback(() => {
     if (disabled) return;
-    if (!active) handleClick();
+    if (!active) void handleClick();
     else cancel();
   }, [active, disabled, handleClick, cancel]);
 
@@ -52,4 +52,4 @@ const CohortActionButton = ({
   );
 };
 
-export default CohortActionButton;
+export default React.memo(CohortActionButton);

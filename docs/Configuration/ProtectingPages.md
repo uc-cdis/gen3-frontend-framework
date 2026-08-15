@@ -12,7 +12,6 @@ The password for each page can be set in the `config/gen3/authz,json` file. The 
 ```json
 
 {
-  "enableAuthz": false,
   "routes": {
     "/DataLibrary": {
       "loginRequired": true
@@ -29,9 +28,6 @@ The password for each page can be set in the `config/gen3/authz,json` file. The 
   }
 }
 ```
-The `enableAuthz` flag enables or disables authorization for pages that require it. This flag is set to `false` by default.
-It only controls whether the user is prompted for a password.
-
 The `routes` object maps page paths to authentication and authorization settings for each page.
 Each entry in the `routes` object is a key-value pair where the key is the page path and the value is an object containing the
 authentication and authorization settings. If login is required for a page, the `loginRequired` flag is set to `true`; this is
@@ -46,6 +42,13 @@ Authorization to a page is controlled by the `authz` entry in a route entry. For
 ```
 
 Will only allow users with the `/workspace` resource to view the `/Workspace` page. Note that the authz must be a **resource** - not a policy or group on the user YAML. Note also that the checks look for the existence of the resource in the user YAML, and not the mapping information, such as read/write. Support for mappings can be added, but this should be sufficient for most use cases.
+
+Select all can be used for directories only at the topmost level use `(.*)` to select all files in a directory for a policy example: 
+```json
+"/protectedDirectory/(.*)": {
+  "loginRequired": true
+}
+```
 
 See the [Appendix](#appendix-adding-page-access-policies-to-the-useryaml) at the bottom of the page for an example of a role, resources, and policies that you can use for all of the frontend-framework pages (as of Jan 9, 2026). 
 

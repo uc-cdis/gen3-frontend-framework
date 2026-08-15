@@ -6,6 +6,17 @@ import { NavPageLayoutProps } from '../../features/Navigation';
 
 const NotebookLitePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
   const router = useRouter();
+  const { notebook } = router.query;
+  const path =
+    typeof notebook === 'string'
+      ? notebook
+      : typeof notebook === 'object'
+        ? notebook[0]
+        : undefined;
+  const url = path
+    ? `${router.basePath}/site/index.html?path=${path}`
+    : `${router.basePath}/site/index.html`;
+
   return (
     <NavPageLayout
       {...{ footerProps, headerProps }}
@@ -18,11 +29,12 @@ const NotebookLitePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
       <div className="flex justify-items-center w-full">
         <iframe
           allow="cross-origin"
-          src={`${router.basePath}/jupyter/index.html`}
+          src={url}
           width="100%"
           height="100%"
           title="client notebook"
-        ></iframe>
+          style={{ border: 'none' }}
+        />
       </div>
     </NavPageLayout>
   );

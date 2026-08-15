@@ -3,39 +3,58 @@ import {
   Box,
   Button,
   Center,
+  Flex,
   LoadingOverlay,
   Select,
-  Stack,
 } from '@mantine/core';
 import {
   type Gen3LoginProvider,
   type NameUrl,
   useGetLoginProvidersQuery,
 } from '@gen3/core';
-import { LoginSelectedProps } from './types';
+import type { LoginSelectedProps } from './types';
 import { ErrorCard } from '../MessageCards';
+import type { TextContentProps } from '../Content/TextContent';
+import TextContent from '../Content/TextContent';
 
 interface LoginProviderItemProps extends LoginSelectedProps {
   readonly provider: Gen3LoginProvider;
 }
 
+const logninExtraText = (extra: ReadonlyArray<TextContentProps>) => {
+  return extra?.map((content, index) => (
+    <TextContent {...content} key={index} />
+  ));
+};
+
 const LoginProviderMultipleItems = ({
   provider,
   handleLoginSelected,
+  loginProviderExtra,
+  loginBtnHorizontal,
 }: LoginProviderItemProps) => {
   const [value, setValue] = useState<string | null>(null);
+  const extra = loginProviderExtra && loginProviderExtra[provider.name];
   return (
     <div
-      className="flex flex-col w-full font-medium hover:text-accent-light hover:font-bold"
+      className={`flex ${loginBtnHorizontal ? '!w-full justify-center flex-wrap' : 'flex-col  w-full'} font-medium hover:text-accent-light hover:font-bold`}
       key={`${provider.name}-login-item`}
     >
+      {extra && logninExtraText(extra)}
       <Select
         data={provider.urls.map((item: NameUrl) => ({
           value: item.url,
           label: item.name,
         }))}
         classNames={{
-          root: 'w-full',
+          root: loginBtnHorizontal
+            ? 'flex gap-5 grow flex-wrap justify-center'
+            : 'w-full',
+          label: loginBtnHorizontal
+            ? 'flex-none text-nowrap content-center font-bold'
+            : '',
+          wrapper: loginBtnHorizontal ? 'grow' : '',
+          input: loginBtnHorizontal ? 'min-w-fit rounded-r-none' : '',
           // item: 'font-medium hover:text-accent-light hover:font-bold',
         }}
         onChange={setValue}
@@ -52,7 +71,9 @@ const LoginProviderMultipleItems = ({
         key={provider.name}
         color="accent.3"
         disabled={!value}
-        classNames={{ root: 'data-disabled:bg-accent-lightest' }}
+        classNames={{
+          root: `data-disabled:bg-accent-lightest ${loginBtnHorizontal ? 'w-1/4 rounded-l-none min-w-fit' : ''}`,
+        }}
         onClick={() => value && handleLoginSelected(value)}
       >
         {' '}
@@ -65,21 +86,29 @@ const LoginProviderMultipleItems = ({
 const LoginProviderSingleItem = ({
   provider,
   handleLoginSelected,
+  loginProviderExtra,
 }: LoginProviderItemProps) => {
+  const extra = loginProviderExtra?.[provider.name];
   return (
-    <Button
-      fullWidth
-      key={provider.name}
-      color="accent.3"
-      onClick={() => handleLoginSelected(provider.urls[0].url)}
-    >
-      {' '}
-      {provider.name}{' '}
-    </Button>
+    <React.Fragment>
+      {extra && logninExtraText(extra)}
+      <Button
+        fullWidth
+        key={provider.name}
+        color="accent.3"
+        onClick={() => handleLoginSelected(provider.urls[0].url)}
+      >
+        {provider.name}{' '}
+      </Button>
+    </React.Fragment>
   );
 };
 
-const LoginProvidersPanel = ({ handleLoginSelected }: LoginSelectedProps) => {
+const LoginProvidersPanel = ({
+  handleLoginSelected,
+  loginProviderExtra,
+  loginBtnHorizontal,
+}: LoginSelectedProps) => {
   const { data, isSuccess, isError, isLoading, isFetching } =
     useGetLoginProvidersQuery();
 
@@ -105,17 +134,32 @@ const LoginProvidersPanel = ({ handleLoginSelected }: LoginSelectedProps) => {
 
   return (
     <Box className="flex flex-col items-center justify-center">
-      <Stack align="center" className="w-1/3">
+      <Flex
+        mih={50}
+        gap="md"
+        justify="center"
+        align="center"
+        direction={loginBtnHorizontal ? 'row' : 'column'}
+        wrap="wrap"
+        className={
+          loginBtnHorizontal
+            ? '*:w-1/4 *:min-w-fit w-full'
+            : '*:w-1/3 w-full  *:min-w-fit'
+        }
+      >
         {data && data.default_provider.urls.length > 1 ? (
           <LoginProviderMultipleItems
             provider={data.default_provider}
             handleLoginSelected={handleLoginSelected}
+            loginProviderExtra={loginProviderExtra}
+            loginBtnHorizontal={loginBtnHorizontal}
           />
         ) : (
           data && (
             <LoginProviderSingleItem
               provider={data.default_provider}
               handleLoginSelected={handleLoginSelected}
+              loginProviderExtra={loginProviderExtra}
             />
           )
         )}
@@ -127,16 +171,19 @@ const LoginProvidersPanel = ({ handleLoginSelected }: LoginSelectedProps) => {
                 key={x.name}
                 provider={x}
                 handleLoginSelected={handleLoginSelected}
+                loginProviderExtra={loginProviderExtra}
+                loginBtnHorizontal={loginBtnHorizontal}
               />
             ) : (
               <LoginProviderSingleItem
                 key={x.name}
                 provider={x}
                 handleLoginSelected={handleLoginSelected}
+                loginProviderExtra={loginProviderExtra}
               />
             ),
           )}
-      </Stack>
+      </Flex>
     </Box>
   );
 };

@@ -3,7 +3,7 @@ import {
   CoreState,
   type EnumFilterValue,
   extractEnumFilterValue,
-  fieldNameToTitle,
+  fieldNameToLabel,
   removeCohortFilter,
   selectIndexedFilterByName,
   selectSharedFilters,
@@ -59,11 +59,11 @@ export const useExtractRangeFilterValues = (
   return filter ? extractRangeValues(filter) : undefined;
 };
 
-export const useFieldNameToTitle = () => {
+export const useFieldNameToLabel = () => {
   const fieldToTitle = useCallback((field: string, sections?: number) => {
     return field === 'genes.gene_id'
       ? 'Mutated Gene'
-      : fieldNameToTitle(field, sections);
+      : fieldNameToLabel(field, sections);
   }, []);
 
   return fieldToTitle;

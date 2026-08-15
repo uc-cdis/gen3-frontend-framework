@@ -4,14 +4,14 @@
 
 ### Prerequisites
 
-This is a multi-workspace repo that requires npm v10. The minimum node version is set to v22.11.0.
+This is a multi-workspace repo that requires npm v11. The minimum node version is set to v24.18.0.
 
 Node can be downloaded from the official Node.js site. You may also consider using a [Node version manager](https://docs.npmjs.com/cli/v7/configuring-npm/install#using-a-node-version-manager-to-install-nodejs-and-npm).
 
-Your version of Node may not ship with npm v10. To install it, run:
+Your version of Node may not ship with npm v11. To install it, run:
 
 ```bash
-npm install npm@10.2.4 -g
+npm install npm@11.16.0 -g
 ```
 
 Note: if you see this error:
@@ -58,11 +58,13 @@ npm run dev
 
 By default, this will start a dev server listening to http://localhost:3000
 
-Note: Recompiling the type definitions for core needs to be done manually:
-
+If you want to run the dev server but connect it to a remote Gen3 datacommons, create a `.env.development.local` file
+in the `packages/sampleCommons` directory and add the following:
 ```bash
-npm run compile --w=packages/core
+NEXT_PUBLIC_GEN3_API_TARGET=https://gen3.datacommons.io/
 ```
+
+Note that the configuration in config needs to match the backend.
 
 ### Linting
 

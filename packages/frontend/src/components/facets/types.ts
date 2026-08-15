@@ -3,6 +3,7 @@ import {
   DataFetchingResult,
   EnumFilterValue,
   FacetDefinition,
+  FacetSortType as CoreFacetSortType,
   IndexAndField,
   NumericFromTo,
   Operation,
@@ -47,6 +48,7 @@ export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly queryOptions?: QueryOptions;
   readonly moveValuesToBottom?: Array<string>;
   readonly excludeValues?: Array<string>;
+  readonly defaultSort?: FacetSortType;
 
   readonly header?: {
     readonly Panel: ComponentType<{ children: ReactNode }>; // optional header component
@@ -99,7 +101,7 @@ export type GetFacetDataFunction<
           | GetRangeFacetDataFunction
           | GetRangeFacetWithDefinedRangesDataFunction;
 
-export type FieldNameToTitleFunction = (
+export type fieldNameToLabelFunction = (
   field: string,
   sections?: number,
 ) => string;
@@ -121,7 +123,7 @@ export interface FacetCommonHooks {
   /**
    * Hook that takes the API field and returns a human readable field name
    */
-  useFieldNameToTitle: () => (field: string, sections?: number) => string;
+  useFieldNameToLabel: () => (field: string, sections?: number) => string;
   useToggleExpandFilter?: () => (field: string, expanded: boolean) => void;
   useFilterExpanded?: (field: string) => boolean;
   usePopulateFacetData?: (
@@ -236,15 +238,11 @@ export type NumericFacetCardProps = FacetCardProps<NumericRangeFacetHooks> & {
   readonly rangeDatatype?: string;
   readonly minimum: number | undefined;
   readonly maximum: number | undefined;
+  readonly step?: number;
   readonly clearValues?: boolean;
 };
 
-// compact string representation of SortType for config file
-export type FacetSortType =
-  | 'value-asc'
-  | 'value-dsc'
-  | 'label-asc'
-  | 'label-desc';
+export type FacetSortType = CoreFacetSortType;
 
 /**
  * Sort type for enum buckets

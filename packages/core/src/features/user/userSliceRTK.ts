@@ -165,3 +165,8 @@ export const selectHeadersWithCSRFToken = createSelector(
     ...(csrfToken && { 'X-CSRF-Token': csrfToken }),
   }),
 );
+
+export const useGetUserDetailsRequestStatus = () =>
+  userAuthApi.endpoints.fetchUserDetails.useQueryState(undefined, {
+    selectFromResult: ({ isFetching, isError }) => ({ isFetching, isError }),
+  });

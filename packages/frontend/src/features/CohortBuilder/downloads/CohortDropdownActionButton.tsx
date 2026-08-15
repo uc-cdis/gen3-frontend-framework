@@ -1,5 +1,11 @@
 import React, { ReactElement, ReactNode, useCallback, useState } from 'react';
-import { Button, FloatingPosition, Menu, MenuItemProps, Tooltip, } from '@mantine/core';
+import {
+  Button,
+  FloatingPosition,
+  Menu,
+  MenuItemProps,
+  Tooltip,
+} from '@mantine/core';
 import { IoMdArrowDropdown as Dropdown } from 'react-icons/io';
 import { focusStyles } from '../../../utils';
 import useGuppyActionButton from './downloadActionHook';
@@ -57,7 +63,7 @@ const GuppyDropdownMenuItem = ({
   });
   const clickHandler = useCallback(() => {
     if (disabled) return;
-    if (!active) handleClick();
+    if (!active) void handleClick();
     else cancel();
   }, [active, disabled, handleClick, cancel]);
   return (
@@ -205,7 +211,7 @@ const CohortDropdownActionButton = ({
             <GuppyDropdownMenuItem
               key={`${title}-${idx}`}
               data-testid={`${title}-${idx}`}
-              leftSection={icon && icon}
+              leftSection={icon}
               disabled={disabled}
               title={title}
               idx={idx}
@@ -222,4 +228,4 @@ const CohortDropdownActionButton = ({
   );
 };
 
-export default CohortDropdownActionButton;
+export default React.memo(CohortDropdownActionButton);

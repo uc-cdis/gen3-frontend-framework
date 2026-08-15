@@ -13,7 +13,7 @@ import {
   SearchTerms,
 } from '../../types';
 
-import { getFilterValuesByKey, hasSearchTerms } from '../../Search/utils';
+import { getFilterValuesByKey } from '../../Search/utils';
 
 // TODO remove after debugging
 // import { reactWhatChanged as RWC } from 'react-what-changed';

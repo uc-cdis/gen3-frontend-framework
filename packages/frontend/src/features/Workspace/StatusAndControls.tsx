@@ -3,7 +3,6 @@ import { Button, Group, Text, Tooltip, Transition } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { FaRegStopCircle as StopIcon } from 'react-icons/fa';
 import { BsArrowsFullscreen as FullscreenIcon } from 'react-icons/bs';
-import { Icon } from '@iconify-icon/react';
 import { useWorkspaceStatusContext } from './WorkspaceStatusProvider';
 import {
   isWorkspaceRunningOrStopping,
@@ -52,7 +51,7 @@ const StatusAndControls = () => {
                   <StopIcon
                     color="utility.2"
                     size="1rem"
-                    className="text-accent-warm"
+                    className="text-accentWarm"
                   />
                 }
               >
@@ -70,7 +69,7 @@ const StatusAndControls = () => {
                 aria-label={
                   isFullscreen ? 'Exit Fullscreen' : 'Make Fullscreen'
                 }
-                leftSection={<FullscreenIcon className="text-accent-warm" />}
+                leftSection={<FullscreenIcon className="text-accentWarm" />}
               >
                 {isFullscreen ? 'Exit Fullscreen' : 'Make Fullscreen'}
               </Button>

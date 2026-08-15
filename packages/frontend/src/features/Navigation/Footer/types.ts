@@ -1,8 +1,5 @@
 import { ReactElement } from 'react';
-import {
-  StylingMergeMode,
-  StylingOverrideWithMergeControl,
-} from '../../../types';
+import { StylingOverrideWithMergeControl } from '../../../types';
 
 export interface ColumnLinks {
   heading: string;
@@ -52,20 +49,16 @@ export interface FooterLogo {
 }
 
 export type FooterRow =
-  | FooterLogo
-  | FooterText
-  | FooterLink
-  | FooterLinks
-  | FooterSectionProps;
+  FooterLogo | FooterText | FooterLink | FooterLinks | FooterSectionProps;
 
 export interface FooterColumnProps {
   heading?: string;
-  rows: Array<Record<string, FooterRow>>;
+  rows?: Array<Record<string, FooterRow>>;
   classNames?: StylingOverrideWithMergeControl;
 }
 
 export interface FooterSectionProps {
-  columns: ReadonlyArray<FooterColumnProps>;
+  columns?: ReadonlyArray<FooterColumnProps>;
   className?: string;
 }
 
@@ -78,4 +71,5 @@ export interface FooterProps {
   leftSection?: FooterSectionProps;
   classNames?: StylingOverrideWithMergeControl;
   customFooter?: ReactElement;
+  hideFooter?: boolean;
 }

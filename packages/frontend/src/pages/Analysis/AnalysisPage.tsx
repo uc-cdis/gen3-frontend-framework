@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { Center } from '@mantine/core';
-import { NavPageLayout } from '../../features/Navigation';
+import { FixedNavPageLayout, NavPageLayout } from '../../features/Navigation';
 import AnalysisPanel from '../../features/Analysis/AnalysisPanel';
 import AnalysisCenterWithSections from '../../features/Analysis/AnalysisCenterWithSections';
 import { AnalysisPageLayoutProps } from './types';
 import { ErrorCard } from '../../components/MessageCards';
+import { AnalysisWithCloseButton } from '../../features/Analysis';
 
 const AnalysisPage = ({
   headerProps,
@@ -12,7 +13,29 @@ const AnalysisPage = ({
   tools,
   sections,
   classNames,
+  type = 'section',
+  label,
+  description,
 }: AnalysisPageLayoutProps): JSX.Element => {
+  if (type === 'breadcrumb') {
+    return (
+      <FixedNavPageLayout
+        {...{ headerProps, footerProps }}
+        headerMetadata={{
+          title: 'Gen3 Analysis Center',
+          content: 'Analysis Center',
+          key: 'gen3-analysis-center',
+        }}
+      >
+        <AnalysisWithCloseButton
+          tools={tools ?? []}
+          label={label}
+          description={description}
+        />
+      </FixedNavPageLayout>
+    );
+  }
+
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
@@ -27,6 +50,7 @@ const AnalysisPage = ({
           <ErrorCard message="No tools or sections found" />
         </Center>
       )}
+
       {tools && <AnalysisPanel tools={tools} />}
       {sections && (
         <AnalysisCenterWithSections

@@ -5,8 +5,9 @@ import searchData from '@/utils/api/discovery/processData/searchData';
 import sortData from '@/utils/api/discovery/processData/sortData';
 import filterByAdvSearch from '@/utils/api/discovery/processData/filterByAdvSearch';
 import combineData from '@/utils/api/discovery/preProcessData/combineData';
-// TODO:
-// import addAuthMetaData from '@/utils/api/discovery/preProcessData/addAuthMetaData';
+import processTagCategoryData from '@/utils/api/discovery/processData/processTagCategoryData';
+import addAccessLevelsMetaData from '@/utils/api/discovery/preProcessData/addAccessLevelsMetaData';
+import filterByAccessLevels from '@/utils/api/discovery/processData/filterByAccessLevels';
 
 let cachedData: Array<JSONObject> = [];
 let cacheTime = 0;
@@ -17,21 +18,31 @@ const mdsMetadataApi =
   'https://healdata.org/mds/metadata?data=True&_guid_type=unregistered_discovery_metadata&limit=2000&offset=0';
 
 // Main Function to Orchestrate Steps
-const processData = (data: Array<JSONObject>, reqBody: any) => {
+const processData = async (
+  data: Array<JSONObject>,
+  reqBody: any,
+  cookies: any,
+) => {
   const {
     pagination,
     searchTerms,
     sorting,
     selectedTags,
     selectedFieldsForSearchIndexing,
+    searchMode,
+    selectedAccessLevels,
     discoveryConfig,
   } = reqBody;
-  let processedData: Array<JSONObject> = data;
-  // First: Search
+  const preprocessedData = await addAccessLevelsMetaData(data, cookies);
+  let processedData: Array<JSONObject> = preprocessedData;
+  // Study access levels filtering (user selected data availability)
+  processedData = filterByAccessLevels(processedData, selectedAccessLevels);
+  // Then: Search
   processedData = searchData(
-    data,
+    processedData,
     searchTerms.keyword.keywords,
     selectedFieldsForSearchIndexing,
+    searchMode,
     discoveryConfig,
   );
   // Then Adv Search Filtering (user selected filters)
@@ -54,14 +65,16 @@ const processData = (data: Array<JSONObject>, reqBody: any) => {
     hits: processedData.length,
     displayedData: paginatedData,
     suggestions: [],
+    tagCategoryData: processTagCategoryData(data, discoveryConfig),
   };
 };
 
 export default async function handler(req: any, res: any) {
+  const cookies = req.headers.cookie || '';
   const currentTime = Date.now();
   // Check if cached data is still valid
   if (cachedData && currentTime - cacheTime < CACHE_DURATION) {
-    const processedData = processData(cachedData, req.body);
+    const processedData = await processData(cachedData, req.body, cookies);
     res.status(200).json(processedData);
   } else {
     try {
@@ -85,7 +98,7 @@ export default async function handler(req: any, res: any) {
       // Update the cache
       cachedData = combinedData;
       cacheTime = currentTime;
-      const processedData = processData(combinedData, req.body);
+      const processedData = await processData(combinedData, req.body, cookies);
       res.status(200).json(processedData);
     } catch (error) {
       console.error('Fetch error:', error);

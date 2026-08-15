@@ -19,6 +19,7 @@ import {
   selectUserDetails,
   useFetchUserDetailsQuery,
   useGetCSRFQuery,
+  useGetUserDetailsRequestStatus,
   useLazyFetchUserDetailsQuery,
   useLazyGetCSRFQuery,
   useUserStatusQuery,
@@ -74,4 +75,5 @@ export {
   selectHeadersWithCSRFToken,
   getFederatedLoginStatus,
   useGetFederatedLoginStatus,
+  useGetUserDetailsRequestStatus,
 };

@@ -1,4 +1,5 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import { SerializedError } from '@reduxjs/toolkit';
 
 export type JSONValue =
   | string
@@ -54,19 +55,17 @@ export interface HistogramDataAsStringKey {
 export type HistogramDataArray = Array<HistogramData>;
 
 export interface StatValues {
-  count: number | null;
-  min: number | null;
-  max: number | null;
-  avg: number | null;
-  sum: number | null;
-  stddev: number | null;
-  median: number | null;
-  p25: number | null;
-  p50: number | null;
-  p75: number | null;
+  count: number;
+  min?: number;
+  max?: number;
+  avg?: number;
+  sum?: number;
+  stddev?: number;
+  median?: number;
+  percentiles?: { p25: number; p50: number; p75: number };
 }
 
-export type StatsValuesArray = Array<Partial<StatValues>>;
+export type StatsValuesArray = Array<StatValues>;
 
 const isValidObject = (input: any): boolean =>
   typeof input === 'object' && input !== null;
@@ -124,7 +123,7 @@ export const isHistogramDataAnEnum = (data: unknown): data is HistogramData => {
   );
 };
 
-export const isStatsValue = (item: unknown): item is Partial<StatValues> => {
+export const isStatsValue = (item: unknown): item is StatValues => {
   if (typeof item !== 'object' || item === null) {
     return false;
   }
@@ -141,10 +140,13 @@ export const isStatsValue = (item: unknown): item is Partial<StatValues> => {
     'stddev',
     'median',
   ];
-  for (const field of numericFields) {
-    if (field in obj && typeof obj[field] !== 'number') {
-      return false;
-    }
+
+  if (
+    !numericFields.some(
+      (field) => field in obj && typeof obj[field] !== 'number',
+    )
+  ) {
+    return false;
   }
 
   // Check percentiles structure if present
@@ -152,13 +154,6 @@ export const isStatsValue = (item: unknown): item is Partial<StatValues> => {
     const percentiles = obj.percentiles;
     if (typeof percentiles !== 'object' || percentiles === null) {
       return false;
-    }
-    const pObj = percentiles as Record<string, unknown>;
-    const requiredPercentiles = ['p25', 'p50', 'p75'];
-    for (const p of requiredPercentiles) {
-      if (p in pObj && typeof pObj[p] !== 'number') {
-        return false;
-      }
     }
   }
 
@@ -242,9 +237,24 @@ export function isFetchParseError(error: unknown): error is ParsingError {
   );
 }
 
-export type AggregationsData = Record<string, HistogramDataArray>;
+/**
+ * Type predicate to narrow an unknown error to a `SerializedError`
+ */
+export function isSerializedError(error: unknown): error is SerializedError {
+  return (
+    typeof error === 'object' &&
+    error != null &&
+    !('status' in error) &&
+    ('message' in error ||
+      'name' in error ||
+      'code' in error ||
+      'stack' in error)
+  );
+}
 
-export type StatsData = Record<string, StatsValuesArray>;
+// facet data:  discrete or continuous values
+export type AggregationsData = Record<string, HistogramDataArray>;
+export type StatsData = Record<string, StatValues>;
 
 /**
  *  Represents the results of a guppy aggregation query
@@ -283,3 +293,8 @@ export interface DataFetchingStatus {
 }
 
 export type DataFetchingHook<T> = () => DataFetchingResult<T>;
+
+export interface KeyValuePair {
+  key: string;
+  value: string;
+}

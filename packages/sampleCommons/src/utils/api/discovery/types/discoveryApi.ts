@@ -348,3 +348,8 @@ export interface DiscoveryIndexConfig {
 export interface DiscoveryConfig extends Gen3AppConfigData {
   metadataConfig: Array<DiscoveryIndexConfig>;
 }
+
+export enum SearchMode {
+  FULL_TEXT = 'fullTextSearch',
+  RESTRICTED = 'restrictSearch',
+}

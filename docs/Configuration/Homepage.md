@@ -108,7 +108,7 @@ Displays a motivational or informational quote:
 ## Custom Homepage
 
 If the layout above does not meet the project design or requirements, there is another option:
-Creating a new home page. To do use this template for ```src/pages/index.ts```:
+Creating a new home page. To do use this template for ```src/pages/callback.ts```:
 
 ```tsx
 import React from 'react';

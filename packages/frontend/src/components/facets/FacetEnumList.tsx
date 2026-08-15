@@ -10,7 +10,7 @@ import {
 } from '@mantine/core';
 import { CloseIcon, LockOutlineIcon } from '../../types/icons';
 import FacetSortPanel from './FacetSortPanel';
-import { type CombineMode, fieldNameToTitle } from '@gen3/core';
+import { type CombineMode, fieldNameToLabel } from '@gen3/core';
 import OverflowTooltippedLabel from '../OverflowTooltippedLabel';
 import FacetExpander from './FacetExpander';
 import { EnumFacetChart } from '../charts';
@@ -368,7 +368,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                     sortType={sortType}
                     valueLabel={valueLabel}
                     setSort={setSortType}
-                    field={facetName ? facetName : fieldNameToTitle(field)}
+                    field={facetName ? facetName : fieldNameToLabel(field)}
                   />
                 ) : (
                   false

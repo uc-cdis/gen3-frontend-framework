@@ -1,11 +1,12 @@
 import React, { ReactNode, useMemo, useRef, useState } from 'react';
-import { DiscoveryIndexConfig } from './types';
-import DiscoveryTable from './DiscoveryTable';
-import DiscoveryProvider from './DiscoveryProvider';
-import { Button, Text } from '@mantine/core';
+import DiscoveryTable from './DiscoveryTable/DiscoveryTable';
+import { Button, Grid, Text } from '@mantine/core';
 import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
-import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
-import { useDisclosure } from '@mantine/hooks';
+import {
+  MRT_PaginationState,
+  MRT_SortingState,
+} from 'mantine-react-table-open';
+import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
 import ActionBar from './ActionBar/ActionBar';
 import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
 import { CollapsableCharts } from '../../components/charts';
@@ -16,9 +17,14 @@ import AiSearch from './Search/AiSearch';
 import { getDiscoveryDataLoader } from './DataLoaders/registeredDataLoaders';
 import StudyProvider from '../Study/StudyProvider';
 import { useDeepCompareMemo } from 'use-deep-compare';
+import SearchInputSelectableFields from './Search/SearchInputSelectableFields';
+import { DEBOUNCE_DELAY_TIME, SearchMode } from './constants';
+import DiscoveryDropdownTagViewer from './DiscoveryDropdownTagViewer';
+import { IoIosArrowDown, IoIosArrowUp, IoIosRefresh } from 'react-icons/io';
+import { useDiscoveryContext } from './DiscoveryProvider';
+import { useStudyIdFromWindow } from './utils/useStudyIdFromWindow';
 
 export interface DiscoveryIndexPanelProps {
-  discoveryConfig: DiscoveryIndexConfig;
   indexSelector: ReactNode | null;
 }
 
@@ -35,10 +41,14 @@ export interface DiscoveryIndexPanelProps {
  *
  * @return {JSX.Element} A fully featured discovery interface including search functionality, a table, charts, filters, and more.
  */
-const DiscoveryIndexPanel = ({
-  discoveryConfig,
-  indexSelector,
-}: DiscoveryIndexPanelProps) => {
+
+const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
+  const {
+    discoveryConfig,
+    selectedTags,
+    setSelectedTags,
+    selectedAccessLevels,
+  } = useDiscoveryContext();
   const dataHook = useMemo(
     () =>
       getDiscoveryDataLoader(
@@ -52,9 +62,17 @@ const DiscoveryIndexPanel = ({
   });
 
   const parentDivRef = useRef<HTMLDivElement>(null);
-  const [searchBarTerms, setSearchBarTerms] = useState<string[]>([]);
+  const studyIdFromWindow = useStudyIdFromWindow();
+  const [searchBarTerms, setSearchBarTerms] = useState<string[]>(
+    studyIdFromWindow ? [studyIdFromWindow] : [],
+  );
+  const [debouncedSearchBarTerms] = useDebouncedValue(
+    searchBarTerms,
+    DEBOUNCE_DELAY_TIME,
+  );
   const [selections, setSelections] = useState<string[]>([]); // table selections
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
+
   const [advancedSearchTerms, setAdvancedSearchTerms] =
     useState<AdvancedSearchTerms>({
       operation: SearchCombination.and,
@@ -65,11 +83,17 @@ const DiscoveryIndexPanel = ({
     return {
       keyword: {
         operator: SearchCombination.and,
-        keywords: searchBarTerms,
+        keywords: debouncedSearchBarTerms,
       },
       advancedSearchTerms: advancedSearchTerms,
     };
-  }, [searchBarTerms, advancedSearchTerms]);
+  }, [debouncedSearchBarTerms, advancedSearchTerms]);
+
+  const [selectedFieldsForSearchIndexing, setSelectedFieldsForSearchIndexing] =
+    useState([] as string[]);
+  const [searchMode, setSearchMode] = useState<SearchMode>(
+    SearchMode.FULL_TEXT,
+  );
 
   // Get all required data from the data hook. This includes the metadata, search suggestions, and results, pagination, etc.
   const {
@@ -80,6 +104,7 @@ const DiscoveryIndexPanel = ({
     suggestions,
     summaryStatistics,
     charts: chartData,
+    tagCategoryData,
   } = dataHook({
     pagination: {
       offset: pagination.pageIndex * pagination.pageSize,
@@ -88,8 +113,11 @@ const DiscoveryIndexPanel = ({
     searchTerms: searchParam,
     discoveryConfig,
     sorting,
+    selectedFieldsForSearchIndexing: selectedFieldsForSearchIndexing,
+    searchMode: searchMode,
+    selectedTags: selectedTags,
+    selectedAccessLevels: selectedAccessLevels,
   });
-
   const selectedRecords = useMemo(() => {
     const uidField = discoveryConfig?.minimalFieldMapping?.uid ?? 'guid';
     const filterSelectedMembers = (data: Array<Record<string, any>>) =>
@@ -102,107 +130,203 @@ const DiscoveryIndexPanel = ({
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
     useDisclosure(false);
 
+  const [isDropdownTagViewerOpen, setIsDropdownTagViewerOpen] = useState(false);
+  const tagViewerContentRef = useRef<HTMLDivElement | null>(null);
+  const enableSearchBar = discoveryConfig?.features?.search?.searchBar?.enabled;
+  const enableSearchableTags =
+    discoveryConfig?.features?.search?.tagSearchDropdown?.enabled;
+  const enableSearchInputSelectableFields =
+    discoveryConfig?.features?.search?.searchBar?.searchableTextFields ||
+    discoveryConfig?.features?.search?.searchBar
+      ?.searchableAndSelectableTextFields;
+
   return (
     <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
-      <DiscoveryProvider discoveryIndexConfig={discoveryConfig}>
-        <StudyProvider>
-          <div className="w-full">
-            {discoveryConfig.features?.pageTitle &&
-            discoveryConfig?.features?.pageTitle.enabled ? (
-              <Text size="xl">{discoveryConfig?.features?.pageTitle.text}</Text>
-            ) : null}
-            {discoveryConfig.features?.chartsSection?.enabled && (
-              <CollapsableCharts
-                config={discoveryConfig.features?.chartsSection}
-                data={chartData}
-                isSuccess={dataRequestStatus.isSuccess}
+      <StudyProvider>
+        <div className="w-full">
+          {discoveryConfig.features?.pageTitle &&
+          discoveryConfig?.features?.pageTitle.enabled ? (
+            <Text size="xl">{discoveryConfig?.features?.pageTitle.text}</Text>
+          ) : null}
+          {discoveryConfig.features?.chartsSection?.enabled && (
+            <CollapsableCharts
+              config={discoveryConfig.features?.chartsSection}
+              data={chartData}
+              isSuccess={dataRequestStatus.isSuccess}
+            />
+          )}
+          <div className="flex items-center p-2 mb-4 bg-base-max rounded-lg">
+            {indexSelector}
+            <SummaryStatisticPanel summaries={summaryStatistics} />
+            {enableSearchBar && (
+              <div className="w-3/4 flex flex-col ml-2">
+                <Grid align="center" gap="sm">
+                  <Grid.Col
+                    span={{ md: enableSearchableTags ? 7 : 10, sm: 12 }}
+                  >
+                    <SearchInputWithSuggestions
+                      searchBarTerms={searchBarTerms}
+                      setSearchBarTerms={setSearchBarTerms}
+                      suggestions={suggestions}
+                      clearSearch={() => {
+                        setSearchBarTerms([]);
+                      }}
+                      searchChanged={(v) => setSearchBarTerms(v.split(' '))}
+                      placeholder={
+                        discoveryConfig?.features?.search?.searchBar
+                          ?.placeholder ?? 'Search...'
+                      }
+                      label={
+                        discoveryConfig?.features?.search?.searchBar
+                          ?.inputSubtitle
+                      }
+                    />
+                  </Grid.Col>
+                  {enableSearchableTags && (
+                    <Grid.Col span={{ sm: 12, md: 5 }} align="center">
+                      <Button
+                        onClick={() => setSelectedTags({})}
+                        variant="outline"
+                        leftSection={<IoIosRefresh />}
+                        className={
+                          Object.keys(selectedTags).length === 0
+                            ? 'border-gray-400 mr-2'
+                            : 'mr-2'
+                        }
+                        data-disabled={Object.keys(selectedTags).length === 0}
+                      >
+                        Reset
+                      </Button>
+                      <Button
+                        className="mt-1"
+                        onClick={() =>
+                          setIsDropdownTagViewerOpen((prev) => !prev)
+                        }
+                        disabled={data.length === 0}
+                        variant="outline"
+                        leftSection={
+                          isDropdownTagViewerOpen ? (
+                            <IoIosArrowUp />
+                          ) : (
+                            <IoIosArrowDown />
+                          )
+                        }
+                      >
+                        {`${
+                          discoveryConfig?.features?.search?.tagSearchDropdown
+                            ?.collapsibleButtonText || 'Tag Panel'
+                        }`}
+                      </Button>
+                    </Grid.Col>
+                  )}
+                </Grid>
+                {enableSearchInputSelectableFields && (
+                  <SearchInputSelectableFields
+                    searchMode={searchMode}
+                    setSearchMode={setSearchMode}
+                    searchableTextFields={
+                      discoveryConfig?.features?.search?.searchBar
+                        ?.searchableTextFields
+                    }
+                    searchableAndSelectableTextFields={
+                      discoveryConfig?.features?.search?.searchBar
+                        ?.searchableAndSelectableTextFields
+                    }
+                    setSelectedFieldsForSearchIndexing={
+                      setSelectedFieldsForSearchIndexing
+                    }
+                  />
+                )}
+                {tagCategoryData && tagCategoryData.length > 0 && (
+                  <div
+                    ref={tagViewerContentRef}
+                    className={`transition-all duration-300 ease-in-out mt-2 ${
+                      isDropdownTagViewerOpen
+                        ? 'max-h-screen opacity-100'
+                        : 'max-h-0 opacity-0'
+                    } overflow-hidden`}
+                    style={{
+                      height:
+                        isDropdownTagViewerOpen && tagViewerContentRef.current
+                          ? `${tagViewerContentRef.current.scrollHeight}px`
+                          : '0px',
+                    }}
+                  >
+                    <DiscoveryDropdownTagViewer
+                      tagCategoryData={tagCategoryData}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+          {discoveryConfig?.features?.aiSearch && (
+            <div className="mb-4">
+              <div className="flex w-full bg-base-max p-4 rounded-lg">
+                <AiSearch />
+              </div>
+            </div>
+          )}
+          <div className="flex flex-row">
+            {discoveryConfig?.features?.advSearchFilters?.enabled ? (
+              <Button onClick={toggleAdvancedSearch} color="accent">
+                Filters
+              </Button>
+            ) : (
+              false
+            )}
+            {discoveryConfig?.features?.exportFromDiscovery?.enabled ? (
+              <ActionBar
+                buttons={discoveryConfig.features.exportFromDiscovery.buttons}
+                exportDataFields={
+                  discoveryConfig.features.exportFromDiscovery.exportDataFields
+                }
+                selectedResources={selectedRecords}
+                verifyExternalLogins={
+                  discoveryConfig.features.exportFromDiscovery
+                    .verifyExternalLogins
+                }
+                dataLibraryStoreMode={
+                  discoveryConfig.features.exportFromDiscovery
+                    .dataLibraryStoreMode
+                }
               />
+            ) : null}
+          </div>
+          <div className="flex justify-start">
+            {discoveryConfig?.features?.advSearchFilters?.enabled ? (
+              <AdvancedSearchPanel
+                advSearchFilters={advancedSearchFilterValues}
+                opened={showAdvancedSearch}
+                setAdvancedSearchFilters={setAdvancedSearchTerms}
+              />
+            ) : (
+              false
             )}
-            <div className="flex items-center p-2 mb-4 bg-base-max rounded-lg">
-              {indexSelector}
-              <SummaryStatisticPanel summaries={summaryStatistics} />
-              <div className="w-3/4 flex flex-col">
-                <SearchInputWithSuggestions
-                  searchBarTerms={searchBarTerms}
-                  setSearchBarTerms={setSearchBarTerms}
-                  suggestions={suggestions}
-                  clearSearch={() => {
-                    setSearchBarTerms([]);
-                  }}
-                  searchChanged={(v) => setSearchBarTerms(v.split(' '))}
-                  placeholder={
-                    discoveryConfig?.features?.search?.searchBar?.placeholder ??
-                    'Search...'
-                  }
-                  label={
-                    discoveryConfig?.features?.search?.searchBar?.inputSubtitle
-                  }
-                />
-              </div>
-            </div>
-            {discoveryConfig?.features?.aiSearch && (
-              <div className="mb-4">
-                <div className="flex w-full bg-base-max p-4 rounded-lg">
-                  <AiSearch />
-                </div>
-              </div>
-            )}
-            <div className="flex flex-row">
-              {discoveryConfig?.features?.advSearchFilters?.enabled ? (
-                <Button onClick={toggleAdvancedSearch} color="accent">
-                  Filters
-                </Button>
-              ) : (
-                false
-              )}
-              {discoveryConfig?.features?.exportFromDiscovery?.enabled ? (
-                <ActionBar
-                  buttons={discoveryConfig.features.exportFromDiscovery.buttons}
-                  exportDataFields={
-                    discoveryConfig.features.exportFromDiscovery
-                      .exportDataFields
-                  }
-                  selectedResources={selectedRecords}
-                  verifyExternalLogins={
-                    discoveryConfig.features.exportFromDiscovery
-                      .verifyExternalLogins
-                  }
-                  dataLibraryStoreMode={
-                    discoveryConfig.features.exportFromDiscovery
-                      .dataLibraryStoreMode
-                  }
-                />
-              ) : null}
-            </div>
-            <div className="flex justify-start">
-              {discoveryConfig?.features?.advSearchFilters?.enabled ? (
-                <AdvancedSearchPanel
-                  advSearchFilters={advancedSearchFilterValues}
-                  opened={showAdvancedSearch}
-                  setAdvancedSearchFilters={setAdvancedSearchTerms}
-                />
-              ) : (
-                false
-              )}
-              <div
-                className="flex w-full grow-0 bg-base-max border-1 border-base-lighter p-4 rounded-md"
-                ref={parentDivRef}
-              >
-                <DiscoveryTable
-                  data={data}
-                  hits={hits}
-                  dataRequestStatus={dataRequestStatus}
-                  setPagination={setPagination}
-                  setSorting={setSorting}
-                  setSelection={setSelections}
-                  pagination={pagination}
-                  sorting={sorting}
-                />
-              </div>
+            <div
+              className="flex w-full grow-0 bg-base-max border-1 border-base-lighter p-4 rounded-md"
+              ref={parentDivRef}
+            >
+              <DiscoveryTable
+                data={data}
+                hits={hits}
+                studyIdFromWindow={studyIdFromWindow as string}
+                dataRequestStatus={dataRequestStatus}
+                setPagination={setPagination}
+                setSorting={setSorting}
+                setSelection={setSelections}
+                pagination={pagination}
+                sorting={sorting}
+                searchTerm={debouncedSearchBarTerms.join(' ')}
+                selectedFieldsForSearchIndexing={
+                  selectedFieldsForSearchIndexing
+                }
+                discoveryConfig={discoveryConfig}
+              />
             </div>
           </div>
-        </StudyProvider>
-      </DiscoveryProvider>
+        </div>
+      </StudyProvider>
     </div>
   );
 };

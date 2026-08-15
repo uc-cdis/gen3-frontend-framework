@@ -1,12 +1,10 @@
-import {
-  JSONValue,
-  JSONObject,
-} from '@gen3/core';
-import { AccessLevel, accessibleFieldName } from '../../utils';
+import { JSONObject, JSONValue } from '@gen3/core';
+import { accessibleFieldName, AccessLevel } from '../../utils';
 
 export interface StudyDetailsField {
   name: string;
   field: string;
+  label?: string; // Optional label for the field
   contentType?: string;
   includeLabel?: boolean;
   includeIfNotAvailable?: boolean;
@@ -28,6 +26,7 @@ export interface StudyPageConfig {
     field: string;
     className?: string;
   };
+  showSubmitButton?: boolean;
   downloadLinks?: DataDownloadLinks;
   downloadLinkFields?: DownloadLinkFields;
   classNames?: Record<string, string>;
@@ -81,10 +80,9 @@ export interface StudyDetailTab {
 }
 
 export interface StudyDetailView {
-  header: {
-    field: string;
-    className?: string;
-  };
+  showSubmitButton?: boolean;
+  headerField: string;
+  subHeaderField: string;
   tabs: StudyDetailTab[];
 }
 
@@ -117,7 +115,10 @@ export interface TagsConfig {
   showUnknownTags?: boolean;
 }
 
-export interface StudyResource extends Record<string, JSONValue | AccessLevel | TagInfo[] | undefined> {
+export interface StudyResource extends Record<
+  string,
+  JSONValue | AccessLevel | TagInfo[] | undefined
+> {
   [accessibleFieldName]?: AccessLevel;
   tags?: Array<TagInfo>;
 }

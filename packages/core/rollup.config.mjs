@@ -33,7 +33,7 @@ const globals = {
 };
 
 const external = [
-  ...Object.keys(globals),
+  Object.keys(globals),
   // ... your existing externals
 ];
 

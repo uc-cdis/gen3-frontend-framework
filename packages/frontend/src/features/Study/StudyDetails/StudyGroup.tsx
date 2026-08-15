@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { StudyTabGroup } from '../types';
 import { Text } from '@mantine/core';
 import { JSONObject } from '@gen3/core';
-import { createFieldRendererElement } from './StudyItems';
+import { createFieldRendererElement } from './StudyItems/StudyItems';
 import { JSONPath } from 'jsonpath-plus';
 
 interface StudyTabGroupProps extends StudyTabGroup {
@@ -36,15 +36,16 @@ const StudyGroup = ({ data, header, fields }: StudyTabGroupProps) => {
 
   return (
     <div className=" flex flex-col">
-      <div className="bg-accent-lightest w-full p-1 mb-4">
-        <Text color="primary" fw={700} >{header}</Text>
+      <div className="bg-accent-lightest w-full p-1 mb-2 mt-1">
+        <Text c="primary" fw={700}>
+          {header}
+        </Text>
       </div>
-      <div
-        className="p-4">
+      <>
         {fields.map((field) => {
           return createFieldRendererElement(field, data as any);
         })}
-      </div>
+      </>
     </div>
   );
 };

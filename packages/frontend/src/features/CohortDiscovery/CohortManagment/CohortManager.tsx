@@ -1,8 +1,25 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Button, ComboboxItem, Group, Select, Text, TextInput, Tooltip, useMantineTheme, } from '@mantine/core';
+import {
+  Button,
+  ComboboxItem,
+  Group,
+  Select,
+  Text,
+  TextInput,
+  Tooltip,
+  useMantineTheme,
+} from '@mantine/core';
 
-import { createNewCohort, removeCohort, setCurrentCohortId, updateCohortName, } from './CohortManagerSlice';
-import { selectAllCohorts, selectCurrentCohort, } from './CohortManagerSelectors';
+import {
+  createNewCohort,
+  removeCohort,
+  setCurrentCohortId,
+  updateCohortName,
+} from './CohortManagerSlice';
+import {
+  selectAllCohorts,
+  selectCurrentCohort,
+} from './CohortManagerSelectors';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { useAppDispatch, useAppSelector } from '../appApi';
 import {
@@ -11,7 +28,12 @@ import {
   IndexResourceField,
   SupportServiceConfiguration,
 } from '../types';
-import { AddIcon, CloseIcon, DownloadIcon, UploadIcon, } from '../../../types/icons';
+import {
+  AddIcon,
+  CloseIcon,
+  DownloadIcon,
+  UploadIcon,
+} from '../../../types/icons';
 
 import { Icon } from '@iconify-icon/react';
 
@@ -152,9 +174,8 @@ const CohortManagerPanel = ({
               if (e.key === 'Enter' && editingLabel.trim()) saveEdit();
               if (e.key === 'Escape') cancelEditing();
             }}
-            autoFocus
             style={{ flex: 1 }}
-          ></TextInput>
+          />
           <Tooltip label="Apply rename" position="bottom" withArrow>
             <Button
               variant="action"
@@ -221,6 +242,11 @@ const CohortManagerPanel = ({
               confirmProps: { color: theme.colors.accent[4] },
               onConfirm: () => {
                 appDispatch(removeCohort(currentCohort.id));
+              },
+              styles: {
+                body: {
+                  padding: '1rem',
+                },
               },
             });
           }}

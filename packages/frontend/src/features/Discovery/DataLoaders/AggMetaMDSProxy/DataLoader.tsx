@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
+  categoryObject,
   DiscoverDataHookResponse,
   DiscoveryDataLoaderProps,
 } from '../../types';
 import { useDeepCompareEffect } from 'use-deep-compare';
-
 import { JSONObject } from '@gen3/core';
 import { processAdvancedSearchTerms, processAllSummaries } from '../utils';
 
@@ -12,14 +12,18 @@ interface ProxyData {
   displayedData: JSONObject[];
   hits: number;
   suggestions: string[];
+  tagCategoryData: categoryObject[];
 }
 
 export const useAggMetaMDSProxy = ({
   pagination,
   searchTerms,
-  advancedSearchTerms,
+  selectedFieldsForSearchIndexing,
+  searchMode,
   discoveryConfig,
   sorting,
+  selectedTags,
+  selectedAccessLevels,
   guidType = 'discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
@@ -28,32 +32,22 @@ export const useAggMetaMDSProxy = ({
     displayedData: [],
     hits: 0,
     suggestions: [],
+    tagCategoryData: [],
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
-  const apiUrl = 'http://localhost:3000/api/discovery';
+  const apiUrl = '/api/discovery';
 
   const params = {
     discoveryConfig: discoveryConfig,
     pagination: pagination,
     searchTerms: searchTerms,
     sorting: sorting,
-    selectedFieldsForSearchIndexing: [],
-    /*
-    TODO: Example param
-    selectedFieldsForSearchIndexing: [
-        'study_metadata.minimal_info.study_name',
-      ],
-     */
-    selectedTags: {},
-    /*
-    TODO: Example param
-    selectedTags: {
-        SPARC: true,
-        Dataverse: true,
-      },
-    */
+    selectedFieldsForSearchIndexing: selectedFieldsForSearchIndexing,
+    searchMode: searchMode,
+    selectedTags: selectedTags,
+    selectedAccessLevels: selectedAccessLevels,
   };
 
   useDeepCompareEffect(() => {
@@ -79,8 +73,16 @@ export const useAggMetaMDSProxy = ({
         setLoading(false);
       }
     };
-    fetchData();
-  }, [searchTerms, pagination, sorting]);
+    void fetchData();
+  }, [
+    searchTerms,
+    pagination,
+    sorting,
+    selectedFieldsForSearchIndexing,
+    searchMode,
+    selectedTags,
+    selectedAccessLevels,
+  ]);
 
   let advancedSearchFilterValues = [] as any;
   const advancedSearchFilters = discoveryConfig.features?.advSearchFilters ?? {
@@ -109,6 +111,7 @@ export const useAggMetaMDSProxy = ({
     summaryStatistics: summaryStatistics,
     charts: {},
     advancedSearchFilterValues: advancedSearchFilterValues,
+    tagCategoryData: data.tagCategoryData,
     dataRequestStatus: {
       isUninitialized: false,
       isFetching: loading,

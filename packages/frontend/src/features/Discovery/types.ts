@@ -18,6 +18,7 @@ import {
 } from '../Study/types';
 import { DataAuthorization } from '../../utils';
 import { Gen3AppConfigData } from '../../lib/content/types';
+import { SearchMode } from './constants';
 
 interface KeywordSearch {
   keywords?: string[];
@@ -30,10 +31,22 @@ export interface SearchTerms {
   selectedTags?: Record<string, boolean>;
 }
 
+export interface selectedTags {
+  [key: string]: boolean;
+}
+
+export interface categoryObject {
+  categoryDisplayName: string;
+  tags: string[];
+  color: string;
+}
+
 export interface DiscoveryDataLoaderProps extends Record<string, any> {
   pagination: MetadataPaginationParams;
   searchTerms: SearchTerms;
   discoveryConfig: DiscoveryIndexConfig;
+  selectedFieldsForSearchIndexing?: string[];
+  searchMode?: SearchMode;
 }
 
 export interface DataRequestStatus {
@@ -53,6 +66,7 @@ export interface DiscoverDataHookResponse {
   charts: AggregationsData; // bucket counts for charts
   suggestions: Array<string>;
   clearSearch?: () => void;
+  tagCategoryData?: categoryObject[] | undefined;
 }
 
 export type DiscoveryTableDataHook = (
@@ -148,6 +162,7 @@ export interface SearchBar {
   inputSubtitle: string;
   placeholder?: string;
   searchableTextFields: Array<string>;
+  searchableAndSelectableTextFields: { [key: string]: string };
 }
 
 interface TagSearchDropdown {

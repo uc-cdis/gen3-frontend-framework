@@ -1,4 +1,4 @@
-import { fieldNameToTitle } from '@gen3/core';
+import { fieldNameToLabel } from '@gen3/core';
 import {
   CellRendererFunctionProps,
   ColumnDefinition,
@@ -7,8 +7,11 @@ import {
   SummaryTableColumn,
   TableColumnsAndFields,
 } from './types';
-import { type MRT_Column } from 'mantine-react-table';
-import { ExplorerTableCellRendererFactory, RenderArrayCellSimple, } from './ExplorerTableCellRenderers';
+import { type MRT_Column } from 'mantine-react-table-open';
+import {
+  ExplorerTableCellRendererFactory,
+  RenderArrayCellSimple,
+} from './ExplorerTableCellRenderers';
 import { jsonPathAccessor } from '../../../components/Tables/utils';
 import { ArrayCellRenderer } from './ArrayCellRenderer';
 
@@ -18,7 +21,7 @@ export const convertGuppyTableConfig = (
   // convert the config to the format that guppy table expects
   return config.map((column: SummaryTableColumn) => {
     return {
-      header: column.title ?? fieldNameToTitle(column.field),
+      header: column.title ?? fieldNameToLabel(column.field),
       accessorKey: column.field,
     };
   });
@@ -49,7 +52,7 @@ export const createTableColumns = (tableConfig: TableColumnsAndFields) => {
       id: field,
       field: field,
       accessorKey: field as never,
-      header: columnDef?.title ?? fieldNameToTitle(field),
+      header: columnDef?.title ?? fieldNameToLabel(field),
       accessorFn: columnDef?.accessorPath
         ? jsonPathAccessor(columnDef.accessorPath)
         : undefined,
@@ -108,7 +111,7 @@ export const createArrayTableColumns = (
       id: field,
       field: field,
       accessorKey: field as never,
-      header: columnDef?.title ?? fieldNameToTitle(field),
+      header: columnDef?.title ?? fieldNameToLabel(field),
       accessorFn: columnDef?.accessorPath
         ? jsonPathAccessor(columnDef.accessorPath)
         : undefined,

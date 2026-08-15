@@ -36,12 +36,12 @@ const processComparisonData = (
   ];
 };
 
-const BarComparison: React.FC<ComparisonChartProps> = ({
+const BarComparison = ({
   baseDataset,
   comparisonDataset,
   title,
   yAxisLabel = 'percent',
-}) => {
+} : ComparisonChartProps) => {
   const categories = baseDataset.data.map((d: any) =>
     truncateString(processLabel(d.key), 35),
   );

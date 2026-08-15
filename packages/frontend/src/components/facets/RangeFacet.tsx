@@ -32,10 +32,10 @@ const createBucket = (
   ],
 });
 
-export interface RangeFacetCardProps
-  extends FacetCardProps<RangeFacetDataHooks> {
+export interface RangeFacetCardProps extends FacetCardProps<RangeFacetDataHooks> {
   minimum?: number;
   maximum?: number;
+  step?: number;
 }
 
 const RangeFacet = ({
@@ -46,6 +46,7 @@ const RangeFacet = ({
   facetName,
   minimum = DEFAULT_MINIMUM,
   maximum = DEFAULT_MAXIMUM,
+  step = undefined,
   showSearch = false,
   showFlip = false,
   showSettings = false,
@@ -57,7 +58,7 @@ const RangeFacet = ({
     iconStyle: controlsIconStyle,
   },
 }: RangeFacetCardProps) => {
-  const { data, rangeFilters, isSuccess } = hooks.useGetFacetData(field);
+  const { rangeFilters, isSuccess } = hooks.useGetFacetData(field);
   const [minMaxValue, setMinMaxValue] = React.useState<
     FromToRangeValues<number>
   >({

@@ -1,21 +1,26 @@
 import whyDidYouRender from '@welldone-software/why-did-you-render';
-import App, { AppContext, AppInitialProps, AppProps } from 'next/app';
+import type { AppContext, AppInitialProps, AppProps } from 'next/app';
+import App from 'next/app';
 import React, { Suspense, useEffect, useRef, useState } from 'react';
-import { MantineProvider } from '@mantine/core';
-import mantinetheme from '../mantineTheme';
+import { MantineProvider, mergeThemeOverrides } from '@mantine/core';
 
+import type {
+  RegisteredIcons,
+  SessionConfiguration,
+  TenStringArray,
+} from '@gen3/frontend/app';
 import {
   type AuthorizedRoutesConfig,
+  createMantineTheme,
   DefaultAuthorizedRoutesConfig,
+  type Fonts,
   Gen3Provider,
   type ModalsConfig,
   registerCohortBuilderDefaultPreviewRenderers,
-  RegisteredIcons,
   registerExplorerDefaultCellRenderers,
+  registerIGVApp,
   registerMetadataSchemaApp,
-  SessionConfiguration,
 } from '@gen3/frontend/app';
-
 import { registerDefaultRemoteSupport, setDRSHostnames } from '@gen3/core';
 
 import { registerCohortTableCustomCellRenderers } from '@/lib/CohortBuilder/CustomCellRenderers';
@@ -23,7 +28,9 @@ import { registerCustomExplorerDetailsPanels } from '@/lib/CohortBuilder/FileDet
 
 import '../styles/globals.css';
 import '@fontsource/montserrat';
-import '@fontsource/source-sans-pro';
+// source-sans-pro is frozen at a fontsource build that ships no `types`/`exports`,
+// unlike montserrat/poppins — import the stylesheet directly so it type-resolves.
+import '@fontsource/source-sans-pro/index.css';
 import '@fontsource/poppins';
 import drsHostnames from '../../config/drsHostnames.json';
 import { loadContent } from '@/lib/content/loadContent';
@@ -41,48 +48,67 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
   axe(React, ReactDOM, 1000);
 }
 
+type PublicConfig = {
+  dataDogAppId: string | null;
+  dataDogClientToken: string | null;
+  dataCommons: string;
+};
+
 interface Gen3AppProps {
   icons: Array<RegisteredIcons>;
   modalsConfig: ModalsConfig;
   sessionConfig: SessionConfiguration;
   protectedRoutes: AuthorizedRoutesConfig;
+  publicConfig?: PublicConfig;
+  colors: Record<string, TenStringArray>;
+  fonts: Fonts;
 }
 
 const Gen3App = ({
   Component,
   pageProps,
   icons,
+  colors,
+  fonts,
   sessionConfig,
   modalsConfig,
   protectedRoutes,
 }: AppProps & Gen3AppProps) => {
   const isFirstRender = useRef(true);
+  const [mantineTheme, setMantineTheme] =
+    useState<Partial<ReturnType<typeof mergeThemeOverrides>>>();
 
   useEffect(() => {
     if (isFirstRender.current) {
       setDRSHostnames(drsHostnames);
       registerDefaultRemoteSupport();
       registerMetadataSchemaApp();
-      // registerCohortDiscoveryApp();
+      registerIGVApp();
       registerExplorerDefaultCellRenderers();
       registerCohortBuilderDefaultPreviewRenderers();
       registerCohortTableCustomCellRenderers();
       registerCustomExplorerDetailsPanels();
       isFirstRender.current = false;
-      console.log('Gen3 App initialized');
+
+      const gen3ThemeDynamic = createMantineTheme(fonts, colors);
+      const mergedTheme = mergeThemeOverrides(gen3ThemeDynamic);
+      setMantineTheme(mergedTheme);
     }
+    console.log('Gen3 App initialized');
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    // oxlint-disable-next-line react/react-compiler
     setIsClient(true); // Only on client-side
   }, []);
   return (
     <React.Fragment>
       {isClient ? (
         <Suspense fallback={<Loading />}>
-          <MantineProvider theme={mantinetheme}>
+          <MantineProvider theme={mantineTheme}>
             <Gen3Provider
               icons={icons}
               sessionConfig={sessionConfig}
@@ -130,6 +156,12 @@ Gen3App.getInitialProps = async (
     ],
     modalsConfig: {},
     sessionConfig: {},
+    colors: {},
+    fonts: {
+      heading: ['Poppins', 'sans-serif'],
+      content: ['Poppins', 'sans-serif'],
+      fontFamily: 'Poppins',
+    },
     protectedRoutes: DefaultAuthorizedRoutesConfig,
   };
 };
