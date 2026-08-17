@@ -19,10 +19,19 @@ const STYLING_DEFAULTS = {
     'flex justify-start items-center gap-x-2 text-primary-contrast-lighter',
 };
 
-const GEN3_VERSION = process.env.NEXT_PUBLIC_GEN3_VERSION || 'n/a';
+const GEN3_VERSION = process.env.NEXT_PUBLIC_GEN3_VERSION;
 
 const Footer = React.forwardRef<HTMLElement, FooterProps>(
-  ({ rightSection, leftSection, classNames = {}, hideFooter = false }, ref) => {
+  (
+    {
+      rightSection,
+      leftSection,
+      classNames = {},
+      hideFooter = false,
+      showVersion = true,
+    },
+    ref,
+  ) => {
     const mergedClassNames = mergeDefaultTailwindClassnames(
       STYLING_DEFAULTS,
       classNames,
@@ -49,14 +58,16 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
                     {leftSection && <FooterSection {...leftSection} />}
                     {rightSection && <FooterSection {...rightSection} />}
                   </div>
-                  <div
-                    className={extractClassName('version', mergedClassNames)}
-                  >
-                    <Text size="0.625rem">UI</Text>
-                    <Text size="0.625rem" fw={600}>
-                      v{GEN3_VERSION}
-                    </Text>
-                  </div>
+                  {GEN3_VERSION && showVersion ? (
+                    <div
+                      className={extractClassName('version', mergedClassNames)}
+                    >
+                      <Text size="0.625rem">UI</Text>
+                      <Text size="0.625rem" fw={600}>
+                        v{GEN3_VERSION}
+                      </Text>
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </div>

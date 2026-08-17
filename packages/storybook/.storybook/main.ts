@@ -23,8 +23,6 @@ const packageJson = require(
   ),
 );
 
-console.log('package', packageJson.version);
-
 const config: StorybookConfig = {
   stories: [
     '../../frontend/src/components/**/*.stories.@(js|jsx|mjs|ts|tsx)',
