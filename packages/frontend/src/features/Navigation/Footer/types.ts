@@ -62,14 +62,17 @@ export interface FooterSectionProps {
   className?: string;
 }
 
+export type FooterClassnames = StylingOverrideWithMergeControl & {
+  root: string;
+  layout: string;
+  version: string;
+};
+
 export interface FooterProps {
-  bottomLinks?: ReadonlyArray<BottomLinks>;
-  columnLinks?: ReadonlyArray<ColumnLinks>;
-  footerLogos?: ReadonlyArray<FooterLogo>;
-  footerRightLogos?: ReadonlyArray<FooterLogo>;
-  rightSection?: FooterSectionProps;
-  leftSection?: FooterSectionProps;
-  classNames?: StylingOverrideWithMergeControl;
-  customFooter?: ReactElement;
-  hideFooter?: boolean;
+  rightSection?: FooterSectionProps; // right footer section
+  leftSection?: FooterSectionProps; // left footer section
+  classNames?: FooterClassnames; // tailwind styling classNames
+  customFooter?: ReactElement; // if custom footer is provided, it will override the default footer
+  hideFooter?: boolean; // hide the footer
+  showVersion?: boolean; // if true, show the Gen3 package version
 }
