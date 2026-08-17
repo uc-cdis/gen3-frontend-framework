@@ -1,8 +1,17 @@
 export * from './guppyApi';
 export * from './guppySlice';
 export * from './queryGenerators';
-import { downloadFromGuppyToBlob, downloadJSONDataFromGuppy, groupSharedFields, } from './utils';
-import { guppyDownloadApi, useDownloadFromGuppyQuery, useLazyDownloadFromGuppyQuery, } from './guppyDownloadSlice';
+import {
+  downloadFromGuppyToBlob,
+  downloadJSONDataFromGuppy,
+  groupSharedFields,
+} from './utils';
+import {
+  guppyDownloadApi,
+  useDownloadFromGuppyQuery,
+  useLazyDownloadFromGuppyQuery,
+  useLazyGuppyServiceStatusQuery,
+} from './guppyDownloadSlice';
 import { conversion, jsonToFormat } from './conversion';
 import { buildRangeQuery } from './range';
 
@@ -14,6 +23,7 @@ export {
   downloadJSONDataFromGuppy,
   useDownloadFromGuppyQuery,
   useLazyDownloadFromGuppyQuery,
+  useLazyGuppyServiceStatusQuery,
   groupSharedFields,
   conversion,
   guppyDownloadApi,

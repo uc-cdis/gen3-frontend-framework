@@ -2,6 +2,7 @@ import { gen3Api } from '../gen3/gen3Api';
 import { GEN3_FENCE_API, GEN3_REDIRECT_URL } from '../../constants';
 
 import { fetchFence } from './fetchFence';
+import type { ServiceStatus } from '../../types';
 
 export interface NameUrl {
   readonly name: string;
@@ -48,6 +49,18 @@ export const loginProvidersApi = gen3Api.injectEndpoints({
     getPresignedUrl: builder.query<PresignedUrlResponse, PresignedUrlRequest>({
       query: ({ guid, what }) => `${GEN3_FENCE_API}/data/${what}/${guid}`,
     }),
+    getFenceServiceStatus: builder.query<ServiceStatus, void>({
+      query: () => {
+        return {
+          url: `${GEN3_FENCE_API}/_status`,
+          responseHandler: 'text',
+        };
+      },
+      transformResponse: (data: string) => ({
+        status: data,
+        timestamp: new Date().toISOString(),
+      }),
+    }),
   }),
 });
 
@@ -57,6 +70,7 @@ export const {
   useLazyGetDownloadQuery,
   useGetPresignedUrlQuery,
   useLazyGetPresignedUrlQuery,
+  useLazyGetFenceServiceStatusQuery,
 } = loginProvidersApi;
 
 /**

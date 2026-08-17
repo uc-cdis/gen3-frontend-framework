@@ -2,12 +2,7 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
 
 export type JSONValue =
-  | string
-  | number
-  | boolean
-  | null
-  | JSONArray
-  | JSONObject;
+  string | number | boolean | null | JSONArray | JSONObject;
 
 export interface JSONObject {
   [key: string]: JSONValue;
@@ -297,4 +292,9 @@ export type DataFetchingHook<T> = () => DataFetchingResult<T>;
 export interface KeyValuePair {
   key: string;
   value: string;
+}
+
+export interface ServiceStatus {
+  status: string;
+  timestamp: string;
 }

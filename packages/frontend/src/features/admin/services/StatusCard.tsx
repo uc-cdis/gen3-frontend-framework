@@ -9,28 +9,34 @@ import {
   ThemeIcon,
 } from '@mantine/core';
 
-export type ServiceStatus = 'Ok' | string;
+export type ServiceStatus = string;
+
+type ServiceTimestamp = string | number | Date;
 
 export type ServiceStatusCardProps = {
   label: string;
   status: ServiceStatus;
-  timestamp?: string | number | Date; // ISO string, unix ms, or Date
+  timestamp?: ServiceTimestamp;
   additionalInfo?: React.ReactNode;
 };
 
-function formatTimestamp(ts?: ServiceStatusCardProps['timestamp']) {
+function formatTimestamp(ts?: ServiceTimestamp) {
   if (!ts) return '—';
+  if (typeof ts === 'number') {
+    const d = new Date(ts);
+    if (Number.isNaN(d.getTime())) return '—';
+    return d.toLocaleString();
+  }
   const d = ts instanceof Date ? ts : new Date(ts);
-  if (Number.isNaN(d.getTime())) return '—';
   return d.toLocaleString();
 }
 
-export function ServiceStatusCard({
+export const ServiceStatusCard = ({
   label,
   status,
   timestamp,
   additionalInfo,
-}: ServiceStatusCardProps) {
+}: ServiceStatusCardProps) => {
   const isOk = status === 'Ok';
   const dotColor = isOk ? 'green' : 'red';
 
@@ -80,4 +86,6 @@ export function ServiceStatusCard({
       </Stack>
     </Card>
   );
-}
+};
+
+export default ServiceStatusCard;

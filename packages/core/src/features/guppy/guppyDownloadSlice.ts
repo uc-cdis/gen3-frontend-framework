@@ -58,7 +58,7 @@ export const guppyDownloadApi = gen3Api.injectEndpoints({
         return response;
       },
     }),
-    guppyStatus: builder.query<GuppyStatusResponse, void>({
+    guppyServiceStatus: builder.query<GuppyStatusResponse, void>({
       query: () => {
         return {
           url: `${GEN3_GUPPY_API}/_status`,
@@ -78,5 +78,5 @@ export const guppyDownloadApi = gen3Api.injectEndpoints({
 export const {
   useDownloadFromGuppyQuery,
   useLazyDownloadFromGuppyQuery,
-  useGuppyStatusQuery,
+  useLazyGuppyServiceStatusQuery,
 } = guppyDownloadApi;

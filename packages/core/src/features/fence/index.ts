@@ -7,6 +7,7 @@ import {
   useGetLoginProvidersQuery,
   useGetPresignedUrlQuery,
   useLazyGetDownloadQuery,
+  useLazyGetFenceServiceStatusQuery,
   useLazyGetPresignedUrlQuery,
 } from './fenceApi';
 
@@ -47,4 +48,5 @@ export {
   useAuthorizeFromCredentialsMutation,
   useGetPresignedUrlQuery,
   useLazyGetPresignedUrlQuery,
+  useLazyGetFenceServiceStatusQuery,
 };
