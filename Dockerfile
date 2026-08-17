@@ -68,7 +68,7 @@ RUN NODE_OPTIONS="--max-old-space-size=4096" \
 
 # ─────────────────────────────────────────────
 # Production stage
-FROM node:24.18.0-alpine3.23 AS runner
+FROM node:24.18.1-alpine3.23 AS runner
 
 WORKDIR /gen3
 
