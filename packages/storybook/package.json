@@ -1,6 +1,6 @@
 {
   "name": "@gen3/storybook",
-  "version": "0.12.60",
+  "version": "0.12.62",
   "private": true,
   "description": "Storybook for testing and CI/CD",
   "keywords": [
@@ -9,7 +9,7 @@
   ],
   "engines": {
     "npm": ">=11.16.0",
-    "node": ">=24.18.0"
+    "node": ">=24.18.1"
   },
   "author": "craigrbarnes <craig.barnes@intelligentlight.com>",
   "license": "Apache-2.0",

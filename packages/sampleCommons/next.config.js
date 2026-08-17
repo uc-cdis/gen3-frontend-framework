@@ -24,10 +24,23 @@ const withMDX = require('@next/mdx')({
   },
 });
 
+const packageJson = require(
+  path.resolve(
+    __dirname,
+    '..',
+    '..',
+    'node_modules',
+    '@gen3',
+    'frontend',
+    'package.json',
+  ),
+);
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
     version: process.env.npm_package_version,
+    NEXT_PUBLIC_GEN3_VERSION: packageJson.version,
   },
   /* -- uncomment for logging in production
   compiler: {

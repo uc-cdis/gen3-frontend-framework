@@ -3,9 +3,12 @@ set -euo pipefail
 
 usage() {
   cat <<'EOF'
-Patch the remote jupyter-lite.json to enable terminals.
+Patch the remote jupyter-lite.json to enable terminals and expose the app.
 
-Inserts "terminalsAvailable": true into the "jupyter-config-data" object.
+Inserts "terminalsAvailable": true and "exposeAppInBrowser": true into the
+"jupyter-config-data" object. The latter is required so that RemoteComputeWorkspace
+can find `window.jupyterapp` in the iframe to detect readiness and wire up
+activity-detection listeners for the session's inactivity timer.
 The file is modified in place; a backup is written alongside it as .bak.
 
 Usage:
@@ -67,13 +70,18 @@ if not isinstance(config, dict):
     print(f"Error: 'jupyter-config-data' key not found or not an object in {path}", file=sys.stderr)
     sys.exit(1)
 
-if config.get('terminalsAvailable') is True:
-    print(f"'terminalsAvailable' already set to true in {path} — no changes made.")
+needs_patch = (
+    config.get('terminalsAvailable') is not True
+    or config.get('exposeAppInBrowser') is not True
+)
+if not needs_patch:
+    print(f"'terminalsAvailable' and 'exposeAppInBrowser' already set to true in {path} — no changes made.")
     sys.exit(0)
 
 shutil.copy2(path, backup)
 
 config['terminalsAvailable'] = True
+config['exposeAppInBrowser'] = True
 
 with open(path, 'w', encoding='utf-8') as f:
     json.dump(data, f, indent=2)

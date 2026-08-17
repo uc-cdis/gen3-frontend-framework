@@ -74,6 +74,20 @@ export interface SessionConfiguration {
    * value.
    */
   expireWarningMinutes?: number;
+
+  /**
+   * Milliseconds before a token's actual expiry to trigger the proactive
+   * refresh. `0` (the default) refreshes at `exp` itself, matching Fence's
+   * default reactive-only renewal.
+   *
+   * Only useful if Fence is configured to renew the access_token when /user
+   * is called ahead of expiry (e.g. `RENEW_ACCESS_TOKEN_BEFORE_EXPIRATION`) —
+   * otherwise an early call just re-reads the same unchanged cookie. A value
+   * like `15000` (15 seconds) is a reasonable example once that Fence setting
+   * is enabled, to close the gap where the access_token is briefly missing
+   * and frontend calls get 401s.
+   */
+  renewAccessTokenEarlyMilliseconds?: number;
 }
 
 export interface SessionProviderProps extends SessionConfiguration {

@@ -254,18 +254,18 @@ const MILLISECONDS_PER_MINUTE = minutesToMilliseconds(1);
  * gives us a skew-free upper bound in case `expiresInMs` is ever missing or
  * wrong.
  */
-const refreshDelayFromToken = (session: AuthTokenData): number => {
+const refreshDelayFromToken = (session: AuthTokenData, earlyMs = 0): number => {
   const serverRelativeDelay =
     session.expiresInMs !== undefined
       ? session.expiresInMs
       : (session.expires ?? 0) * 1000 - Date.now();
 
-  const delay = serverRelativeDelay + REFRESH_BUFFER_MILLISECONDS;
+  const delay = serverRelativeDelay - earlyMs + REFRESH_BUFFER_MILLISECONDS;
 
   if (!session.issued || !session.expires) return delay;
 
   const lifetime = (session.expires - session.issued) * 1000;
-  return Math.min(delay, lifetime + REFRESH_BUFFER_MILLISECONDS);
+  return Math.min(delay, lifetime + REFRESH_BUFFER_MILLISECONDS - earlyMs);
 };
 
 /**
@@ -298,6 +298,9 @@ const unhealthyRefreshDelay = (failures: number) =>
  * @param monitorWorkspace - Whether to poll running/configured workspaces
  * @param expireWarningMinutes - How far ahead of the inactivity logout to warn;
  *   clamped to fit the poll interval and the inactivity window
+ * @param renewAccessTokenEarlyMilliseconds - How far ahead of the token's own
+ *   `exp` to trigger the proactive refresh. `0` (default) refreshes at `exp`
+ *   itself;
  * @returns a Session context that can be used to keep track of user session activity
  */
 export const SessionProvider = ({
@@ -308,6 +311,7 @@ export const SessionProvider = ({
   logoutInactiveUsers = true,
   monitorWorkspace = true,
   expireWarningMinutes = 5,
+  renewAccessTokenEarlyMilliseconds = 0,
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
@@ -578,7 +582,10 @@ export const SessionProvider = ({
       }
 
       if (session.expires) {
-        const delay = refreshDelayFromToken(session);
+        const delay = refreshDelayFromToken(
+          session,
+          renewAccessTokenEarlyMilliseconds,
+        );
         if (delay >= MIN_REFRESH_DELAY_MILLISECONDS) {
           refreshFailuresRef.current = 0;
           expiredRecoveryAttemptedRef.current = false;
@@ -593,7 +600,7 @@ export const SessionProvider = ({
       armRefreshTimer(unhealthyRefreshDelay(refreshFailuresRef.current));
       refreshFailuresRef.current += 1;
     },
-    [armRefreshTimer, resettleLoginState],
+    [armRefreshTimer, resettleLoginState, renewAccessTokenEarlyMilliseconds],
   );
 
   const performScheduledRefresh = useCallback(async () => {
@@ -691,6 +698,7 @@ export const SessionProvider = ({
     if (SESSION_DEBUG_LOGGING) {
       // eslint-disable-next-line no-console
       console.log('[session-refresh] heartbeat', {
+        currentTime: new Date(now).toISOString(),
         dueAt: dueAt ? new Date(dueAt).toISOString() : null,
         remainingSeconds: dueAt ? Math.round((dueAt - now) / 1000) : null,
         refreshInFlight: refreshInFlightRef.current,
@@ -972,6 +980,21 @@ export const SessionProvider = ({
       if (!logoutInactiveUsers) return;
 
       const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
+
+      if (SESSION_DEBUG_LOGGING) {
+        // eslint-disable-next-line no-console
+        console.log(
+          '[workspace-test]',
+          pathname,
+          isUserOnPage('Workspace', pathname),
+        );
+
+        // oxlint-disable-next-line no-console
+        console.log(
+          '[workspace-test] workspaceInactivityTimeLimitMilliseconds',
+          workspaceInactivityTimeLimitMilliseconds,
+        );
+      }
 
       const activeLimit = isUserOnPage('Workspace', pathname)
         ? workspaceInactivityTimeLimitMilliseconds
