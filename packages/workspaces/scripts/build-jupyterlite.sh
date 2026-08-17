@@ -50,8 +50,17 @@ if [[ ! -x "$VENV_JUPYTER_LITE" ]]; then
   exit 1
 fi
 
+
+echo "$VENV_JUPYTER_LITE" build \
+       --config "$CONFIG_FILE" \
+       --lite-dir "$SRC_DIR" \
+       --output-dir "$BUILD_DIR/$TIER"
+
 "$VENV_JUPYTER_LITE" build \
   --config "$CONFIG_FILE" \
+  --lite-dir "$SRC_DIR" \
   --output-dir "$BUILD_DIR/$TIER"
+
+
 
 echo "$TIER-tier JupyterLite build complete: $BUILD_DIR/$TIER (venv: $VENV_DIR)"
