@@ -3,6 +3,14 @@
     "apps": ["lab"],
     "output_dir": "site"
   },
+  "PyodideLockAddon": {
+    "enabled": true,
+    "wheels": ["dist/"],
+    "specs": ["gen3"]
+  },
+  "PyodideLockOfflineAddon": {
+    "enabled": true
+  },
   "LiteServerConfig": {
     "contents": ["./notebooks"],
     "settings_overrides": {

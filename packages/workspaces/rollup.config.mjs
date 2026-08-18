@@ -175,6 +175,10 @@ const config = [
             src: 'scripts/*.sh',
             dest: 'dist/jupyterlite-builds/scripts',
           },
+          {
+            src: 'jupyterlite-builds/free-private/dist/*',
+            dest: 'dist/jupyterlite-builds/free-private/dist',
+          },
         ],
       }),
     ],
