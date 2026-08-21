@@ -1,12 +1,12 @@
 {
   "name": "@gen3/toolsff",
-  "version": "0.12.62",
+  "version": "0.12.63",
   "description": "tools for processing Gen3 commons content: color theme, icons, sharedFilters",
   "main": "index.js",
   "type": "module",
   "engines": {
     "npm": ">=11.16.0",
-    "node": ">=24.18.0"
+    "node": ">=24.18.1"
   },
   "scripts": {
     "lint": "oxlint src",

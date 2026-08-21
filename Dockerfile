@@ -1,7 +1,7 @@
 # docker build -t gen3:fef .
 # docker run -p 3000:3000 -it gen3:fef
 # Build stage
-FROM --platform=$BUILDPLATFORM node:24.18.0-alpine3.23 AS builder
+FROM --platform=$BUILDPLATFORM node:24.18.1-alpine3.23 AS builder
 
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
@@ -68,7 +68,7 @@ RUN NODE_OPTIONS="--max-old-space-size=4096" \
 
 # ─────────────────────────────────────────────
 # Production stage
-FROM node:24.18.0-alpine3.23 AS runner
+FROM node:24.18.1-alpine3.23 AS runner
 
 WORKDIR /gen3
 
