@@ -1,12 +1,10 @@
 import React from 'react';
-import {
-  NavPageLayout,
-  NavPageLayoutProps,
-} from '../../../features/Navigation';
+import { NavPageLayout } from '../../../features/Navigation';
+import type { NavPageLayoutProps } from '../../../features/Navigation';
 import StudyRegistrationAccessRequestForm from '../../../features/DiscoveryForms/StudyRegistrationAccessRequest';
 
 interface VLMDSubmissionAccessRequestFormPageProps extends NavPageLayoutProps {
-  configStudyRegistrationRequestAccessForm: any;
+  configStudyRegistrationRequestAccessForm: unknown;
 }
 
 const VLMDSubmissionAccessRequestFormPage = ({
