@@ -33,7 +33,7 @@ else
   SRC_DIR="$ROOT_DIR/remote-private"
 fi
 
-BUILD_DIR="${2:-$SRC_DIR/build}"
+BUILD_DIR="${2:-$(pwd)/builds}"
 mkdir -p "$BUILD_DIR"
 BUILD_DIR="$(cd "$BUILD_DIR" && pwd)"
 
@@ -64,10 +64,16 @@ if [[ ! -f "$REQUIREMENTS_FILE" ]]; then
   exit 1
 fi
 
-# Install JupyterLite requirements into the shared venv (uv for speed).
-info "Installing JupyterLite requirements …"
-uv pip install -r "$REQUIREMENTS_FILE" 2>&1 | tail -5
-success "JupyterLite requirements installed"
+# Only install requirements when jupyter-lite is not already present in the
+# venv.  This preserves the exact package versions that build-gen3sdk-lite.sh
+# set up (pyodide-build, etc.) and avoids accidental upgrades/downgrades.
+if [[ -x "$VENV_JUPYTER_LITE" ]]; then
+  info "Existing venv already has jupyter-lite — skipping requirements install"
+else
+  info "Installing JupyterLite requirements …"
+  uv pip install -r "$REQUIREMENTS_FILE" 2>&1 | tail -5
+  success "JupyterLite requirements installed"
+fi
 
 if [[ ! -x "$VENV_JUPYTER_LITE" ]]; then
   echo "jupyter-lite executable not found in $VENV_DIR after dependency install."

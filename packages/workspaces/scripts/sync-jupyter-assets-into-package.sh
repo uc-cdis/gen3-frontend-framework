@@ -2,10 +2,13 @@
 set -euo pipefail
 
 
-BUILD_SRC="${1:-}"
+BUILD_SRC="${1:-$(pwd)/builds}"
 if [[ -z "$BUILD_SRC" ]]; then
   usage "set to the output of the juypterlite install"
 fi
+
+
+echo "Build directory is $BUILD_SRC"
 
 PKG_DIR="${2:-jupyter-workspaces}"
 echo "assets directory is: $PKG_DIR"
@@ -16,6 +19,7 @@ REMOTE_SRC="$BUILD_SRC/remote"
 FREE_DST="$PKG_DIR/assets/free"
 REMOTE_DST="$PKG_DIR/assets/remote"
 VALIDATE_SCRIPT="$SCRIPT_DIR/scripts/validate-jupyterlite-assets.sh"
+source "${SCRIPT_DIR}/scripts/setup-env.sh"
 
 if [[ ! -d "$FREE_SRC" ]]; then
   echo "Missing free JupyterLite build output: $FREE_SRC"
@@ -28,6 +32,11 @@ if [[ ! -d "$REMOTE_SRC" ]]; then
   echo "Run: npm run build:jupyterlite:remote"
   exit 1
 fi
+
+echo $VALIDATE_SCRIPT
+echo $FREE_SRC
+echo $REMOTE_SRC
+
 
 bash "$VALIDATE_SCRIPT" --free-dir "$FREE_SRC" --remote-dir "$REMOTE_SRC"
 

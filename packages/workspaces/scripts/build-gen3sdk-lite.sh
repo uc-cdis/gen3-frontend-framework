@@ -20,7 +20,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # ── Path constants (always defined, no external dependency) ──────────────────
 ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 SRC_DIR="$ROOT_DIR/free-private"
-BUILD_DIR="${2:-$SRC_DIR/build}"
+BUILD_DIR="${2:-$(pwd)/builds}"
 mkdir -p "$BUILD_DIR"
 BUILD_DIR="$(cd "$BUILD_DIR" && pwd)"
 

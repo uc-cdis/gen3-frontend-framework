@@ -5,11 +5,13 @@
 # Guarantees both build-gen3sdk-lite and build-jupyterlite use the same
 # Python interpreter and virtual environment.
 #
-# The caller MUST set BUILD_DIR before sourcing this script.
+# BUILD_DIR resolution (first match wins):
+#   1. Pre-set BUILD_DIR environment variable  (export BUILD_DIR=…)
+#   2. First positional argument               (source setup-env.sh /tmp/mybuild)
+#   3. Default: $PWD/builds
 #
-# Usage (from another script):
-#   export BUILD_DIR="/path/to/build"
-#   source "$(dirname "${BASH_SOURCE[0]}")/setup-env.sh"
+# Usage:
+#   source setup-env.sh [build_dir]
 #
 # After sourcing, the venv at $BUILD_DIR/.venv is activated in the calling
 # shell, and VENV_DIR is exported.
@@ -18,10 +20,7 @@
 # ── Configuration ────────────────────────────────────────────────────────────
 PYTHON_VERSION="3.13.1"
 
-if [[ -z "${BUILD_DIR:-}" ]]; then
-  echo "[FATAL] BUILD_DIR must be set before sourcing setup-env.sh" >&2
-  return 1 2>/dev/null || exit 1
-fi
+BUILD_DIR="${BUILD_DIR:-${1:-$(pwd)/builds}}"
 
 mkdir -p "$BUILD_DIR"
 BUILD_DIR="$(cd "$BUILD_DIR" && pwd)"
