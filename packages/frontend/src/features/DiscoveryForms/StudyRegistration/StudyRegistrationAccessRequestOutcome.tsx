@@ -3,7 +3,7 @@ import React from 'react';
 import TextContent from '../../../components/Content/TextContent';
 import type { TextContentProps } from '../../../components/Content/TextContent';
 import type { studyRegistrationAccessRequestFormOutcomeProps } from './types';
-import { IconExternalLink, IconLock } from '@tabler/icons-react';
+import { IconExternalLink } from '@tabler/icons-react';
 
 const StudyRegistrationAccessRequestOutcome = ({
   outcomeConfig,
