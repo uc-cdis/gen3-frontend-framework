@@ -1,5 +1,5 @@
-jupyterlite-core>=0.8.1
+jupyterlite-core>=0.7.0,<0.8
 jupyterlab>=4.6.0
-jupyterlite-pyodide-kernel
+jupyterlite-pyodide-kernel>=0.7.0,<0.8
 jupyterlite-remote-server>=0.2.0
 jupyterlite-terminal

@@ -5,8 +5,17 @@
   },
   "PyodideLockAddon": {
     "enabled": true,
-    "wheels": ["dist/"],
-    "specs": ["gen3"]
+    "wheels": ["pypi/"],
+    "specs": [
+      "gen3",
+      "cdislogging",
+      "indexclient",
+      "drsclient",
+      "fastavro",
+      "pyodide-http",
+      "pypfb",
+      "gen3datamodel"
+    ]
   },
   "PyodideLockOfflineAddon": {
     "enabled": true

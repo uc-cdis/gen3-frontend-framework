@@ -176,8 +176,8 @@ const config = [
             dest: 'dist/jupyterlite-builds/scripts',
           },
           {
-            src: 'jupyterlite-builds/free-private/dist/*',
-            dest: 'dist/jupyterlite-builds/free-private/dist',
+            src: 'jupyterlite-builds/free-private/pypi/*',
+            dest: 'dist/jupyterlite-builds/free-private/pypi',
           },
         ],
       }),

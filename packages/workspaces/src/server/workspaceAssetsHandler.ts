@@ -390,6 +390,18 @@ export function createWorkspaceAssetsHandler(
       safeSegments.push(nodePath.basename(seg));
     }
 
+    // JupyterLite's service worker intercepts api/* calls in-browser.
+    // When it doesn't (Cockle not installed, SW not yet active, etc.),
+    // requests fall through here. Return JSON 404 so extensions handle
+    // the error gracefully instead of throwing a JSON parse error.
+    if (safeSegments[0] === 'api') {
+      res
+        .status(404)
+        .setHeader('Content-Type', 'application/json; charset=utf-8')
+        .end(JSON.stringify({ message: 'Not found' }));
+      return;
+    }
+
     const allowedFiles = allowedFilesByTier[tier];
 
     const candidatePath = nodePath.resolve(tierRoot, ...safeSegments);
