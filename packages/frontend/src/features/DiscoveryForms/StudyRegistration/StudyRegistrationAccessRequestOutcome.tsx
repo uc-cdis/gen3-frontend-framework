@@ -11,6 +11,12 @@ const StudyRegistrationAccessRequestOutcome = ({
   outcomeConfig: studyRegistrationAccessRequestFormOutcomeProps;
 }) => {
   const { content, buttons } = outcomeConfig;
+  if (!content && !buttons) {
+    <div className="w-full max-w-xl m-auto text-center">
+      <h2>Unrecognized Error</h2>
+      <p>There was an issue processing your request</p>
+    </div>;
+  }
 
   return (
     <div className="w-full max-w-xl m-auto text-center">

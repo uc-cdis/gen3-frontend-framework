@@ -14,7 +14,7 @@ interface button {
 }
 export interface studyRegistrationAccessRequestFormOutcomeProps extends Gen3AppConfigData {
   content?: ReadonlyArray<TextContentProps>;
-  buttons: button[];
+  buttons?: button[];
 }
 
 export enum FormOutcome {
