@@ -26,8 +26,9 @@
     "build:jupyterlite:free": "bash ../../node_modules/@gen3/workspaces/dist/jupyterlite-builds/scripts/build-jupyterlite.sh free ./builds",
     "build:jupyterlite:remote": "bash ../../node_modules/@gen3/workspaces/dist/jupyterlite-builds/scripts/build-jupyterlite.sh remote ./builds",
     "build:jupyterlite:assets": "bash ../../node_modules/@gen3/workspaces/dist/jupyterlite-builds/scripts/sync-jupyter-assets-into-package.sh ./builds",
-    "build:jupyterlite": "npm run build:gen3sdklite && npm run build:jupyterlite:free && npm run build:jupyterlite:remote && npm run build:jupyterlite:assets",
-    "build:gen3sdklite": "bash ../../node_modules/@gen3/workspaces/dist/jupyterlite-builds/scripts/build-gen3sdk-lite.sh ./builds",
+    "build:jupyterlite": "npm run build:setupenv && npm run build:gen3sdklite && npm run build:jupyterlite:free && npm run build:jupyterlite:remote && npm run build:jupyterlite:assets",
+    "build:jupyterlite:gen3sdk": "bash ../../node_modules/@gen3/workspaces/dist/jupyterlite-builds/scripts/build-gen3sdk-lite.sh ./builds",
+    "build:jupyterlite:setupenv": "bash ../../node_modules/@gen3/workspaces/dist/jupyterlite-builds/scripts/setup-env.sh free",
     "build:clean": "npm run clean && npm run build"
   },
   "dependencies": {
