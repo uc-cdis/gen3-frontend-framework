@@ -41,7 +41,7 @@ export const FormContentViews = ({
         outcomeConfig={
           config[
             FormOutcome.success
-          ] as studyRegistrationAccessRequestFormOutcomeProps
+          ] as unknown as studyRegistrationAccessRequestFormOutcomeProps
         }
       />
     );
@@ -53,7 +53,7 @@ export const FormContentViews = ({
           outcomeConfig={
             config[
               FormOutcome.error
-            ] as studyRegistrationAccessRequestFormOutcomeProps
+            ] as unknown as studyRegistrationAccessRequestFormOutcomeProps
           }
         />
         <div className="mt-6">

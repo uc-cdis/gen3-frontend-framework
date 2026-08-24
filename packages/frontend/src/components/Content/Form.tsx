@@ -81,10 +81,6 @@ const Form = ({
               validate[itemKey] = isCedarUUIDValid(item.errorText);
               break;
             }
-            case FormContentType.ClinicalTrialID: {
-              validate[itemKey] = isClinicalTrialIDValid(item.errorText);
-              break;
-            }
             case FormContentType.Email: {
               const isValidEmail = item.errorText || 'Invalid email';
               validate[itemKey] = isEmail(isValidEmail);

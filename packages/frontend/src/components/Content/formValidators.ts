@@ -56,13 +56,16 @@ const validateClinicalTrialID = (
   };
 };
 
-// Required check (returns error if empty OR invalid)
+// Required check (returns error if only if invalid)
 const isClinicalTrialIDValid = (
   errorText: string = 'Valid ClinicalTrials.gov ID required',
 ): AsyncValidator => {
   return async (value: unknown, values, path, signal) => {
-    if (!value || toString(value).trim() === '') return errorText;
-    return validateClinicalTrialID(errorText)(value, values, path, signal);
+    if (!value || toString(value).trim() === '')
+      return null; // Validation to only check if user entered text
+    else {
+      return validateClinicalTrialID(errorText)(value, values, path, signal);
+    }
   };
 };
 

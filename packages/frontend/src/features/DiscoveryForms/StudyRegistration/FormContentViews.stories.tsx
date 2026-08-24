@@ -299,11 +299,24 @@ const mockConfig = {
         className: 'text-center',
       },
     ],
-    button: {
-      variant: 'filled',
-      href: '/Discovery',
-      text: 'Go to Discovery Page',
-    },
+    buttons: [
+      {
+        variant: 'filled',
+        href: '/study-reg',
+        text: 'Register Another Study',
+      },
+      {
+        variant: 'outline',
+        href: '/Discovery',
+        text: 'Go to Discovery Page',
+      },
+      {
+        variant: 'outline',
+        href: 'https://cedar.metadatacenter.org/',
+        text: 'Go To CEDAR ',
+        externalLink: true,
+      },
+    ],
   },
   error: {
     content: [
