@@ -24,10 +24,12 @@ CONFIG_FILE="$SRC_DIR/jupyter_lite_config.json"
 REQUIREMENTS_FILE="$SRC_DIR/requirements.txt"
 PYTHON_BIN="${PYTHON_BIN:-$(command -v python3)}"
 BUILD_DIR="${2:-$SRC_DIR/build}"
+mkdir -p "$BUILD_DIR"
+BUILD_DIR="$(cd "$BUILD_DIR" && pwd)"
 VENV_DIR="$BUILD_DIR/.venv"
 VENV_PYTHON="$VENV_DIR/bin/python"
 VENV_JUPYTER_LITE="$VENV_DIR/bin/jupyter-lite"
-PYPI="$BUILD_DIR/pypy"
+PYPI="$BUILD_DIR/pypi"
 
 if [[ -z "$PYTHON_BIN" ]] || ! command -v "$PYTHON_BIN" >/dev/null 2>&1; then
   echo "python3 executable not found. Set PYTHON_BIN to a valid Python interpreter."
@@ -39,7 +41,7 @@ if [[ ! -f "$REQUIREMENTS_FILE" ]]; then
   exit 1
 fi
 
-mkdir -p "$BUILD_DIR"
+
 
 "$PYTHON_BIN" -m venv "$VENV_DIR"
 
@@ -51,8 +53,32 @@ if [[ ! -x "$VENV_JUPYTER_LITE" ]]; then
   exit 1
 fi
 
+
+
 # Add the pypi gen3 packages to the build
 if [[ "$TIER" == "free" ]]; then
+
+# Patch the config to use the absolute pypi path, then build.
+# The source config uses a relative "pypi/" entry in PyodideLockAddon.wheels;
+# jupyter-lite resolves it relative to the config file's location (inside the
+# published dist tree), so it would never find $BUILD_DIR/pypi without patching.
+PATCHED_CONFIG="$BUILD_DIR/jupyter_lite_config.json"
+"$VENV_PYTHON" - <<PYEOF
+import json, sys
+
+with open('$CONFIG_FILE') as fh:
+    cfg = json.load(fh)
+
+addon = cfg.get('PyodideLockAddon', {})
+if 'wheels' in addon:
+    addon['wheels'] = ['$PYPI/']
+    cfg['PyodideLockAddon'] = addon
+
+with open('$PATCHED_CONFIG', 'w') as fh:
+    json.dump(cfg, fh, indent=2)
+PYEOF
+
+  echo "looking for wheels in $PYPI":
   WHEEL_ARGS=()
   if [[ -d "$PYPI" ]]; then
     while IFS= read -r -d '' whl; do
@@ -61,15 +87,13 @@ if [[ "$TIER" == "free" ]]; then
   fi
 
   echo "$VENV_JUPYTER_LITE" build \
-         --config "$CONFIG_FILE" \
-         --lite-dir "$SRC_DIR" \
-         "${WHEEL_ARGS[@]}" \
+         --config "$PATCHED_CONFIG" \
+         --lite-dir "$SRC_DIR" ${WHEEL_ARGS[@]+"${WHEEL_ARGS[@]}"} \
          --output-dir "$BUILD_DIR/$TIER"
 
   "$VENV_JUPYTER_LITE" build \
-    --config "$CONFIG_FILE" \
-    --lite-dir "$SRC_DIR" \
-    "${WHEEL_ARGS[@]}" \
+    --config "$PATCHED_CONFIG" \
+    --lite-dir "$SRC_DIR" ${WHEEL_ARGS[@]+"${WHEEL_ARGS[@]}"} \
     --output-dir "$BUILD_DIR/$TIER"
 else
   echo "$VENV_JUPYTER_LITE" build \
