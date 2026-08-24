@@ -175,10 +175,6 @@ const config = [
             src: 'scripts/*.sh',
             dest: 'dist/jupyterlite-builds/scripts',
           },
-          {
-            src: 'jupyterlite-builds/free-private/pypi/*',
-            dest: 'dist/jupyterlite-builds/free-private/pypi',
-          },
         ],
       }),
     ],

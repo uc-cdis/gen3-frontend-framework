@@ -27,6 +27,7 @@ BUILD_DIR="${2:-$SRC_DIR/build}"
 VENV_DIR="$BUILD_DIR/.venv"
 VENV_PYTHON="$VENV_DIR/bin/python"
 VENV_JUPYTER_LITE="$VENV_DIR/bin/jupyter-lite"
+PYPI="$BUILD_DIR/pypy"
 
 if [[ -z "$PYTHON_BIN" ]] || ! command -v "$PYTHON_BIN" >/dev/null 2>&1; then
   echo "python3 executable not found. Set PYTHON_BIN to a valid Python interpreter."
@@ -50,16 +51,37 @@ if [[ ! -x "$VENV_JUPYTER_LITE" ]]; then
   exit 1
 fi
 
+# Add the pypi gen3 packages to the build
+if [[ "$TIER" == "free" ]]; then
+  WHEEL_ARGS=()
+  if [[ -d "$PYPI" ]]; then
+    while IFS= read -r -d '' whl; do
+      WHEEL_ARGS+=(--piplite-wheels "$whl")
+    done < <(find "$PYPI" -maxdepth 1 -name "*.whl" -print0 | sort -z)
+  fi
 
-echo "$VENV_JUPYTER_LITE" build \
-       --config "$CONFIG_FILE" \
-       --lite-dir "$SRC_DIR" \
-       --output-dir "$BUILD_DIR/$TIER"
+  echo "$VENV_JUPYTER_LITE" build \
+         --config "$CONFIG_FILE" \
+         --lite-dir "$SRC_DIR" \
+         "${WHEEL_ARGS[@]}" \
+         --output-dir "$BUILD_DIR/$TIER"
 
-"$VENV_JUPYTER_LITE" build \
-  --config "$CONFIG_FILE" \
-  --lite-dir "$SRC_DIR" \
-  --output-dir "$BUILD_DIR/$TIER"
+  "$VENV_JUPYTER_LITE" build \
+    --config "$CONFIG_FILE" \
+    --lite-dir "$SRC_DIR" \
+    "${WHEEL_ARGS[@]}" \
+    --output-dir "$BUILD_DIR/$TIER"
+else
+  echo "$VENV_JUPYTER_LITE" build \
+         --config "$CONFIG_FILE" \
+         --lite-dir "$SRC_DIR" \
+         --output-dir "$BUILD_DIR/$TIER"
+
+  "$VENV_JUPYTER_LITE" build \
+    --config "$CONFIG_FILE" \
+    --lite-dir "$SRC_DIR" \
+    --output-dir "$BUILD_DIR/$TIER"
+fi
 
 
 
