@@ -224,8 +224,25 @@ PYEOF
 
     # fastavro has Python fallbacks for all C extensions; build pure-Python so
     # micropip/piplite accepts the wheel regardless of the Pyodide platform tag.
+    # pip wheel (not pyodide build) avoids the pyemscripten stamp, but still
+    # produces a platform-specific wheel on macOS, so retag to py3-none-any and
+    # patch Root-Is-Purelib so micropip treats it as a pure-Python wheel.
     local build_cmd="pyodide build"
-    [[ "${name}" == "fastavro" ]] && build_cmd="FASTAVRO_USE_PYTHON=1 pip wheel . --no-deps -w dist/"
+    [[ "${name}" == "fastavro" ]] && build_cmd="FASTAVRO_USE_PYTHON=1 pip wheel . --no-deps -w dist/ \
+      && python -m wheel tags --python-tag py3 --abi-tag none --platform-tag any --remove dist/fastavro-*.whl \
+      && python3 - <<'PYEOF'
+import zipfile, os
+whl = next(f for f in os.listdir('dist') if f.startswith('fastavro') and f.endswith('.whl'))
+path = os.path.join('dist', whl)
+tmp = path + '.tmp'
+with zipfile.ZipFile(path, 'r') as zin, zipfile.ZipFile(tmp, 'w', zipfile.ZIP_DEFLATED) as zout:
+    for item in zin.infolist():
+        data = zin.read(item.filename)
+        if item.filename.endswith('/WHEEL'):
+            data = data.replace(b'Root-Is-Purelib: false', b'Root-Is-Purelib: true')
+        zout.writestr(item, data)
+os.replace(tmp, path)
+PYEOF"
 
     if (cd "${build_dir}" && eval "${build_cmd}") > "${logfile}" 2>&1; then
       local end_ts
