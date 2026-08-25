@@ -135,7 +135,7 @@ export function useMicroContainerRedux(
     }
   }, [isWorkspaceLaunchError, isTerminateError]);
 
-  const launch = useCallback(async (): Promise<void> => {
+  const launch = useCallback(async (tag?: string): Promise<void> => {
     if (
       !enabled ||
       workspaceContainerStatus === WorkspaceStatus.Launching ||
@@ -143,12 +143,19 @@ export function useMicroContainerRedux(
     )
       return; // already running or launching so ignore
 
+    const isTagString = tag && typeof tag === 'string';
+    if (isTagString) {
+      // set hash to passed in tag
+      setContainerHash(tag);
+    }
+
     try {
       coreDispatch(
         setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Launch),
       );
       coreDispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.Launching));
-      const query = containerHash ? encodeURIComponent(containerHash) : '';
+      // use tag if provided to prevent race condition with setContainerHash
+      const query = isTagString ? encodeURIComponent(tag) : (containerHash ? encodeURIComponent(containerHash) : '');
       const launchResults = await launchTrigger(query).unwrap();
       if (!launchResults) {
         // launch error, will show error message and then reset
