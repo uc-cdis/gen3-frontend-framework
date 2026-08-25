@@ -17,6 +17,17 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# ── Parse flags (strip before positional args are consumed) ──────────────────
+NO_EXTRAS=false
+POSITIONAL_ARGS=()
+for _arg in "$@"; do
+  case "$_arg" in
+    --no-extras) NO_EXTRAS=true ;;
+    *)           POSITIONAL_ARGS+=("$_arg") ;;
+  esac
+done
+set -- "${POSITIONAL_ARGS[@]+"${POSITIONAL_ARGS[@]}"}"
+
 # ── Path constants (always defined, no external dependency) ──────────────────
 ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 SRC_DIR="$ROOT_DIR/free-private"
@@ -281,6 +292,9 @@ PYEOF
   done
 
   # ── Download pure-Python deps missing from the Pyodide lock ────────────
+  if [[ "${NO_EXTRAS}" == "true" ]]; then
+    info "Skipping pure-Python extras download (--no-extras)"
+  else
   # These are gen3 dependencies that aren't in the Pyodide distribution and
   # aren't built from source above. Without them, micropip falls back to PyPI
   # inside the browser, which hangs due to CORS.
@@ -318,6 +332,7 @@ PYEOF
       warn "  ${dep}: download failed — import gen3 may hang in browser"
     fi
   done
+  fi  # end NO_EXTRAS check
 
   # ── Summary ────────────────────────────────────────────────────────────
   echo ""
@@ -371,13 +386,16 @@ main() {
       clean
       ;;
     --help|-h)
-      echo "Usage: $0 [--setup | --build | --clean | --help]"
+      echo "Usage: $0 [--setup | --build | --clean | --help] [--no-extras] [build_dir]"
       echo ""
-      echo "  (no flag)   Full run: setup environment, clone repos, build wheels"
-      echo "  --setup     Set up Python, venv, pyodide-build, and emsdk"
-      echo "  --build     Clone/update repos and build WASM wheels (requires prior --setup)"
-      echo "  --clean     Remove work/, dist/, and logs/"
-      echo "  --help      Show this message"
+      echo "  (no flag)    Full run: setup environment, clone repos, build wheels"
+      echo "  --setup      Set up Python, venv, pyodide-build, and emsdk"
+      echo "  --build      Clone/update repos and build WASM wheels (requires prior --setup)"
+      echo "  --clean      Remove work/, dist/, and logs/"
+      echo "  --help       Show this message"
+      echo ""
+      echo "  --no-extras  Skip downloading pure-Python deps (aiofiles, backoff, etc.)"
+      echo "               Use when gen3 SDK wheel support is not needed"
       ;;
     *)
       setup_environment

@@ -14,10 +14,22 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 usage() {
-  echo "Usage: $0 <tier> [build_dir]"
-  echo "  tier: 'free' or 'remote'"
+  echo "Usage: $0 <tier> [build_dir] [--no-extras]"
+  echo "  tier:         'free' or 'remote'"
+  echo "  --no-extras:  skip downloading CDN wheels locally and patching the lock file"
   exit 1
 }
+
+# ── Parse flags (strip before positional args are consumed) ──────────────────
+NO_EXTRAS=false
+POSITIONAL_ARGS=()
+for _arg in "$@"; do
+  case "$_arg" in
+    --no-extras) NO_EXTRAS=true ;;
+    *)           POSITIONAL_ARGS+=("$_arg") ;;
+  esac
+done
+set -- "${POSITIONAL_ARGS[@]+"${POSITIONAL_ARGS[@]}"}"
 
 TIER="${1:-}"
 if [[ "$TIER" != "free" && "$TIER" != "remote" ]]; then
@@ -113,6 +125,9 @@ PYEOF
     ${WHEEL_ARGS[@]+"${WHEEL_ARGS[@]}"}
 
   # ── Download CDN wheels locally and rewrite lock URLs ──────────────────
+  if [[ "${NO_EXTRAS}" == "true" ]]; then
+    info "Skipping CDN wheel download and lock patch (--no-extras)"
+  else
   # Pyodide-compiled deps of gen3 (pandas, numpy, aiohttp, etc.) are listed
   # in pyodide-lock.json with CDN URLs. The browser fetches them at import
   # time — pandas alone is ~20 MB and reliably hangs the kernel. Download
@@ -163,6 +178,7 @@ with open(lock_file, "w") as f:
 print(f"Lock patched: {downloaded} CDN → local, {failed} failed")
 PYEOF
   fi
+  fi  # end NO_EXTRAS check
 else
   info "Running: jupyter-lite build (remote tier)"
   "$VENV_JUPYTER_LITE" build \
