@@ -229,20 +229,7 @@ PYEOF
     # patch Root-Is-Purelib so micropip treats it as a pure-Python wheel.
     local build_cmd="pyodide build"
     [[ "${name}" == "fastavro" ]] && build_cmd="FASTAVRO_USE_PYTHON=1 pip wheel . --no-deps -w dist/ \
-      && python -m wheel tags --python-tag py3 --abi-tag none --platform-tag any --remove dist/fastavro-*.whl \
-      && python3 - <<'PYEOF'
-import zipfile, os
-whl = next(f for f in os.listdir('dist') if f.startswith('fastavro') and f.endswith('.whl'))
-path = os.path.join('dist', whl)
-tmp = path + '.tmp'
-with zipfile.ZipFile(path, 'r') as zin, zipfile.ZipFile(tmp, 'w', zipfile.ZIP_DEFLATED) as zout:
-    for item in zin.infolist():
-        data = zin.read(item.filename)
-        if item.filename.endswith('/WHEEL'):
-            data = data.replace(b'Root-Is-Purelib: false', b'Root-Is-Purelib: true')
-        zout.writestr(item, data)
-os.replace(tmp, path)
-PYEOF"
+      && python -m wheel tags --python-tag py3 --abi-tag none --platform-tag any --remove dist/fastavro-*.whl"
 
     if (cd "${build_dir}" && eval "${build_cmd}") > "${logfile}" 2>&1; then
       local end_ts
@@ -280,6 +267,46 @@ PYEOF"
     new_whl="${whl/p313-cp313-pyemscripten_2025_0_wasm32/py3-none-any}"
     mv "${whl}" "${new_whl}"
     info "Renamed $(basename "${whl}") → $(basename "${new_whl}")"
+  done
+
+  # ── Download pure-Python deps missing from the Pyodide lock ────────────
+  # These are gen3 dependencies that aren't in the Pyodide distribution and
+  # aren't built from source above. Without them, micropip falls back to PyPI
+  # inside the browser, which hangs due to CORS.
+  # Versions pinned to satisfy gen3's constraints where applicable.
+  PURE_PYTHON_DEPS=(
+    "aiofiles"
+    "backoff"
+    "dataclasses-json<=0.5.9"
+    "gen3dictionary"
+    "humanfriendly"
+    "importlib-metadata>=8,<9"
+    "marshmallow>=3.3.0,<4.0.0"
+    "marshmallow-enum"
+    "mypy-extensions"
+    "python-dateutil"
+    "typing-inspect"
+    "xmltodict>=0.13.0,<0.14.0"
+    "zipp"
+  )
+  info "Downloading pure-Python deps missing from Pyodide lock …"
+  for dep in "${PURE_PYTHON_DEPS[@]}"; do
+    if compgen -G "${OUTPUT_DIR}/${dep//-/_}-*.whl" > /dev/null 2>&1 || \
+       compgen -G "${OUTPUT_DIR}/${dep}-*.whl" > /dev/null 2>&1; then
+      info "  ${dep}: already present, skipping"
+      continue
+    fi
+    if pip download "${dep}" \
+        --no-deps \
+        --only-binary=:all: \
+        --python-version 313 \
+        --platform any \
+        -d "${OUTPUT_DIR}" \
+        --quiet 2>/dev/null; then
+      info "  ${dep}: downloaded"
+    else
+      warn "  ${dep}: download failed — import gen3 may hang in browser"
+    fi
   done
 
   # ── Summary ────────────────────────────────────────────────────────────

@@ -83,91 +83,34 @@ fi
 
 # ── Build ────────────────────────────────────────────────────────────────────
 if [[ "$TIER" == "free" ]]; then
-
-  # Patch config to use the absolute pypi path so jupyter-lite can find the
-  # custom wheels built by build-gen3sdk-lite.
-  PATCHED_CONFIG="$BUILD_DIR/jupyter_lite_config.json"
-  python - <<PYEOF
-import json
-
-with open('$CONFIG_FILE') as fh:
-    cfg = json.load(fh)
-
-addon = cfg.get('PyodideLockAddon', {})
-if 'wheels' in addon:
-    addon['wheels'] = ['$PYPI/']
-    cfg['PyodideLockAddon'] = addon
-
-with open('$PATCHED_CONFIG', 'w') as fh:
-    json.dump(cfg, fh, indent=2)
-PYEOF
-
-  info "Looking for wheels in $PYPI"
   WHEEL_ARGS=()
   if [[ -d "$PYPI" ]]; then
+    info "Looking for wheels in $PYPI"
     while IFS= read -r -d '' whl; do
       WHEEL_ARGS+=(--piplite-wheels "$whl")
     done < <(find "$PYPI" -maxdepth 1 -name "*.whl" -print0 | sort -z)
   fi
 
+  # Patch the config to point PyodideLockAddon.wheels at the absolute pypi path.
+  # The source config uses a relative "pypi/" path (relative to lite-dir), which
+  # is wrong when the wheels live in BUILD_DIR/pypi rather than SRC_DIR/pypi.
+  PATCHED_CONFIG="$BUILD_DIR/jupyter_lite_config.json"
+  python3 - <<PYEOF
+import json
+with open('$CONFIG_FILE') as fh:
+    cfg = json.load(fh)
+addon = cfg.setdefault('PyodideLockAddon', {})
+addon['wheels'] = ['$PYPI/']
+with open('$PATCHED_CONFIG', 'w') as fh:
+    json.dump(cfg, fh, indent=2)
+PYEOF
+
   info "Running: jupyter-lite build (free tier, ${#WHEEL_ARGS[@]} custom wheels)"
   "$VENV_JUPYTER_LITE" build \
     --config "$PATCHED_CONFIG" \
-    --lite-dir "$SRC_DIR" ${WHEEL_ARGS[@]+"${WHEEL_ARGS[@]}"} \
-    --output-dir "$BUILD_DIR/$TIER"
-
-  # ── Patch pyodide-lock to remove packages our local wheels supersede ────────
-  # Pyodide 0.29.3 bundles fastavro==0.17.5. micropip refuses to upgrade a
-  # lock-registered package without reinstall=True, which breaks pypfb's
-  # fastavro>=1.11.0 dep. Removing it from the lock lets piplite install our
-  # 1.12.2 wheel cleanly for both direct installs and transitive dependencies.
-  PYODIDE_VERSION=$(python3 -c \
-    "from jupyterlite_pyodide_kernel.constants import PYODIDE_VERSION; print(PYODIDE_VERSION)")
-  PYODIDE_LOCK_URL="https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full/pyodide-lock.json"
-  CACHED_LOCK="$BUILD_DIR/pyodide-lock-${PYODIDE_VERSION}.json"
-  PATCHED_LOCK="$BUILD_DIR/$TIER/pyodide-lock.json"
-
-  if [[ ! -f "$CACHED_LOCK" ]]; then
-    info "Downloading pyodide-lock.json for Pyodide v${PYODIDE_VERSION} …"
-    curl -sL "$PYODIDE_LOCK_URL" -o "$CACHED_LOCK"
-  fi
-
-  info "Patching pyodide-lock.json (removing packages provided by local wheels) …"
-  python3 - "$CACHED_LOCK" "$PATCHED_LOCK" <<'PYEOF'
-import json, sys
-cached, patched = sys.argv[1], sys.argv[2]
-with open(cached) as fh:
-    lock = json.load(fh)
-# Remove packages where our local wheels provide a newer version.
-# Without removal, micropip raises a version-conflict error instead of
-# upgrading the lock-registered package.
-remove = ['fastavro']
-pkgs = lock.get('packages', {})
-for pkg in remove:
-    if pkg in pkgs:
-        del pkgs[pkg]
-        print(f'  removed {pkg} from pyodide-lock')
-with open(patched, 'w') as fh:
-    json.dump(lock, fh)
-PYEOF
-
-  # Tell the kernel to load our patched lock instead of the CDN one.
-  python3 - "$BUILD_DIR/$TIER/jupyter-lite.json" <<'PYEOF'
-import json, sys
-path = sys.argv[1]
-with open(path) as fh:
-    cfg = json.load(fh)
-jcd = cfg.setdefault('jupyter-config-data', {})
-ps  = jcd.setdefault('litePluginSettings', {})
-ks  = ps.setdefault('@jupyterlite/pyodide-kernel-extension:kernel', {})
-lo  = ks.setdefault('loadPyodideOptions', {})
-lo['lockFileURL'] = './pyodide-lock.json'
-with open(path, 'w') as fh:
-    json.dump(cfg, fh, indent=2)
-print('  updated jupyter-lite.json: lockFileURL → ./pyodide-lock.json')
-PYEOF
-
-  success "Pyodide lock patched and kernel configured"
+    --lite-dir "$SRC_DIR" \
+    --output-dir "$BUILD_DIR/$TIER" \
+    ${WHEEL_ARGS[@]+"${WHEEL_ARGS[@]}"}
 else
   info "Running: jupyter-lite build (remote tier)"
   "$VENV_JUPYTER_LITE" build \
