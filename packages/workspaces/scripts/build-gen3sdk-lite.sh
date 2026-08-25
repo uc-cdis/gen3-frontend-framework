@@ -257,13 +257,13 @@ PYEOF
     fi
   done
 
-#  # ── Normalise platform tags ────────────────────────────────────────────
-#  for whl in "${OUTPUT_DIR}"/*p313-cp313-pyemscripten_2025_0_wasm32.whl; do
-#    [[ -f "${whl}" ]] || continue
-#    new_whl="${whl/p313-cp313-pyemscripten_2025_0_wasm32/py3-none-any}"
-#    mv "${whl}" "${new_whl}"
-#    info "Renamed $(basename "${whl}") → $(basename "${new_whl}")"
-#  done
+  # ── Normalise platform tags ────────────────────────────────────────────
+  for whl in "${OUTPUT_DIR}"/*p313-cp313-pyemscripten_2025_0_wasm32.whl; do
+    [[ -f "${whl}" ]] || continue
+    new_whl="${whl/p313-cp313-pyemscripten_2025_0_wasm32/py3-none-any}"
+    mv "${whl}" "${new_whl}"
+    info "Renamed $(basename "${whl}") → $(basename "${new_whl}")"
+  done
 
   # ── Summary ────────────────────────────────────────────────────────────
   echo ""
