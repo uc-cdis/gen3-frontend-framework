@@ -62,6 +62,7 @@ REPOS=(
   "pypfb|https://github.com/uc-cdis/pypfb.git"
   "gen3sdk-python|https://github.com/uc-cdis/gen3sdk-python.git"
   "gen3users|git@github.com:uc-cdis/gen3users.git"
+  "gen3dictionary|https://github.com/uc-cdis/datadictionary.git"
 )
 
 # ── Source shared environment (venv + Python + core tooling) ─────────────────
@@ -158,6 +159,16 @@ build_wheels() {
   if [[ -f "${dictionaryutils_pyproject}" ]]; then
     sed -i '' 's/jsonschema = "<=4\.23\.0"/jsonschema = ">=4.0.0"/' "${dictionaryutils_pyproject}"
     info "Patched dictionaryutils: jsonschema constraint relaxed to >=4.0.0"
+  fi
+
+  # gen3dictionary: defer schema loading to avoid WASM hang
+  # GDCDictionary is instantiated at module import time with lazy=False (the
+  # default). In Pyodide the synchronous schema resolution blocks the WASM
+  # thread indefinitely. Patching to lazy=True defers loading until first use.
+  local gen3dictionary_init="${SOURCES_DIR}/gen3dictionary/gdcdictionary/__init__.py"
+  if [[ -f "${gen3dictionary_init}" ]]; then
+    sed -i '' 's/gdcdictionary = GDCDictionary(root_dir=SCHEMA_DIR)/gdcdictionary = GDCDictionary(root_dir=SCHEMA_DIR, lazy=True)/' "${gen3dictionary_init}"
+    info "Patched gen3dictionary: GDCDictionary instantiated with lazy=True"
   fi
 
   # psqlgraph: multiple fixes for WASM compatibility
@@ -278,7 +289,6 @@ PYEOF
     "aiofiles"
     "backoff"
     "dataclasses-json<=0.5.9"
-    "gen3dictionary"
     "humanfriendly"
     "importlib-metadata>=8,<9"
     "marshmallow>=3.3.0,<4.0.0"
