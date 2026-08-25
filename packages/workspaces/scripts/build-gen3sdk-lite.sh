@@ -222,7 +222,12 @@ PYEOF
     [[ -n "${subdir}" ]] && label="${name}/${subdir}"
     printf "  [%d/%d] %-25s " $((built + failed + 1)) "${total}" "${label}"
 
-    if (cd "${build_dir}" && pyodide build) > "${logfile}" 2>&1; then
+    # fastavro has Python fallbacks for all C extensions; build pure-Python so
+    # micropip/piplite accepts the wheel regardless of the Pyodide platform tag.
+    local build_cmd="pyodide build"
+    [[ "${name}" == "fastavro" ]] && build_cmd="FASTAVRO_USE_PYTHON=1 pip wheel . --no-deps -w dist/"
+
+    if (cd "${build_dir}" && eval "${build_cmd}") > "${logfile}" 2>&1; then
       local end_ts
       end_ts=$(date +%s)
       echo -e "${GREEN}OK${NC}  ($(elapsed $((end_ts - start_ts))))"
@@ -252,13 +257,13 @@ PYEOF
     fi
   done
 
-  # ── Normalise platform tags ────────────────────────────────────────────
-  for whl in "${OUTPUT_DIR}"/*p313-cp313-pyemscripten_2025_0_wasm32.whl; do
-    [[ -f "${whl}" ]] || continue
-    new_whl="${whl/p313-cp313-pyemscripten_2025_0_wasm32/py3-none-any}"
-    mv "${whl}" "${new_whl}"
-    info "Renamed $(basename "${whl}") → $(basename "${new_whl}")"
-  done
+#  # ── Normalise platform tags ────────────────────────────────────────────
+#  for whl in "${OUTPUT_DIR}"/*p313-cp313-pyemscripten_2025_0_wasm32.whl; do
+#    [[ -f "${whl}" ]] || continue
+#    new_whl="${whl/p313-cp313-pyemscripten_2025_0_wasm32/py3-none-any}"
+#    mv "${whl}" "${new_whl}"
+#    info "Renamed $(basename "${whl}") → $(basename "${new_whl}")"
+#  done
 
   # ── Summary ────────────────────────────────────────────────────────────
   echo ""

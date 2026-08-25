@@ -13,8 +13,7 @@
       "drsclient",
       "fastavro",
       "pyodide-http",
-      "pypfb",
-      "gen3datamodel"
+      "pypfb"
     ]
   },
   "PyodideLockOfflineAddon": {

@@ -64,10 +64,11 @@ if [[ ! -f "$REQUIREMENTS_FILE" ]]; then
   exit 1
 fi
 
-# Only install requirements when jupyter-lite is not already present in the
-# venv.  This preserves the exact package versions that build-gen3sdk-lite.sh
-# set up (pyodide-build, etc.) and avoids accidental upgrades/downgrades.
-if [[ -x "$VENV_JUPYTER_LITE" ]]; then
+# For the free tier, skip reinstalling requirements when jupyter-lite is already
+# present to preserve exact package versions set up by build-gen3sdk-lite.sh.
+# For the remote tier, always install because its requirements.txt includes
+# jupyterlite-remote-server which the free-tier build never installs.
+if [[ "$TIER" == "free" && -x "$VENV_JUPYTER_LITE" ]]; then
   info "Existing venv already has jupyter-lite — skipping requirements install"
 else
   info "Installing JupyterLite requirements …"
