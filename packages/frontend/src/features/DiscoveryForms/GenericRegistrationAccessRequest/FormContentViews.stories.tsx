@@ -172,7 +172,7 @@ const mockConfig = {
 };
 
 const meta: any = {
-  title: 'DiscoveryForms/StudyRegistrationAccessRequest',
+  title: 'DiscoveryForms/GenericRegistrationAccessRequest',
   component: FormContentViews,
   args: {
     studyUID: 'STUDY-123',

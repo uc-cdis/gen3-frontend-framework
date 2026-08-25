@@ -1,16 +1,16 @@
-// StudyRegistrationAccessRequestForm.tsx
+// GenericRegistrationAccessRequestForm.tsx
 import React from 'react';
 import { Box, Text } from '@mantine/core';
-import { useStudyRegistration } from '../../../features/DiscoveryForms/StudyRegistrationAccessRequest/useStudyRegistration';
-import { FormContentViews } from '../../../features/DiscoveryForms/StudyRegistrationAccessRequest/FormContentViews';
+import { useStudyRegistration } from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest/useStudyRegistration';
+import { FormContentViews } from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest/FormContentViews';
 
-interface StudyRegistrationAccessRequestFormProps {
+interface GenericRegistrationAccessRequestFormProps {
   configStudyRegistrationRequestAccessForm: any;
 }
 
-const StudyRegistrationAccessRequestForm = ({
+const GenericRegistrationAccessRequestForm = ({
   configStudyRegistrationRequestAccessForm,
-}: StudyRegistrationAccessRequestFormProps) => {
+}: GenericRegistrationAccessRequestFormProps) => {
   // Get everything needed from Hook
   const {
     formOutcome,
@@ -44,4 +44,4 @@ const StudyRegistrationAccessRequestForm = ({
   );
 };
 
-export default StudyRegistrationAccessRequestForm;
+export default GenericRegistrationAccessRequestForm;

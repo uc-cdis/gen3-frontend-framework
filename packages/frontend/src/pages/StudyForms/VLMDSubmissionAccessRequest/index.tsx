@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavPageLayout } from '../../../features/Navigation';
 import type { NavPageLayoutProps } from '../../../features/Navigation';
-import StudyRegistrationAccessRequestForm from '../../../features/DiscoveryForms/StudyRegistrationAccessRequest';
+import GenericRegistrationAccessRequestForm from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest';
 
 interface VLMDSubmissionAccessRequestFormPageProps extends NavPageLayoutProps {
   configStudyRegistrationRequestAccessForm: unknown;
@@ -21,7 +21,7 @@ const VLMDSubmissionAccessRequestFormPage = ({
         key: 'gen3-theme-page',
       }}
     >
-      <StudyRegistrationAccessRequestForm
+      <GenericRegistrationAccessRequestForm
         configStudyRegistrationRequestAccessForm={
           configStudyRegistrationRequestAccessForm
         }

@@ -2,7 +2,7 @@ import { GetServerSideProps } from 'next';
 import { NavPageLayoutProps } from '../../../features/Navigation';
 import ContentSource from '../../../lib/content';
 import { getNavPageLayoutPropsFromConfig } from '../../../lib/common/staticProps';
-import { ConfigStudyRegistrationAccessRequestFormProps } from '../../../features/DiscoveryForms/StudyRegistrationAccessRequest/types';
+import { ConfigGenericRegistrationAccessRequestFormProps } from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest/types';
 
 import { GEN3_COMMONS_NAME } from '@gen3/core';
 
@@ -10,7 +10,7 @@ export const VLMDSubmissionAccessRequestPageGetServerSideProps: GetServerSidePro
   NavPageLayoutProps
 > = async () => {
   try {
-    const configVLMDSubmissionAccessRequestForm: ConfigStudyRegistrationAccessRequestFormProps =
+    const configVLMDSubmissionAccessRequestForm: ConfigGenericRegistrationAccessRequestFormProps =
       await ContentSource.getContentDatabase().get(
         `${GEN3_COMMONS_NAME}/vlmdSubmissionAccessRequestForm.json`,
       );

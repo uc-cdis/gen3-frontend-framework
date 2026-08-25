@@ -2,11 +2,11 @@ import { TextContentProps } from '../../../components/Content/TextContent';
 import { Gen3AppConfigData } from '../../../lib/content/types';
 import { ButtonVariant } from '@mantine/core';
 
-export interface ConfigStudyRegistrationAccessRequestFormProps extends Gen3AppConfigData {
+export interface ConfigGenericRegistrationAccessRequestFormProps extends Gen3AppConfigData {
   content?: ReadonlyArray<TextContentProps>;
 }
 
-export interface studyRegistrationAccessRequestFormOutcomeProps extends Gen3AppConfigData {
+export interface genericRegistrationAccessRequestFormOutcomeProps extends Gen3AppConfigData {
   content?: ReadonlyArray<TextContentProps>;
   button?: {
     href: string;

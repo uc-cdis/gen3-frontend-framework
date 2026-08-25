@@ -108,7 +108,7 @@ export const useStudyRegistration = (
       );
 
       const zenDeskSubmission = {
-        subject: `Study registration access request for ${studyUID} ${studyName}`,
+        subject: `${config.remoteSupportService.submissionSubjectLine} ${studyUID} ${studyName}`,
         fullName: `${userInfo?.email}`,
         email: `${userInfo?.email}`,
         contents: `Request ID: ${request.request_id}\nGrant Number: ${studyProjectNumber}\nStudy Name: ${studyName}\nEnvironment: ${hostname}\nForm Values: ${printFormValuesArr.join('\n\n')}`,
