@@ -33,7 +33,7 @@ const PanelStyle =
   'h-full w-full flex flex-col items-center justify-start gap-6 px-6 mt-20';
 
 const MicroContainerReduxPanel = ({enableOptions = false}) => {
-  const { launch, terminate } = useMicroContainerReduxContext();
+  const { launch, terminate, containerHash } = useMicroContainerReduxContext();
   const { data: hatcheryOptions, isLoading: isHatcheryOptionsLoading, isError: isHatcheryOptionsError} = useHatcheryOptionsQuery();
   const [ workspaceOptionSelected, setWorkspaceOptionSelected ] = useState<ComboboxItem | null>(null);
 
@@ -138,7 +138,7 @@ const MicroContainerReduxPanel = ({enableOptions = false}) => {
       );
     }
     return simpleLaunchWorkspaceBtn;
-  }, [isHatcheryOptionsLoading, workspaceOptionSelected]);
+  }, [isHatcheryOptionsLoading, workspaceOptionSelected, containerHash]);
 
   if (status === WorkspaceStatus.StatusError) {
     return (
