@@ -75,20 +75,6 @@ const MicroContainerReduxPanel = ({enableOptions = false}) => {
     return () => clearTimeout(t);
   }, [status, resetStatus]);
 
-  if (status === WorkspaceStatus.StatusError) {
-    return (
-      <div className={PanelStyle}>
-        <Alert
-          variant="light"
-          color="accentWarm.4"
-          title="Status Error"
-          icon={icon}
-        >
-          Unable to get the status of your workspace. Please try again later.
-        </Alert>
-      </div>
-    );
-  }
   const simpleLaunchWorkspaceBtn = (
     <Button variant="outline" color="accent.3" onClick={()=>launch()}>
       Launch Workspace
@@ -153,6 +139,21 @@ const MicroContainerReduxPanel = ({enableOptions = false}) => {
     }
     return simpleLaunchWorkspaceBtn;
   }, [isHatcheryOptionsLoading, workspaceOptionSelected]);
+
+  if (status === WorkspaceStatus.StatusError) {
+    return (
+      <div className={PanelStyle}>
+        <Alert
+          variant="light"
+          color="accentWarm.4"
+          title="Status Error"
+          icon={icon}
+        >
+          Unable to get the status of your workspace. Please try again later.
+        </Alert>
+      </div>
+    );
+  }
 
   /* ── not-running ── */
   if (status === WorkspaceStatus.NotFound) {
