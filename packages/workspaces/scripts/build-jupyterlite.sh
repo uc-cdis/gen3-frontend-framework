@@ -111,6 +111,58 @@ PYEOF
     --lite-dir "$SRC_DIR" \
     --output-dir "$BUILD_DIR/$TIER" \
     ${WHEEL_ARGS[@]+"${WHEEL_ARGS[@]}"}
+
+  # ── Download CDN wheels locally and rewrite lock URLs ──────────────────
+  # Pyodide-compiled deps of gen3 (pandas, numpy, aiohttp, etc.) are listed
+  # in pyodide-lock.json with CDN URLs. The browser fetches them at import
+  # time — pandas alone is ~20 MB and reliably hangs the kernel. Download
+  # them once at build time and rewrite the lock to use relative localhost
+  # URLs so no CDN traffic is needed at runtime.
+  LOCK_OUT="$BUILD_DIR/$TIER/static/pyodide-lock"
+  LOCK_FILE="$LOCK_OUT/pyodide-lock.json"
+
+  if [[ -f "$LOCK_FILE" ]]; then
+    info "Downloading CDN wheels locally and patching lock file …"
+    LOCK_FILE="$LOCK_FILE" LOCK_OUT="$LOCK_OUT" python3 - <<'PYEOF'
+import json, os, sys, urllib.request
+
+lock_file = os.environ["LOCK_FILE"]
+lock_out   = os.environ["LOCK_OUT"]
+
+with open(lock_file) as f:
+    lock = json.load(f)
+
+pkgs = lock.get("packages", {})
+cdn  = "cdn.jsdelivr.net"
+downloaded = 0
+failed     = 0
+
+for name, meta in pkgs.items():
+    url = meta.get("url", meta.get("file_name", ""))
+    if cdn not in url:
+        continue
+    fname = url.split("/")[-1]
+    dest  = os.path.join(lock_out, fname)
+    if os.path.exists(dest):
+        meta["url"] = f"../../static/pyodide-lock/{fname}"
+        downloaded += 1
+        continue
+    try:
+        urllib.request.urlretrieve(url, dest)
+        meta["url"] = f"../../static/pyodide-lock/{fname}"
+        downloaded += 1
+        sys.stdout.write(f"  {fname}\n")
+        sys.stdout.flush()
+    except Exception as e:
+        failed += 1
+        sys.stderr.write(f"  WARN: failed to download {fname}: {e}\n")
+
+with open(lock_file, "w") as f:
+    json.dump(lock, f)
+
+print(f"Lock patched: {downloaded} CDN → local, {failed} failed")
+PYEOF
+  fi
 else
   info "Running: jupyter-lite build (remote tier)"
   "$VENV_JUPYTER_LITE" build \
