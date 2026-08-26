@@ -7,16 +7,6 @@
     "pyodide_url": "https://github.com/pyodide/pyodide/releases/download/314.0.5/pyodide-314.0.5.tar.bz2"
   },
   "PyodideLockAddon": {
-    "enabled": true,
-    "wheels": ["pypi/"],
-    "specs": [
-      "gen3",
-      "cdislogging",
-      "indexclient",
-      "drsclient",
-      "fastavro",
-      "pyodide-http",
-      "pypfb"
-    ]
+    "enabled": false
   }
 }
