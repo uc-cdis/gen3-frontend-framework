@@ -172,6 +172,43 @@ build_wheels() {
     info "Patched dictionaryutils: jsonschema constraint relaxed to >=4.0.0"
   fi
 
+  # dictionaryutils: defer metaschema YAML load to non-lazy path
+  # With lazy=True, DataDictionary.__init__ still called load_yaml(metaschema.yaml),
+  # triggering PyYAML's WASM C extension on first use in a synchronous context.
+  # In Pyodide this blocks the WASM thread indefinitely. Skip it when lazy=True.
+  local dictionaryutils_init="${SOURCES_DIR}/dictionaryutils/dictionaryutils/__init__.py"
+  if [[ -f "${dictionaryutils_init}" ]]; then
+    python3 - "${dictionaryutils_init}" <<'PYEOF'
+import sys
+path = sys.argv[1]
+text = open(path).read()
+OLD = (
+    "        self.metaschema = load_yaml(\n"
+    "            os.path.join(MOD_DIR, \"schemas\", self.metaschema_path)\n"
+    "        )\n"
+    "\n"
+    "        if not lazy:\n"
+    "            self.load_data(directory=self.root_dir, url=url, local_file=local_file)\n"
+    "        self.allow_nulls()"
+)
+NEW = (
+    "        if not lazy:\n"
+    "            self.metaschema = load_yaml(\n"
+    "                os.path.join(MOD_DIR, \"schemas\", self.metaschema_path)\n"
+    "            )\n"
+    "            self.load_data(directory=self.root_dir, url=url, local_file=local_file)\n"
+    "        else:\n"
+    "            self.metaschema = None\n"
+    "        self.allow_nulls()"
+)
+if OLD in text:
+    open(path, 'w').write(text.replace(OLD, NEW))
+    print("Patched dictionaryutils: metaschema load deferred to non-lazy path")
+else:
+    print("WARN: dictionaryutils lazy patch pattern not found — skipping")
+PYEOF
+  fi
+
   # gen3dictionary: defer schema loading to avoid WASM hang
   # GDCDictionary is instantiated at module import time with lazy=False (the
   # default). In Pyodide the synchronous schema resolution blocks the WASM
@@ -297,7 +334,7 @@ PYEOF
   else
   # These are gen3 dependencies that aren't in the Pyodide distribution and
   # aren't built from source above. Without them, micropip falls back to PyPI
-  # inside the browser, which hangs due to CORS.
+  # inside the browser
   # Versions pinned to satisfy gen3's constraints where applicable.
   PURE_PYTHON_DEPS=(
     "aiofiles"
