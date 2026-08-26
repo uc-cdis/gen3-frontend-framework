@@ -1,17 +1,24 @@
 #!/usr/bin/env bash
 # =============================================================================
-# build-gen3sdk-lite.sh — Build Gen3 SDK and dependencies as WASM wheels
+# build-gen3sdk-lite.sh — Build Gen3 SDK and dependencies as pure-Python wheels
+#
+# All packages in REPOS are pure Python (fastavro has Python fallbacks for its
+# C extensions). They are therefore built with `pip wheel` and retagged to
+# py3-none-any, which loads under any Pyodide/Python version. T
+#
+# If a package with genuine C extensions is added to REPOS, the pure-Python
+# assertion below will fail the build rather than silently shipping a wheel
+# that cannot load in the browser.
 #
 # Prerequisites:
 #   - uv  (https://docs.astral.sh/uv/getting-started/installation/)
 #   - git
-#   - cmake, make, and a C compiler (for emsdk bootstrap)
 #
 # Usage:
 #   ./build-gen3sdk-lite.sh            # full build (setup + all packages)
 #   ./build-gen3sdk-lite.sh --setup    # environment setup only
 #   ./build-gen3sdk-lite.sh --build    # build wheels only (assumes setup done)
-#   ./build-gen3sdk-lite.sh --clean    # remove cloned repos, build artifacts
+#   ./build-gen3sdk-lite.sh --clean    # remove build artifacts
 # =============================================================================
 set -euo pipefail
 
@@ -37,12 +44,18 @@ BUILD_DIR="$(cd "$BUILD_DIR" && pwd)"
 
 VENV_DIR="$BUILD_DIR/.venv"
 WORK_DIR="$BUILD_DIR/work"
-EMSDK_DIR="$BUILD_DIR/emsdk"
 SOURCES_DIR="$BUILD_DIR/sources"
 OUTPUT_DIR="$BUILD_DIR/pypi"
 LOG_DIR="$BUILD_DIR/logs"
 
 export BUILD_DIR   # setup-env.sh reads this
+
+# Browser Python version, used for `pip download` of pure-Python extras.
+# Must match jupyterlite_pyodide_kernel.constants.PYODIDE_PYTHON_VERSION.
+# Check with:
+#   python -c "from jupyterlite_pyodide_kernel.constants import \
+#     PYODIDE_PYTHON_VERSION; print(PYODIDE_PYTHON_VERSION)"
+BROWSER_PYTHON_TAG="${BROWSER_PYTHON_TAG:-314}"
 
 # ── Colours / helpers (available immediately, before setup-env.sh) ───────────
 RED='\033[0;31m'
@@ -61,6 +74,30 @@ elapsed() {
   printf '%dm%ds' $((t/60)) $((t%60))
 }
 
+# Portable in-place sed. GNU sed reads `-i ''` as the script and the following
+# expression as a filename; BSD/macOS sed requires the empty suffix. Detect once.
+if sed --version >/dev/null 2>&1; then
+  sedi() { sed -i "$@"; }          # GNU
+else
+  sedi() { sed -i '' "$@"; }       # BSD / macOS
+fi
+
+# Apply a sed substitution and fail loudly if it changed nothing. `sed` exits 0
+# on a non-match, which previously let stale patterns pass as "Patched …".
+patch_file() {
+  local desc="$1" expr="$2" path="$3"
+  [[ -f "$path" ]] || { warn "${desc}: file not found, skipping (${path})"; return 0; }
+  local before after
+  before="$(cat "$path")"
+  sedi "$expr" "$path"
+  after="$(cat "$path")"
+  if [[ "$before" == "$after" ]]; then
+    warn "${desc}: pattern did not match — upstream may have changed"
+    return 0
+  fi
+  info "${desc}"
+}
+
 # ── Repositories to build (order matters — independent packages first) ───────
 # Format: "name|git_url|subdir"  (subdir is optional)
 REPOS=(
@@ -72,47 +109,25 @@ REPOS=(
   "dictionaryutils|https://github.com/uc-cdis/dictionaryutils.git"
   "pypfb|https://github.com/uc-cdis/pypfb.git"
   "gen3sdk-python|https://github.com/uc-cdis/gen3sdk-python.git"
-  "gen3users|git@github.com:uc-cdis/gen3users.git"
+  "gen3users|https://github.com/uc-cdis/gen3users.git"
   "gen3dictionary|https://github.com/uc-cdis/datadictionary.git"
 )
 
-# ── Source shared environment (venv + Python + core tooling) ─────────────────
+# ── Source shared environment (venv + Python + core tooling) ────────────────
 source_shared_env() {
   # shellcheck disable=SC1091
   source "${SCRIPT_DIR}/setup-env.sh"
 }
 
-## ── Emscripten SDK ───────────────────────────────────────────────────────────
-#setup_emsdk() {
-#  info "Setting up Emscripten SDK …"
-#
-#  if [[ ! -d "${EMSDK_DIR}" ]]; then
-#    git clone https://github.com/emscripten-core/emsdk.git "${EMSDK_DIR}"
-#  fi
-#
-#  local em_version
-#  em_version="$(pyodide config get emscripten_version)"
-#  info "Pyodide requires Emscripten ${em_version}"
-#
-#  pushd "${EMSDK_DIR}" > /dev/null
-#  ./emsdk install "${em_version}"
-#  ./emsdk activate "${em_version}"
-#  # shellcheck disable=SC1091
-#  source emsdk_env.sh
-#  popd > /dev/null
-#
-#  success "Emscripten $(emcc --version | head -1) activated"
-#}
-
-# ── Full environment setup ───────────────────────────────────────────────────
+# ── Environment setup ───────────────────────────────────────────────────────
 setup_environment() {
   source_shared_env
   mkdir -p "${WORK_DIR}" "${SOURCES_DIR}" "${OUTPUT_DIR}" "${LOG_DIR}"
 
-  # WASM-specific tooling (on top of the shared base)
-  info "Installing pyodide-build …"
-  uv pip install pyodide-build 2>&1 | tail -3
-  success "pyodide-build $(pyodide --version 2>/dev/null || echo '(installed)')"
+  # `wheel` provides `python -m wheel tags`, used to retag to py3-none-any.
+  info "Installing wheel …"
+  uv pip install wheel 2>&1 | tail -2
+  success "Build tooling ready"
 }
 
 # ── Clone / update sources ──────────────────────────────────────────────────
@@ -122,7 +137,10 @@ clone_repos() {
     IFS='|' read -r name url _subdir <<< "${entry}"
     local dest="${SOURCES_DIR}/${name}"
     if [[ -d "${dest}/.git" ]]; then
-      info "  ${name}: pulling latest …"
+      # Sources are patched in place below, so a pull would conflict. Reset to
+      # a clean tree first, otherwise the pull fails silently through the pipe.
+      info "  ${name}: resetting and pulling latest …"
+      git -C "${dest}" checkout -- . 2>&1 | tail -1 || true
       git -C "${dest}" pull --ff-only 2>&1 | tail -1
     else
       info "  ${name}: cloning …"
@@ -132,13 +150,47 @@ clone_repos() {
   success "All repositories ready"
 }
 
-# ── Build WASM wheels ───────────────────────────────────────────────────────
+# ── Source patches ──────────────────────────────────────────────────────────
+apply_patches() {
+  # gen3users: old poetry.masonry.api → poetry.core.masonry.api
+  patch_file "Patched gen3users: build-backend updated to poetry.core.masonry.api" \
+    's|build-backend = "poetry.masonry.api"|build-backend = "poetry.core.masonry.api"|' \
+    "${SOURCES_DIR}/gen3users/pyproject.toml"
+
+  # gen3sdk-python: relax indexclient pin so the locally built 6.3.0 satisfies it
+  patch_file "Patched gen3sdk-python: indexclient constraint relaxed to >=2.3.0" \
+    's/indexclient = "\^2\.3\.0"/indexclient = ">=2.3.0"/' \
+    "${SOURCES_DIR}/gen3sdk-python/pyproject.toml"
+
+  # dictionaryutils: relax the jsonschema pin.
+  #
+  # NOTE: upstream pins jsonschema<=4.23.0 deliberately — "limiting to a version
+  # where RefResolver is deprecated but still functioning". Relaxing it resolves
+  # jsonschema 4.26.0 in the browser, where RefResolver exists only as a
+  # module-level __getattr__ shim forwarding to validators._RefResolver. It
+  # imports and works today, but this is borrowed time. If dictionaryutils
+  # starts failing on import, this patch is the first thing to revert.
+  patch_file "Patched dictionaryutils: jsonschema constraint relaxed to >=4.0.0" \
+    's/jsonschema = "<=4\.23\.0"/jsonschema = ">=4.0.0"/' \
+    "${SOURCES_DIR}/dictionaryutils/pyproject.toml"
+
+  # REMOVED: the dictionaryutils metaschema deferral and the gen3dictionary
+  # lazy=True patch. Both were added on the theory that eager YAML schema
+  # loading blocked the WASM thread indefinitely. Measured, the eager load is
+  # ~0.6s for 32 schemas / 256 KB — not a hang. The real cause was the browser
+  # fetching the Pyodide distribution from cdn.jsdelivr.net; that is now fixed
+  # by vendoring the distribution via PyodideAddon.pyodide_url.
+  #
+  # Do not reinstate them: lazy=True leaves gdcdictionary.schema == {} and
+  # metaschema == None, so anything validating against the dictionary silently
+  # sees an empty dictionary. A slow import is a better failure than a wrong one.
+
+  # REMOVED: the psqlgraph patches. psqlgraph is not in REPOS, so they never
+  # ran. Re-add them alongside a psqlgraph entry if it is ever needed.
+}
+
+# ── Build wheels ────────────────────────────────────────────────────────────
 build_wheels() {
-  # Make sure emsdk env is active in this shell
-  if [[ -f "${EMSDK_DIR}/emsdk_env.sh" ]]; then
-    # shellcheck disable=SC1091
-    source "${EMSDK_DIR}/emsdk_env.sh" 2>/dev/null
-  fi
   # shellcheck disable=SC1091
   source "${VENV_DIR}/bin/activate"
 
@@ -147,77 +199,8 @@ build_wheels() {
   local failed=0
   local failed_names=()
 
-  # ── Source patches ─────────────────────────────────────────────────────
+  apply_patches
 
-  # gen3users: old poetry.masonry.api → poetry.core.masonry.api
-  local gen3users_pyproject="${SOURCES_DIR}/gen3users/pyproject.toml"
-  if [[ -f "${gen3users_pyproject}" ]]; then
-    sed -i '' 's|build-backend = "poetry.masonry.api"|build-backend = "poetry.core.masonry.api"|' "${gen3users_pyproject}"
-    info "Patched gen3users: build-backend updated to poetry.core.masonry.api"
-  fi
-
-  # gen3sdk-python: relax indexclient pin
-  local gen3sdk_pyproject="${SOURCES_DIR}/gen3sdk-python/pyproject.toml"
-  if [[ -f "${gen3sdk_pyproject}" ]]; then
-    sed -i '' 's/indexclient = "\^2\.3\.0"/indexclient = ">=2.3.0"/' "${gen3sdk_pyproject}"
-    info "Patched gen3sdk-python: indexclient constraint relaxed to >=2.3.0"
-  fi
-
-  # dictionaryutils: relax jsonschema pin
-  local dictionaryutils_pyproject="${SOURCES_DIR}/dictionaryutils/pyproject.toml"
-  if [[ -f "${dictionaryutils_pyproject}" ]]; then
-    sed -i '' 's/jsonschema = "<=4\.23\.0"/jsonschema = ">=4.0.0"/' "${dictionaryutils_pyproject}"
-    info "Patched dictionaryutils: jsonschema constraint relaxed to >=4.0.0"
-  fi
-
-  # dictionaryutils: defer metaschema YAML load to non-lazy path
-  # With lazy=True, DataDictionary.__init__ still called load_yaml(metaschema.yaml),
-  # triggering PyYAML's WASM C extension on first use in a synchronous context.
-  # In Pyodide this blocks the WASM thread indefinitely. Skip it when lazy=True.
-  local dictionaryutils_init="${SOURCES_DIR}/dictionaryutils/dictionaryutils/__init__.py"
-  if [[ -f "${dictionaryutils_init}" ]]; then
-    python3 - "${dictionaryutils_init}" <<'PYEOF'
-import sys
-path = sys.argv[1]
-text = open(path).read()
-OLD = (
-    "        self.metaschema = load_yaml(\n"
-    "            os.path.join(MOD_DIR, \"schemas\", self.metaschema_path)\n"
-    "        )\n"
-    "\n"
-    "        if not lazy:\n"
-    "            self.load_data(directory=self.root_dir, url=url, local_file=local_file)\n"
-    "        self.allow_nulls()"
-)
-NEW = (
-    "        if not lazy:\n"
-    "            self.metaschema = load_yaml(\n"
-    "                os.path.join(MOD_DIR, \"schemas\", self.metaschema_path)\n"
-    "            )\n"
-    "            self.load_data(directory=self.root_dir, url=url, local_file=local_file)\n"
-    "        else:\n"
-    "            self.metaschema = None\n"
-    "        self.allow_nulls()"
-)
-if OLD in text:
-    open(path, 'w').write(text.replace(OLD, NEW))
-    print("Patched dictionaryutils: metaschema load deferred to non-lazy path")
-else:
-    print("WARN: dictionaryutils lazy patch pattern not found — skipping")
-PYEOF
-  fi
-
-  # gen3dictionary: defer schema loading to avoid WASM hang
-  # GDCDictionary is instantiated at module import time with lazy=False (the
-  # default). In Pyodide the synchronous schema resolution blocks the WASM
-  # thread indefinitely. Patching to lazy=True defers loading until first use.
-  local gen3dictionary_init="${SOURCES_DIR}/gen3dictionary/gdcdictionary/__init__.py"
-  if [[ -f "${gen3dictionary_init}" ]]; then
-    sed -i '' 's/gdcdictionary = GDCDictionary(root_dir=SCHEMA_DIR)/gdcdictionary = GDCDictionary(root_dir=SCHEMA_DIR, lazy=True)/' "${gen3dictionary_init}"
-    info "Patched gen3dictionary: GDCDictionary instantiated with lazy=True"
-  fi
-
-  # ── Build loop ─────────────────────────────────────────────────────────
   info "Building ${total} packages …"
   echo ""
 
@@ -234,14 +217,14 @@ PYEOF
     [[ -n "${subdir}" ]] && label="${name}/${subdir}"
     printf "  [%d/%d] %-25s " $((built + failed + 1)) "${total}" "${label}"
 
-    # fastavro has Python fallbacks for all C extensions; build pure-Python so
-    # micropip/piplite accepts the wheel regardless of the Pyodide platform tag.
-    # pip wheel (not pyodide build) avoids the pyemscripten stamp, but still
-    # produces a platform-specific wheel on macOS, so retag to py3-none-any and
-    # patch Root-Is-Purelib so micropip treats it as a pure-Python wheel.
-
-    local build_cmd='pip wheel . --no-deps -w dist/ \
+    # Build as a normal wheel, then force the py3-none-any tag. `pip wheel` can
+    # emit a platform-specific tag on macOS even for pure Python; retagging
+    # makes the result portable and loadable by micropip under any Pyodide ABI.
+    local build_cmd='rm -rf dist && pip wheel . --no-deps -w dist/ \
       && python -m wheel tags --python-tag py3 --abi-tag none --platform-tag any --remove dist/*.whl'
+
+    # fastavro ships Python fallbacks for every C extension; this env var
+    # selects them so no compiler is needed and the wheel stays pure Python.
     [[ "${name}" == "fastavro" ]] && build_cmd="FASTAVRO_USE_PYTHON=1 ${build_cmd}"
 
     if (cd "${build_dir}" && eval "${build_cmd}") > "${logfile}" 2>&1; then
@@ -274,59 +257,9 @@ PYEOF
     fi
   done
 
-  info "Verifying all wheels are pure-Python …"
-  bad=()
-  for whl in "${OUTPUT_DIR}"/*.whl; do
-    [[ -f "$whl" ]] || continue
-    [[ "$(basename "$whl")" == *-py3-none-any.whl ]] || bad+=("$(basename "$whl")")
-  done
-  if (( ${#bad[@]} )); then
-    for b in "${bad[@]}"; do warn "  not pure-Python: $b"; done
-    fail "${#bad[@]} wheel(s) carry a platform tag and will not load in the browser"
-  fi
+  download_extras
 
-  # ── Download pure-Python deps missing from the Pyodide lock ────────────
-  if [[ "${NO_EXTRAS}" == "true" ]]; then
-    info "Skipping pure-Python extras download (--no-extras)"
-  else
-  # These are gen3 dependencies that aren't in the Pyodide distribution and
-  # aren't built from source above. Without them, micropip falls back to PyPI
-  # inside the browser
-  # Versions pinned to satisfy gen3's constraints where applicable.
-  PURE_PYTHON_DEPS=(
-    "aiofiles"
-    "backoff"
-    "dataclasses-json<=0.5.9"
-    "humanfriendly"
-    "importlib-metadata>=8,<9"
-    "marshmallow>=3.3.0,<4.0.0"
-    "marshmallow-enum"
-    "mypy-extensions"
-    "python-dateutil"
-    "typing-inspect"
-    "xmltodict>=0.13.0,<0.14.0"
-    "zipp"
-  )
-  info "Downloading pure-Python deps missing from Pyodide lock …"
-  for dep in "${PURE_PYTHON_DEPS[@]}"; do
-    if compgen -G "${OUTPUT_DIR}/${dep//-/_}-*.whl" > /dev/null 2>&1 || \
-       compgen -G "${OUTPUT_DIR}/${dep}-*.whl" > /dev/null 2>&1; then
-      info "  ${dep}: already present, skipping"
-      continue
-    fi
-    if pip download "${dep}" \
-        --no-deps \
-        --only-binary=:all: \
-        --python-version 313 \
-        --platform any \
-        -d "${OUTPUT_DIR}" \
-        --quiet 2>/dev/null; then
-      info "  ${dep}: downloaded"
-    else
-      warn "  ${dep}: download failed — import gen3 may hang in browser"
-    fi
-  done
-  fi  # end NO_EXTRAS check
+  verify_pure_python
 
   # ── Summary ────────────────────────────────────────────────────────────
   echo ""
@@ -335,7 +268,7 @@ PYEOF
   echo "========================================="
   echo "  Succeeded : ${built}"
   echo "  Failed    : ${failed}"
-  echo "  Wheels    : ${count} file(s) in ${OUTPUT_DIR}/"
+  echo "  Wheels    : ${count} built, $(ls -1 "${OUTPUT_DIR}"/*.whl 2>/dev/null | wc -l | tr -d ' ') total in ${OUTPUT_DIR}/"
   if (( failed > 0 )); then
     echo ""
     echo "  Failed packages:"
@@ -356,14 +289,97 @@ PYEOF
   ls -lh "${OUTPUT_DIR}"/*.whl
 }
 
-# ── Clean ────────────────────────────────────────────────────────────────────
+# ── Pure-Python deps not present in the Pyodide distribution ────────────────
+# PyodideLockAddon is disabled (it cannot resolve a vendored local distribution
+# in jupyterlite-pyodide-kernel 0.8.5), so nothing resolves these for us. They
+# reach the browser through PipliteAddon, which indexes everything in
+# OUTPUT_DIR. Without them, micropip falls back to PyPI at runtime.
+download_extras() {
+  if [[ "${NO_EXTRAS}" == "true" ]]; then
+    info "Skipping pure-Python extras download (--no-extras)"
+    warn "  gen3's pure-Python deps will be fetched from PyPI in the browser"
+    return 0
+  fi
+
+  local deps=(
+    "aiofiles"
+    "backoff"
+    "dataclasses-json<=0.5.9"
+    "humanfriendly"
+    "importlib-metadata>=8,<9"
+    "marshmallow>=3.3.0,<4.0.0"
+    "marshmallow-enum"
+    "mypy-extensions"
+    "python-dateutil"
+    "typing-inspect"
+    "xmltodict>=0.13.0,<0.14.0"
+    "zipp"
+  )
+
+  info "Downloading pure-Python deps missing from the Pyodide distribution …"
+  local dep base
+  for dep in "${deps[@]}"; do
+    # Strip any version specifier to get the distribution name for the glob.
+    base="${dep%%[<>=!~]*}"
+    if compgen -G "${OUTPUT_DIR}/${base//-/_}-*.whl" > /dev/null 2>&1 || \
+       compgen -G "${OUTPUT_DIR}/${base}-*.whl" > /dev/null 2>&1; then
+      info "  ${base}: already present, skipping"
+      continue
+    fi
+    if pip download "${dep}" \
+        --no-deps \
+        --only-binary=:all: \
+        --python-version "${BROWSER_PYTHON_TAG}" \
+        --platform any \
+        -d "${OUTPUT_DIR}" \
+        --quiet 2>/dev/null; then
+      info "  ${base}: downloaded"
+    else
+      warn "  ${base}: download failed — will fall back to PyPI in the browser"
+    fi
+  done
+}
+
+# ── Verify every wheel is loadable in the browser ───────────────────────────
+# Replaces the old hardcoded rename of *p313-cp313-pyemscripten_2025_0_wasm32.
+# That pattern silently stopped matching when Pyodide moved to the 2026_0 ABI
+# and Python 3.14, so mis-tagged wheels would have shipped unnoticed. A
+# platform-tagged wheel cannot load under a different Pyodide ABI, so fail here
+# instead of debugging it in a browser console.
+verify_pure_python() {
+  info "Verifying all wheels are pure-Python (py3-none-any) …"
+  local bad=()
+  local whl base
+  for whl in "${OUTPUT_DIR}"/*.whl; do
+    [[ -f "${whl}" ]] || continue
+    base="$(basename "${whl}")"
+    case "${base}" in
+      *-py3-none-any.whl|*-py2.py3-none-any.whl) ;;
+      *) bad+=("${base}") ;;
+    esac
+  done
+
+  if (( ${#bad[@]} > 0 )); then
+    for base in "${bad[@]}"; do
+      warn "  not pure-Python: ${base}"
+    done
+    fail "${#bad[@]} wheel(s) carry a platform tag and cannot load in the browser.
+       Either the package has real C extensions (it needs a Pyodide-ABI build
+       matching the vendored distribution), or 'python -m wheel tags' did not
+       run. Check ${LOG_DIR}/ for the corresponding build log."
+  fi
+
+  success "All $(ls -1 "${OUTPUT_DIR}"/*.whl 2>/dev/null | wc -l | tr -d ' ') wheels are pure-Python"
+}
+
+# ── Clean ───────────────────────────────────────────────────────────────────
 clean() {
   info "Cleaning build artifacts …"
   rm -rf "${WORK_DIR}" "${OUTPUT_DIR}" "${LOG_DIR}"
   success "Clean complete"
 }
 
-# ── Main ─────────────────────────────────────────────────────────────────────
+# ── Main ────────────────────────────────────────────────────────────────────
 main() {
   local mode="${1:-all}"
 
@@ -383,13 +399,16 @@ main() {
       echo "Usage: $0 [--setup | --build | --clean | --help] [--no-extras] [build_dir]"
       echo ""
       echo "  (no flag)    Full run: setup environment, clone repos, build wheels"
-      echo "  --setup      Set up Python, venv, pyodide-build, and emsdk"
-      echo "  --build      Clone/update repos and build WASM wheels (requires prior --setup)"
-      echo "  --clean      Remove work/, dist/, and logs/"
+      echo "  --setup      Set up Python venv and build tooling"
+      echo "  --build      Clone/update repos and build wheels (requires prior --setup)"
+      echo "  --clean      Remove work/, pypi/, and logs/"
       echo "  --help       Show this message"
       echo ""
       echo "  --no-extras  Skip downloading pure-Python deps (aiofiles, backoff, etc.)"
-      echo "               Use when gen3 SDK wheel support is not needed"
+      echo "               Only safe if 'import gen3' is not needed"
+      echo ""
+      echo "Env:"
+      echo "  BROWSER_PYTHON_TAG  Python version for extras download (default 314)"
       ;;
     *)
       setup_environment
