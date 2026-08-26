@@ -138,45 +138,7 @@ PYEOF
 
   if [[ -f "$LOCK_FILE" ]]; then
     info "Downloading CDN wheels locally and patching lock file …"
-    LOCK_FILE="$LOCK_FILE" LOCK_OUT="$LOCK_OUT" python3 - <<'PYEOF'
-import json, os, sys, urllib.request
-
-lock_file = os.environ["LOCK_FILE"]
-lock_out   = os.environ["LOCK_OUT"]
-
-with open(lock_file) as f:
-    lock = json.load(f)
-
-pkgs = lock.get("packages", {})
-cdn  = "cdn.jsdelivr.net"
-downloaded = 0
-failed     = 0
-
-for name, meta in pkgs.items():
-    url = meta.get("url", meta.get("file_name", ""))
-    if cdn not in url:
-        continue
-    fname = url.split("/")[-1]
-    dest  = os.path.join(lock_out, fname)
-    if os.path.exists(dest):
-        meta["url"] = f"../../static/pyodide-lock/{fname}"
-        downloaded += 1
-        continue
-    try:
-        urllib.request.urlretrieve(url, dest)
-        meta["url"] = f"../../static/pyodide-lock/{fname}"
-        downloaded += 1
-        sys.stdout.write(f"  {fname}\n")
-        sys.stdout.flush()
-    except Exception as e:
-        failed += 1
-        sys.stderr.write(f"  WARN: failed to download {fname}: {e}\n")
-
-with open(lock_file, "w") as f:
-    json.dump(lock, f)
-
-print(f"Lock patched: {downloaded} CDN → local, {failed} failed")
-PYEOF
+    LOCK_FILE="$LOCK_FILE" LOCK_OUT="$LOCK_OUT" python3 "${SCRIPT_DIR}/patch-pyodide-lock.py"
   fi
   fi  # end NO_EXTRAS check
 else

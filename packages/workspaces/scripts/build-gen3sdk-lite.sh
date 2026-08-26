@@ -82,27 +82,27 @@ source_shared_env() {
   source "${SCRIPT_DIR}/setup-env.sh"
 }
 
-# ── Emscripten SDK ───────────────────────────────────────────────────────────
-setup_emsdk() {
-  info "Setting up Emscripten SDK …"
-
-  if [[ ! -d "${EMSDK_DIR}" ]]; then
-    git clone https://github.com/emscripten-core/emsdk.git "${EMSDK_DIR}"
-  fi
-
-  local em_version
-  em_version="$(pyodide config get emscripten_version)"
-  info "Pyodide requires Emscripten ${em_version}"
-
-  pushd "${EMSDK_DIR}" > /dev/null
-  ./emsdk install "${em_version}"
-  ./emsdk activate "${em_version}"
-  # shellcheck disable=SC1091
-  source emsdk_env.sh
-  popd > /dev/null
-
-  success "Emscripten $(emcc --version | head -1) activated"
-}
+## ── Emscripten SDK ───────────────────────────────────────────────────────────
+#setup_emsdk() {
+#  info "Setting up Emscripten SDK …"
+#
+#  if [[ ! -d "${EMSDK_DIR}" ]]; then
+#    git clone https://github.com/emscripten-core/emsdk.git "${EMSDK_DIR}"
+#  fi
+#
+#  local em_version
+#  em_version="$(pyodide config get emscripten_version)"
+#  info "Pyodide requires Emscripten ${em_version}"
+#
+#  pushd "${EMSDK_DIR}" > /dev/null
+#  ./emsdk install "${em_version}"
+#  ./emsdk activate "${em_version}"
+#  # shellcheck disable=SC1091
+#  source emsdk_env.sh
+#  popd > /dev/null
+#
+#  success "Emscripten $(emcc --version | head -1) activated"
+#}
 
 # ── Full environment setup ───────────────────────────────────────────────────
 setup_environment() {
@@ -113,8 +113,6 @@ setup_environment() {
   info "Installing pyodide-build …"
   uv pip install pyodide-build 2>&1 | tail -3
   success "pyodide-build $(pyodide --version 2>/dev/null || echo '(installed)')"
-
-  setup_emsdk
 }
 
 # ── Clone / update sources ──────────────────────────────────────────────────
@@ -219,51 +217,6 @@ PYEOF
     info "Patched gen3dictionary: GDCDictionary instantiated with lazy=True"
   fi
 
-  # psqlgraph: multiple fixes for WASM compatibility
-  local psqlgraph_pyproject="${SOURCES_DIR}/psqlgraph/pyproject.toml"
-  if [[ -f "${psqlgraph_pyproject}" ]]; then
-    sed -i '' 's/"sqlalchemy~=1\.4"/"sqlalchemy>=1.4"/' "${psqlgraph_pyproject}"
-    sed -i '' 's/, "versionista>=1\.1\.0"//' "${psqlgraph_pyproject}"
-    sed -i '' 's/local_scheme = "versionista-local-format"/local_scheme = "no-local-version"/' "${psqlgraph_pyproject}"
-    sed -i '' 's/version_scheme = "versionista-format"/version_scheme = "guess-next-dev"/' "${psqlgraph_pyproject}"
-    sed -i '' '/"psycopg2"/d' "${psqlgraph_pyproject}"
-    sed -i '' '/"xlocal"/d' "${psqlgraph_pyproject}"
-    info "Patched psqlgraph: sqlalchemy >=1.4, removed versionista + psycopg2 + xlocal"
-
-    local psql_py="${SOURCES_DIR}/psqlgraph/src/psqlgraph/psql.py"
-    if [[ -f "${psql_py}" ]]; then
-      python3 - "${psql_py}" <<'PYEOF'
-import sys, re
-
-path = sys.argv[1]
-text = open(path).read()
-stub = '''\
-try:
-    import xlocal
-except ImportError:
-    class _XLocalInst:
-        class _Ctx:
-            def __init__(self, parent, **kw):
-                self._parent, self._kw = parent, kw
-            def __enter__(self):
-                for k, v in self._kw.items():
-                    setattr(self._parent, k, v)
-                return self._parent
-            def __exit__(self, *a):
-                for k in self._kw:
-                    self._parent.__dict__.pop(k, None)
-        def __call__(self, **kw):
-            return self._Ctx(self, **kw)
-    class _xlocal_module:
-        xlocal = _XLocalInst
-    xlocal = _xlocal_module()'''
-text = re.sub(r'^import xlocal$', stub, text, flags=re.MULTILINE)
-open(path, 'w').write(text)
-PYEOF
-      info "Patched psqlgraph/psql.py: xlocal import wrapped in try/except stub"
-    fi
-  fi
-
   # ── Build loop ─────────────────────────────────────────────────────────
   info "Building ${total} packages …"
   echo ""
@@ -286,9 +239,10 @@ PYEOF
     # pip wheel (not pyodide build) avoids the pyemscripten stamp, but still
     # produces a platform-specific wheel on macOS, so retag to py3-none-any and
     # patch Root-Is-Purelib so micropip treats it as a pure-Python wheel.
-    local build_cmd="pyodide build"
-    [[ "${name}" == "fastavro" ]] && build_cmd="FASTAVRO_USE_PYTHON=1 pip wheel . --no-deps -w dist/ \
-      && python -m wheel tags --python-tag py3 --abi-tag none --platform-tag any --remove dist/fastavro-*.whl"
+
+    local build_cmd='pip wheel . --no-deps -w dist/ \
+      && python -m wheel tags --python-tag py3 --abi-tag none --platform-tag any --remove dist/*.whl'
+    [[ "${name}" == "fastavro" ]] && build_cmd="FASTAVRO_USE_PYTHON=1 ${build_cmd}"
 
     if (cd "${build_dir}" && eval "${build_cmd}") > "${logfile}" 2>&1; then
       local end_ts
@@ -320,13 +274,16 @@ PYEOF
     fi
   done
 
-  # ── Normalise platform tags ────────────────────────────────────────────
-  for whl in "${OUTPUT_DIR}"/*p313-cp313-pyemscripten_2025_0_wasm32.whl; do
-    [[ -f "${whl}" ]] || continue
-    new_whl="${whl/p313-cp313-pyemscripten_2025_0_wasm32/py3-none-any}"
-    mv "${whl}" "${new_whl}"
-    info "Renamed $(basename "${whl}") → $(basename "${new_whl}")"
+  info "Verifying all wheels are pure-Python …"
+  bad=()
+  for whl in "${OUTPUT_DIR}"/*.whl; do
+    [[ -f "$whl" ]] || continue
+    [[ "$(basename "$whl")" == *-py3-none-any.whl ]] || bad+=("$(basename "$whl")")
   done
+  if (( ${#bad[@]} )); then
+    for b in "${bad[@]}"; do warn "  not pure-Python: $b"; done
+    fail "${#bad[@]} wheel(s) carry a platform tag and will not load in the browser"
+  fi
 
   # ── Download pure-Python deps missing from the Pyodide lock ────────────
   if [[ "${NO_EXTRAS}" == "true" ]]; then
