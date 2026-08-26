@@ -4,7 +4,10 @@
 #
 # All packages in REPOS are pure Python (fastavro has Python fallbacks for its
 # C extensions). They are therefore built with `pip wheel` and retagged to
-# py3-none-any, which loads under any Pyodide/Python version. T
+# py3-none-any, which loads under any Pyodide/Python version. This replaces the
+# previous `pyodide build` + emsdk approach, which downloaded ~1 GB of
+# toolchain, took several minutes, and produced wheels that were then renamed
+# to py3-none-any anyway.
 #
 # If a package with genuine C extensions is added to REPOS, the pure-Python
 # assertion below will fail the build rather than silently shipping a wheel
@@ -109,7 +112,7 @@ REPOS=(
   "dictionaryutils|https://github.com/uc-cdis/dictionaryutils.git"
   "pypfb|https://github.com/uc-cdis/pypfb.git"
   "gen3sdk-python|https://github.com/uc-cdis/gen3sdk-python.git"
-  "gen3users|https://github.com/uc-cdis/gen3users.git"
+  "gen3users|git@github.com:uc-cdis/gen3users.git"
   "gen3dictionary|https://github.com/uc-cdis/datadictionary.git"
 )
 
