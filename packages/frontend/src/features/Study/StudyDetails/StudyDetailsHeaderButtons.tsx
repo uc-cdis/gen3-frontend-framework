@@ -3,11 +3,12 @@ import { Button, CopyButton } from '@mantine/core';
 import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
 import { FiLogIn as LoginIcon } from 'react-icons/fi';
 import {
-  CoreState,
+  selectAuthzMappingData,
   selectUserDetails,
   useCoreSelector,
-  UserProfile,
+  userHasMethodForServiceOnResource,
 } from '@gen3/core';
+import type { CoreState, UserProfile } from '@gen3/core';
 import { useDiscoveryContext } from '../../Discovery/DiscoveryProvider';
 import { useRouter } from 'next/router';
 import { useStudyContext } from '../StudyProvider';
@@ -29,12 +30,30 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
 
   const { discoveryConfig: config } = useDiscoveryContext();
   const index = config?.minimalFieldMapping?.uid ?? 'unknown';
-  const { studyDetails, setStudyDetails } = useStudyContext();
+  const { studyDetails } = useStudyContext();
   const studyUID = toString(studyDetails[index]);
   const studyName = studyDetails?.study_metadata?.minimal_info?.study_name;
   const studyRegistrationAuthZ = studyDetails.registration_authz;
   const studyProjectNumber = studyDetails?.project_number;
   const showSubmitButton = config.detailView?.showSubmitButton;
+
+  const userAuthMapping = useCoreSelector((state: CoreState) =>
+    selectAuthzMappingData(state),
+  );
+  const showRequestAccessButton =
+    studyDetails.is_registered &&
+    !requiresLogin &&
+    !userHasMethodForServiceOnResource(
+      'access',
+      'study_registration',
+      'is_registered',
+      userAuthMapping,
+    );
+  /*
+  console.log('studyDetails.is_registered', studyDetails.is_registered);
+  console.log('userAuthMapping', userAuthMapping);
+  console.log('showRequestAccessButton', showRequestAccessButton);
+  */
   const router = useRouter();
 
   const handleRegisterButtonClick = () => {
@@ -61,7 +80,7 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
       return 'Login to Register This Study';
     }
     return `Request Access to Register this Study`;
-  }, [requiresLogin, studyUID]);
+  }, [requiresLogin]);
 
   return (
     <>
