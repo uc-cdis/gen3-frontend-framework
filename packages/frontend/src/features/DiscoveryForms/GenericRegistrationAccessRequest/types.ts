@@ -1,5 +1,5 @@
-import { TextContentProps } from '../../../components/Content/TextContent';
-import { Gen3AppConfigData } from '../../../lib/content/types';
+import type { TextContentProps } from '../../../components/Content/TextContent';
+import type { Gen3AppConfigData } from '../../../lib/content/types';
 import type { ButtonVariant } from '@mantine/core';
 
 export interface ConfigGenericRegistrationAccessRequestFormProps extends Gen3AppConfigData {
