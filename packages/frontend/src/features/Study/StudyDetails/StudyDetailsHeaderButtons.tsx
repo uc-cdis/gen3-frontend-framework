@@ -18,6 +18,7 @@ interface StudyDetailsHeaderButtonsProps {
   onClose: () => void;
   permalink: string;
 }
+
 const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   onClose,
   permalink,
@@ -27,8 +28,8 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
     (state: CoreState) => selectUserDetails(state) as ActiveUser,
   );
   const requiresLogin = !userInfo.active;
-
   const { discoveryConfig: config } = useDiscoveryContext();
+  const router = useRouter();
   const index = config?.minimalFieldMapping?.uid ?? 'unknown';
   const { studyDetails } = useStudyContext();
   const studyUID = toString(studyDetails[index]);
@@ -40,62 +41,127 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   const userAuthMapping = useCoreSelector((state: CoreState) =>
     selectAuthzMappingData(state),
   );
-  const showRequestAccessButton =
-    studyDetails.is_registered &&
-    !requiresLogin &&
-    !userHasMethodForServiceOnResource(
-      'access',
-      'study_registration',
-      'is_registered',
-      userAuthMapping,
-    );
-  /*
-  console.log('studyDetails.is_registered', studyDetails.is_registered);
-  console.log('userAuthMapping', userAuthMapping);
-  console.log('showRequestAccessButton', showRequestAccessButton);
-  */
-  const router = useRouter();
 
-  const handleRegisterButtonClick = () => {
+  const userHasStudyRegistrationAccess = userHasMethodForServiceOnResource(
+    'access',
+    'study_registration',
+    toString(studyRegistrationAuthZ),
+    userAuthMapping,
+  );
+
+  const isStudyRegistered = studyDetails.is_registered;
+
+  // Study is not yet registered — show register/request-access/login button
+  const showStudyRegistrationButton =
+    showSubmitButton && isStudyRegistered === false;
+
+  // Study is registered — show appropriate VLMD submission button based on auth state
+  const showSubmitVLMDButton =
+    showSubmitButton &&
+    isStudyRegistered &&
+    !requiresLogin &&
+    userHasStudyRegistrationAccess;
+
+  const showRequestVLMDAccessButton =
+    showSubmitButton &&
+    isStudyRegistered &&
+    !requiresLogin &&
+    !userHasStudyRegistrationAccess;
+
+  const showLoginToSubmitVLMDButton =
+    showSubmitButton && isStudyRegistered && requiresLogin;
+
+  const studyNavQuery = {
+    studyUID,
+    studyName,
+    studyRegistrationAuthZ: toString(studyRegistrationAuthZ),
+    studyProjectNumber,
+  };
+
+  const handleStudyRegistrationClick = () => {
     if (requiresLogin) {
       void router.push('/Login');
+    } else if (userHasStudyRegistrationAccess) {
+      void router.push(
+        { pathname: '/study-reg', query: studyNavQuery },
+        '/study-reg',
+      );
     } else {
       void router.push(
-        {
-          pathname: '/study-reg/request-access',
-          query: {
-            studyUID: studyUID,
-            studyName: studyName,
-            studyRegistrationAuthZ: studyRegistrationAuthZ,
-            studyProjectNumber: studyProjectNumber,
-          },
-        },
+        { pathname: '/study-reg/request-access', query: studyNavQuery },
         '/study-reg/request-access',
       );
     }
   };
 
-  const submitButtonText = useMemo(() => {
-    if (requiresLogin) {
-      return 'Login to Register This Study';
-    }
-    return `Request Access to Register this Study`;
-  }, [requiresLogin]);
+  const handleSubmitVLMDClick = () => {
+    alert('WIP');
+    /*     void router.push(
+      { pathname: '/vlmd-submission', query: studyNavQuery },
+      '/vlmd-submission',
+    ); */
+  };
+
+  const handleRequestVLMDAccessClick = () => {
+    void router.push(
+      { pathname: '/vlmd-submission/request-access', query: studyNavQuery },
+      '/vlmd-submission/request-access',
+    );
+  };
+
+  const studyRegistrationButtonText = useMemo(() => {
+    if (requiresLogin) return 'Login to Register This Study';
+    if (userHasStudyRegistrationAccess) return 'Register This Study';
+    return 'Request Access to Register This Study';
+  }, [requiresLogin, userHasStudyRegistrationAccess]);
 
   return (
     <>
       <Button leftSection={<BackIcon />} onClick={onClose} variant="outline">
         Back
       </Button>
-      {showSubmitButton && (
+      {showStudyRegistrationButton && (
         <Button
           leftSection={<LoginIcon size={14} />}
           variant="subtle"
           color="black"
           size="xs"
-          onClick={handleRegisterButtonClick}
+          onClick={handleStudyRegistrationClick}
         >
-          {submitButtonText}
+          {studyRegistrationButtonText}
+        </Button>
+      )}
+      {showSubmitVLMDButton && (
+        <Button
+          leftSection={<LoginIcon size={14} />}
+          variant="subtle"
+          color="black"
+          size="xs"
+          onClick={handleSubmitVLMDClick}
+        >
+          Submit Variable-level Metadata
+        </Button>
+      )}
+      {showRequestVLMDAccessButton && (
+        <Button
+          leftSection={<LoginIcon size={14} />}
+          variant="subtle"
+          color="black"
+          size="xs"
+          onClick={handleRequestVLMDAccessClick}
+        >
+          Request Access to Submit Variable-level Metadata
+        </Button>
+      )}
+      {showLoginToSubmitVLMDButton && (
+        <Button
+          leftSection={<LoginIcon size={14} />}
+          variant="subtle"
+          color="black"
+          size="xs"
+          onClick={() => void router.push('/login')}
+        >
+          Login to Submit Variable-level Metadata
         </Button>
       )}
       <CopyButton value={permalink}>
