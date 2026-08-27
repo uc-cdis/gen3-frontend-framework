@@ -20,3 +20,8 @@ export enum FormOutcome {
   success = 'success',
   duplicateSubmission = 'duplicateSubmission',
 }
+
+export interface FormContentViewsConfig {
+  [FormOutcome.success]: genericRegistrationAccessRequestFormOutcomeProps;
+  [FormOutcome.duplicateSubmission]: genericRegistrationAccessRequestFormOutcomeProps;
+}

@@ -1,6 +1,8 @@
 import React from 'react';
 import { FormOutcome } from './types';
-import Form, {
+import type { FormContentViewsConfig } from './types';
+import Form from '../../../components/Content/Form';
+import type {
   FormOnSubmitReturnProps,
   FormProps,
 } from '../../../components/Content/Form';
@@ -12,7 +14,7 @@ interface FormContentViewsProps {
   formError?: string;
   studyUID: string | null;
   formBody: FormProps['body'];
-  config: any;
+  config: FormContentViewsConfig;
   onSubmit: (formValues: FormOnSubmitReturnProps) => Promise<void>;
   isLoading: boolean;
 }
