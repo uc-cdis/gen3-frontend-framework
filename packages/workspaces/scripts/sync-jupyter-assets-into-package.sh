@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+_resolve_against_init_cwd() {
+  local path="$1"
+  local base="${INIT_CWD:-$(pwd)}"
+  case "$path" in
+    /*) printf '%s' "$path" ;;
+    *)  printf '%s/%s' "$base" "$path" ;;
+  esac
+}
 
-BUILD_SRC="${1:-$(pwd)/builds}"
+BUILD_SRC="$(_resolve_against_init_cwd "${1:-builds}")"
 if [[ -z "$BUILD_SRC" ]]; then
   usage "set to the output of the juypterlite install"
 fi

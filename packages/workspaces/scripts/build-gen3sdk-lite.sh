@@ -4,10 +4,7 @@
 #
 # All packages in REPOS are pure Python (fastavro has Python fallbacks for its
 # C extensions). They are therefore built with `pip wheel` and retagged to
-# py3-none-any, which loads under any Pyodide/Python version. This replaces the
-# previous `pyodide build` + emsdk approach, which downloaded ~1 GB of
-# toolchain, took several minutes, and produced wheels that were then renamed
-# to py3-none-any anyway.
+# py3-none-any, which loads under any Pyodide/Python version.
 #
 # If a package with genuine C extensions is added to REPOS, the pure-Python
 # assertion below will fail the build rather than silently shipping a wheel
@@ -41,7 +38,20 @@ set -- "${POSITIONAL_ARGS[@]+"${POSITIONAL_ARGS[@]}"}"
 # ── Path constants (always defined, no external dependency) ──────────────────
 ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 SRC_DIR="$ROOT_DIR/free-private"
-BUILD_DIR="${2:-$(pwd)/builds}"
+
+# Resolves a possibly-relative path against INIT_CWD (or $PWD) rather than
+# whatever directory happens to be current when this runs. See setup-env.sh
+# for why: it's what keeps a relative build_dir out of dist/ or node_modules.
+_resolve_against_init_cwd() {
+  local path="$1"
+  local base="${INIT_CWD:-$(pwd)}"
+  case "$path" in
+    /*) printf '%s' "$path" ;;
+    *)  printf '%s/%s' "$base" "$path" ;;
+  esac
+}
+
+BUILD_DIR="$(_resolve_against_init_cwd "${2:-builds}")"
 mkdir -p "$BUILD_DIR"
 BUILD_DIR="$(cd "$BUILD_DIR" && pwd)"
 
@@ -112,7 +122,7 @@ REPOS=(
   "dictionaryutils|https://github.com/uc-cdis/dictionaryutils.git"
   "pypfb|https://github.com/uc-cdis/pypfb.git"
   "gen3sdk-python|https://github.com/uc-cdis/gen3sdk-python.git"
-  "gen3users|git@github.com:uc-cdis/gen3users.git"
+  "gen3users|https://github.com/uc-cdis/gen3users.git"
   "gen3dictionary|https://github.com/uc-cdis/datadictionary.git"
 )
 
@@ -177,19 +187,18 @@ apply_patches() {
     's/jsonschema = "<=4\.23\.0"/jsonschema = ">=4.0.0"/' \
     "${SOURCES_DIR}/dictionaryutils/pyproject.toml"
 
-  # REMOVED: the dictionaryutils metaschema deferral and the gen3dictionary
-  # lazy=True patch. Both were added on the theory that eager YAML schema
-  # loading blocked the WASM thread indefinitely. Measured, the eager load is
-  # ~0.6s for 32 schemas / 256 KB — not a hang. The real cause was the browser
-  # fetching the Pyodide distribution from cdn.jsdelivr.net; that is now fixed
-  # by vendoring the distribution via PyodideAddon.pyodide_url.
-  #
-  # Do not reinstate them: lazy=True leaves gdcdictionary.schema == {} and
-  # metaschema == None, so anything validating against the dictionary silently
-  # sees an empty dictionary. A slow import is a better failure than a wrong one.
 
-  # REMOVED: the psqlgraph patches. psqlgraph is not in REPOS, so they never
-  # ran. Re-add them alongside a psqlgraph entry if it is ever needed.
+
+  # fastavro: force setup.py to skip building the Cython/C extensions.
+  #
+  # FASTAVRO_USE_PYTHON only selects the pure-Python fallback at import time
+  # (fastavro/__init__.py) — setup.py itself always builds the _read/_write/
+  # etc. extensions unless the interpreter is PyPy, so `pip wheel` still
+  # invokes `cc`, which the build image doesn't have.yes Short-circuit the PyPy check instead
+  # so ext_modules stays empty and the wheel is genuinely pure Python.
+  patch_file "Patched fastavro: setup.py forced to skip C extensions" \
+    's/if not hasattr(sys, "pypy_version_info"):/if False:  # gen3-lite: force pure-Python build/' \
+    "${SOURCES_DIR}/fastavro/setup.py"
 }
 
 # ── Build wheels ────────────────────────────────────────────────────────────
@@ -234,12 +243,12 @@ build_wheels() {
       local end_ts
       end_ts=$(date +%s)
       echo -e "${GREEN}OK${NC}  ($(elapsed $((end_ts - start_ts))))"
-      ((built++))
+      built=$((built + 1))
     else
       local end_ts
       end_ts=$(date +%s)
       echo -e "${RED}FAILED${NC}  ($(elapsed $((end_ts - start_ts)))) — see ${logfile}"
-      ((failed++))
+      failed=$((failed + 1))
       failed_names+=("${name}")
     fi
   done
@@ -256,7 +265,7 @@ build_wheels() {
     [[ -n "${subdir}" ]] && build_dir="${src}/${subdir}"
     if compgen -G "${build_dir}/dist/*.whl" > /dev/null 2>&1; then
       cp "${build_dir}"/dist/*.whl "${OUTPUT_DIR}/"
-      ((count += $(ls -1 "${build_dir}"/dist/*.whl 2>/dev/null | wc -l)))
+      count=$((count + $(ls -1 "${build_dir}"/dist/*.whl 2>/dev/null | wc -l)))
     fi
   done
 
@@ -344,11 +353,6 @@ download_extras() {
 }
 
 # ── Verify every wheel is loadable in the browser ───────────────────────────
-# Replaces the old hardcoded rename of *p313-cp313-pyemscripten_2025_0_wasm32.
-# That pattern silently stopped matching when Pyodide moved to the 2026_0 ABI
-# and Python 3.14, so mis-tagged wheels would have shipped unnoticed. A
-# platform-tagged wheel cannot load under a different Pyodide ABI, so fail here
-# instead of debugging it in a browser console.
 verify_pure_python() {
   info "Verifying all wheels are pure-Python (py3-none-any) …"
   local bad=()

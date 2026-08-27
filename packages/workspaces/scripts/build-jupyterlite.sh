@@ -58,7 +58,16 @@ else
   SRC_DIR="$ROOT_DIR/remote-private"
 fi
 
-BUILD_DIR="${2:-$(pwd)/builds}"
+_resolve_against_init_cwd() {
+  local path="$1"
+  local base="${INIT_CWD:-$(pwd)}"
+  case "$path" in
+    /*) printf '%s' "$path" ;;
+    *)  printf '%s/%s' "$base" "$path" ;;
+  esac
+}
+
+BUILD_DIR="$(_resolve_against_init_cwd "${2:-builds}")"
 mkdir -p "$BUILD_DIR"
 BUILD_DIR="$(cd "$BUILD_DIR" && pwd)"
 
@@ -96,13 +105,11 @@ PYPI="$OUTPUT_DIR"   # wheels built by build-gen3sdk-lite land here
 # For the remote tier, always install because its requirements.txt includes
 # jupyterlite-remote-server which the free-tier build never installs.
 #
-# NOTE: this means edits to free-private/requirements.txt are ignored once the
-# venv exists. Delete $VENV_DIR (or run the remote tier) to pick them up.
 if [[ "$TIER" == "free" && -x "$VENV_JUPYTER_LITE" ]]; then
   info "Existing venv already has jupyter-lite — skipping requirements install"
 else
   info "Installing JupyterLite requirements …"
-  uv pip install -r "$REQUIREMENTS_FILE" 2>&1 | tail -5
+  uv pip install --verbose -r "$REQUIREMENTS_FILE" 2>&1 | tail -5
   success "JupyterLite requirements installed"
 fi
 
@@ -111,19 +118,23 @@ fi
 
 # ── Collect our own wheels for PipliteAddon ─────────────────────────────────
 # With PyodideLockAddon disabled these flags are the ONLY route by which our
-# wheels reach the browser, so an empty list is a build error, not a warning.
+# wheels reach the browser. This only applies to the free tier
 WHEEL_ARGS=()
 WHEEL_COUNT=0
-if [[ -d "$PYPI" ]]; then
-  info "Looking for wheels in $PYPI"
-  while IFS= read -r -d '' whl; do
-    WHEEL_ARGS+=(--piplite-wheels "$whl")
-    ((WHEEL_COUNT++))
-  done < <(find "$PYPI" -maxdepth 1 -name "*.whl" -print0 | sort -z)
-fi
+if [[ "$TIER" == "free" ]]; then
+  if [[ -d "$PYPI" ]]; then
+    info "Looking for wheels in $PYPI"
+    while IFS= read -r -d '' whl; do
+      WHEEL_ARGS+=(--piplite-wheels "$whl")
+      ((WHEEL_COUNT++)) || true
+    done < <(find "$PYPI" -maxdepth 1 -name "*.whl" -print0 | sort -z)
+  fi
 
-if (( WHEEL_COUNT == 0 )); then
-  fail "No wheels found in $PYPI — run build-gen3sdk-lite.sh first."
+  if (( WHEEL_COUNT == 0 )); then
+    fail "No wheels found in $PYPI — run build-gen3sdk-lite.sh first."
+  fi
+else
+  info "Skipping custom wheel collection for $TIER tier"
 fi
 
 # ── Build ───────────────────────────────────────────────────────────────────

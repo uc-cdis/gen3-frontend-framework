@@ -7,8 +7,8 @@
 #
 # BUILD_DIR resolution (first match wins):
 #   1. Pre-set BUILD_DIR environment variable  (export BUILD_DIR=…)
-#   2. First positional argument               (source setup-env.sh /tmp/mybuild)
-#   3. Default: $PWD/builds
+#   2. First positional argument               (source setup-env.sh [/tmp/mybuild | ./mybuild])
+#   3. Default: "builds"
 #
 # Usage:
 #   source setup-env.sh [build_dir]
@@ -20,7 +20,18 @@
 # ── Configuration ────────────────────────────────────────────────────────────
 PYTHON_VERSION="3.14.2"
 
-BUILD_DIR="${BUILD_DIR:-${1:-$(pwd)/builds}}"
+# Resolves a possibly-relative path against INIT_CWD (or $PWD) rather than
+# whatever directory happens to be current when this runs.
+_resolve_against_init_cwd() {
+  local path="$1"
+  local base="${INIT_CWD:-$(pwd)}"
+  case "$path" in
+    /*) printf '%s' "$path" ;;
+    *)  printf '%s/%s' "$base" "$path" ;;
+  esac
+}
+
+BUILD_DIR="${BUILD_DIR:-$(_resolve_against_init_cwd "${1:-builds}")}"
 
 mkdir -p "$BUILD_DIR"
 BUILD_DIR="$(cd "$BUILD_DIR" && pwd)"

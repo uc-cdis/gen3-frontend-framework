@@ -20,7 +20,7 @@ RUN npm config set fetch-retries 5 && \
 
 # Python, bash, and curl for the JupyterLite build.
 # No real micromamba binary needed — see stub below.
-RUN apk add --no-cache python3 py3-pip bash curl bzip2
+RUN apk add --no-cache python3 py3-pip bash curl bzip2 uv git coreutils
 
 # Stub that satisfies prepare_wasm.js without the glibc-linked micromamba binary.
 COPY docker/micromamba-stub.py /usr/local/bin/micromamba
@@ -40,9 +40,18 @@ COPY packages/workspaces/package.json  packages/workspaces/
 RUN --mount=type=cache,target=/root/.npm \
     npm ci --include=optional
 
+# Copy source after install so the install layer stays cached on source-only changes
+COPY packages ./packages
+# build all packages first so that the jupyterlite build has the files it needs
+RUN npm run build:pkg
+
 # Download cockle WASM packages from emscripten-forge so prepare_wasm.js reuses
-# the existing env instead of running micromamba create.
-RUN WASM_ENV=/gen3/packages/sampleCommons/cockle_wasm_env && \
+# the existing env instead of running micromamba create. prepare_wasm.js is
+# invoked with cwd=lite_dir, so the env must live inside the remote tier's
+# `--lite-dir` (dist/jupyterlite-builds/remote-private) — not sampleCommons —
+# otherwise its relative `./cockle_wasm_env` lookup misses. Only the remote
+# tier is downloaded here; the free tier is not used in this image.
+RUN WASM_ENV=/gen3/packages/workspaces/dist/jupyterlite-builds/remote-private/cockle_wasm_env && \
     mkdir -p "$WASM_ENV" && \
     for URL in \
       "https://repo.prefix.dev/emscripten-forge-4x/emscripten-wasm32/cockle_fs-0.3.0-h8b79025_1.tar.bz2" \
@@ -53,9 +62,6 @@ RUN WASM_ENV=/gen3/packages/sampleCommons/cockle_wasm_env && \
     ; do \
       curl -fsSL "$URL" | tar -xj -C "$WASM_ENV"; \
     done
-
-# Copy source after install so the install layer stays cached on source-only changes
-COPY packages ./packages
 
 # Build JupyterLite static assets
 RUN npm run build:jupyterlite
