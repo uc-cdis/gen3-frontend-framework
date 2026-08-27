@@ -28,6 +28,8 @@
     "build": "npm run compile && npm run types && npm run rollup",
     "build:clean": "npm run clean && npm run build",
     "dev": "echo no dev tasks",
+    "build:jupyterlite:setupenv": "bash scripts/build-gen3sdk-lite.sh free",
+    "build:jupyterlite:gen3sdk": "bash scripts/build-gen3sdk-lite.sh free",
     "build:jupyterlite:free": "bash scripts/build-jupyterlite.sh free",
     "build:jupyterlite:remote": "bash scripts/build-jupyterlite.sh remote",
     "build:jupyterlite:all": "npm run build:jupyterlite:free && npm run build:jupyterlite:remote && npm run validate:jupyterlite:assets",
