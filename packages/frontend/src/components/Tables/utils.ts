@@ -6,7 +6,7 @@ import {
   MRT_ColumnOrderState,
   MRT_RowData,
   MRT_VisibilityState,
-} from 'mantine-react-table';
+} from 'mantine-react-table-open';
 
 export const jsonPathAccessor = (path: string) => (row: JSONObject) => {
   return JSONPath({ json: row, path: path });

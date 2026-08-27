@@ -19,7 +19,7 @@ import {
   useRemoveCredentialMutation,
 } from './credentialsApi';
 
-import { useGetJWKKeysQuery } from './jwtApi';
+import { useGetJWKKeysQuery, useLazyGetJWKKeysQuery } from './jwtApi';
 import { FetchError, FetchRequest, Gen3FenceResponse } from './types';
 import { isFetchError } from './utils';
 import { fetchFence } from './fetchFence';
@@ -43,6 +43,7 @@ export {
   useRemoveCredentialMutation,
   useGetLoginProvidersQuery,
   useGetJWKKeysQuery,
+  useLazyGetJWKKeysQuery,
   useAuthorizeFromCredentialsMutation,
   useGetPresignedUrlQuery,
   useLazyGetPresignedUrlQuery,

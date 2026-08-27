@@ -2,7 +2,10 @@ import React, { ReactNode, useMemo, useRef, useState } from 'react';
 import DiscoveryTable from './DiscoveryTable/DiscoveryTable';
 import { Button, Grid, Text } from '@mantine/core';
 import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
-import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
+import {
+  MRT_PaginationState,
+  MRT_SortingState,
+} from 'mantine-react-table-open';
 import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
 import ActionBar from './ActionBar/ActionBar';
 import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
@@ -19,6 +22,7 @@ import { DEBOUNCE_DELAY_TIME, SearchMode } from './constants';
 import DiscoveryDropdownTagViewer from './DiscoveryDropdownTagViewer';
 import { IoIosArrowDown, IoIosArrowUp, IoIosRefresh } from 'react-icons/io';
 import { useDiscoveryContext } from './DiscoveryProvider';
+import { useStudyIdFromWindow } from './utils/useStudyIdFromWindow';
 
 export interface DiscoveryIndexPanelProps {
   indexSelector: ReactNode | null;
@@ -40,9 +44,10 @@ export interface DiscoveryIndexPanelProps {
 
 const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
   const {
-    discoveryConfig: discoveryConfig,
+    discoveryConfig,
     selectedTags,
     setSelectedTags,
+    selectedAccessLevels,
   } = useDiscoveryContext();
   const dataHook = useMemo(
     () =>
@@ -57,7 +62,10 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
   });
 
   const parentDivRef = useRef<HTMLDivElement>(null);
-  const [searchBarTerms, setSearchBarTerms] = useState<string[]>([]);
+  const studyIdFromWindow = useStudyIdFromWindow();
+  const [searchBarTerms, setSearchBarTerms] = useState<string[]>(
+    studyIdFromWindow ? [studyIdFromWindow] : [],
+  );
   const [debouncedSearchBarTerms] = useDebouncedValue(
     searchBarTerms,
     DEBOUNCE_DELAY_TIME,
@@ -108,6 +116,7 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
     selectedFieldsForSearchIndexing: selectedFieldsForSearchIndexing,
     searchMode: searchMode,
     selectedTags: selectedTags,
+    selectedAccessLevels: selectedAccessLevels,
   });
   const selectedRecords = useMemo(() => {
     const uidField = discoveryConfig?.minimalFieldMapping?.uid ?? 'guid';
@@ -126,6 +135,10 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
   const enableSearchBar = discoveryConfig?.features?.search?.searchBar?.enabled;
   const enableSearchableTags =
     discoveryConfig?.features?.search?.tagSearchDropdown?.enabled;
+  const enableSearchInputSelectableFields =
+    discoveryConfig?.features?.search?.searchBar?.searchableTextFields ||
+    discoveryConfig?.features?.search?.searchBar
+      ?.searchableAndSelectableTextFields;
 
   return (
     <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
@@ -146,8 +159,8 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
             {indexSelector}
             <SummaryStatisticPanel summaries={summaryStatistics} />
             {enableSearchBar && (
-              <div className="w-3/4 flex flex-col">
-                <Grid>
+              <div className="w-3/4 flex flex-col ml-2">
+                <Grid align="center" gap="sm">
                   <Grid.Col
                     span={{ md: enableSearchableTags ? 7 : 10, sm: 12 }}
                   >
@@ -170,18 +183,15 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
                     />
                   </Grid.Col>
                   {enableSearchableTags && (
-                    <Grid.Col
-                      span={{ sm: 12, md: 5 }}
-                      className="md:mt-5 sm:mt-1"
-                    >
+                    <Grid.Col span={{ sm: 12, md: 5 }} align="center">
                       <Button
                         onClick={() => setSelectedTags({})}
                         variant="outline"
                         leftSection={<IoIosRefresh />}
                         className={
                           Object.keys(selectedTags).length === 0
-                            ? 'border-gray-400 mr-1 mt-1'
-                            : 'mr-1  mt-1'
+                            ? 'border-gray-400 mr-2'
+                            : 'mr-2'
                         }
                         data-disabled={Object.keys(selectedTags).length === 0}
                       >
@@ -210,39 +220,43 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
                     </Grid.Col>
                   )}
                 </Grid>
-                <SearchInputSelectableFields
-                  searchMode={searchMode}
-                  setSearchMode={setSearchMode}
-                  searchableTextFields={
-                    discoveryConfig?.features?.search?.searchBar
-                      ?.searchableTextFields
-                  }
-                  searchableAndSelectableTextFields={
-                    discoveryConfig?.features?.search?.searchBar
-                      ?.searchableAndSelectableTextFields
-                  }
-                  setSelectedFieldsForSearchIndexing={
-                    setSelectedFieldsForSearchIndexing
-                  }
-                />
-                <div
-                  ref={tagViewerContentRef}
-                  className={`transition-all duration-300 ease-in-out mt-2 ${
-                    isDropdownTagViewerOpen
-                      ? 'max-h-screen opacity-100'
-                      : 'max-h-0 opacity-0'
-                  } overflow-hidden`}
-                  style={{
-                    height:
-                      isDropdownTagViewerOpen && tagViewerContentRef.current
-                        ? `${tagViewerContentRef.current.scrollHeight}px`
-                        : '0px',
-                  }}
-                >
-                  <DiscoveryDropdownTagViewer
-                    tagCategoryData={tagCategoryData}
+                {enableSearchInputSelectableFields && (
+                  <SearchInputSelectableFields
+                    searchMode={searchMode}
+                    setSearchMode={setSearchMode}
+                    searchableTextFields={
+                      discoveryConfig?.features?.search?.searchBar
+                        ?.searchableTextFields
+                    }
+                    searchableAndSelectableTextFields={
+                      discoveryConfig?.features?.search?.searchBar
+                        ?.searchableAndSelectableTextFields
+                    }
+                    setSelectedFieldsForSearchIndexing={
+                      setSelectedFieldsForSearchIndexing
+                    }
                   />
-                </div>
+                )}
+                {tagCategoryData && tagCategoryData.length > 0 && (
+                  <div
+                    ref={tagViewerContentRef}
+                    className={`transition-all duration-300 ease-in-out mt-2 ${
+                      isDropdownTagViewerOpen
+                        ? 'max-h-screen opacity-100'
+                        : 'max-h-0 opacity-0'
+                    } overflow-hidden`}
+                    style={{
+                      height:
+                        isDropdownTagViewerOpen && tagViewerContentRef.current
+                          ? `${tagViewerContentRef.current.scrollHeight}px`
+                          : '0px',
+                    }}
+                  >
+                    <DiscoveryDropdownTagViewer
+                      tagCategoryData={tagCategoryData}
+                    />
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -296,6 +310,7 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
               <DiscoveryTable
                 data={data}
                 hits={hits}
+                studyIdFromWindow={studyIdFromWindow as string}
                 dataRequestStatus={dataRequestStatus}
                 setPagination={setPagination}
                 setSorting={setSorting}

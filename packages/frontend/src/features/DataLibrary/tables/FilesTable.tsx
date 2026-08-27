@@ -3,13 +3,12 @@ import {
   MRT_RowSelectionState,
   MRT_Updater,
   useMantineReactTable,
-} from 'mantine-react-table';
+} from 'mantine-react-table-open';
 import React, { useEffect, useState } from 'react';
 import { FileItem } from '@gen3/core';
-import { Button, Text, Tooltip } from '@mantine/core';
+import { Text } from '@mantine/core';
 import { commonTableSettings } from './tableSettings';
 import { useDataLibrarySelection } from '../selection/SelectionContext';
-import { MdOutlineRemoveCircle as RemoveIcon } from 'react-icons/md';
 
 interface FilesTableProps {
   datasetId: string;

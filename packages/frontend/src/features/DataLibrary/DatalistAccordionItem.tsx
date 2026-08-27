@@ -4,12 +4,12 @@ import {
   AdditionalDataItem,
   CohortItem,
   Datalist,
+  DataListUpdate,
   FileItem,
   getNumberOfItemsInDatalist,
   isAdditionalDataItem,
   isCohortItem,
   isFileItem,
-  DataListUpdate,
   StorageOperationResults,
 } from '@gen3/core';
 import {
@@ -60,7 +60,8 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
 
   const updateList = async (update: Record<string, any>) => {
     return await updateListInDataLibrary({
-      ...{ name: listName, items: dataList.items },
+      name: listName,
+      items: dataList.items,
       ...update,
       id: listId,
     });

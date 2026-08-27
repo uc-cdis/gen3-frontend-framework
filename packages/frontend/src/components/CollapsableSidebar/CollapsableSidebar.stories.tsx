@@ -13,7 +13,7 @@ type Story = StoryObj<typeof CollapsableSidebar>;
 
 export const Primary: Story = {
   args: {
-    in: true,
+    expanded: true,
     children: (
       <Group>
         <Text>Inside</Text>

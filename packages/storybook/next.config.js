@@ -4,13 +4,15 @@
 const dns = require('dns');
 const path = require('path');
 
-const basePath = process.env.NEXT_PUBLIC_BASEPATH;
+const basePath = process.env.BASE_PATH || '';
 
 dns.setDefaultResultOrder('ipv4first');
 
-// Next configuration with support for rewriting API to existing common services
 const nextConfig = {
   reactStrictMode: true,
+  env: {
+    version: process.env.npm_package_version,
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -28,7 +30,7 @@ const nextConfig = {
     config.resolve.symlinks = false;
 
     config.resolve.alias = {
-      ...(config.resolve.alias || {}),
+      ...config.resolve.alias,
 
       '@gen3/core$': path.resolve(__dirname, '../core/src/index.ts'),
 
@@ -57,7 +59,7 @@ const nextConfig = {
       };
 
       config.watchOptions = {
-        ...(config.watchOptions || {}),
+        ...config.watchOptions,
         ignored: [
           '**/.next/**',
           '**/dist/**',
@@ -82,6 +84,77 @@ const nextConfig = {
     }
 
     return config;
+  },
+  async rewrites() {
+    const workspaceApiRewrite = [
+      {
+        source: '/workspace-api/:path*',
+        destination: '/api/:path*',
+      },
+    ];
+    if (isDev) {
+      const GEN3_TARGET =
+        process.env.NEXT_PUBLIC_GEN3_API_TARGET || 'https://localhost';
+
+      return [
+        ...workspaceApiRewrite,
+        { source: '/_status', destination: `${GEN3_TARGET}/_status` },
+        { source: '/user/:path*', destination: `${GEN3_TARGET}/user/:path*` },
+        {
+          source: '/guppy/:path*',
+          destination: `${GEN3_TARGET}/guppy/:path*`,
+        },
+        { source: '/mds/:path*', destination: `${GEN3_TARGET}/mds/:path*` },
+        {
+          source: '/ai-search/:path*',
+          destination: `${GEN3_TARGET}/ai-search/:path*`,
+        },
+        {
+          source: '/authz/:path*',
+          destination: `${GEN3_TARGET}/authz/:path*`,
+        },
+        {
+          source: '/lw-workspace/proxy/',
+          destination: `${GEN3_TARGET}/lw-workspace/proxy/`,
+        },
+        {
+          source: '/lw-workspace/:path*',
+          destination: `${GEN3_TARGET}/lw-workspace/:path*`,
+        },
+        {
+          source: '/api/v0/submission/:path*',
+          destination: `${GEN3_TARGET}/api/v0/submission/:path*`,
+        },
+        { source: '/wts/:path*', destination: `${GEN3_TARGET}/wts/:path*` },
+        {
+          source: '/library/lists/:path*',
+          destination: `${GEN3_TARGET}/library/lists/:path*`,
+        },
+        { source: '/job/:path*', destination: `${GEN3_TARGET}/job/:path*` },
+        {
+          source: '/manifests/:path*',
+          destination: `${GEN3_TARGET}/manifests/:path*`,
+        },
+        {
+          source: '/dashboard/:path*',
+          destination: `${GEN3_TARGET}/dashboard/:path*`,
+        },
+        {
+          source: '/requestor/:path*',
+          destination: `${GEN3_TARGET}/requestor/:path*`,
+        },
+        {
+          source: '/index/:path*',
+          destination: `${GEN3_TARGET}/index/:path*`,
+        },
+        {
+          source: '/login',
+          destination: `${GEN3_TARGET}/login`,
+        },
+      ];
+    } else {
+      return workspaceApiRewrite;
+    }
   },
   async headers() {
     return [

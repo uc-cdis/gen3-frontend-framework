@@ -28,6 +28,11 @@ export const UNACCESSIBLE: any = {
     __accessible: 2,
   },
 };
+export const MIXED: any = {
+  args: {
+    __accessible: 6,
+  },
+};
 export const UNKNOWN: any = {
   args: {
     __accessible: 5,

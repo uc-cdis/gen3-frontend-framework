@@ -40,3 +40,8 @@ next-env.d.ts
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+# generated files
+*middleware.ts
+*proxy.ts
+/builds/

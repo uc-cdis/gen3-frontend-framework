@@ -1,26 +1,3 @@
-export * from './components/Profile';
-export * from './components/Login';
-
-export * from './components/Modals';
-export * from './components/MessageCards';
-export * from './components/charts';
-export * from './components/facets';
-export * from './components/Protected';
-// features
-export * from './features/Navigation';
-export * from './features/Discovery';
-export * from './features/Dictionary';
-export * from './features/Study';
-export * from './features/CohortBuilder';
-export * from './features/Query';
-export * from './features/Workspace';
-export * from './features/Analysis';
-export * from './features/StaticNotebook';
-export * from './features/Profile';
-export * from './features/FileSummary';
-export * from './utils/';
-export * from './types';
-
 import {
   ClinicalDataAnalysisPage,
   ClinicalDataAnalysisServerSideProps,
@@ -50,6 +27,8 @@ import {
   JSONObjectDownloadButton,
   UploadJSONButton,
 } from './components/Buttons';
+
+import PanelErrorBoundary from './components/PanelErrorBoundary';
 
 import CountsValue from './components/counts/CountsValue';
 
@@ -92,15 +71,9 @@ import {
 import AuthzPage from './pages/admin/authz/Authz';
 import { AdminAuthZPageGetServerSideProps } from './pages/admin/authz/data';
 
-import {
-  Custom403Page,
-  Custom403PageGetServerSideProps,
-} from './pages/403';
+import { Custom403Page, Custom403PageGetServerSideProps } from './pages/403';
 
-import {
-  Custom404Page,
-  Custom404PageGetServerSideProps,
-} from './pages/404';
+import { Custom404Page, Custom404PageGetServerSideProps } from './pages/404';
 
 import SubmissionPage from './pages/Submission/SubmissionPage';
 import { SubmissionPageGetServerSideProps } from './pages/Submission/data';
@@ -146,17 +119,54 @@ import {
   RepositoryPageGetServerSideProps,
 } from './pages/Repository';
 
+import {
+  InfoRolloverButton,
+  type InfoRolloverButtonProps,
+} from './components/InfoRolloverButton';
+
 import { TailwindConfig } from './utils/tailwindConfig';
+import typographyPlugin from './vendor/tailwindcss-typography/index.js';
 
 import sessionToken from './api/auth/sessionToken';
 import sessionLogout from './api/auth/sessionLogout';
 import credentialsLogin from './api/auth/credentialsLogin';
 import credentialsLogout from './api/auth/credentialsLogout';
 import analysisApiCohortDiscovery from './features/CohortDiscovery/api/analysisApiCohortDiscovery';
-import { type QueryPageLayoutProps, type QueryProps } from './pages/Query';
+import {
+  type QueryConfiguration,
+  type QueryPageLayoutProps,
+} from './pages/Query';
 
 import type { AuthorizedRoutesConfig, RouteConfig } from './lib/authz/type';
 import { DefaultAuthorizedRoutesConfig } from './lib/authz/type';
+import OverflowTooltippedLabel from './components/OverflowTooltippedLabel';
+import NavigationRail, {
+  NavigationRailItem,
+} from './components/NavigationRail';
+import { ACTIVITY_CHANNEL } from './lib/session/constants';
+
+export * from './components/Profile';
+export * from './components/Login';
+
+export * from './components/Modals';
+export * from './components/MessageCards';
+export * from './components/charts';
+export * from './components/facets';
+export * from './components/Protected';
+// features
+export * from './features/Navigation';
+export * from './features/Discovery';
+export * from './features/Dictionary';
+export * from './features/Study';
+export * from './features/CohortBuilder';
+export * from './features/Query';
+export * from './features/Workspace';
+export * from './features/Analysis';
+export * from './features/StaticNotebook';
+export * from './features/Profile';
+export * from './features/FileSummary';
+export * from './utils/';
+export * from './types';
 
 export {
   ContentSource,
@@ -176,13 +186,20 @@ export {
   SegmentedControl,
   Gen3Button,
   Gen3ButtonReverse,
+  OverflowTooltippedLabel,
   UploadJSONButton,
   ActionButton,
   ErrorCard,
   TopBar,
   CountsValue,
+  PanelErrorBoundary,
+  type NavigationRailItem,
+  NavigationRail,
+  type InfoRolloverButtonProps,
+  InfoRolloverButton,
+  ACTIVITY_CHANNEL,
   // Pages
-  type QueryProps,
+  type QueryConfiguration,
   type QueryPageLayoutProps,
   type Gen3AppConfigData,
   DiscoveryPage,
@@ -203,6 +220,7 @@ export {
   LoginPage,
   LoginPageGetServerSideProps,
   TailwindConfig,
+  typographyPlugin,
   Gen3Provider,
   getNavPageLayoutPropsFromConfig,
   AuthzPage,

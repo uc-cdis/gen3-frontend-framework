@@ -4,9 +4,9 @@ import {
   Project,
   ProjectResponse,
   ProjectsListRequestParams,
-  SubmissionInfo,
   SubmissionGraphqlParams,
   SubmissionGraphqlResponse,
+  SubmissionInfo,
 } from './types';
 import { JSONObject } from '../../types';
 import { extractValuesFromObject } from '../../utils/extractvalues';
@@ -29,11 +29,10 @@ interface ProjectInfoFromProjectDetails {
   code: string;
 }
 
-interface ProjectDetailsResponse
-  extends Record<
-    string,
-    string | number | Array<ProjectInfoFromProjectDetails>
-  > {
+interface ProjectDetailsResponse extends Record<
+  string,
+  string | number | Array<ProjectInfoFromProjectDetails>
+> {
   project: Array<ProjectInfoFromProjectDetails>;
 }
 
@@ -133,9 +132,14 @@ export const submissionApi = gen3Api.injectEndpoints({
           .data.project;
         const projectIds = projects.map((p) => p.project_id);
 
+        const slicedProjectIds = projectIds.slice(
+          args.offset,
+          args.offset + args.size,
+        );
+
         // given the list of projects, get all of them by executing the projectDetailsQuery for each project
         const projectDetails = await Promise.all(
-          projectIds.map(async (projectId) => {
+          slicedProjectIds.map(async (projectId) => {
             const result = await fetchWithBQ({
               url: `${GEN3_SUBMISSION_API}/graphql`,
               method: 'POST',
@@ -226,6 +230,19 @@ export const submissionApi = gen3Api.injectEndpoints({
         url: `${GEN3_SUBMISSION_API}/_dictionary/_all/`,
       }),
     }),
+    getDictionaryFromUrl: builder.query<SubmissionGraphqlResponse, string>({
+      query: (url) => {
+        if (URL.canParse(url)) {
+          return {
+            url: url,
+          };
+        } else {
+          return {
+            url: `${GEN3_SUBMISSION_API}/${url}`,
+          };
+        }
+      },
+    }),
   }),
 });
 
@@ -237,4 +254,5 @@ export const {
   useLazyGetSubmissionGraphQLQuery,
   useGetSubmissionsQuery,
   useGetDictionaryQuery,
+  useGetDictionaryFromUrlQuery,
 } = submissionApi;

@@ -45,7 +45,6 @@ const HorizontalNavigationBar = ({
   const routesConfig = useProtectedRoutesContext();
   const {
     data: resources,
-    error: authzResourceError,
     isFetching: isAuthzResourcesFetching,
     isError: isAuthzResourcesError,
     refetch,
@@ -53,7 +52,7 @@ const HorizontalNavigationBar = ({
 
   useDeepCompareEffect(() => {
     if (loggedIn && !isAuthzResourcesFetching && !isAuthzResourcesError) {
-      refetch();
+      void refetch();
     }
   }, [loggedIn, isAuthzResourcesFetching, isAuthzResourcesError, refetch]);
 
@@ -101,7 +100,9 @@ const HorizontalNavigationBar = ({
                 href={x.href}
                 name={x.name}
                 classNames={x.classNames}
+                noBasePath={x?.noBasePath}
                 authStatus={LinkAuthStatus.Authorized}
+                enabledWithNoAccess={x?.enabledWithNoAccess}
               />
             </div>
           );

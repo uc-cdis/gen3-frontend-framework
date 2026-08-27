@@ -8,11 +8,12 @@ import { getTagInfo } from '../../../Study/utils';
 import { TagData } from '../../../Study/types';
 import { useDiscoveryContext } from '../../DiscoveryProvider';
 import { CellRendererFunction, CellRenderFunctionProps } from './types';
-import { DataAccessCellRenderer } from './DataAccessCellRenderers';
+import { DataAccessCellRenderer } from './DataAccessCellRenderer';
 import { TruncatedStringWithTooltip } from '../../../../components/DataItems/TruncatedStringWithTooltip';
 import { JSONObject } from '@gen3/core';
-
 import { getParamsValueAsString } from '../../../../utils/values';
+import { FaRegCircleCheck as RegisteredStudyIcon } from 'react-icons/fa6';
+import { FiMinusCircle as UnregisteredStudyIcon } from 'react-icons/fi';
 
 const TruncatedStringWithTooltipCellRenderer: CellRendererFunction = (
   { value }: CellRenderFunctionProps,
@@ -41,7 +42,7 @@ export const RenderArrayCell: CellRendererFunction = ({
       </div>
     );
   }
-  return <span>value</span>;
+  return <span>{value}</span>;
 };
 
 // Define the valid textTransform values
@@ -258,6 +259,25 @@ const RenderParagraphsCell: CellRendererFunction = ({
   );
 };
 
+const RegistrationStatusCellRenderer: CellRendererFunction = ({
+  value,
+}: CellRenderFunctionProps) => {
+  const isRegistered = value[0];
+  return (
+    <>
+      {isRegistered ? (
+        <Badge leftSection={<RegisteredStudyIcon />} color="green">
+          Linked
+        </Badge>
+      ) : (
+        <Badge leftSection={<UnregisteredStudyIcon />} color="grey">
+          Not Linked
+        </Badge>
+      )}
+    </>
+  );
+};
+
 const RenderIfArrayHasData: CellRendererFunction = ({
   value,
 }: CellRenderFunctionProps) => {
@@ -343,6 +363,9 @@ export const Gen3DiscoveryStandardCellRenderers = {
   },
   dataAccess: {
     default: DataAccessCellRenderer,
+  },
+  registrationStatus: {
+    default: RegistrationStatusCellRenderer,
   },
 };
 
