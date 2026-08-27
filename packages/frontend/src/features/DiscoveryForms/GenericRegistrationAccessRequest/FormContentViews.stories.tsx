@@ -3,6 +3,7 @@ import React from 'react';
 import type { Meta } from '@storybook/nextjs';
 import { FormContentViews } from './FormContentViews';
 import { FormOutcome } from './types';
+import type { FormProps } from '../../../components/Content/Form';
 
 const mockFormBody = [
   {
@@ -171,12 +172,12 @@ const mockConfig = {
   },
 };
 
-const meta: any = {
+const meta = {
   title: 'DiscoveryForms/GenericRegistrationAccessRequest',
   component: FormContentViews,
   args: {
     studyUID: 'STUDY-123',
-    formBody: mockFormBody as any,
+    formBody: mockFormBody as FormProps['body'],
     config: mockConfig,
     onSubmit: async (values) => alert(`Submitted ${JSON.stringify(values)}`),
     isLoading: false,
@@ -188,7 +189,7 @@ const meta: any = {
       </div>
     ),
   ],
-} satisfies Meta<typeof FormContentViews>;
+} as Meta<typeof FormContentViews>;
 export default meta;
 
 export const PendingState = {
