@@ -1,4 +1,4 @@
-import { HeaderMetadata } from '../Navigation/types';
+import type { HeaderMetadata } from '../Navigation/types';
 
 export interface DictionaryConfig extends Record<
   string,

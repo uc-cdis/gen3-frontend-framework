@@ -1,7 +1,8 @@
-import React, { JSX } from 'react';
+import type { JSX } from 'react';
+import React from 'react';
 import { DictionaryWithContext } from '../../features/Dictionary';
 import { NavPageLayout } from '../../features/Navigation';
-import { DictionaryPageProps } from './types';
+import type { DictionaryPageProps } from './types';
 
 const DictionaryPage = ({
   headerProps,

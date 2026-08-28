@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useGetDictionaryQuery } from '@gen3/core';
 import { Loader, Text } from '@mantine/core';
-import Dictionary from './Dictionary';
-import { DictionaryProps, DataDictionary } from './types';
+import Dictionary from './DictionaryV1';
+import type { DataDictionary, DictionaryProps } from './types';
 import DictionaryProvider from './DictionaryProvider';
 import { removeUnusedFieldsFromDictionaryObject } from './utils';
 
 const DictionaryWithContext = ({ config }: DictionaryProps) => {
-  const { data, isFetching, isUninitialized, isLoading, isError, isSuccess } =
+  const { data, isFetching, isUninitialized, isError, isSuccess } =
     useGetDictionaryQuery();
   const [dictionary, setDictionary] = useState<DataDictionary>({});
 
@@ -20,12 +20,7 @@ const DictionaryWithContext = ({ config }: DictionaryProps) => {
     }
   }, [data, isSuccess]);
 
-  if (
-    isLoading ||
-    isFetching ||
-    isUninitialized ||
-    Object.keys(dictionary).length === 0
-  ) {
+  if (isFetching || isUninitialized || Object.keys(dictionary).length === 0) {
     return (
       <div className="flex w-full py-24 relative justify-center">
         <Loader variant="dots" />{' '}
