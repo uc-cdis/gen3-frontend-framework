@@ -1,13 +1,12 @@
 // GenericRegistrationAccessRequestForm.tsx
 import React from 'react';
-import {
-  NavPageLayout,
-  NavPageLayoutProps,
-} from '../../../features/Navigation';
 import GenericRegistrationAccessRequestForm from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest';
+import { NavPageLayout } from '../../../features/Navigation';
+import type { GenericRegistrationAccessRequestFormConfig } from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest/types';
+import type { NavPageLayoutProps } from '../../../features/Navigation';
 
 interface GenericRegistrationAccessRequestFormPageProps extends NavPageLayoutProps {
-  configStudyRegistrationRequestAccessForm: any;
+  configStudyRegistrationRequestAccessForm: GenericRegistrationAccessRequestFormConfig;
   studyName: string;
 }
 
