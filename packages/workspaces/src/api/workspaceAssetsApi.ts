@@ -98,7 +98,7 @@ function parseOptions(raw: unknown): WorkspaceAssetsHandlerOptions {
 
   // oxlint-disable-next-line no-console
   console.log(
-    'addtional disabled extensions',
+    'additional disabled extensions',
     source.additionalDisabledExtensions,
   );
   if (extensions !== undefined) {

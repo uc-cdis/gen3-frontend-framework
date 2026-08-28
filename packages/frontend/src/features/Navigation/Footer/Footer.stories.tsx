@@ -19,6 +19,7 @@ export const Default: Story = {
     classNames: {
       root: 'bg-base-min',
       layout: 'flex items-center justify-end',
+      version: 'text-primary-contrast-lighter',
     },
     rightSection: {
       columns: [

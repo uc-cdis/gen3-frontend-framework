@@ -1,15 +1,17 @@
 import React from 'react';
-
-import TextContent, { TextContentProps, ContentType } from './TextContent';
+import type { UseFormReturnType } from '@mantine/form';
+import type { TextContentProps } from './TextContent';
+import TextContent, { ContentType } from './TextContent';
 import {
   Checkbox,
   Radio,
+  Select,
   Stack,
+  TagsInput,
   TextInput,
   Textarea,
   Tooltip,
 } from '@mantine/core';
-import { UseFormReturnType } from '@mantine/form';
 
 /**
  * Enum representing various content types for form-based data.
@@ -22,6 +24,15 @@ export enum FormContentType {
   Checkbox = 'Checkbox', // mantine Checkbox
   Textarea = 'Textarea', // mantine Textarea
   RadioGroup = 'RadioGroup', // mantine Radio.Group
+  Select = 'Select', // mantine Select
+  Tags = 'Tags', // mantine Tags
+  CedarUserUUID = 'CedarUserUUID', // Cedar User ID text input
+  ClinicalTrialID = 'ClinicalTrialID', // ClinicalTrials.gov ID text input
+}
+
+export interface SelectOptionItem {
+  label: string;
+  value: string;
 }
 
 /**
@@ -34,13 +45,18 @@ export interface FormContentProps extends Omit<
   readonly text?: TextContentProps['text']; // text requiered for TextContent
   readonly type?: FormContentType | ContentType; // type of content
   readonly label?: string; // form label requiered for form inputs
+  readonly initialValue?: string; // optional initial value for form select component
+  readonly dropdownData?: SelectOptionItem[]; // optional data for form select component
   readonly description?: string; // optional discritions to go above form feild and below label
   readonly placeholder?: string; // optional placeholder text
   readonly disabled?: boolean; // optional grays out and makes feild uneditable
   readonly required?: boolean; // optional is requiered adds star to indicate requiered feild
   readonly tooltip?: string; // optional tooltip wrapper
   readonly keyString: string; // form key, when form is submitted key assigend to the value
-  readonly form: UseFormReturnType<any, (values: any) => any>; // @mantine/form form object
+  readonly form: UseFormReturnType<
+    Record<string, unknown>,
+    (values: Record<string, unknown>) => Record<string, unknown>
+  >; // @mantine/form form object
 }
 
 /**
@@ -66,6 +82,8 @@ export interface FormContentProps extends Omit<
 const FormContent = ({
   text,
   label,
+  initialValue,
+  dropdownData,
   description,
   placeholder,
   disabled,
@@ -86,13 +104,15 @@ const FormContent = ({
 
   switch (type) {
     case FormContentType.Email:
+    case FormContentType.CedarUserUUID:
+    case FormContentType.ClinicalTrialID:
     case FormContentType.TextInput: {
       return (
         <TextInput
           className={className}
           classNames={{
             label: 'text-sm font-bold',
-            input: 'max-w-[500px] mt-2',
+            input: 'max-w-lg mt-2',
             description: 'text-sm text-[var(--mantine-color-text)]',
           }}
           label={label}
@@ -153,13 +173,53 @@ const FormContent = ({
       }
       return RadioGroupElement;
     }
+    case FormContentType.Select: {
+      const SelectElement = (
+        <Select
+          className={className}
+          classNames={{
+            label: 'text-sm font-bold',
+            root: 'max-w-lg mt-2',
+          }}
+          data={dropdownData}
+          defaultValue={initialValue}
+          label={label}
+          description={description}
+          placeholder={placeholder}
+          disabled={disabled || form.submitting}
+          required={required}
+          key={form.key(keyString)}
+          {...form.getInputProps(keyString)}
+        />
+      );
+
+      if (inputContainer) {
+        return inputContainer(SelectElement);
+      }
+      return SelectElement;
+    }
+    case FormContentType.Tags: {
+      return (
+        <TagsInput
+          label={label}
+          classNames={{
+            label: 'text-sm font-bold whitespace-pre-line',
+            root: 'max-w-lg mt-2',
+          }}
+          placeholder={placeholder}
+          key={form.key(keyString)}
+          {...form.getInputProps(keyString)}
+        />
+      );
+    }
+
     case FormContentType.Textarea: {
       return (
         <Textarea
           className={className}
           classNames={{
             label: 'text-sm font-bold',
-            input: 'max-w-[500px] h-40 mt-2',
+            input: 'max-w-lg h-40 mt-2',
             description: 'text-sm text-[var(--mantine-color-text)]',
           }}
           label={label}

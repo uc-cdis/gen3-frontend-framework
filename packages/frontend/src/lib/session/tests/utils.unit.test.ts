@@ -10,14 +10,14 @@ import { isUserOnPage } from '../utils';
 
 describe('isUserOnPage', () => {
   it.each([
-    ['/Login', 'Login'],
-    ['/login', 'Login'],
-    ['/Workspace', 'Workspace'],
-    ['/Workspaces', 'Workspace'],
-    ['/Workspace/[id]', 'Workspace'],
-    ['/admin/Workspace/Notebooks', 'Workspace'],
-  ])('matches %s against %s', (pathname, pageName) => {
-    expect(isUserOnPage(pageName, pathname)).toBe(true);
+    ['Login', '/Login'],
+    ['Login', 'login'],
+    ['Workspace', '/Workspace'],
+    ['Workspace', '/Workspaces'],
+    ['Workspace', '/Workspace/[id]'],
+    ['Workspace', '/admin/Workspace/Notebooks'],
+  ])('matches %s against %s', (pageName, pathName) => {
+    expect(isUserOnPage(pageName, pathName)).toBe(true);
   });
 
   it.each([

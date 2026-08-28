@@ -16,6 +16,7 @@ import { ACTIVITY_CHANNEL } from '@gen3/frontend';
 
 export type RemoteComputeWorkspaceProps = {
   assetBaseUrl?: string;
+  enableOptions?: boolean;
   className?: string;
   onReady?: () => void;
   onError?: (error: Error) => void;
@@ -36,6 +37,7 @@ const RemoteComputeWorkspace = React.memo(
     (
       {
         assetBaseUrl = '/api/workspace-assets/remote',
+        enableOptions = false,
         tenantId,
         workspaceId,
         userId,
@@ -294,7 +296,7 @@ const RemoteComputeWorkspace = React.memo(
       if (status !== WorkspaceStatus.Running) {
         return (
           <div className="w-full flex flex-col grow">
-            <MicroContainerReduxPanel />
+            <MicroContainerReduxPanel enableOptions={enableOptions}/>
           </div>
         );
       }
