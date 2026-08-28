@@ -22,7 +22,7 @@ In the case of Gen3.2, the `yalc` command is:
 
 ### Setting up the local copy of the Gen3.2 packages
 
-Run `yalc publish` in both the @gen3 package directories:
+Run `yalc publish` in the @gen3 package directories:
 ```bash
 yalc publish packages/core
 yalc publish packages/frontend

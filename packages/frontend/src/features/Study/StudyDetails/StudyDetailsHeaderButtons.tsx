@@ -13,7 +13,8 @@ import { useDiscoveryContext } from '../../Discovery/DiscoveryProvider';
 import { useRouter } from 'next/router';
 import { useStudyContext } from '../StudyProvider';
 import { toString } from 'lodash';
-
+import { userCanRegisterStudy } from '../../DiscoveryForms/StudyRegistration/userCanRegisterStudy';
+import type { CoreState, UserProfile } from '@gen3/core';
 interface StudyDetailsHeaderButtonsProps {
   onClose: () => void;
   permalink: string;
@@ -95,11 +96,10 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   };
 
   const handleSubmitVLMDClick = () => {
-    alert('WIP');
-    /*     void router.push(
+    void router.push(
       { pathname: '/vlmd-submission', query: studyNavQuery },
       '/vlmd-submission',
-    ); */
+    ); 
   };
 
   const handleRequestVLMDAccessClick = () => {
