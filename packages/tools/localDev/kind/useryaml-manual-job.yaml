@@ -1,0 +1,107 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: useryaml-manual-1787874403
+  namespace: default
+spec:
+  backoffLimit: 10
+  template:
+    metadata: { }
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - args:
+            - -c
+            - 'fence-create sync --arborist http://arborist-service --yaml /var/www/fence/user.yaml
+
+          '
+          command:
+            - /bin/bash
+          env:
+            - name: GEN3_UWSGI_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  key: uwsgi-timeout
+                  name: manifest-global
+                  optional: true
+            - name: DD_AGENT_HOST
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.hostIP
+            - name: AWS_STS_REGIONAL_ENDPOINTS
+              value: regional
+            - name: PYTHONPATH
+              value: /var/www/fence
+            - name: GEN3_DEBUG
+              value: 'False'
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  key: host
+                  name: fence-dbcreds
+                  optional: false
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: fence-dbcreds
+                  optional: false
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: fence-dbcreds
+                  optional: false
+            - name: PGDB
+              valueFrom:
+                secretKeyRef:
+                  key: database
+                  name: fence-dbcreds
+                  optional: false
+            - name: DBREADY
+              valueFrom:
+                secretKeyRef:
+                  key: dbcreated
+                  name: fence-dbcreds
+                  optional: false
+            - name: DB
+              value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDB)
+            - name: INDEXD_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: fence
+                  name: indexd-service-creds
+            - name: gen3Env
+              valueFrom:
+                configMapKeyRef:
+                  key: hostname
+                  name: manifest-global
+          image: quay.io/cdis/fence:feat_session-threshold
+          imagePullPolicy: Always
+          name: fence
+          resources: { }
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /var/www/fence/fence-config.yaml
+              name: fence-config
+              readOnly: true
+              subPath: fence-config.yaml
+            - mountPath: /var/www/fence/user.yaml
+              name: useryaml
+              subPath: useryaml
+      dnsPolicy: ClusterFirst
+      restartPolicy: OnFailure
+      schedulerName: default-scheduler
+      securityContext: { }
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: fence-config
+          secret:
+            defaultMode: 420
+            secretName: fence-config
+        - configMap:
+            defaultMode: 420
+            name: useryaml
+          name: useryaml
