@@ -1,13 +1,13 @@
 import { Middleware, type PayloadAction } from '@reduxjs/toolkit';
 import {
   addSowerJob,
-  removeSowerJob,
   clearSowerJobsId,
-  updateSowerJobStatus,
   initSowerPolling,
+  removeSowerJob,
+  updateSowerJobStatus,
 } from './jobsListSlice';
-import { type JobWithActions, type JobStatus } from './types';
-import { sowerApi } from './sowerApi';
+import { type JobStatus, type JobWithActions } from './types';
+import { sowerJobApi } from './sowerApi';
 import { showNotification } from '../notifications';
 import { CoreState } from '../../reducers';
 
@@ -136,7 +136,7 @@ const sowerJobsMiddleware: Middleware<object, CoreState, any> = (store) => {
   const checkJobStatuses = () => {
     store
       .dispatch(
-        sowerApi.endpoints.getSowerJobList.initiate(void 0, {
+        sowerJobApi.endpoints.getSowerJobList.initiate(void 0, {
           forceRefetch: true,
         }),
       )
@@ -163,7 +163,7 @@ const sowerJobsMiddleware: Middleware<object, CoreState, any> = (store) => {
 
       // Initiate status check for each active job
       store.dispatch(
-        sowerApi.endpoints.getSowerJobStatus.initiate(jobId, {
+        sowerJobApi.endpoints.getSowerJobStatus.initiate(jobId, {
           forceRefetch: true,
         }),
       );
@@ -180,7 +180,7 @@ const sowerJobsMiddleware: Middleware<object, CoreState, any> = (store) => {
     try {
       const sowerJobs: Array<JobStatus> = store
         .dispatch(
-          sowerApi.endpoints.getSowerJobList.initiate(void 0, {
+          sowerJobApi.endpoints.getSowerJobList.initiate(void 0, {
             forceRefetch: true,
           }),
         )

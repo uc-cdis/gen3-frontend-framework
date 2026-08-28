@@ -1,12 +1,12 @@
-import { isAnyOf, createListenerMiddleware } from '@reduxjs/toolkit';
+import { createListenerMiddleware, isAnyOf } from '@reduxjs/toolkit';
 import { CoreState } from '../../reducers';
 import {
   addSowerJob,
-  updateSowerJobStatus,
   refreshSowerJobs,
+  updateSowerJobStatus,
 } from './jobsListSlice';
 import { selectSowerJobList } from './jobsListSelectors';
-import { sowerApi } from './sowerApi';
+import { sowerJobApi } from './sowerApi';
 import { type JobStatus } from './types';
 
 // Create the middleware instance and methods
@@ -19,7 +19,7 @@ const GetObjectIdsForCompletedJobs = async (
   const objectIds: Record<string, string> = {};
   for (const job of jobs) {
     if (job.status === 'Completed') {
-      const objectId = await dispatch.sowerApi.endpoints.getSowerOutput
+      const objectId = await dispatch.sowerJobApi.endpoints.getSowerOutput
         .initiate(job.uid, {
           forceRefetch: true,
         })
@@ -39,7 +39,7 @@ sowerListenerMiddleware.startListening({
     try {
       const sowerJobs = await listenerApi
         .dispatch(
-          sowerApi.endpoints.getSowerJobList.initiate(void 0, {
+          sowerJobApi.endpoints.getSowerJobList.initiate(void 0, {
             forceRefetch: true,
           }),
         )
