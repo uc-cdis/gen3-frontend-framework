@@ -1,8 +1,8 @@
-import { GetServerSideProps } from 'next';
-import { NavPageLayoutProps } from '../../../features/Navigation';
 import ContentSource from '../../../lib/content';
 import { getNavPageLayoutPropsFromConfig } from '../../../lib/common/staticProps';
-import { ConfigGenericRegistrationAccessRequestFormProps } from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest/types';
+import type { GetServerSideProps } from 'next';
+import type { NavPageLayoutProps } from '../../../features/Navigation';
+import type { ConfigGenericRegistrationAccessRequestFormProps } from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest/types';
 
 import { GEN3_COMMONS_NAME } from '@gen3/core';
 
