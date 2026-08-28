@@ -1,13 +1,13 @@
 {
   "name": "@gen3/workspaces",
-  "version": "0.12.60",
+  "version": "0.12.65",
   "description": "Workspaces for Gen3",
   "license": "Apache-2.0",
   "sideEffects": false,
   "author": "Center for Translational Data Science",
   "engines": {
     "npm": ">=11.16.0",
-    "node": ">=24.18.0"
+    "node": ">=24.18.1"
   },
   "main": "dist/index/cjs/index.js",
   "module": "dist/index/esm/index.js",
@@ -28,6 +28,8 @@
     "build": "npm run compile && npm run types && npm run rollup",
     "build:clean": "npm run clean && npm run build",
     "dev": "echo no dev tasks",
+    "build:jupyterlite:setupenv": "bash scripts/build-gen3sdk-lite.sh free",
+    "build:jupyterlite:gen3sdk": "bash scripts/build-gen3sdk-lite.sh free",
     "build:jupyterlite:free": "bash scripts/build-jupyterlite.sh free",
     "build:jupyterlite:remote": "bash scripts/build-jupyterlite.sh remote",
     "build:jupyterlite:all": "npm run build:jupyterlite:free && npm run build:jupyterlite:remote && npm run validate:jupyterlite:assets",
@@ -52,8 +54,8 @@
     "./jupyterlite-builds/*": "./dist/jupyterlite-builds/*"
   },
   "dependencies": {
-    "@gen3/core": "^0.12.60",
-    "@gen3/frontend": "^0.12.60",
+    "@gen3/core": "^0.12.65",
+    "@gen3/frontend": "^0.12.65",
     "camelcase-keys": "^10.0.2"
   },
   "peerDependencies": {

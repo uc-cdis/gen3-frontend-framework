@@ -2,17 +2,13 @@ import React, { useMemo } from 'react';
 import { Button, CopyButton } from '@mantine/core';
 import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
 import { FiLogIn as LoginIcon } from 'react-icons/fi';
-import {
-  CoreState,
-  selectUserDetails,
-  useCoreSelector,
-  UserProfile,
-} from '@gen3/core';
+import { selectUserDetails, useCoreSelector } from '@gen3/core';
 import { useDiscoveryContext } from '../../Discovery/DiscoveryProvider';
 import { useRouter } from 'next/router';
 import { useStudyContext } from '../StudyProvider';
 import { toString } from 'lodash';
-
+import { userCanRegisterStudy } from '../../DiscoveryForms/StudyRegistration/userCanRegisterStudy';
+import type { CoreState, UserProfile } from '@gen3/core';
 interface StudyDetailsHeaderButtonsProps {
   onClose: () => void;
   permalink: string;
@@ -28,18 +24,35 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   const requiresLogin = !userInfo.active;
 
   const { discoveryConfig: config } = useDiscoveryContext();
-  const index = config?.minimalFieldMapping?.uid ?? 'unknown';
-  const { studyDetails, setStudyDetails } = useStudyContext();
+  const index = config.minimalFieldMapping.uid;
+  const { studyDetails } = useStudyContext();
   const studyUID = toString(studyDetails[index]);
-  const studyName = studyDetails?.study_metadata?.minimal_info?.study_name;
+  const studyName = studyDetails.study_metadata?.minimal_info?.study_name;
   const studyRegistrationAuthZ = studyDetails.registration_authz;
-  const studyProjectNumber = studyDetails?.project_number;
-  const showSubmitButton = config.detailView?.showSubmitButton;
+  const studyProjectNumber = studyDetails.project_number;
+  const showSubmitButton = config.detailView.showSubmitButton;
   const router = useRouter();
+  const isStudyRegisterable = userCanRegisterStudy(
+    userInfo,
+    studyRegistrationAuthZ,
+  );
 
   const handleRegisterButtonClick = () => {
     if (requiresLogin) {
       void router.push('/Login');
+    } else if (isStudyRegisterable) {
+      void router.push(
+        {
+          pathname: '/study-reg',
+          query: {
+            studyUID: studyUID,
+            studyName: studyName,
+            studyRegistrationAuthZ: studyRegistrationAuthZ,
+            studyProjectNumber: studyProjectNumber,
+          },
+        },
+        '/study-reg',
+      );
     } else {
       void router.push(
         {
@@ -59,9 +72,12 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   const submitButtonText = useMemo(() => {
     if (requiresLogin) {
       return 'Login to Register This Study';
+    } else if (isStudyRegisterable) {
+      return 'Register Study';
+    } else {
+      return `Request Access to Register this Study`;
     }
-    return `Request Access to Register this Study`;
-  }, [requiresLogin, studyUID]);
+  }, [requiresLogin, isStudyRegisterable]);
 
   return (
     <>
