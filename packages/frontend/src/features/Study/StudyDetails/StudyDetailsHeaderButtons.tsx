@@ -30,13 +30,13 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   const requiresLogin = !userInfo.active;
   const { discoveryConfig: config } = useDiscoveryContext();
   const router = useRouter();
-  const index = config?.minimalFieldMapping?.uid ?? 'unknown';
+  const index = config.minimalFieldMapping.uid;
   const { studyDetails } = useStudyContext();
   const studyUID = toString(studyDetails[index]);
-  const studyName = studyDetails?.study_metadata?.minimal_info?.study_name;
+  const studyName = studyDetails.study_metadata?.minimal_info?.study_name;
   const studyRegistrationAuthZ = studyDetails.registration_authz;
-  const studyProjectNumber = studyDetails?.project_number;
-  const showSubmitButton = config.detailView?.showSubmitButton;
+  const studyProjectNumber = studyDetails.project_number;
+  const showSubmitButton = config.detailView.showSubmitButton;
 
   const userAuthMapping = useCoreSelector((state: CoreState) =>
     selectAuthzMappingData(state),
