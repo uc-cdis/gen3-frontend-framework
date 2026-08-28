@@ -2,9 +2,10 @@ import React from 'react';
 import { NavPageLayout } from '../../../features/Navigation';
 import type { NavPageLayoutProps } from '../../../features/Navigation';
 import GenericRegistrationAccessRequestForm from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest';
+import type { GenericRegistrationAccessRequestFormConfig } from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest/types';
 
 interface VLMDSubmissionAccessRequestFormPageProps extends NavPageLayoutProps {
-  configStudyRegistrationRequestAccessForm: unknown;
+  configStudyRegistrationRequestAccessForm: GenericRegistrationAccessRequestFormConfig;
 }
 
 const VLMDSubmissionAccessRequestFormPage = ({
