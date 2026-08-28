@@ -1,9 +1,8 @@
 import { Button } from '@mantine/core';
 import React from 'react';
-import TextContent, {
-  TextContentProps,
-} from '../../../components/Content/TextContent';
-import { genericRegistrationAccessRequestFormOutcomeProps } from './types';
+import TextContent from '../../../components/Content/TextContent';
+import type { TextContentProps } from '../../../components/Content/TextContent';
+import type { genericRegistrationAccessRequestFormOutcomeProps } from './types';
 
 const GenericRegistrationAccessRequestOutcome = ({
   config,

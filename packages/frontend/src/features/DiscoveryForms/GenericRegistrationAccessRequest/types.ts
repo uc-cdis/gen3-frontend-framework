@@ -1,6 +1,7 @@
 import type { TextContentProps } from '../../../components/Content/TextContent';
 import type { Gen3AppConfigData } from '../../../lib/content/types';
 import type { ButtonVariant } from '@mantine/core';
+import type { FormProps } from '../../../components/Content/Form';
 
 export interface ConfigGenericRegistrationAccessRequestFormProps extends Gen3AppConfigData {
   content?: ReadonlyArray<TextContentProps>;
@@ -24,4 +25,14 @@ export enum FormOutcome {
 export interface FormContentViewsConfig {
   [FormOutcome.success]: genericRegistrationAccessRequestFormOutcomeProps;
   [FormOutcome.duplicateSubmission]: genericRegistrationAccessRequestFormOutcomeProps;
+}
+
+export interface GenericRegistrationAccessRequestFormConfig extends FormContentViewsConfig {
+  remoteSupportService: {
+    service: string;
+    submissionSubjectLine: string;
+    configuration: Record<string, unknown>;
+  };
+  disclaimer?: string;
+  form: FormProps['body'];
 }

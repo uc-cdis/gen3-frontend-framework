@@ -3,9 +3,10 @@ import React from 'react';
 import { Box, Text } from '@mantine/core';
 import { useStudyRegistration } from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest/useStudyRegistration';
 import { FormContentViews } from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest/FormContentViews';
+import type { GenericRegistrationAccessRequestFormConfig } from './types';
 
 interface GenericRegistrationAccessRequestFormProps {
-  configStudyRegistrationRequestAccessForm: any;
+  configStudyRegistrationRequestAccessForm: GenericRegistrationAccessRequestFormConfig;
 }
 
 const GenericRegistrationAccessRequestForm = ({
