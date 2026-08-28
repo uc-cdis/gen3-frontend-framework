@@ -425,7 +425,7 @@ const placeNodesOnGraph = (
         x: currentX,
         y: currentY,
       });
-      //TODO start here get lines to cerve and spacing done properly
+      //TODO start here get lines to curve and spacing done properly
       //add point for routing lines, left and right of all items
       // left point only if has parents to left
       if (dictionary[id].links?.length && dictionary[id].links.length > 0) {
