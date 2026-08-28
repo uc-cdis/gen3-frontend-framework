@@ -22,5 +22,13 @@
         "disabled": true
       }
     ]
+  },
+  "@jupyterlab/filebrowser-extension:browser": {
+    "contextMenu": [
+      {
+        "command": "docmanager:download",
+        "disabled": true
+      }
+    ]
   }
 }
