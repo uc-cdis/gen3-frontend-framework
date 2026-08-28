@@ -6,7 +6,7 @@ import { GQLFilter } from '../filters';
 
 export interface DispatchJobParams {
   action: string;
-  input: { filter : GQLFilter };
+  input: { filter: GQLFilter };
 }
 
 export interface DispatchJobResponse {
@@ -34,20 +34,35 @@ export const sowerJobApi = gen3Api.injectEndpoints({
         url: `${GEN3_SOWER_API}/dispatch`,
         method: 'POST',
         body: params,
+        validateStatus: (response) => {
+          if ('originalStatus' in response)
+            return response.status === 200 && response.originalStatus === 200;
+          return response.status === 200;
+        },
       }),
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         const { data } = await queryFulfilled;
         dispatch(setSowerJobDatetime(data.uid));
       },
+      transformErrorResponse(response) {
+        if ('originalStatus' in response)
+          return { error: response.originalStatus };
+        return { error: response };
+      },
     }),
     getSowerJobStatus: builder.query<DispatchJobResponse, string>({
       query: (uid) => `${GEN3_SOWER_API}/status?UID=${uid}`,
     }),
-    getMultipleSowerJobStatus: builder.query<Record<string, DispatchJobResponse>, string[]>({
+    getMultipleSowerJobStatus: builder.query<
+      Record<string, DispatchJobResponse>,
+      string[]
+    >({
       queryFn: async (arg, _queryApi, _extraOptions, fetchWithBQ) => {
         const statuses: Record<string, DispatchJobResponse> = {};
         for (const uid of arg) {
-          const result = await fetchWithBQ(`${GEN3_SOWER_API}/status?UID=${uid}`);
+          const result = await fetchWithBQ(
+            `${GEN3_SOWER_API}/status?UID=${uid}`,
+          );
           if (result.error) {
             return { error: result.error };
           } else {

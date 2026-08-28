@@ -51,7 +51,7 @@ const useSowerJobEventBus = () => {
 
   useEffect(() => {
     void trigger(Array.from(pollers));
-  }, [pollers]);
+  }, [pollers, trigger]);
 
   useEffect(() => {
     if (statusResult.isSuccess) {
@@ -63,7 +63,7 @@ const useSowerJobEventBus = () => {
         }
       });
     }
-  }, [statusResult]);
+  }, [statusResult, listeners, pollers]);
 
   return { on, off, update };
 };
