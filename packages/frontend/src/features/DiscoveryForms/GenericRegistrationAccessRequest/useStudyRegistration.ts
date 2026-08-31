@@ -46,14 +46,15 @@ export const useStudyRegistration = (
     [router.isReady, router.query.studyName],
   );
   const studyProjectNumber = useMemo(
-    () =>
-      router.isReady ? (router.query.studyProjectNumber as string) : null,
+    () => (router.isReady ? (router.query.studyProjectNumber as string) : null),
     [router.isReady, router.query.studyProjectNumber],
   );
   const studyRegistrationAuthZ = useMemo(() => {
     if (!router.isReady || !router.query.studyRegistrationAuthZ) return null;
     try {
-      return JSON.parse(router.query.studyRegistrationAuthZ as string) as string;
+      return JSON.parse(
+        router.query.studyRegistrationAuthZ as string,
+      ) as string;
     } catch {
       return router.query.studyRegistrationAuthZ as string;
     }
@@ -71,12 +72,12 @@ export const useStudyRegistration = (
     !isLoading &&
     Boolean(
       data &&
-        studyUID &&
-        userInfo.username &&
-        data.some(
-          (item) =>
-            item.resource_id === studyUID && item.username === userInfo.username,
-        ),
+      studyUID &&
+      userInfo.username &&
+      data.some(
+        (item) =>
+          item.resource_id === studyUID && item.username === userInfo.username,
+      ),
     );
 
   const [requestQuery] = useCreateRequestMutation();
@@ -96,15 +97,18 @@ export const useStudyRegistration = (
         role_ids: ['study_registrant', 'mds_user', 'cedar_user'],
       }).unwrap();
 
+      const formatKey = (key: string) =>
+        key.replace(/([A-Z])/g, ' $1').replace(/^./, (s) => s.toUpperCase());
+
       const printFormValuesArr = Object.entries(formValues).map(
-        ([key, value]) => `${key}: ${value}`,
+        ([key, value]) => `${formatKey(key)}: ${value}`,
       );
 
       const zenDeskSubmission = {
         subject: `${config.remoteSupportService.submissionSubjectLine} ${studyUID} ${studyName}`,
         email: formValues.emailAddress,
         fullName: `${formValues.registrantFirstName} ${formValues.registrantLastName}`,
-        contents: `Request ID: ${request.request_id}\nGrant Number: ${studyProjectNumber}\nStudy Name: ${studyName}\nEnvironment: ${hostname}\nForm Values: ${printFormValuesArr.join('\n\n')}`,
+        contents: `Request ID: ${request.request_id}\nStudy ID: ${studyUID}\nGrant Number: ${studyProjectNumber}\nEnvironment: ${hostname}\nForm Values:\n${printFormValuesArr.join('\n')}`,
       };
 
       const zendeskRequestAction =
