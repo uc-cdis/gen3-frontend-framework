@@ -158,7 +158,7 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
           variant="subtle"
           color="black"
           size="xs"
-          onClick={() => void router.push('/login')}
+          onClick={() => void router.push('/Login')}
         >
           Login to Submit Variable-level Metadata
         </Button>
