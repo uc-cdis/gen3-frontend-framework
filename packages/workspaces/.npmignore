@@ -2,8 +2,8 @@ src/
 tsconfig.*
 setupTests.js
 !dist/
-jupyterlite-builds/free-private/.cache
-jupyterlite-builds/free-private/.cockle_temp
-jupyterlite-builds/remote-private/.cache
-jupyterlite-builds/remote-private/.cockle_temp
-jupyterlite-builds/remote-private/cockle_wasm_env
+dist/jupyterlite-builds/free-private/.cache
+dist/jupyterlite-builds/free-private/.cockle_temp
+dist/jupyterlite-builds/remote-private/.cache
+dist/jupyterlite-builds/remote-private/.cockle_temp
+dist/jupyterlite-builds/remote-private/cockle_wasm_env
