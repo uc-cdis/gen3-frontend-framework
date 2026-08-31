@@ -112,6 +112,14 @@ export interface FacetDefinition {
    */
   readonly defaultSort?: FacetSortType;
   /**
+   * Whether an enum facet lets users choose how multiple selected values are
+   * combined: match any (`or`) or match all (`and`).
+   *
+   * @remarks Only meaningful when {@link FacetDefinition.type} is `enum`.
+   * @defaultValue `false`
+   */
+  readonly showMatchModeSelector?: boolean;
+  /**
    * Overrides the per-value label rendered for this facet when set.
    */
   readonly valueLabel?: string;
