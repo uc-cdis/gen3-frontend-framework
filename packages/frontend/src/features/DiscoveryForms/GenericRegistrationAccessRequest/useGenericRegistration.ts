@@ -1,4 +1,4 @@
-// useStudyRegistration.ts
+// useGenericRegistration.ts
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { toString } from 'lodash';
@@ -18,7 +18,7 @@ import type {
   FormProps,
 } from '../../../components/Content/Form';
 
-export const useStudyRegistration = (
+export const useGenericRegistration = (
   config: GenericRegistrationAccessRequestFormConfig,
 ): {
   formError: string | undefined;

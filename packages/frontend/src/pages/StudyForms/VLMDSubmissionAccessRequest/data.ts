@@ -18,7 +18,7 @@ export const VLMDSubmissionAccessRequestPageGetServerSideProps: GetServerSidePro
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
-        configStudyRegistrationRequestAccessForm:
+        config:
           configVLMDSubmissionAccessRequestForm,
       },
     };
@@ -27,7 +27,7 @@ export const VLMDSubmissionAccessRequestPageGetServerSideProps: GetServerSidePro
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
-        configStudyRegistrationRequestAccessForm: {
+        config: {
           content: [
             {
               type: 'markdown',

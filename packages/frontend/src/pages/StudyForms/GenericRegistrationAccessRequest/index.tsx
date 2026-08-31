@@ -6,14 +6,13 @@ import type { GenericRegistrationAccessRequestFormConfig } from '../../../featur
 import type { NavPageLayoutProps } from '../../../features/Navigation';
 
 interface GenericRegistrationAccessRequestFormPageProps extends NavPageLayoutProps {
-  configStudyRegistrationRequestAccessForm: GenericRegistrationAccessRequestFormConfig;
-  studyName: string;
+  config: GenericRegistrationAccessRequestFormConfig;
 }
 
 const GenericRegistrationAccessRequestFormPage = ({
   headerProps,
   footerProps,
-  configStudyRegistrationRequestAccessForm,
+  config,
 }: GenericRegistrationAccessRequestFormPageProps) => {
   return (
     <NavPageLayout
@@ -24,11 +23,7 @@ const GenericRegistrationAccessRequestFormPage = ({
         key: 'gen3-theme-page',
       }}
     >
-      <GenericRegistrationAccessRequestForm
-        configStudyRegistrationRequestAccessForm={
-          configStudyRegistrationRequestAccessForm
-        }
-      />
+      <GenericRegistrationAccessRequestForm config={config} />
     </NavPageLayout>
   );
 };

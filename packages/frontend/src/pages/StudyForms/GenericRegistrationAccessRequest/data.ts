@@ -19,7 +19,7 @@ export const RequestAccessFormPageGetServerSideProps: GetServerSideProps<
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
 
-        configStudyRegistrationRequestAccessForm:
+        config:
           configGenericRegistrationAccessRequestForm,
       },
     };
@@ -28,7 +28,7 @@ export const RequestAccessFormPageGetServerSideProps: GetServerSideProps<
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
-        configStudyRegistrationRequestAccessForm: {
+        config: {
           content: [
             {
               type: 'markdown',

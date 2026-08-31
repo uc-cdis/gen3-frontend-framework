@@ -1,18 +1,17 @@
 // GenericRegistrationAccessRequestForm.tsx
 import React from 'react';
 import { Box, Text } from '@mantine/core';
-import { useStudyRegistration } from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest/useStudyRegistration';
+import { useGenericRegistration } from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest/useGenericRegistration';
 import { FormContentViews } from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest/FormContentViews';
 import type { GenericRegistrationAccessRequestFormConfig } from './types';
 
 interface GenericRegistrationAccessRequestFormProps {
-  configStudyRegistrationRequestAccessForm: GenericRegistrationAccessRequestFormConfig;
+  config: GenericRegistrationAccessRequestFormConfig;
 }
 
 const GenericRegistrationAccessRequestForm = ({
-  configStudyRegistrationRequestAccessForm,
+  config,
 }: GenericRegistrationAccessRequestFormProps) => {
-  // Get everything needed from Hook
   const {
     formOutcome,
     formError,
@@ -20,7 +19,7 @@ const GenericRegistrationAccessRequestForm = ({
     formBody,
     formOnSubmit,
     isLoading,
-  } = useStudyRegistration(configStudyRegistrationRequestAccessForm);
+  } = useGenericRegistration(config);
   return (
     <div className="flex justify-items-center w-full">
       <Box className="w-full bg-white rounded-md m-8 p-8 ">
@@ -30,14 +29,14 @@ const GenericRegistrationAccessRequestForm = ({
             formError={formError}
             studyUID={studyUID}
             formBody={formBody}
-            config={configStudyRegistrationRequestAccessForm}
+            config={config}
             onSubmit={formOnSubmit}
             isLoading={isLoading}
           />
         </div>
         <div className="mt-12 pt-4 border-t border-neutral-100 max-w-4xl mx-auto">
           <Text className="text-xs text-neutral-500 leading-relaxed">
-            {configStudyRegistrationRequestAccessForm.disclaimer}
+            {config.disclaimer}
           </Text>
         </div>
       </Box>

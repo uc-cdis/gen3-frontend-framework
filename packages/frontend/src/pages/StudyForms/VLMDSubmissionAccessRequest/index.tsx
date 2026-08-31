@@ -5,13 +5,13 @@ import GenericRegistrationAccessRequestForm from '../../../features/DiscoveryFor
 import type { GenericRegistrationAccessRequestFormConfig } from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest/types';
 
 interface VLMDSubmissionAccessRequestFormPageProps extends NavPageLayoutProps {
-  configStudyRegistrationRequestAccessForm: GenericRegistrationAccessRequestFormConfig;
+  config: GenericRegistrationAccessRequestFormConfig;
 }
 
 const VLMDSubmissionAccessRequestFormPage = ({
   headerProps,
   footerProps,
-  configStudyRegistrationRequestAccessForm,
+  config,
 }: VLMDSubmissionAccessRequestFormPageProps) => {
   return (
     <NavPageLayout
@@ -22,11 +22,7 @@ const VLMDSubmissionAccessRequestFormPage = ({
         key: 'gen3-theme-page',
       }}
     >
-      <GenericRegistrationAccessRequestForm
-        configStudyRegistrationRequestAccessForm={
-          configStudyRegistrationRequestAccessForm
-        }
-      />
+      <GenericRegistrationAccessRequestForm config={config} />
     </NavPageLayout>
   );
 };
