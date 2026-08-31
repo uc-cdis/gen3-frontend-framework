@@ -105,6 +105,7 @@ const WorkspaceCenter = ({
               tenantId={authContext?.tenantId || 'default'}
               workspaceId={authContext?.workspaceId || 'workspace-default'}
               userId={authContext?.username || 'anonymous'}
+              enableOptions={config?.enableOptions}
             />
           </WorkspaceLayout>
         </MicroContainerReduxProvider>

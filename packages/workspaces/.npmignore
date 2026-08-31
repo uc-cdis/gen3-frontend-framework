@@ -2,3 +2,5 @@ src/
 tsconfig.*
 setupTests.js
 !dist/
+jupyterlite-builds/free-private/.cache
+jupyterlite-builds/free-private/..cockle_temp

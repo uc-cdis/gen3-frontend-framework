@@ -13,13 +13,14 @@
   ],
   "engines": {
     "npm": ">=11.16.0",
-    "node": ">=24.18.0"
+    "node": ">=24.18.1"
   },
   "scripts": {
     "lint": "oxlint --quiet .",
     "lint-fix": "oxlint . --fix",
     "analyze": "lerna run analyze --scope=@gen3/samplecommons",
     "build": "lerna run build",
+    "build:app:turbopack": "lerna run build:turbopack --scope=@gen3/samplecommons",
     "build:docker": "docker build -t gen3:fef .",
     "build:pkg": "lerna run build --include-dependencies --stream --ignore=@gen3/samplecommons",
     "build:tools": "lerna run build --scope=@gen3/toolsff --stream",
@@ -52,7 +53,7 @@
     "idb": "^8.0.3",
     "isomorphic-fetch": "^3.0.0",
     "jsonpath-plus": "10.3.0",
-    "next": "^16.2.12",
+    "next": "^16.3.0",
     "react": "19.2.6",
     "react-cookie": "^7.2.2",
     "react-dom": "19.2.6",
@@ -65,7 +66,7 @@
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-terser": "^1.0.0",
     "@rollup/plugin-typescript": "^12.1.0",
-    "@storybook/nextjs": "10.3.6",
+    "@storybook/nextjs": "^10.5.8",
     "@swc/cli": "^0.8.1",
     "@swc/core": "^1.15.46",
     "@testing-library/jest-dom": "^5.16.5",

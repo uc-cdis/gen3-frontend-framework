@@ -1,27 +1,56 @@
+# ── node_modules ──────────────────────────────────────
 node_modules
 packages/core/node_modules
-packages/core/dist
 packages/frontend/node_modules
-packages/frontend/.rollup-cache
-packages/frontend/dist
 packages/tools/node_modules
-packages/tools/dist
+packages/workspaces/node_modules
 packages/sampleCommons/node_modules
+
+# ── build artifacts (rebuilt inside Docker) ───────────
+packages/core/dist
+packages/frontend/dist
+packages/frontend/.rollup-cache
+packages/workspaces/dist
+packages/tools/dist
 packages/sampleCommons/.next
 packages/sampleCommons/.swc
 packages/sampleCommons/builds
+packages/storybook
+
+# ── JupyterLite / cockle (generated or downloaded) ────
+**/.jupyterlite.doit.db
 packages/sampleCommons/.cockle_temp
 packages/sampleCommons/cockle_wasm_env
-packages/storybook
-packages/workspaces/node_modules
-packages/workspaces/dist
+packages/sampleCommons/jupyter-workspaces
+
+# ── version control / CI / docs ───────────────────────
 .git
 .nx
-docs
-.npmrc
-*.log
-*.md
 .github
+docs
+
+# ── secrets and local config (never in build context) ─
+.npmrc
+.env
+.env.*
+.env.*.local
+
+# ── editor / OS artifacts ─────────────────────────────
+.vscode
+.idea
+**/.DS_Store
+**/Thumbs.db
+
+# ── test artifacts ────────────────────────────────────
 **/__tests__
+**/coverage
 **/*.test.ts
+**/*.test.tsx
 **/*.spec.ts
+**/*.spec.tsx
+
+# ── logs ──────────────────────────────────────────────
+*.log
+
+# ── markdown (not needed at build time) ───────────────
+*.md

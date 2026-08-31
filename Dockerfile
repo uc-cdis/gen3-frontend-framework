@@ -1,7 +1,7 @@
-# docker build -t ff .
-# docker run -p 3000:3000 -it ff
+# docker build -t gen3:fef .
+# docker run -p 3000:3000 -it gen3:fef
 # Build stage
-FROM --platform=$BUILDPLATFORM node:24.18.0-trixie-slim AS builder
+FROM --platform=$BUILDPLATFORM node:24.18.1-alpine3.23 AS builder
 
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
@@ -18,18 +18,13 @@ RUN npm config set fetch-retries 5 && \
     npm ci && \
     npm cache clean --force
 
-# Install Python and micromamba for JupyterLite build (cached independently of source changes)
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends python3 python3-venv curl bzip2 && \
-    rm -rf /var/lib/apt/lists/*
+# Python, bash, and curl for the JupyterLite build.
+# No real micromamba binary needed — see stub below.
+RUN apk add --no-cache python3 py3-pip bash curl bzip2 uv git coreutils
 
-
-RUN ARCH=$(uname -m) && \
-    if [ "$ARCH" = "x86_64" ]; then MICROMAMBA_ARCH="linux-64"; \
-    elif [ "$ARCH" = "aarch64" ]; then MICROMAMBA_ARCH="linux-aarch64"; \
-    else echo "Unsupported architecture: $ARCH" && exit 1; fi && \
-    curl -Ls https://micro.mamba.pm/api/micromamba/${MICROMAMBA_ARCH}/latest | tar -xvj -C /usr/local/bin --strip-components=1 bin/micromamba && \
-    chmod +x /usr/local/bin/micromamba
+# Stub that satisfies prepare_wasm.js without the glibc-linked micromamba binary.
+COPY docker/micromamba-stub.py /usr/local/bin/micromamba
+RUN chmod +x /usr/local/bin/micromamba
 
 # Copy only package manifests (not source) from each workspace so that
 # npm ci is only re-run when dependencies change, not on source changes
@@ -47,6 +42,29 @@ RUN --mount=type=cache,target=/root/.npm \
 
 # Copy source after install so the install layer stays cached on source-only changes
 COPY packages ./packages
+# build all packages first so that the jupyterlite build has the files it needs
+RUN npm run build:pkg
+
+# Download cockle WASM packages from emscripten-forge so prepare_wasm.js reuses
+# the existing env instead of running micromamba create. prepare_wasm.js is
+# invoked with cwd=lite_dir, so the env must live inside the remote tier's
+# `--lite-dir` (dist/jupyterlite-builds/remote-private) — not sampleCommons —
+# otherwise its relative `./cockle_wasm_env` lookup misses. Only the remote
+# tier is downloaded here; the free tier is not used in this image.
+RUN WASM_ENV=/gen3/packages/workspaces/dist/jupyterlite-builds/remote-private/cockle_wasm_env && \
+    mkdir -p "$WASM_ENV" && \
+    for URL in \
+      "https://repo.prefix.dev/emscripten-forge-4x/emscripten-wasm32/cockle_fs-0.3.0-h8b79025_1.tar.bz2" \
+      "https://repo.prefix.dev/emscripten-forge-4x/emscripten-wasm32/coreutils-9.10-h072c4ef_2.tar.bz2" \
+      "https://repo.prefix.dev/emscripten-forge-4x/emscripten-wasm32/grep-3.12-h8b79025_0.tar.bz2" \
+      "https://repo.prefix.dev/emscripten-forge-4x/emscripten-wasm32/less-693-hf259948_0.tar.bz2" \
+      "https://repo.prefix.dev/emscripten-forge-4x/emscripten-wasm32/sed-4.9-h072c4ef_0.tar.bz2" \
+    ; do \
+      curl -fsSL "$URL" | tar -xj -C "$WASM_ENV"; \
+    done
+
+# Build JupyterLite static assets
+RUN npm run build:jupyterlite
 
 # Build only sampleCommons and its dependencies — storybook is not needed
 RUN NODE_OPTIONS="--max-old-space-size=4096" \
@@ -56,7 +74,7 @@ RUN NODE_OPTIONS="--max-old-space-size=4096" \
 
 # ─────────────────────────────────────────────
 # Production stage
-FROM node:24.18.0-trixie-slim  AS runner
+FROM node:24.18.1-alpine3.23 AS runner
 
 WORKDIR /gen3
 
@@ -75,14 +93,8 @@ COPY --from=builder --chown=nextjs:nextjs /gen3/packages/sampleCommons/.next/sta
   ./packages/sampleCommons/.next/static
 COPY --from=builder --chown=nextjs:nextjs /gen3/packages/sampleCommons/config ./packages/sampleCommons/config
 COPY --from=builder --chown=nextjs:nextjs /gen3/packages/sampleCommons/public ./packages/sampleCommons/public
-
-# Copy jupyter assets only if they exist in the builder stage
-RUN --mount=from=builder,source=/gen3/packages/sampleCommons,target=/tmp/sampleCommons,readonly \
-    if [ -d /tmp/sampleCommons/jupyter-workspaces ]; then \
-      mkdir -p ./packages/sampleCommons; \
-      cp -a /tmp/sampleCommons/jupyter-workspaces ./packages/sampleCommons/jupyter-workspaces; \
-      chown -R nextjs:nextjs ./packages/sampleCommons/jupyter-workspaces; \
-    fi
+COPY --from=builder --chown=nextjs:nextjs /gen3/packages/sampleCommons/jupyter-workspaces \
+  ./packages/sampleCommons/jupyter-workspaces
 
 # Copy runtime script directly from build context (no need to stage through builder)
 COPY --chown=nextjs:nextjs start.sh ./start.sh
@@ -93,7 +105,8 @@ COPY --chown=nextjs:nextjs start.sh ./start.sh
 
 # Point app config/public to external volumes
 RUN ln -s ./packages/sampleCommons/config  /gen3/config \
-    && ln -s ./packages/sampleCommons/public /gen3/public
+    && ln -s ./packages/sampleCommons/public /gen3/public \
+    && ln -s ./packages/sampleCommons/jupyter-workspaces /gen3/jupyter-workspaces
 
 USER nextjs:nextjs
 

@@ -162,7 +162,7 @@ const config = [
           },
           {
             // copy the juypterlite build files
-            src: 'jupyterlite-builds/{free-private,remote-private}/{jupyter_lite_config.json,requirements.txt}',
+            src: 'jupyterlite-builds/{free-private,remote-private}/{jupyter_lite_config.json,requirements.txt,overrides.json}',
             dest: 'dist/jupyterlite-builds',
             rename: (name, extension, fullPath) => {
               const match = fullPath.match(/jupyterlite-builds\/([^/]+)\//);

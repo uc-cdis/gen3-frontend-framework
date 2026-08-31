@@ -1,0 +1,42 @@
+{
+  "@jupyterlab/mainmenu-extension:plugin": {
+    "menus": [
+      {
+        "id": "jp-mainmenu-file",
+        "items": [
+          {
+            "command": "docmanager:download",
+            "args": { "isMenu": true },
+            "disabled": true
+          }
+        ]
+      }
+    ]
+  },
+  "@jupyterlab/shortcuts-extension:shortcuts": {
+    "shortcuts": [
+      {
+        "command": "docmanager:download",
+        "keys": ["Accel Shift S"],
+        "selector": "body",
+        "disabled": true
+      }
+    ]
+  },
+  "@jupyterlab/application-extension:context-menu": {
+    "contextMenu": [
+      {
+        "command": "filebrowser:download",
+        "selector": ".jp-DirListing-item[data-isdir=\"false\"]",
+        "rank": 9,
+        "disabled": true
+      },
+      {
+        "command": "filebrowser:copy-download-link",
+        "selector": ".jp-DirListing-item[data-isdir=\"false\"]",
+        "rank": 13,
+        "disabled": true
+      }
+    ]
+  }
+}

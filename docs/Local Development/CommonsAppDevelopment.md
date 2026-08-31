@@ -21,9 +21,13 @@ https://github.com/wclr/yalc
 In the case of Gen3.2, the `yalc` command is:
 
 ### Setting up the local copy of the Gen3.2 packages
-Run `yalc publish` in both the @gen3/core and @gen3/frontend directories:
+
+Run `yalc publish` in the @gen3 package directories:
 ```bash
-yalc publish packages/core packages/frontend packages/tools packages/workspaces
+yalc publish packages/core
+yalc publish packages/frontend
+yalc publish packages/tools
+yalc publish packages/workspaces
 ```
 
 you should add `.valc` and `yalc.lock` to the `.gitignore` file to the
@@ -31,7 +35,7 @@ data commons repository.
 
 then in the datacommons application (e.g. cadc-datacommons):
 ```bash
- yalc add @gen3/frontend @gen3/core @gen3/toolsff @gen3/workspaces
+ yalc add @gen3/frontend
 ```
 This will then use the local copy of the Gen3.2 frontend and core packages
 in the datacommons application, without the overhead of publishing new
@@ -48,7 +52,10 @@ which will update the local copy of the Gen3.2 packages and any linked applicati
 or all:
 
 ```
-yalc publish packages/core packages/frontend packages/tools packages/workspaces --push
+yalc publish packages/core --push
+yalc publish packages/frontend --push
+yalc publish packages/tools --push
+yalc publish packages/workspaces --push
 ```
 
 ### Removing the local copy of the Gen3.2 packages

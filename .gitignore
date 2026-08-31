@@ -10,6 +10,8 @@ coverage
 
 # next.js
 packages/sampleCommons/.next/
+packages/sampleCommons/.builds/
+packages/sampleCommons/.builds/
 /out/
 
 # production
@@ -37,11 +39,12 @@ yarn-error.log*
 packages/sampleCommons/config/canine
 packages/sampleCommons/config/midrc
 packages/sampleCommons/config/heal
+packages/sampleCommons/config/bih
 packages/sampleCommons/config/bdc
+packages/sampleCommons/config/brh
+packages/sampleCommons/config/vectis
 /packages/frontend/.rollup.cache/
 /packages/sampleCommons/.swc/
 
 # emacs save files: not sure who uses emacs anymore
 *~
-
-# documentation local notes

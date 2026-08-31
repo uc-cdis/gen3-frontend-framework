@@ -73,12 +73,14 @@ const WorkspaceLayout = ({
           />
         )}
         {children}
-        <SettingsPanel
-          showKernels={tierConfiguration.settings.showKernels}
-          expanded={settingsExpanded}
-          setExpanded={setSettingsExpanded}
-          width={tierConfiguration.settings.width}
-        />
+        {tierConfiguration.settings.enabled && (
+          <SettingsPanel
+            showKernels={tierConfiguration.settings.showKernels}
+            expanded={settingsExpanded}
+            setExpanded={setSettingsExpanded}
+            width={tierConfiguration.settings.width}
+          />
+        )}
       </div>
     </div>
   );
