@@ -207,8 +207,6 @@ const Charts = ({
     const numberOfDataItems = data?.[field] && data[field].length;
     const moreThanMaxRows = numberOfDataItems > MAX_LEGEND_ROWS;
 
-    console.log('data', data);
-    console.log('dataKeys', charts);
     return (
       <Grid.Col span={spans[indexNum]} key={`${indexNum}-charts-${field}-col`}>
         <Card shadow="md" withBorder={style === 'box'} className="h-full">
