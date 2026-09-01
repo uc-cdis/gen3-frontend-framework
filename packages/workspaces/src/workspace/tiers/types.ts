@@ -10,6 +10,8 @@ export interface TierToolbarConfiguration extends LabelAndDescription {
   showStop: boolean;
   showStatus: boolean;
   tierLabel?: string;
+  requirePayModel?: boolean;
+  workspaceAccountManagerTarget?: string;
 }
 
 export interface SettingsPanelConfiguration {
