@@ -1,9 +1,9 @@
 import React from 'react';
 import { getTagInfo } from '../utils';
-import { TagData } from '../types';
-import { CellRendererFunction, CellRenderFunctionProps } from './types';
+import type { TagData } from '../types';
+import type { CellRendererFunction, CellRenderFunctionProps } from './types';
 import { Badge } from '@mantine/core';
-import { useDiscoveryContext } from '../../Discovery';
+import { useDiscoveryContext } from '../../Discovery/DiscoveryProvider';
 
 export const RenderTagsCell: CellRendererFunction = ({
   value,

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { MessageCard } from './MessageCards';
-import { ErrorCard } from '../index';
+import ErrorCard from './MessageCards/ErrorCard';
 
 const IFrameComponent = ({ url }: { url?: string }) => {
   const [urlStatus, setUrlStatus] = useState<'loading' | 'valid' | 'notfound'>(

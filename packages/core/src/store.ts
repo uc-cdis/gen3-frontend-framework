@@ -1,20 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import { CoreState, rootReducer } from './reducers';
+import type { CoreState } from './reducers';
+import { rootReducer } from './reducers';
 import { gen3ServicesReducerMiddleware } from './features/gen3/gen3Api';
 import { guppyAPISliceMiddleware } from './features/guppy/guppyApi';
 import { userAuthApiMiddleware } from './features/user/userSliceRTK';
 import { coreStoreListenerMiddleware } from './listeners';
 import type { PersistConfig, PersistState } from 'redux-persist';
-import {
-  FLUSH,
-  PAUSE,
-  PERSIST,
-  persistReducer,
-  PURGE,
-  REGISTER,
-  REHYDRATE,
-} from 'redux-persist';
+import { FLUSH, PAUSE, PERSIST, persistReducer, PURGE, REGISTER, REHYDRATE, } from 'redux-persist';
 
 import type { Action, Reducer } from 'redux';
 import storage from './storage-persist';

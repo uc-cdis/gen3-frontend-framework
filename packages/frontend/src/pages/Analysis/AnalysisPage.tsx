@@ -1,11 +1,12 @@
-import React, { JSX } from 'react';
+import type { JSX } from 'react';
+import React from 'react';
 import { Center } from '@mantine/core';
 import { FixedNavPageLayout, NavPageLayout } from '../../features/Navigation';
 import AnalysisPanel from '../../features/Analysis/AnalysisPanel';
 import AnalysisCenterWithSections from '../../features/Analysis/AnalysisCenterWithSections';
-import { AnalysisPageLayoutProps } from './types';
+import type { AnalysisPageLayoutProps } from './types';
 import { ErrorCard } from '../../components/MessageCards';
-import { AnalysisWithCloseButton } from '../../features/Analysis';
+import AnalysisWithCloseButton from '../../features/Analysis/AnalysisCenterWithBackButton';
 
 const AnalysisPage = ({
   headerProps,

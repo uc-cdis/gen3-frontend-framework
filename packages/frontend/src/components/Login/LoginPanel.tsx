@@ -90,7 +90,7 @@ const LoginPanel = (loginConfig: LoginConfig) => {
   }, [referer, router]);
 
   return (
-    <div className="grid grid-cols-6 w-full">
+    <div className="grid w-full grid-cols-[minmax(0,140px)_repeat(4,1fr)_minmax(0,140px)]">
       <TexturedSidePanel url={image} />
       <div className="relative col-span-4 mt-24 flex-col justify-center sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl w-full first:captialize first:font-bold">
         {topContent?.map((content, index) => (

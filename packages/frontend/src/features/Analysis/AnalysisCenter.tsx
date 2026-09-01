@@ -1,5 +1,6 @@
-import React, { ReactElement, useState } from 'react';
-import { AnalysisCenterConfiguration } from './types';
+import type { ReactElement } from 'react';
+import React, { useState } from 'react';
+import type { AnalysisCenterConfiguration } from './types';
 import { Select, TextInput } from '@mantine/core';
 import AnalysisCard from './AnalysisCard';
 

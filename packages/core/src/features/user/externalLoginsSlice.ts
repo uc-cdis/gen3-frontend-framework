@@ -1,5 +1,5 @@
 import { gen3Api } from '../gen3';
-import { ExternalProvider } from './types';
+import type { ExternalProvider } from './types';
 import { GEN3_WTS_API } from '../../constants';
 
 export interface ExternalProviderResponse {
