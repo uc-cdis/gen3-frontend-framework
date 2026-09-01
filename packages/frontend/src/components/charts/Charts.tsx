@@ -227,7 +227,7 @@ const Charts = ({
           </Card.Section>
           <LoadingOverlay visible={isFetching} />
           {createChart(charts[field].chartType, {
-            data: data === undefined ? [] : data[field],
+            data: charts[field].fixedData ?? data[field] ?? [],
             total: counts ?? 1,
             valueType: charts[field].valueType ?? 'count',
             label: charts[field].label,

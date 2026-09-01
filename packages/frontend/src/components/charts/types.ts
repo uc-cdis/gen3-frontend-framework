@@ -1,5 +1,5 @@
-import { HistogramDataArray } from '@gen3/core';
-import { TitleAndDescription } from '../../types';
+import type { HistogramDataArray } from '@gen3/core';
+import type { TitleAndDescription } from '../../types';
 
 export interface SummaryChart extends Partial<TitleAndDescription> {
   readonly chartType: string;
@@ -9,6 +9,7 @@ export interface SummaryChart extends Partial<TitleAndDescription> {
     show?: boolean;
   };
   showLegendInChart?: boolean;
+  fixedData?: HistogramDataArray; // optional data override for chart
 }
 
 interface SummaryChartWithField extends SummaryChart {

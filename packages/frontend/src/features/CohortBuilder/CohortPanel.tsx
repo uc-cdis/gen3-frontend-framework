@@ -1,14 +1,16 @@
 import React, { JSX, useCallback, useEffect, useMemo, useState } from 'react';
 import { partial } from 'lodash';
-import {
-  Accessibility,
+import type {
   AggregationsData,
-  clearCohortFilters,
   CombineMode,
   CoreState,
-  extractEnumFilterValue,
   FacetDefinition,
   FacetType,
+} from '@gen3/core';
+import {
+  Accessibility,
+  clearCohortFilters,
+  extractEnumFilterValue,
   isIntersection,
   selectAllCohortFiltersCollapsed,
   selectCurrentCohortId,
@@ -29,11 +31,13 @@ import {
 } from '../../components/charts';
 import { ErrorCard } from '../../components/MessageCards';
 import { useMediaQuery } from '@mantine/hooks';
+import type {
+  EnumFacetDataHooks,
+  FacetDataHooks,
+} from '../../components/facets';
 import {
   classifyFacets,
-  EnumFacetDataHooks,
   extractRangeValues,
-  FacetDataHooks,
   getAllFieldsFromFilterConfigs,
   processBucketData,
   processRangeData,
