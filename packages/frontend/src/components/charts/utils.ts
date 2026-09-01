@@ -2,7 +2,8 @@ import { AggregationsData, HistogramData } from '@gen3/core';
 
 export const capitalize = (original: string): string => {
   if (original === undefined) {
-    throw new Error('capitalize: original is undefined');
+    console.warn('capitalize input is undefined');
+    return '';
   }
   if (original.length === 0) {
     return original;
