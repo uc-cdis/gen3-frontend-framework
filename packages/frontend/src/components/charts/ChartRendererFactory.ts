@@ -1,5 +1,5 @@
 import { RenderFactoryTypedInstance } from '../../utils/RendererFactory';
-import { ChartProps } from './types';
+import type { ChartProps } from './types';
 import BarChart from './echarts/BarChart';
 import PieChart from './echarts/PieChart';
 import DonutChart from './echarts/DonutChart';

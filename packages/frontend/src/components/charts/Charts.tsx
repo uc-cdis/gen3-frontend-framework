@@ -231,7 +231,7 @@ const Charts = ({
             total: counts ?? 1,
             valueType: charts[field].valueType ?? 'count',
             label: charts[field].label,
-            showLegendInChart: charts[field].showLegendInChart,
+            ...charts[field],
           })}
           {numberOfDataItems > 0 && showLegends && (
             <Card.Section inheritPadding py="xs" withBorder={style === 'box'}>

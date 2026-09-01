@@ -10,15 +10,12 @@ export const createChart = (
   chartProps: ChartProps,
   parameters?: Record<string, any>,
 ): React.ReactNode => {
+  console.log('chartProps', chartProps);
   // TODO: add default chart chart for missing chart type
   const element = ChartRendererFactory().getRenderer('chart', type);
   return element(
     {
-      total: chartProps.total,
-      valueType: chartProps.valueType,
-      label: chartProps.label,
-      data: chartProps.data,
-      showLegendInChart: chartProps.showLegendInChart,
+      ...chartProps,
     },
     parameters,
   );

@@ -238,6 +238,12 @@ const BarChart = ({
     xLabelRotation,
   ]);
 
+  console.log('bar chart chartDefinition', chartDefinition);
+  console.log(
+    'bar chart data',
+    processChartData(data, maxBins, labelTruncation),
+  );
+
   return (
     <div className="w-full h-64 relative">
       {enableDownload && (

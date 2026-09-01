@@ -32,6 +32,7 @@ export interface ChartProps {
   maxBins?: number;
   color?: string;
   xLabelRotation?: number;
+  showZoomControl?: boolean;
 }
 
 export interface CollapsableChartsPanelConfiguration {

@@ -404,7 +404,7 @@ export const CohortPanel = ({
     if (result?.data) {
       update(result.data?.uid);
     }
-  }, [result]);
+  }, [result, update]);
 
   if (isCountsError || isAggsQueryError) {
     return <ErrorCard message="Unable to fetch data from server" />; // TODO: replace with configurable message

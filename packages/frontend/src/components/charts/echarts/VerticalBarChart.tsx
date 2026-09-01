@@ -1,10 +1,11 @@
 import React from 'react';
 import { Pagination, Table } from '@mantine/core';
 import { createLabelFromHistogramData } from '../utils';
-import { ChartProps } from '../types';
-import ReactECharts, { ReactEChartsProps } from './ReactECharts';
-import { HistogramData, HistogramDataArray } from '@gen3/core';
-import { CallbackDataParams } from 'echarts/types/dist/shared';
+import type { ChartProps } from '../types';
+import type { ReactEChartsProps } from './ReactECharts';
+import ReactECharts from './ReactECharts';
+import type { HistogramData, HistogramDataArray } from '@gen3/core';
+import type { CallbackDataParams } from 'echarts/types/dist/shared';
 import { isArray } from 'lodash';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { chartColors, filterMissing } from './utils';
@@ -74,6 +75,8 @@ const VerticalBarChart = ({
   valueType,
   total,
   showLegendInChart = true,
+  labelTruncation = 40,
+  showZoomControl = true,
 }: ChartProps) => {
   const chartData = useDeepCompareMemo(
     () => processChartData(data, valueType, total),
@@ -113,6 +116,8 @@ const VerticalBarChart = ({
     if (page > pageCount) setPage(pageCount);
   }, [page, pageCount]);
 
+  console.log('labelTruncation', labelTruncation);
+
   const chartDefinition =
     useDeepCompareMemo((): ReactEChartsProps['option'] => {
       return {
@@ -139,11 +144,11 @@ const VerticalBarChart = ({
           },
         },
         grid: {
-          left: '0%',
-          right: '3%',
-          bottom: '25%',
+          left: '2%',
+          right: '2%',
+          bottom: '20%',
           containLabel: true,
-          height: '80%',
+          height: '90%',
         },
         yAxis: [
           {
@@ -161,20 +166,28 @@ const VerticalBarChart = ({
             type: 'category',
             data: chartData.categories,
             axisTick: { alignWithLabel: true },
+            axisLabel: {
+              interval: 0, // Forces ECharts to show all labels
+              width: labelTruncation,
+              overflow: 'truncate',
+              ellipsis: '...',
+            },
           },
         ],
-        dataZoom: [
-          {
-            xAxisIndex: [0],
-            filterMode: 'filter',
-            type: 'slider',
-          },
-          {
-            show: false,
-            yAxisIndex: 0,
-            filterMode: 'filter',
-          },
-        ],
+        dataZoom: showZoomControl
+          ? [
+              {
+                xAxisIndex: [0],
+                filterMode: 'filter',
+                type: 'slider',
+              },
+              {
+                show: false,
+                yAxisIndex: 0,
+                filterMode: 'filter',
+              },
+            ]
+          : undefined,
         series: [
           {
             type: 'bar',
@@ -182,7 +195,7 @@ const VerticalBarChart = ({
             barMinWidth: 2,
             barCategoryGap: '10%',
             emphasis: { focus: 'series' },
-            label: { show: false },
+            label: { show: true, position: 'inside' },
           },
         ],
       };
