@@ -1,18 +1,18 @@
 import React from 'react';
-import GenericRegistrationAccessRequestForm from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest';
 import { NavPageLayout } from '../../../features/Navigation';
-import type { GenericRegistrationAccessRequestFormConfig } from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest/types';
 import type { NavPageLayoutProps } from '../../../features/Navigation';
+import GenericRegistrationAccessRequestForm from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest';
+import type { GenericRegistrationAccessRequestFormConfig } from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest/types';
 
-interface StudyRegistrationAccessRequestPageProps extends NavPageLayoutProps {
+interface VLMDSubmissionAccessRequestFormPageProps extends NavPageLayoutProps {
   config: GenericRegistrationAccessRequestFormConfig;
 }
 
-const StudyRegistrationAccessRequestPage = ({
+const VLMDSubmissionAccessRequestFormPage = ({
   headerProps,
   footerProps,
   config,
-}: StudyRegistrationAccessRequestPageProps) => {
+}: VLMDSubmissionAccessRequestFormPageProps) => {
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
@@ -27,4 +27,4 @@ const StudyRegistrationAccessRequestPage = ({
   );
 };
 
-export default StudyRegistrationAccessRequestPage;
+export default VLMDSubmissionAccessRequestFormPage;
