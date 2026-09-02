@@ -1,7 +1,6 @@
 import React, { ReactElement, useState } from 'react';
 import {
   Accordion,
-  Center,
   Group,
   Loader,
   SelectProps,
@@ -11,6 +10,7 @@ import {
   Progress,
   Divider,
   Radio,
+  Badge,
 } from '@mantine/core';
 import {
   type PayModel,
@@ -52,23 +52,6 @@ const isNoPayModelError = (error: FetchBaseQueryError | SerializedError) => {
     'status' in error &&
     error.status === 'PARSING_ERROR' &&
     error.originalStatus === 404
-  );
-};
-
-const NoPayModel = () => {
-  return (
-    <Group
-      className="p-2 border-1 border-l-0 border-r-0 border-base-lighter w-full h-16"
-      justify="space-between"
-    >
-      <Text
-        className="pl-4"
-        size="md"
-        classNames={{ root: 'font-heading text-utility-warning' }}
-      >
-        No pay model defined
-      </Text>
-    </Group>
   );
 };
 
@@ -154,21 +137,75 @@ const CostTracker = ({workspaceAccountManagerTarget = ''}) => {
 
   if (isLoading && isFetching)
     return (
-      <div className="flex justify-center p-2 border-1 border-l-0 border-r-0 border-base-lighter w-full h-14">
-        <Loader />
-      </div>
+      <Badge 
+          leftSection={<Loader size="xs" type="dots" className='m-1'/>} 
+          variant="default"
+        >
+        Loading...
+      </Badge>
     );
-
+    
+  const PayModelError = (message: string) => {
+    // dropdown error state to provide user access to Account Manager if available
+    if (workspaceAccountManagerTarget) {
+      return (<Popover
+        width="target"
+        position="bottom"
+        shadow="lg"
+        trapFocus
+        opened={opened} onChange={setOpened}
+      >
+        <Popover.Target>
+          <Button
+            onClick={() => setOpened((o) => !o)}
+            size="xs" 
+            radius="xl"
+            className='h-[--badge-height] uppercase'
+            color='utility.3'
+            rightSection={
+              <MdExpandMore
+                size="1.5em"
+                aria-label={opened ? 'close': 'open'}
+                style={{
+                  transform: opened ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 200ms ease',
+                }}
+              />}
+            >
+              <span className='font-black'>{message}</span>
+          </Button>
+        </Popover.Target>
+        <Popover.Dropdown className='px-2'>
+          <Button
+            component="a"
+            href={workspaceAccountManagerTarget}
+            target="_blank"
+            variant="outline"
+            leftSection={
+              <MdOpenInNew
+                size="1.1em"
+                aria-label='external'
+              />}
+            size="xs"
+            className='w-full'
+          >
+            Workspace Account Manager
+          </Button>
+        </Popover.Dropdown>
+      </Popover>);
+    }
+    return (
+      <Badge color='utility.3'>
+          {message}
+      </Badge>
+    );
+  };
   if (isError) {
     if (isNoPayModelError(error)) {
-      return <NoPayModel />;
-    } else
-      return (
-        <Center>
-          Unable to get Payment information
-          {/*<ErrorCard message="Unable to get Payment information" />*/}
-        </Center>
-      );
+      return PayModelError('No pay model defined');
+    } else {
+      return PayModelError('Unable to get Payment information');
+    }
   }
 
   const ProgressBar = (className = '') => (
