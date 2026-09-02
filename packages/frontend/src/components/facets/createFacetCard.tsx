@@ -84,6 +84,7 @@ export const createFacetCard = ({
               width={width}
               hooks={dataFunctions as EnumFacetDataHooks}
               showPercent={showPercent}
+              showSettings={facetDefinition?.showMatchModeSelector}
               sharedWithIndices={facetDefinition?.sharedWithIndices}
               defaultSort={facetDefinition?.defaultSort}
               moveValuesToBottom={facetDefinition?.moveValuesToBottom ?? []}

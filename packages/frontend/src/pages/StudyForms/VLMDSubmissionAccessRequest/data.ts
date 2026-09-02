@@ -6,21 +6,20 @@ import type { ConfigGenericRegistrationAccessRequestFormProps } from '../../../f
 
 import { GEN3_COMMONS_NAME } from '@gen3/core';
 
-export const RequestAccessFormPageGetServerSideProps: GetServerSideProps<
+export const VLMDSubmissionAccessRequestPageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async () => {
   try {
-    const configGenericRegistrationAccessRequestForm: ConfigGenericRegistrationAccessRequestFormProps =
+    const configVLMDSubmissionAccessRequestForm: ConfigGenericRegistrationAccessRequestFormProps =
       await ContentSource.getContentDatabase().get(
-        `${GEN3_COMMONS_NAME}/studyRegistrationAccessRequestForm.json`,
+        `${GEN3_COMMONS_NAME}/vlmdSubmissionAccessRequestForm.json`,
       );
 
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
-
         config:
-          configGenericRegistrationAccessRequestForm,
+          configVLMDSubmissionAccessRequestForm,
       },
     };
   } catch (err) {
@@ -32,7 +31,7 @@ export const RequestAccessFormPageGetServerSideProps: GetServerSideProps<
           content: [
             {
               type: 'markdown',
-              text: '# Study Registration Access Request: Not Authorized \n You are not authorized to access this page. If you believe this is an error, contact your administrator or support.',
+              text: '# VLMD Submission Access Request: Not Authorized \n You are not authorized to access this page. If you believe this is an error, contact your administrator or support.',
               className: 'text-center',
             },
           ],
