@@ -27,7 +27,7 @@
   "author": "Craig Barnes",
   "license": "Apache-2.0",
   "dependencies": {
-    "@iconify/tools": "^5.0.3",
+    "@iconify/tools": "^5.0.14",
     "axios": "^1.18.0",
     "tinycolor2": "^1.6.0",
     "undici": "^6.21.1"
