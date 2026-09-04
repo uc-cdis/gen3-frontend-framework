@@ -47,6 +47,7 @@ export interface FormContentProps extends Omit<
   readonly label?: string; // form label requiered for form inputs
   readonly initialValue?: string; // optional initial value for form select component
   readonly dropdownData?: SelectOptionItem[]; // optional data for form select component
+  readonly autosize?: boolean; // optional sizing for text area compoenent
   readonly description?: string; // optional discritions to go above form feild and below label
   readonly placeholder?: string; // optional placeholder text
   readonly disabled?: boolean; // optional grays out and makes feild uneditable
@@ -90,6 +91,7 @@ const FormContent = ({
   required,
   tooltip,
   className = '',
+  autosize = false,
   type = ContentType.Text,
   keyString,
   form,
@@ -230,6 +232,7 @@ const FormContent = ({
           inputContainer={inputContainer}
           key={form.key(keyString)}
           {...form.getInputProps(keyString)}
+          autosize={autosize}
         />
       );
     }

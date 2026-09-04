@@ -22,5 +22,21 @@
         "disabled": true
       }
     ]
+  },
+  "@jupyterlab/application-extension:context-menu": {
+    "contextMenu": [
+      {
+        "command": "filebrowser:download",
+        "selector": ".jp-DirListing-item[data-isdir=\"false\"]",
+        "rank": 9,
+        "disabled": true
+      },
+      {
+        "command": "filebrowser:copy-download-link",
+        "selector": ".jp-DirListing-item[data-isdir=\"false\"]",
+        "rank": 13,
+        "disabled": true
+      }
+    ]
   }
 }

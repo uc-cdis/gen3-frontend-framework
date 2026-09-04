@@ -1,17 +1,17 @@
-// StudyRegistrationAccessRequestForm.tsx
+// GenericRegistrationAccessRequestForm.tsx
 import React from 'react';
 import { Box, Text } from '@mantine/core';
-import { useStudyRegistration } from '../../../features/DiscoveryForms/StudyRegistrationAccessRequest/useStudyRegistration';
-import { FormContentViews } from '../../../features/DiscoveryForms/StudyRegistrationAccessRequest/FormContentViews';
+import { useGenericRegistration } from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest/useGenericRegistration';
+import { FormContentViews } from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest/FormContentViews';
+import type { GenericRegistrationAccessRequestFormConfig } from './types';
 
-interface StudyRegistrationAccessRequestFormProps {
-  configStudyRegistrationRequestAccessForm: any;
+interface GenericRegistrationAccessRequestFormProps {
+  config: GenericRegistrationAccessRequestFormConfig;
 }
 
-const StudyRegistrationAccessRequestForm = ({
-  configStudyRegistrationRequestAccessForm,
-}: StudyRegistrationAccessRequestFormProps) => {
-  // Get everything needed from Hook
+const GenericRegistrationAccessRequestForm = ({
+  config,
+}: GenericRegistrationAccessRequestFormProps) => {
   const {
     formOutcome,
     formError,
@@ -19,7 +19,7 @@ const StudyRegistrationAccessRequestForm = ({
     formBody,
     formOnSubmit,
     isLoading,
-  } = useStudyRegistration(configStudyRegistrationRequestAccessForm);
+  } = useGenericRegistration(config);
   return (
     <div className="flex justify-items-center w-full">
       <Box className="w-full bg-white rounded-md m-8 p-8 ">
@@ -29,14 +29,14 @@ const StudyRegistrationAccessRequestForm = ({
             formError={formError}
             studyUID={studyUID}
             formBody={formBody}
-            config={configStudyRegistrationRequestAccessForm}
+            config={config}
             onSubmit={formOnSubmit}
             isLoading={isLoading}
           />
         </div>
         <div className="mt-12 pt-4 border-t border-neutral-100 max-w-4xl mx-auto">
           <Text className="text-xs text-neutral-500 leading-relaxed">
-            {configStudyRegistrationRequestAccessForm.disclaimer}
+            {config.disclaimer}
           </Text>
         </div>
       </Box>
@@ -44,4 +44,4 @@ const StudyRegistrationAccessRequestForm = ({
   );
 };
 
-export default StudyRegistrationAccessRequestForm;
+export default GenericRegistrationAccessRequestForm;
