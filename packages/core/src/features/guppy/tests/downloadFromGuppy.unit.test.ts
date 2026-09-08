@@ -1,4 +1,4 @@
-import { downloadFromGuppyToBlob } from '../utils';
+import { downloadFromGuppyToBlob } from '../download';
 import { Accessibility } from '../../../constants';
 import type {
   DownloadFromGuppyParams,
