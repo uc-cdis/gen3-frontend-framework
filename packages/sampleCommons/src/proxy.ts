@@ -4,13 +4,20 @@ export { proxy } from './proxy-impl';
 
 export const config = {
   matcher: [
+    '/AISearch',
     '/Analysis',
-    '/Explorer',
+    '/staticNotebook/(.*)',
+    '/Crosswalk',
     '/DataConnections',
+    '/DataDictionary',
     '/DataLibrary',
+    '/notebook',
     '/Profile',
     '/Query',
-    '/resource-browser',
+    '/Submission',
+    '/Workspace',
     '/Workspaces',
+    '/app/CohortDiscovery',
+    '/app/MetadataDictionary',
   ],
 };
