@@ -14,7 +14,7 @@ export const {
 );
 
 /**
- * Internally used selector for the exported selectora
+ * Internally used selector for the exported selector
  * @param state
  */
 const getCurrentCohortFromCoreState = (state: CoreState): CohortId => {

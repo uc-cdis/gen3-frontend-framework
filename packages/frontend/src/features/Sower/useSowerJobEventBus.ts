@@ -36,7 +36,7 @@ const useSowerJobEventBus = () => {
   const off = (listenerKey: string) => {
     setListeners(
       Object.fromEntries(
-        Object.entries(listeners).filter(([key]) => key === listenerKey),
+        Object.entries(listeners).filter(([key]) => key !== listenerKey),
       ),
     );
   };
