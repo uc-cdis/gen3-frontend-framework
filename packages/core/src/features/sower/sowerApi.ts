@@ -1,13 +1,7 @@
 import { gen3Api } from '../gen3';
 import { GEN3_SOWER_API } from '../../constants';
-import { JobStatus } from './types';
+import type { DispatchJobParameters, JobStatus } from './types';
 import { setSowerJobDatetime } from './sowerJobDatetime';
-import { GQLFilter } from '../filters';
-
-export interface DispatchJobParams {
-  action: string;
-  input: { filter: GQLFilter };
-}
 
 export interface DispatchJobResponse {
   uid: string;
@@ -29,7 +23,10 @@ export const sowerJobApi = gen3Api.injectEndpoints({
     getSowerJobList: builder.query<JobListResponse, void>({
       query: () => `${GEN3_SOWER_API}/list`,
     }),
-    submitSowerJob: builder.mutation<DispatchJobResponse, DispatchJobParams>({
+    submitSowerJob: builder.mutation<
+      DispatchJobResponse,
+      DispatchJobParameters
+    >({
       query: (params) => ({
         url: `${GEN3_SOWER_API}/dispatch`,
         method: 'POST',

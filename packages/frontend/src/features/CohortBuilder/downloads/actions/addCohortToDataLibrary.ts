@@ -1,15 +1,17 @@
-import {
+import type {
   Accessibility,
-  coreStore,
   DataLibraryDataset,
-  downloadJSONDataFromGuppy,
-  EmptyFilterSet,
-  fetchJSONDataFromURL,
   FileItem,
-  GEN3_MANIFEST_API,
   GuppyDownloadDataParams,
   HttpMethod,
   JSONObject,
+} from '@gen3/core';
+import {
+  coreStore,
+  downloadJSONDataFromGuppy,
+  EmptyFilterSet,
+  fetchJSONDataFromURL,
+  GEN3_MANIFEST_API,
   selectCurrentCohortFilters,
 } from '@gen3/core';
 import { JSONPath } from 'jsonpath-plus';

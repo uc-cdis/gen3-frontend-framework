@@ -1,11 +1,10 @@
-import {
-  Accessibility,
+import type {
   DatasetOrCohort,
-  downloadJSONDataFromGuppy,
   FilterSet,
   GuppyDownloadDataParams,
   JSONObject,
 } from '@gen3/core';
+import { Accessibility, downloadJSONDataFromGuppy } from '@gen3/core';
 import {
   createDatasets,
   processFilesForDataLibrary,

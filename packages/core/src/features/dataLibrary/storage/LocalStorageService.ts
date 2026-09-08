@@ -268,7 +268,7 @@ export class LocalStorageService implements StorageService {
     }
   }
 
-  async cacheList(id: string, data: DatalistAPI): Promise<ReturnStatus> {
+  async cacheList(id: string, data?: DatalistAPI): Promise<ReturnStatus> {
     if (!data || typeof data !== 'object') {
       return {
         isError: true,

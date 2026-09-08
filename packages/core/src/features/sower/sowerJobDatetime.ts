@@ -1,14 +1,19 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { CoreState } from '../../reducers';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+import type { CoreState } from '../../reducers';
 
-const initialState : { datatimeCache: Record<string, number> } = { datatimeCache: {}}
+const initialState: { datatimeCache: Record<string, number> } = {
+  datatimeCache: {},
+};
 
 const sowerJobDatetimeSlice = createSlice({
   name: 'sowerJobDatetime',
   initialState,
   reducers: {
     setSowerJobDatetime: (state, action: PayloadAction<string>) => {
-      return { datatimeCache: {...state.datatimeCache, [action.payload]: Date.now() }};
+      return {
+        datatimeCache: { ...state.datatimeCache, [action.payload]: Date.now() },
+      };
     },
   },
 });

@@ -1,4 +1,5 @@
-import { downloadFromGuppyToBlob, GuppyDownloadDataParams } from '@gen3/core';
+import type { GuppyDownloadDataParams } from '@gen3/core';
+import { downloadFromGuppyToBlob } from '@gen3/core';
 import { handleDownload } from './utils';
 
 export const downloadToFileAction = async (

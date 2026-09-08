@@ -170,7 +170,7 @@ export const downloadJSONDataFromGuppy = async ({
     return jsonData;
   } catch (error: any) {
     // Abort is handle as an exception
-    if (error.name == 'AbortError') {
+    if (error.name === 'AbortError') {
       // handle abort()
       onAbort?.();
     }

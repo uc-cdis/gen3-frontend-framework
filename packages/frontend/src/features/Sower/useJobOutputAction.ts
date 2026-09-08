@@ -25,7 +25,7 @@ const useJobOutputAction = () => {
       (j) =>
         j.status === 'Completed' &&
         j.stage === SowerJobStage.JobDispatched &&
-        j.actions?.sendJobAction,
+        j.actions?.outputActionFunction,
     );
 
     for (const job of pending) {
@@ -40,15 +40,15 @@ const useJobOutputAction = () => {
       fetchOutput(job.uid)
         .then(({ data, error }) => {
           if (error) {
-            job.actions!.sendJobAction!.actionFunction({
-              parameters: job.actions!.sendJobAction!.parameters,
+            job.actions!.outputActionFunction!.actionFunction({
+              parameters: job.actions!.outputActionFunction!.parameters,
               onError: undefined,
             });
             return;
           }
-          job.actions!.sendJobAction!.actionFunction({
+          job.actions!.outputActionFunction!.actionFunction({
             parameters: {
-              ...job.actions!.sendJobAction!.parameters,
+              ...job.actions!.outputActionFunction!.parameters,
               output: data?.output ?? '',
             },
           });

@@ -13,14 +13,21 @@ import {
 } from './sowerApi';
 
 import {
+  type BoundCreateAndOutputAction,
+  type BoundJobActionConfig,
+  type CreateAndExportOutputConfig,
+  type DispatchJobParameters,
+  type JobBuilderAction,
+  type JobOutputAction,
   type JobStatus,
   type JobWithActions,
-  type SendJobOutputAction,
-  SowerJobStage,
-  SowerJobStatus,
+  type SowerJobStage,
+  type SowerJobStatus,
 } from './types';
 
 import { selectSowerJobDatetimeCache } from './sowerJobDatetime';
+
+import { isJobActionFunctionConfig } from './utils';
 
 import {
   addSowerJob,
@@ -44,13 +51,18 @@ export {
   useGetSowerOutputQuery,
   useLazyGetSowerOutputQuery,
   useGetSowerServiceStatusQuery,
-  JobListResponse,
-  GetSowerJobListQueryType,
-  JobStatus,
+  type JobListResponse,
+  type GetSowerJobListQueryType,
+  type JobStatus,
   type JobWithActions,
-  type SendJobOutputAction,
-  SowerJobStatus,
-  SowerJobStage,
+  type JobBuilderAction,
+  type JobOutputAction,
+  type DispatchJobParameters,
+  type BoundCreateAndOutputAction,
+  type CreateAndExportOutputConfig,
+  type SowerJobStatus,
+  type SowerJobStage,
+  type BoundJobActionConfig,
   selectSowerJobDatetimeCache,
   useLazyGetMultipleSowerJobStatusQuery,
   addSowerJob,
@@ -60,4 +72,5 @@ export {
   sowerJobListSelectors,
   selectSowerJobList,
   selectSowerJobListById,
+  isJobActionFunctionConfig,
 };
