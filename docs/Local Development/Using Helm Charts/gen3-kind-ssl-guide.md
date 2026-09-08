@@ -1,6 +1,67 @@
 # Gen3 Kind Cluster SSL Setup Guide
 
-## Overview
+## Automation Script
+
+You can run the automation script from `packages/tools/localDev/kind/setup-kind-gen3.sh`:
+This assumes you have added an entry to your hosts file for `gen3dev.local.io`:
+
+- ```127.0.0.1 gen3dev.local.io```
+
+Start by `cd packages/tools/localDev/kind/` and run:
+
+```bash
+# Full setup from scratch (cluster + ingress + SSL)
+./setup-kind-gen3.sh --all
+```
+
+Load your helm chart values file and apply the changes.
+
+then run:
+
+```bash
+./setup-kind-gen3.sh --setup-ssl --patch-ca
+```
+
+Then go to https://gen3dev.local.io
+
+```bash
+# Full setup from scratch (cluster + ingress + SSL)
+./setup-kind-gen3.sh --all
+
+# Full setup + patch services with CA trust
+./setup-kind-gen3.sh --all --patch-ca revproxy,requestor,fence,hatchery
+
+# Full setup + workspace/iframe CSP support
+./setup-kind-gen3.sh --all --setup-csp
+
+# Just regenerate SSL and patch services
+./setup-kind-gen3.sh --setup-ssl --patch-ca revproxy,fence
+
+# Use host.docker.internal instead
+./setup-kind-gen3.sh --all --hostname host.docker.internal
+
+# See all options
+./setup-kind-gen3.sh --help
+```
+
+The script handles:
+
+- Kind cluster creation with the correct config for your platform
+- Nginx ingress controller installation
+- mkcert certificate generation and K8s secret creation
+- Ingress configuration for your chosen hostname
+- CSP headers for workspace/iframe development
+- CA trust patching that **appends** the mkcert CA to the system CA bundle (does not replace it)
+
+### User Sync
+
+If you need to retrunthe user sync you can do this with:
+
+```bash
+./user_sync.sh
+```
+
+## Manuel Setup Overview
 
 This guide shows how to set up a Gen3 cluster in Kind (Kubernetes in Docker) with proper SSL certificates using mkcert, eliminating the "Kubernetes Ingress Controller Fake Certificate" issue.
 
@@ -340,47 +401,3 @@ kubectl exec $POD_NAME -- ls -la /etc/ssl/certs/
 # Check environment variables in Python containers
 kubectl exec $POD_NAME -- env | grep -E "(SSL|CA|CERT)"
 ```
-
-## Automation Script
-
-All of these steps are automated in `packages/tools/localDev/kind/setup-kind-gen3.sh`:
-
-```bash
-# Full setup from scratch (cluster + ingress + SSL)
-./setup-kind-gen3.sh --all
-
-# Full setup + patch services with CA trust
-./setup-kind-gen3.sh --all --patch-ca revproxy,requestor,fence,hatchery
-
-# Full setup + workspace/iframe CSP support
-./setup-kind-gen3.sh --all --setup-csp
-
-# Just regenerate SSL and patch services
-./setup-kind-gen3.sh --setup-ssl --patch-ca revproxy,fence
-
-# Use host.docker.internal instead
-./setup-kind-gen3.sh --all --hostname host.docker.internal
-
-# See all options
-./setup-kind-gen3.sh --help
-```
-
-The script handles:
-
-- Kind cluster creation with the correct config for your platform
-- Nginx ingress controller installation
-- mkcert certificate generation and K8s secret creation
-- Ingress configuration for your chosen hostname
-- CSP headers for workspace/iframe development
-- CA trust patching that **appends** the mkcert CA to the system CA bundle (does not replace it)
-
-## Summary
-
-This setup eliminates the "Kubernetes Ingress Controller Fake Certificate" issue by:
-
-1. **Creating proper SSL certificates** with mkcert for local development
-2. **Configuring the ingress** to use your real certificate instead of the default fake one
-3. **Adding CA trust** to containers so they can verify SSL connections
-4. **Handling Python-specific SSL requirements** with environment variables and CA bundles
-
-After following this guide, your Gen3 cluster will have proper SSL certificates and all internal services will be able to make HTTPS calls without certificate verification errors.

@@ -17,7 +17,7 @@ const FixedNavPageLayout = ({
 }: PropsWithChildren<NavPageLayoutProps>) => {
   const mainContentStyle = mainProps?.fixed
     ? 'flex-1 flex overflow-hidden relative'
-    : 'flex grow relative';
+    : 'flex grow relative overflow-auto';
 
   const [headerRef, headerRect] = useResizeObserver<HTMLDivElement>();
   const [footerRef, footerRect] = useResizeObserver();

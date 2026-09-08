@@ -1,21 +1,18 @@
-// StudyRegistrationAccessRequestForm.tsx
 import React from 'react';
-import {
-  NavPageLayout,
-  NavPageLayoutProps,
-} from '../../../features/Navigation';
-import StudyRegistrationAccessRequestForm from '../../../features/DiscoveryForms/StudyRegistrationAccessRequest';
+import GenericRegistrationAccessRequestForm from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest';
+import { NavPageLayout } from '../../../features/Navigation';
+import type { GenericRegistrationAccessRequestFormConfig } from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest/types';
+import type { NavPageLayoutProps } from '../../../features/Navigation';
 
-interface StudyRegistrationAccessRequestFormPageProps extends NavPageLayoutProps {
-  configStudyRegistrationRequestAccessForm: any;
-  studyName: string;
+interface StudyRegistrationAccessRequestPageProps extends NavPageLayoutProps {
+  config: GenericRegistrationAccessRequestFormConfig;
 }
 
-const StudyRegistrationAccessRequestFormPage = ({
+const StudyRegistrationAccessRequestPage = ({
   headerProps,
   footerProps,
-  configStudyRegistrationRequestAccessForm,
-}: StudyRegistrationAccessRequestFormPageProps) => {
+  config,
+}: StudyRegistrationAccessRequestPageProps) => {
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
@@ -25,13 +22,9 @@ const StudyRegistrationAccessRequestFormPage = ({
         key: 'gen3-theme-page',
       }}
     >
-      <StudyRegistrationAccessRequestForm
-        configStudyRegistrationRequestAccessForm={
-          configStudyRegistrationRequestAccessForm
-        }
-      />
+      <GenericRegistrationAccessRequestForm config={config} />
     </NavPageLayout>
   );
 };
 
-export default StudyRegistrationAccessRequestFormPage;
+export default StudyRegistrationAccessRequestPage;

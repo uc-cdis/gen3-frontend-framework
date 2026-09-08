@@ -48,15 +48,14 @@
 
 ```bash
 docker pull --platform linux/amd64 quay.io/cdis/gen3-vectis:qa-jegv2
-docker pull --platform linux/amd64 quay.io/cdis/gen3-vectis:gen3-vectisv6
 docker pull --platform linux/amd64 quay.io/cdis/gen3-vectis:qa-goproxy
-docker pull --platform linux/amd64 quay.io/cdis/multihead-workspace-proxy:feat_init
+#docker pull --platform linux/amd64 quay.io/cdis/multihead-workspace-proxy:feat_init
+#docker pull --platform linux/amd64 quay.io/cdis/gen3-vectis:gen3-vectisv6
 ```
-
-kind load docker-image quay.io/cdis/gen3-vectis:qa-jegv2 --name kind-multi-node
-kind load docker-image quay.io/cdis/gen3-vectis:gen3-vectisv6 --name kind-multi-node
-kind load docker-image quay.io/cdis/gen3-vectis:qa-goproxy --name kind-multi-node
-kind load docker-image quay.io/cdis/multihead-workspace-proxy:feat_init --name kind-multi-node
+kind load docker-image quay.io/cdis/gen3-vectis:qa-jegv2 --name kind-multi-node kind load docker-image
+quay.io/cdis/gen3-vectis:qa-goproxy --name kind-multi-node #kind load docker-image
+quay.io/cdis/multihead-workspace-proxy:feat_init --name kind-multi-node #kind load docker-image
+quay.io/cdis/gen3-vectis:gen3-vectisv6 --name kind-multi-node
 
 # load local frontend image
 

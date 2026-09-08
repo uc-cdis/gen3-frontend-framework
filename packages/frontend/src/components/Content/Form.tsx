@@ -1,13 +1,18 @@
 import React from 'react';
-
-import FormContent, { FormContentProps, FormContentType } from './FormContent';
+import type { FormContentProps } from './FormContent';
+import FormContent, { FormContentType } from './FormContent';
 import { Button, Text } from '@mantine/core';
-import { useForm, FormValidateInput, isEmail, isNotEmpty } from '@mantine/form';
+import type { FormValidateInput, UseFormReturnType } from '@mantine/form';
+import { useForm, isEmail, isNotEmpty } from '@mantine/form';
+import { isCedarUUIDValid, isClinicalTrialIDValid } from './formValidators';
 
-interface FormPropsBody extends Omit<FormContentProps, 'keyString' | 'form'> {
-  readonly errorText: string; // text to display on error
+export interface FormPropsBody extends Omit<
+  FormContentProps,
+  'keyString' | 'form'
+> {
+  readonly errorText?: string; // text to display on error
   readonly variable?: string; // form feild variable name
-  readonly initialValue?: string | boolean; // optional starting value
+  readonly required?: boolean;
 }
 
 export interface FormOnSubmitReturnProps {
@@ -22,7 +27,9 @@ export interface FormProps {
   readonly submitButtonText?: string; // submit Button Text defalts to Submit
   readonly showResetButton?: boolean; // Determines if the reset button should be visible
   readonly body: FormPropsBody[]; // array of FormContent
-  readonly onSubmit: (values: FormOnSubmitReturnProps) => void | Promise<any>; // function to trigger on form submit
+  readonly onSubmit: (
+    values: FormOnSubmitReturnProps,
+  ) => void | Promise<unknown>; // function to trigger on form submit
   readonly errorMessage?: string; // error messaage to display above submit button
 }
 
@@ -45,10 +52,10 @@ const Form = ({
   onSubmit,
   errorMessage,
 }: FormProps) => {
-  const initialValues: { [key: string]: string | boolean } = {};
-  const validate: FormValidateInput<any> = {};
+  const initialValues: FormOnSubmitReturnProps = {};
+  const validate: FormValidateInput<FormOnSubmitReturnProps> = {};
 
-  const bodyWithKey: Omit<FormContentProps, 'form'>[] = body.map(
+  const bodyWithKey: (FormPropsBody & { keyString: string })[] = body.map(
     (item, index) => {
       const itemKey =
         item.variable ||
@@ -65,8 +72,15 @@ const Form = ({
           const isvalidEmail = item.errorText || 'Invalid email';
           validate[itemKey] = isEmail(isvalidEmail);
         }
+        if (item.type === FormContentType.ClinicalTrialID) {
+          validate[itemKey] = isClinicalTrialIDValid(item.errorText);
+        }
         if (item.required) {
           switch (item.type) {
+            case FormContentType.CedarUserUUID: {
+              validate[itemKey] = isCedarUUIDValid(item.errorText);
+              break;
+            }
             case FormContentType.Email: {
               const isValidEmail = item.errorText || 'Invalid email';
               validate[itemKey] = isEmail(isValidEmail);
@@ -89,7 +103,7 @@ const Form = ({
     },
   );
 
-  const form = useForm({
+  const form = useForm<FormOnSubmitReturnProps>({
     mode: 'uncontrolled',
     validateInputOnBlur: true,
     initialValues,
@@ -98,8 +112,17 @@ const Form = ({
 
   return (
     <form onSubmit={form.onSubmit(onSubmit)} className={className}>
-      {bodyWithKey?.map((content, index) => (
-        <FormContent {...content} form={form} key={index} />
+      {bodyWithKey.map((content, index) => (
+        <FormContent
+          {...content}
+          form={
+            form as unknown as UseFormReturnType<
+              Record<string, unknown>,
+              (values: Record<string, unknown>) => Record<string, unknown>
+            >
+          }
+          key={index}
+        />
       ))}
       {errorMessage && <Text c="red">{errorMessage}</Text>}
       <Button

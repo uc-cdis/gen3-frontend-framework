@@ -128,7 +128,6 @@ done
 if $DO_ALL; then
   DO_CREATE_CLUSTER=true
   DO_INSTALL_INGRESS=true
-  DO_SETUP_SSL=true
   DO_SETUP_COREDNS=true
 fi
 

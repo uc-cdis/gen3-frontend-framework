@@ -23,6 +23,7 @@ import {
   getCombinedClassesForRowCollapse,
 } from '../style';
 import CohortSelector from '../CohortSelector';
+import LogicalOperatorLabel from './LogicalOperatorLabel';
 
 const QueryExpressionContainer = tw.div`
   flex
@@ -134,8 +135,13 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   const filtersRef = useRef<HTMLDivElement>(null);
   const [QESectionHeight, setQESectionHeight] = useState(0);
 
-  const { cohortName, cohortId, useClearCohortFilters, useGetFilters } =
-    useContext(QueryExpressionContext);
+  const {
+    cohortName,
+    cohortId,
+    showLogicalOperators,
+    useClearCohortFilters,
+    useGetFilters,
+  } = useContext(QueryExpressionContext);
   const clearCohortFilters = useClearCohortFilters();
   const filters = useGetFilters(index);
   useDeepCompareEffect(() => {
@@ -326,12 +332,22 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                 No filters currently applied.
               </p>
             ) : (
-              Object.keys(filters.root).map((k) => {
-                return convertFilterToComponent(
-                  filters.root[k],
-                  index,
-                  '.',
-                  displayOnly,
+              Object.keys(filters.root).map((k, indexInFilters) => {
+                return (
+                  <React.Fragment key={k}>
+                    {showLogicalOperators && indexInFilters > 0 && (
+                      <LogicalOperatorLabel
+                        operator={filters.mode}
+                        className="mr-1 mb-2"
+                      />
+                    )}
+                    {convertFilterToComponent(
+                      filters.root[k],
+                      index,
+                      '.',
+                      displayOnly,
+                    )}
+                  </React.Fragment>
                 );
               })
             )}

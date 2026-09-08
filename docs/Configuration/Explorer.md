@@ -401,6 +401,52 @@ The supported values are:
 
 Facets without `defaultSort` continue to use `value-dsc`.
 
+### Enum Facet Match Mode
+
+Enum facets combine multiple selected values with OR logic by default: a case
+matches when it contains any selected value. For a multivalued enum field, an
+individual facet can optionally let users switch between **Match any** (OR) and
+**Match all** (AND). Enable the selector with `showMatchModeSelector` in that
+field's `fieldsConfig` entry:
+
+```json
+{
+  "filters": {
+    "tabs": [
+      {
+        "title": "Clinical Criteria",
+        "fields": ["risk_criteria"],
+        "fieldsConfig": {
+          "risk_criteria": {
+            "showMatchModeSelector": true
+          }
+        }
+      }
+    ]
+  }
+}
+```
+
+The selector is disabled by default, and facets without this setting retain the
+existing Match any behavior. Match all is most useful for multivalued fields; on
+a single-valued field, distinct values cannot normally match simultaneously.
+
+### Logical Operators in the Query Expression
+
+The cohort query expression can optionally display the logical operator between
+facets and between values within a facet. Set `showLogicalOperators` when
+rendering `QueryExpression`:
+
+```tsx
+<QueryExpression index="case" showLogicalOperators />
+```
+
+The option is disabled by default to preserve the existing appearance. When it
+is enabled, the expression reflects the filter structure: for example,
+`Sex: Female OR Male AND Race: White`. Parentheses are implicit in the facet
+grouping, so values within each facet are evaluated together before the operator
+between facets.
+
 ![MultiSelectFacet](images/Explorer/MultiSelectFacet.png)
 
 ### Export Cohort Datafiles to Data Library

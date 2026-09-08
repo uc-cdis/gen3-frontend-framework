@@ -10,6 +10,8 @@ coverage
 
 # next.js
 packages/sampleCommons/.next/
+packages/sampleCommons/.builds/
+packages/sampleCommons/.builds/
 /out/
 
 # production

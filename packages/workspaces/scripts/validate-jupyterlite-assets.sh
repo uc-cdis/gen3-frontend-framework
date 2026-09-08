@@ -48,6 +48,9 @@ fi
 FREE_JSON="$FREE_DIR/jupyter-lite.json"
 REMOTE_JSON="$REMOTE_DIR/jupyter-lite.json"
 
+
+echo "Free $FREE_DIR, Remote $REMOTE_DIR"
+
 if [[ ! -f "$FREE_JSON" ]]; then
   echo "Missing free config: $FREE_JSON"
   exit 1

@@ -21,6 +21,7 @@ import {
   useCoreSelector,
   WorkspaceStatus,
 } from '@gen3/core';
+import CostTracker from '../../components/CostTracker';
 
 import { WorkspaceTier } from '../../types';
 import { useMicroContainerReduxContext } from '../../providers/MicroContainerReduxProvider';
@@ -43,7 +44,7 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
       selectWorkspaceFullscreen(state),
     );
 
-    const { showStatus, showStop, tierLabel } = toolbarConfiguration || {};
+    const { showStatus, showStop, tierLabel, requirePayModel, workspaceAccountManagerTarget } = toolbarConfiguration || {};
 
     const coreDispatch = useCoreDispatch();
 
@@ -100,6 +101,7 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
               >
                 {tierLabel ?? (workspaceTier as string)}
               </Badge>
+              {requirePayModel && (<CostTracker workspaceAccountManagerTarget={workspaceAccountManagerTarget}/>)}
             </Group>
           </Stack>
         </div>

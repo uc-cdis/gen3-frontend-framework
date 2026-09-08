@@ -1,25 +1,25 @@
-// useStudyRegistration.ts
-import { useEffect, useState } from 'react';
+// useGenericRegistration.ts
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { toString } from 'lodash';
 import {
-  CoreState,
   getRemoteSupportServiceRegistry,
-  HttpError,
   isHttpStatusError,
   selectUserDetails,
   useCoreSelector,
   useCreateRequestMutation,
   useUserRequestQuery,
 } from '@gen3/core';
+import type { CoreState, HttpError } from '@gen3/core';
 import { FormOutcome } from './types';
-import {
+import type { GenericRegistrationAccessRequestFormConfig } from './types';
+import type {
   FormOnSubmitReturnProps,
   FormProps,
 } from '../../../components/Content/Form';
 
-export const useStudyRegistration = (
-  config: any,
+export const useGenericRegistration = (
+  config: GenericRegistrationAccessRequestFormConfig,
 ): {
   formError: string | undefined;
   formOutcome: FormOutcome;
@@ -30,14 +30,6 @@ export const useStudyRegistration = (
 } => {
   const [formError, setFormError] = useState<string>();
   const [formOutcome, setFormOutcome] = useState(FormOutcome.pending);
-  const [studyUID, setStudyUID] = useState<string | null>(null);
-  const [studyName, setStudyName] = useState<string | null>(null);
-  const [studyProjectNumber, setStudyProjectNumber] = useState<string | null>(
-    null,
-  );
-  const [studyRegistrationAuthZ, setStudyRegistrationAuthZ] = useState<
-    string | null
-  >(null);
 
   const router = useRouter();
   const formBody = config.form;
@@ -45,46 +37,48 @@ export const useStudyRegistration = (
     selectUserDetails(state),
   );
 
-  useEffect(() => {
-    if (router.isReady && router.query) {
-      const { query } = router;
-      if (query.studyUID) setStudyUID(query.studyUID as string);
-      if (query.studyName) setStudyName(toString(query.studyName));
-      if (query.studyProjectNumber)
-        setStudyProjectNumber(query.studyProjectNumber as string);
-      if (query.studyRegistrationAuthZ) {
-        try {
-          setStudyRegistrationAuthZ(
-            JSON.parse(query.studyRegistrationAuthZ as string),
-          );
-        } catch {
-          setStudyRegistrationAuthZ(query.studyRegistrationAuthZ as string);
-        }
-      }
+  const studyUID = useMemo(
+    () => (router.isReady ? (router.query.studyUID as string) : null),
+    [router.isReady, router.query.studyUID],
+  );
+  const studyName = useMemo(
+    () => (router.isReady ? toString(router.query.studyName) || null : null),
+    [router.isReady, router.query.studyName],
+  );
+  const studyProjectNumber = useMemo(
+    () => (router.isReady ? (router.query.studyProjectNumber as string) : null),
+    [router.isReady, router.query.studyProjectNumber],
+  );
+  const studyRegistrationAuthZ = useMemo(() => {
+    if (!router.isReady || !router.query.studyRegistrationAuthZ) return null;
+    try {
+      return JSON.parse(
+        router.query.studyRegistrationAuthZ as string,
+      ) as string;
+    } catch {
+      return router.query.studyRegistrationAuthZ as string;
     }
-  }, [router.isReady, router.query]);
+  }, [router.isReady, router.query.studyRegistrationAuthZ]);
 
   // Validate existing requests and check for duplicates
   const { data, isLoading, isError } = useUserRequestQuery({});
-  useEffect(() => {
-    if (!isLoading && isError) {
-      setFormError(
-        'Unable to load data from Requester, form may not submit correctly. Try refreshing this page',
-      );
-    }
-    // Check for study already in requester with same UID and userName
-    if (
+
+  const loadError =
+    !isLoading && isError
+      ? 'Unable to load data from Requester, form may not submit correctly. Try refreshing this page'
+      : undefined;
+
+  const isDuplicate =
+    !isLoading &&
+    Boolean(
       data &&
       studyUID &&
-      userInfo?.username &&
+      userInfo.username &&
       data.some(
         (item) =>
           item.resource_id === studyUID && item.username === userInfo.username,
-      )
-    ) {
-      setFormOutcome(FormOutcome.duplicateSubmission);
-    }
-  }, [isLoading, isError, data, studyUID, userInfo?.username]);
+      ),
+    );
 
   const [requestQuery] = useCreateRequestMutation();
 
@@ -103,15 +97,18 @@ export const useStudyRegistration = (
         role_ids: ['study_registrant', 'mds_user', 'cedar_user'],
       }).unwrap();
 
+      const formatKey = (key: string) =>
+        key.replace(/([A-Z])/g, ' $1').replace(/^./, (s) => s.toUpperCase());
+
       const printFormValuesArr = Object.entries(formValues).map(
-        ([key, value]) => `${key}: ${value}`,
+        ([key, value]) => `${formatKey(key)}: ${value}`,
       );
 
       const zenDeskSubmission = {
-        subject: `Study registration access request for ${studyUID} ${studyName}`,
-        fullName: `${userInfo?.email}`,
-        email: `${userInfo?.email}`,
-        contents: `Request ID: ${request.request_id}\nGrant Number: ${studyProjectNumber}\nStudy Name: ${studyName}\nEnvironment: ${hostname}\nForm Values: ${printFormValuesArr.join('\n\n')}`,
+        subject: `${config.remoteSupportService.submissionSubjectLine} ${studyUID} ${studyName}`,
+        email: formValues.emailAddress,
+        fullName: `${formValues.registrantFirstName} ${formValues.registrantLastName}`,
+        contents: `Request ID: ${request.request_id}\nStudy ID: ${studyUID}\nGrant Number: ${studyProjectNumber}\nEnvironment: ${hostname}\nForm Values:\n${printFormValuesArr.join('\n')}`,
       };
 
       const zendeskRequestAction =
@@ -148,8 +145,8 @@ export const useStudyRegistration = (
   };
 
   return {
-    formError,
-    formOutcome,
+    formError: formError ?? loadError,
+    formOutcome: isDuplicate ? FormOutcome.duplicateSubmission : formOutcome,
     studyUID,
     formBody: autoFillValues(formBody) as FormProps['body'],
     formOnSubmit,

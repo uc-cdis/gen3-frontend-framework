@@ -1,14 +1,13 @@
 import { Button } from '@mantine/core';
 import React from 'react';
-import TextContent, {
-  TextContentProps,
-} from '../../../components/Content/TextContent';
-import { studyRegistrationAccessRequestFormOutcomeProps } from './types';
+import TextContent from '../../../components/Content/TextContent';
+import type { TextContentProps } from '../../../components/Content/TextContent';
+import type { genericRegistrationAccessRequestFormOutcomeProps } from './types';
 
-const StudyRegistrationAccessRequestOutcome = ({
+const GenericRegistrationAccessRequestOutcome = ({
   config,
 }: {
-  config: studyRegistrationAccessRequestFormOutcomeProps;
+  config: genericRegistrationAccessRequestFormOutcomeProps;
 }) => {
   const { content, button } = config;
   return (
@@ -32,4 +31,4 @@ const StudyRegistrationAccessRequestOutcome = ({
   );
 };
 
-export default StudyRegistrationAccessRequestOutcome;
+export default GenericRegistrationAccessRequestOutcome;

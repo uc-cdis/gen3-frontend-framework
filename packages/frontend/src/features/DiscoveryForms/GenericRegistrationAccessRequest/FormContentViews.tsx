@@ -1,10 +1,12 @@
 import React from 'react';
 import { FormOutcome } from './types';
-import Form, {
+import type { FormContentViewsConfig } from './types';
+import Form from '../../../components/Content/Form';
+import type {
   FormOnSubmitReturnProps,
   FormProps,
 } from '../../../components/Content/Form';
-import StudyRegistrationAccessRequestOutcome from './StudyRegistrationAccessRequestOutcome';
+import GenericRegistrationAccessRequestOutcome from './GenericRegistrationAccessRequestOutcome';
 import { Center, Loader } from '@mantine/core';
 
 interface FormContentViewsProps {
@@ -12,7 +14,7 @@ interface FormContentViewsProps {
   formError?: string;
   studyUID: string | null;
   formBody: FormProps['body'];
-  config: any;
+  config: FormContentViewsConfig;
   onSubmit: (formValues: FormOnSubmitReturnProps) => Promise<void>;
   isLoading: boolean;
 }
@@ -35,14 +37,14 @@ export const FormContentViews = ({
   }
   if (formOutcome === FormOutcome.success) {
     return (
-      <StudyRegistrationAccessRequestOutcome
+      <GenericRegistrationAccessRequestOutcome
         config={config[FormOutcome.success]}
       />
     );
   }
   if (formOutcome === FormOutcome.duplicateSubmission) {
     return (
-      <StudyRegistrationAccessRequestOutcome
+      <GenericRegistrationAccessRequestOutcome
         config={config[FormOutcome.duplicateSubmission]}
       />
     );

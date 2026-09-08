@@ -10,9 +10,12 @@ export interface TierToolbarConfiguration extends LabelAndDescription {
   showStop: boolean;
   showStatus: boolean;
   tierLabel?: string;
+  requirePayModel?: boolean;
+  workspaceAccountManagerTarget?: string;
 }
 
 export interface SettingsPanelConfiguration {
+  enabled?: boolean;
   showKernels: boolean; // do we need to show the kernel panel?
   width?: number;
 }
@@ -36,6 +39,7 @@ export interface FreeWorkspaceTierConfiguration extends WorkspaceTierInformation
 
 export interface RemoteComputeWorkspaceTierConfiguration extends WorkspaceTierInformation {
   baseUrl?: string;
+  enableOptions?: boolean;
   type: Extract<WorkspaceTier, 'remote'>;
   startTimeLimit?: number; // time limit in seconds
 }

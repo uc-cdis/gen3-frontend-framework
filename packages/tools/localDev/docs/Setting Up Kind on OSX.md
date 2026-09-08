@@ -38,10 +38,16 @@ The last two steps are optional, and are not always needed.
 
 If you run the script without any arguments it show the help.
 
-Runnign the script with the ```--all``` argument should create a cluster and configure it for gen3 helm charts.
+Running the script with the ```--all``` argument should create a cluster and configure it for gen3 helm charts.
 
 ```bash
 ./setup-kind-gen3.sh --all
+```
+
+install your helm chart, and then run:
+
+```bash
+./setup-kind-gen3.sh --setup-ssl
 ```
 
 ### Manual steps to set up kind

@@ -26,6 +26,7 @@ const DEFAULT_WORKSPACES_CONFIGURATION: WorkspacesCenterPageConfiguration = {
         showStatus: false,
       },
       settings: {
+        enabled: true,
         showKernels: false,
       },
       dataAndTools: {
@@ -44,13 +45,15 @@ const DEFAULT_WORKSPACES_CONFIGURATION: WorkspacesCenterPageConfiguration = {
       baseUrl:
         process.env.REMOTE_COMPUTE_WORKSPACE_ASSETS_BASE_URL ??
         '/api/workspace-assets/remote',
+      enableOptions: false,
       toolbar: {
-        label: 'Remote Compute Environment',
+        label: 'Trusted Research Environment',
         description: 'Running with Remote Kernels',
         showStop: true,
         showStatus: true,
       },
       settings: {
+        enabled: true,
         showKernels: true,
       },
       dataAndTools: {

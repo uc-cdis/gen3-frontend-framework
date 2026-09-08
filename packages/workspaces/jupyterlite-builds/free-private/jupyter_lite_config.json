@@ -3,24 +3,10 @@
     "apps": ["lab"],
     "output_dir": "site"
   },
-  "LiteServerConfig": {
-    "contents": ["./notebooks"],
-    "settings_overrides": {
-      "@jupyterlite/piplite-extension:plugin": {
-        "pipliteDeps": [
-          "numpy",
-          "pandas",
-          "scipy",
-          "matplotlib",
-          "seaborn",
-          "biopython",
-          "scanpy",
-          "anndata",
-          "pysam",
-          "boto3",
-          "s3fs"
-        ]
-      }
-    }
+  "PyodideAddon": {
+    "pyodide_url": "https://github.com/pyodide/pyodide/releases/download/314.0.5/pyodide-314.0.5.tar.bz2"
+  },
+  "PyodideLockAddon": {
+    "enabled": false
   }
 }

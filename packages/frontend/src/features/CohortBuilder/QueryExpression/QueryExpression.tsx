@@ -37,6 +37,7 @@ export interface QueryExpressionProps {
   shouldShowSummary?: (field: string, count: number) => boolean;
   hooks?: Partial<QueryExpressionHooks>;
   fieldsAreFlat?: boolean;
+  showLogicalOperators?: boolean;
 }
 
 const QueryExpression = ({
@@ -44,6 +45,7 @@ const QueryExpression = ({
   shouldShowSummary = DefaultShouldShowSummary,
   hooks,
   fieldsAreFlat = true,
+  showLogicalOperators = false,
 }: QueryExpressionProps) => {
   const currentCohortId = useCoreSelector((state: CoreState) =>
     selectCurrentCohortId(state),
@@ -58,6 +60,7 @@ const QueryExpression = ({
         cohortName: currentCohortName,
         cohortId: currentCohortId,
         displayOnly: false,
+        showLogicalOperators,
         fieldsAreFlat: fieldsAreFlat,
         shouldShowSummary: shouldShowSummary,
         useClearCohortFilters: () => {

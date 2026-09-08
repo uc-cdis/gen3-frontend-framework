@@ -49,9 +49,9 @@ const AnalysisWithCloseButton = ({
             className="flex flex-col w-full bg-base-lightest py-2 pt-8 h-full overflow-hidden"
             style={{ ...overlayCell, ...styles }}
           >
-            <div className="flex w-full nowrap mb-2 px-20 justify-center">
+            <div className="flex w-full nowrap mb-4 px-20 justify-center">
               <Stack gap="xs" align="center" justify="center">
-                <Text size="2em">{label ?? DEFAULT_LABEL}</Text>
+                <Text size="1.75em">{label ?? DEFAULT_LABEL}</Text>
                 <Center>
                   <Text size="sm" ta="center" textWrap="balance">
                     {description ?? DEFAULT_DESCRIPTION}
@@ -93,7 +93,7 @@ const AnalysisWithCloseButton = ({
                   />
                 </ActionIcon>
               </Tooltip>
-              <Text fw={500} size="2em">
+              <Text fw={500} size="1.75em">
                 {backLabel}
               </Text>
             </div>
