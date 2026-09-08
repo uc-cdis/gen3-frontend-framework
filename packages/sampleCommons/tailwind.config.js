@@ -191,6 +191,9 @@ module.exports = {
     'text-tiny',
     'text-xxs',
     'text-xxxs',
+    'text-md',
+    'text-lg',
+    'text-xl',
     'h-20',
     'mt-10',
     'mb-10',
@@ -200,6 +203,9 @@ module.exports = {
     'focus-visible:ring-inset',
     'focus-visible:ring-2',
     'focus-visible:ring-focusColor',
+    'pl-[25%]',
+    'pl-[33%]',
+    'pl-[50%]',
     {
       pattern:
         /bg-(primary|secondary|accent|accentWarm|accentCool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
