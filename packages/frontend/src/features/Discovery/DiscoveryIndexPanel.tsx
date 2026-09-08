@@ -1,8 +1,9 @@
-import React, { ReactNode, useMemo, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import DiscoveryTable from './DiscoveryTable/DiscoveryTable';
 import { Button, Grid, Text } from '@mantine/core';
 import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
-import {
+import type {
   MRT_PaginationState,
   MRT_SortingState,
 } from 'mantine-react-table-open';
@@ -11,7 +12,8 @@ import ActionBar from './ActionBar/ActionBar';
 import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
 import { CollapsableCharts } from '../../components/charts';
 import { useLoadAllMDSData } from './DataLoaders/MDSAllLocal/DataLoader';
-import { AdvancedSearchTerms, SearchCombination } from './Search/types';
+import type { AdvancedSearchTerms } from './Search/types';
+import { SearchCombination } from './Search/types';
 import SearchInputWithSuggestions from './Search/SearchInputWithSuggestions';
 import AiSearch from './Search/AiSearch';
 import { getDiscoveryDataLoader } from './DataLoaders/registeredDataLoaders';
