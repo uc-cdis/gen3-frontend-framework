@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import AnalysisCenter from './AnalysisCenter';
-import { AnalysisCenterConfiguration, CardTitleAndHRef } from './types';
+import type { AnalysisCenterConfiguration, CardTitleAndHRef } from './types';
 import IFrameComponent from '../../components/IFrameComponent';
 import {
   ActionIcon,
