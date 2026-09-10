@@ -31,7 +31,8 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       redirect: 'manual',
     });
 
-    if (!fenceResponse.ok) {
+    // Treat 2xx and 302 as non-errors as we are not redirecting here
+    if (!fenceResponse.ok && fenceResponse.status !== 302) {
       console.warn(`Fence logout failed (${fenceResponse.status})`);
     }
   } catch (error: unknown) {

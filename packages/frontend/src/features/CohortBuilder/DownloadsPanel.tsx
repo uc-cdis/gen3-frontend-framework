@@ -111,6 +111,7 @@ const DownloadsPanel = ({
       fields,
       filter,
       indexPrefix,
+      index,
       accessibility: accessibility ?? Accessibility.ALL,
       // sort: sort, // TODO add sort
     }),

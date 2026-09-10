@@ -31,7 +31,7 @@ export const sowerJobApi = gen3Api.injectEndpoints({
       query: (params) => ({
         url: `${GEN3_SOWER_API}/dispatch`,
         method: 'POST',
-        body: params,
+        body: params.dispatchJob,
         validateStatus: (response) => {
           if ('originalStatus' in response)
             return response.status === 200 && response.originalStatus === 200;

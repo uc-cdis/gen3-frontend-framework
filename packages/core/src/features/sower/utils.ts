@@ -14,8 +14,9 @@ export function isJobActionFunctionConfig(
 
   return (
     typeof candidate.name === 'string' &&
-    typeof candidate.parameters === 'object' &&
-    candidate.parameters !== null
+    (candidate.parameters === undefined ||
+      (typeof candidate.parameters === 'object' &&
+        candidate.parameters !== null))
   );
 }
 

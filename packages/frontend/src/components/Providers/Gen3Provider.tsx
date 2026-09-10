@@ -1,15 +1,17 @@
-import React, { FC, ReactNode, useEffect } from 'react';
+import type { FC, ReactNode } from 'react';
+import React, { useEffect } from 'react';
 import { CoreProvider } from '@gen3/core';
 import { createTheme, Modal, Pagination } from '@mantine/core';
-import { TenStringArray } from '../../utils';
+import type { TenStringArray } from '../../utils';
 import { SessionProvider } from '../../lib/session/session';
 import { type Fonts, type RegisteredIcons } from '../../lib/content/types';
-import { ContextModalProps, ModalsProvider } from '@mantine/modals';
+import type { ContextModalProps } from '@mantine/modals';
+import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { addCollection } from '@iconify-icon/react';
-import { SessionConfiguration } from '../../lib/session/types';
+import type { SessionConfiguration } from '../../lib/session/types';
 import { gen3Modals, Gen3ModalsProvider, type ModalsConfig } from '../Modals';
-import { AuthorizedRoutesConfig } from '../../lib/authz/type';
+import type { AuthorizedRoutesConfig } from '../../lib/authz/type';
 import ProtectedRoutesProvider from '../AuthorizedRoutes/ProtectedRoutesProvider';
 import { CookiesProvider } from 'react-cookie';
 

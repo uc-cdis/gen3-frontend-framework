@@ -1,17 +1,17 @@
 import React, { useEffect, useMemo } from 'react';
 import {
-  useGetSowerJobListQuery,
-  useCoreSelector,
   selectSowerJobDatetimeCache,
+  useCoreSelector,
+  useGetSowerJobListQuery,
 } from '@gen3/core';
 import JobPanel from './JobPanel';
-import useSowerJobEventBus from './useSowerJobEventBus';
+import { SowerProvider, useSowerContext } from './SowerContext';
 import { showNotification } from '@mantine/notifications';
 
-const SowerJobListWrapper = () => {
+const SowerJobListInner = () => {
   const { data, isLoading, refetch } = useGetSowerJobListQuery();
   const sowerJobDatetimeCache = useCoreSelector(selectSowerJobDatetimeCache);
-  const { on, off } = useSowerJobEventBus();
+  const { on, off } = useSowerContext();
   const activeJobs = useMemo(
     () =>
       (data || [])
@@ -37,5 +37,11 @@ const SowerJobListWrapper = () => {
     />
   );
 };
+
+const SowerJobListWrapper = () => (
+  <SowerProvider>
+    <SowerJobListInner />
+  </SowerProvider>
+);
 
 export default SowerJobListWrapper;

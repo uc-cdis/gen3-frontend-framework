@@ -6,7 +6,7 @@ import { notifications } from '@mantine/notifications';
 import type { CreateAndExportOutputConfig } from '@gen3/core';
 import { useSubmitSowerJobMutation } from '@gen3/core';
 import { bindSowerOutputJob, buildSubmitSowerJob } from './sowerActions';
-import useSowerJobEventBus from '../useSowerJobEventBus';
+import { useSowerContext } from '../SowerContext';
 
 interface SubmitSowerJobButtonProps {
   actions: CreateAndExportOutputConfig;
@@ -15,19 +15,19 @@ interface SubmitSowerJobButtonProps {
    */
   label: string;
   /**
-   *   Left Icon for the button, can be undefined too
+   *   Left Icon for the button can be undefined too
    */
   leftIcon?: ReactElement;
   /**
-   *   Right Icon for the  button, can be undefined too (default to dropdown icon)
+   *   Right Icon for the button can be undefined too (default to dropdown icon)
    */
   rightIcon?: ReactElement;
   /**
-   *    only provide inactiveText if we want label for dropdown elements
+   *    only provide inactiveText if we want a label for dropdown elements
    */
   inactiveText?: string;
   /**
-   *    label to show when menu item's action is executing
+   *    label to show when a menu item's action is executing
    */
   activeText?: string;
   /**
@@ -82,45 +82,34 @@ const SubmitSowerJobButton = forwardRef<
       }
     }, [isSuccess, isError]);
 
-    const { update, on } = useSowerJobEventBus();
+    const { update, on } = useSowerContext();
     useEffect(() => {
       if (data?.uid) {
-        console.log('data', data);
         update(data.uid);
-        on('SubmitSowerJobButton', [data.uid], (uid) => {
-          // oxlint-disable-next-line no-console
-          console.log('uid', uid);
+        on('SubmitSowerJobButton', [data.uid], (_uid) => {
+          // job completed — output action is handled by useJobOutputAction in SowerProvider
         });
       }
     }, [data, on, update]);
 
     const { jobAction, outputAction } = actions;
 
-    console.log('jobAction', jobAction);
-    console.log('outputAction', outputAction);
-
     const handleSubmitJob = async () => {
-      const jobBody = buildSubmitSowerJob(jobAction.name, jobAction.parameters); // builds the job body for the sower job
+      const jobBody = buildSubmitSowerJob(jobAction.name, jobAction.parameters);
       if (!jobBody) {
-        // TODO Add notification
         console.error('No job body provided');
         return;
       }
 
       const outputFunction = bindSowerOutputJob(outputAction?.name);
-      if (!outputFunction) {
-        console.error('No output function provided');
-        // TODO Add notification
+      if (outputAction && !outputFunction) {
+        console.warn('No output function provided');
       }
-
-      // submit job
 
       await submitJob({
         dispatchJob: jobBody,
         outputAction: outputFunction ?? undefined,
-      });
-      console.log('job submitted');
-      // TODO Add notification
+      }).unwrap();
     };
 
     return (

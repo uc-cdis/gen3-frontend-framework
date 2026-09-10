@@ -21,7 +21,7 @@ const buildPFBFromCohort: JobBuilderAction = (params) => {
   return {
     action: 'export',
     input: {
-      filters: convertFilterSetToGqlFilter(filter),
+      filter: convertFilterSetToGqlFilter(filter),
       root_node: index,
     },
   };
@@ -36,7 +36,7 @@ const buildPFBFromFiles: JobBuilderAction = (params) => {
   return {
     action: 'export-files',
     input: {
-      filters: convertFilterSetToGqlFilter(filter),
+      filter: convertFilterSetToGqlFilter(filter),
       root_node: index,
     },
   };
