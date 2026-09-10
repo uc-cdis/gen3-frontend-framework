@@ -87,7 +87,7 @@ const SubmitSowerJobButton = forwardRef<
       if (data?.uid) {
         console.log('data', data);
         update(data.uid);
-        on('SubmitSowerJobButton', [data?.uid], (uid) => {
+        on('SubmitSowerJobButton', [data.uid], (uid) => {
           // oxlint-disable-next-line no-console
           console.log('uid', uid);
         });
