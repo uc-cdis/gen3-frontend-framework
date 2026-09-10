@@ -20,8 +20,8 @@
   "scripts": {
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
-    "compile": "tsc",
-    "types": "tsc --emitDeclarationOnly",
+    "compile": "tsgo",
+    "types": "tsgo --emitDeclarationOnly",
     "clean": "rm -rf dist",
     "rollup": "rollup --config rollup.config.mjs",
     "test": "echo \"Error: no test specified\" && exit 1",
