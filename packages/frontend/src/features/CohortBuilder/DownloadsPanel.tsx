@@ -1,13 +1,13 @@
-import React, { JSX, useMemo } from 'react';
-import {
+import type { JSX } from 'react';
+import React, { useMemo } from 'react';
+import type {
   DownloadButtonPropsWithAction,
   DropdownsWithButtonsProps,
 } from './types';
-import {
-  DownloadButtonProps,
-  type DropdownButtonProps,
-} from '../../components/Buttons/DropdownButtons';
-import { Accessibility, FilterSet } from '@gen3/core';
+import type { DownloadButtonProps } from '../../components/Buttons/DropdownButtons';
+import { type DropdownButtonProps } from '../../components/Buttons/DropdownButtons';
+import type { FilterSet } from '@gen3/core';
+import { Accessibility, isCreateAndExportOutputConfig } from '@gen3/core';
 import CohortActionButton from './downloads/CohortActionButton';
 import {
   findButtonAction,
@@ -18,6 +18,7 @@ import { MdDownload as DownloadIcon } from 'react-icons/md';
 import CohortDropdownActionButton from './downloads/CohortDropdownActionButton';
 import CohortDataLibraryListButton from './downloads/CohortDataLibraryListButton';
 import { useSession } from '../../lib/session/session';
+import SubmitSowerJobButton from '../Sower/actions/SubmitSowerJobButton';
 
 const resolveAction = (buttonAction?: string) => {
   let actionFunction = NullButtonAction;
@@ -103,7 +104,7 @@ const DownloadsPanel = ({
 
   const loginRequired = !!loginForDownload;
 
-  const commonActionArgs = useMemo(
+  const cohortActionArgs = useMemo(
     () => ({
       type: index,
       totalCount,
@@ -141,17 +142,61 @@ const DownloadsPanel = ({
   const dropdownElements = useMemo(() => {
     return Object.values(dropdownsToRender).map(
       (dropdown: DropdownsWithButtonsProps) =>
-        createDownloadMenuButton(dropdown, commonActionArgs),
+        createDownloadMenuButton(dropdown, cohortActionArgs),
     );
-  }, [dropdownsToRender, commonActionArgs]);
+  }, [dropdownsToRender, cohortActionArgs]);
 
   const buttonElements = useMemo(() => {
     return buttons.map((button) => {
       const buttonAction = button.action ?? button.type;
-      const { actionFunction, actionArgs } = resolveAction(buttonAction);
 
+      console.log('button', button, 'button action', buttonAction);
       const disabled = loginRequired && !isUserLoggedIn;
 
+      // sower action contains additional parameters in the actionArgs member
+      /*
+       actionArgs :{
+          createAction : {
+             action: "export"
+             parameters: {
+             job parameters
+             }
+           outputAction: {
+             action: "export"
+             parameters: {
+             }
+        }
+       }
+       */
+      if (buttonAction === 'sower') {
+        console.log('Sower args', button.actionArgs);
+        if (isCreateAndExportOutputConfig(button.actionArgs)) {
+          const { jobAction, outputAction } = button.actionArgs;
+          return (
+            <SubmitSowerJobButton
+              label={button.title}
+              tooltipText={button.tooltipText}
+              disabled={disabled || !button.enabled}
+              actions={{
+                jobAction: {
+                  name: jobAction.name,
+                  parameters: { ...jobAction.parameters, ...cohortActionArgs },
+                },
+                outputAction: outputAction
+                  ? {
+                      name: outputAction.name,
+                      parameters: outputAction.parameters,
+                    }
+                  : undefined,
+              }}
+              key={button.title}
+            />
+          );
+        }
+        return null;
+      }
+
+      const { actionFunction, actionArgs } = resolveAction(buttonAction);
       if (actionFunction && buttonAction === 'cohortDataFilesToDataLibrary') {
         return (
           <CohortDataLibraryListButton
@@ -163,7 +208,7 @@ const DownloadsPanel = ({
             actionArgs={{
               ...actionArgs,
               ...button.actionArgs,
-              ...commonActionArgs,
+              ...cohortActionArgs,
             }}
             key={button.title}
           />
@@ -179,14 +224,14 @@ const DownloadsPanel = ({
           actionFunction={actionFunction}
           actionArgs={{
             ...button.actionArgs,
-            ...commonActionArgs,
+            ...cohortActionArgs,
             ...actionArgs,
           }}
           key={button.title}
         />
       );
     });
-  }, [buttons, commonActionArgs, loginRequired, isUserLoggedIn]);
+  }, [buttons, cohortActionArgs, loginRequired, isUserLoggedIn]);
 
   return dropdowns || buttons ? (
     <div className="flex space-x-2 items-center">

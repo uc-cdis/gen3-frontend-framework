@@ -132,10 +132,11 @@ JupyterLite workspace UI — components, hooks, API layer, and auth integration 
 - All server data fetching via RTK Query — no raw `fetch`/`axios` in components.
 - Tailwind CSS first; Mantine for UI foundation; CSS Modules only as a last resort.
 - `import type` for type-only imports.
-- Barrel exports via `index.ts` or `callback.ts` in each feature/component directory.
+- Barrel exports via `index.ts` in each feature/component directory.
 - `console.warn` / `console.error` only — no `console.log` in production code.
 - Use `ErrorCard`/`MessageCard` components for user-facing errors, not `alert()`.
 - Type guards from `@gen3/core/utils/ts-utils`.
+- Do not use `!.` operator.
 
 ## Environment
 

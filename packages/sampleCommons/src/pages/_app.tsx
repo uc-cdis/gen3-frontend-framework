@@ -17,6 +17,7 @@ import {
   Gen3Provider,
   type ModalsConfig,
   registerCohortBuilderDefaultPreviewRenderers,
+  registerCohortSowerActions,
   registerExplorerDefaultCellRenderers,
   registerIGVApp,
   registerMetadataSchemaApp,
@@ -86,6 +87,7 @@ const Gen3App = ({
       registerIGVApp();
       registerExplorerDefaultCellRenderers();
       registerCohortBuilderDefaultPreviewRenderers();
+      registerCohortSowerActions();
       registerCohortTableCustomCellRenderers();
       registerCustomExplorerDetailsPanels();
       isFirstRender.current = false;

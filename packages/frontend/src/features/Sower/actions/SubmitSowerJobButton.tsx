@@ -5,11 +5,11 @@ import { Button, Tooltip } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import type { CreateAndExportOutputConfig } from '@gen3/core';
 import { useSubmitSowerJobMutation } from '@gen3/core';
-import { buildSubmitSowerJob } from './sowerActions';
+import { bindSowerOutputJob, buildSubmitSowerJob } from './sowerActions';
 import useSowerJobEventBus from '../useSowerJobEventBus';
 
 interface SubmitSowerJobButtonProps {
-  parameters: CreateAndExportOutputConfig;
+  actions: CreateAndExportOutputConfig;
   /**
    * label of button
    */
@@ -56,10 +56,10 @@ const SubmitSowerJobButton = forwardRef<
 >(
   (
     {
-      parameters,
-      tooltipText = undefined,
+      actions,
+      label,
+      tooltipText,
       disabled = false,
-      label = 'Submit',
       ...props
     }: SubmitSowerJobButtonProps,
     ref,
@@ -94,20 +94,33 @@ const SubmitSowerJobButton = forwardRef<
       }
     }, [data, on, update]);
 
-    const { createAction, outputAction } = parameters;
+    const { jobAction, outputAction } = actions;
+
+    console.log('jobAction', jobAction);
+    console.log('outputAction', outputAction);
 
     const handleSubmitJob = async () => {
-      const jobBody = buildSubmitSowerJob(
-        createAction.actionName,
-        createAction.parameters,
-      ); // builds the job body for the sower job
-      if (jobBody) {
-        await submitJob(jobBody);
-      } else {
+      const jobBody = buildSubmitSowerJob(jobAction.name, jobAction.parameters); // builds the job body for the sower job
+      if (!jobBody) {
+        // TODO Add notification
         console.error('No job body provided');
+        return;
       }
 
-      //  const outputFunction = find(outputAction?.actionName);
+      const outputFunction = bindSowerOutputJob(outputAction?.name);
+      if (!outputFunction) {
+        console.error('No output function provided');
+        // TODO Add notification
+      }
+
+      // submit job
+
+      await submitJob({
+        dispatchJob: jobBody,
+        outputAction: outputFunction ?? undefined,
+      });
+      console.log('job submitted');
+      // TODO Add notification
     };
 
     return (

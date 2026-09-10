@@ -115,7 +115,7 @@ export const bindSowerOutputJob = (
   }
 
   return {
-    actionName: parameters.sendAction.actionName,
+    name: parameters.sendAction.name,
     parameters: parameters.sendAction.parameters ?? {},
     actionFunction: outputAction,
   };

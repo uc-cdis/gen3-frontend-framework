@@ -27,7 +27,10 @@ import {
 
 import { selectSowerJobDatetimeCache } from './sowerJobDatetime';
 
-import { isJobActionFunctionConfig } from './utils';
+import {
+  isCreateAndExportOutputConfig,
+  isJobActionFunctionConfig,
+} from './utils';
 
 import {
   addSowerJob,
@@ -73,4 +76,5 @@ export {
   selectSowerJobList,
   selectSowerJobListById,
   isJobActionFunctionConfig,
+  isCreateAndExportOutputConfig,
 };

@@ -32,10 +32,7 @@ const globals = {
   nanoid: 'nanoid',
 };
 
-const external = [
-  Object.keys(globals),
-  // ... your existing externals
-];
+const external = Object.keys(globals);
 
 // Shared JS build factory
 const jsBundle = (input, baseName) => ({

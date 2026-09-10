@@ -41,8 +41,8 @@ export type JobBuilderAction = (
 export type JobOutputAction = JobActionFunction<Record<string, unknown>, void>;
 
 export interface JobActionFunctionConfig {
-  actionName: string;
-  parameters: Record<string, unknown>;
+  name: string;
+  parameters?: Record<string, unknown>;
 }
 
 export interface BoundJobActionConfig<T> extends JobActionFunctionConfig {
@@ -52,7 +52,7 @@ export interface BoundJobActionConfig<T> extends JobActionFunctionConfig {
 // handles Sower job: consist of the sower job action and optionally an action which uses the output of the job
 // used in the JobsSlice and is serializable
 export interface CreateAndExportOutputConfig {
-  createAction: JobActionFunctionConfig;
+  jobAction: JobActionFunctionConfig;
   outputAction?: JobActionFunctionConfig;
 }
 
@@ -69,12 +69,11 @@ export enum SowerJobStage {
 
 export interface JobWithActions {
   uid: string;
-  config?: CreateAndExportOutputConfig;
-  actions?: BoundCreateAndOutputAction;
+  actions: BoundCreateAndOutputAction;
   stage: SowerJobStage;
   created: number;
   updated: number;
-  name: string;
+  name?: string;
   status: SowerJobStatus;
   outputGUID?: string;
 }
@@ -82,6 +81,11 @@ export interface JobWithActions {
 export interface DispatchJobParameters {
   action: string;
   input: Record<string, any>;
+}
+
+export interface DispatchJobWithAction {
+  dispatchJob: DispatchJobParameters;
+  outputAction?: BoundJobActionConfig<JobOutputAction>;
 }
 
 export interface DispatchJobResponse {

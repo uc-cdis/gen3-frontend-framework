@@ -12,13 +12,13 @@ class ActionRegistry<T> {
     this.actions.set(name, action);
   }
 
-  get(name: string): T {
+  getAction(name: string): T | null {
     const action = this.actions.get(name);
-    if (!action) throw new Error(`Action "${name}" not registered`);
+    if (!action) return null;
     return action;
   }
 
-  has(name: string): boolean {
+  hasAction(name: string): boolean {
     return this.actions.has(name);
   }
 }
@@ -27,6 +27,6 @@ export const sowerJobBuilderRegistry = new ActionRegistry<JobBuilderAction>();
 export const sowerOutputActionRegistry = new ActionRegistry<JobOutputAction>();
 
 export const findCreateJobAction = (name: string) =>
-  sowerJobBuilderRegistry.get(name);
+  sowerJobBuilderRegistry.getAction(name);
 export const findSendResultsAction = (name: string) =>
-  sowerOutputActionRegistry.get(name);
+  sowerOutputActionRegistry.getAction(name);

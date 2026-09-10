@@ -40,15 +40,12 @@ const useJobOutputAction = () => {
       fetchOutput(job.uid)
         .then(({ data, error }) => {
           if (error) {
-            job.actions!.outputActionFunction!.actionFunction({
-              parameters: job.actions!.outputActionFunction!.parameters,
-              onError: undefined,
-            });
+            // notify
             return;
           }
-          job.actions!.outputActionFunction!.actionFunction({
+          job.actions?.outputActionFunction?.actionFunction({
             parameters: {
-              ...job.actions!.outputActionFunction!.parameters,
+              ...job.actions?.outputActionFunction?.parameters,
               output: data?.output ?? '',
             },
           });

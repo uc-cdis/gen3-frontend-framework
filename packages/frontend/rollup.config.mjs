@@ -43,7 +43,6 @@ const globals = {
   'react-icons/bs': 'reactIcons',
   'react-icons/fi': 'reactIcons',
   'react-icons/lu': 'reactIcons',
-  'react-icons/md': 'reactIcons',
   'react-icons/io': 'reactIcons',
   'react-icons/ri': 'reactIcons',
   'react-icons/ti': 'reactIcons',
