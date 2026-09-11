@@ -13,6 +13,7 @@ import type { SessionConfiguration } from '../../lib/session/types';
 import { gen3Modals, Gen3ModalsProvider, type ModalsConfig } from '../Modals';
 import type { AuthorizedRoutesConfig } from '../../lib/authz/type';
 import ProtectedRoutesProvider from '../AuthorizedRoutes/ProtectedRoutesProvider';
+import { SowerProvider } from '../../features/Sower/SowerContext';
 import { CookiesProvider } from 'react-cookie';
 
 interface Gen3ProviderProps {
@@ -150,30 +151,32 @@ const Gen3Provider = ({
         <ModalsProvider modals={{ ...contextModals, ...gen3Modals }}>
           <Notifications position={defaultNotificationPosition} />
           <SessionProvider {...sessionConfig}>
-            <ProtectedRoutesProvider
-              config={
-                protectedRoutesConfig ?? {
-                  routes: {
-                    '/DataLibrary': {
-                      loginRequired: true,
+            <SowerProvider>
+              <ProtectedRoutesProvider
+                config={
+                  protectedRoutesConfig ?? {
+                    routes: {
+                      '/DataLibrary': {
+                        loginRequired: true,
+                      },
+                      '/Workspace': {
+                        loginRequired: true,
+                      },
+                      '/Profile': {
+                        loginRequired: true,
+                      },
+                      '*': {
+                        loginRequired: false,
+                      },
                     },
-                    '/Workspace': {
-                      loginRequired: true,
-                    },
-                    '/Profile': {
-                      loginRequired: true,
-                    },
-                    '*': {
-                      loginRequired: false,
-                    },
-                  },
+                  }
                 }
-              }
-            >
-              <Gen3ModalsProvider config={modalsConfig}>
-                {children}
-              </Gen3ModalsProvider>
-            </ProtectedRoutesProvider>
+              >
+                <Gen3ModalsProvider config={modalsConfig}>
+                  {children}
+                </Gen3ModalsProvider>
+              </ProtectedRoutesProvider>
+            </SowerProvider>
           </SessionProvider>
         </ModalsProvider>
       </CookiesProvider>

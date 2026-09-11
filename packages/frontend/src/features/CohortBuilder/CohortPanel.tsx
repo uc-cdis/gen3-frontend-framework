@@ -1,5 +1,5 @@
 import type { JSX } from 'react';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { partial } from 'lodash';
 import type {
   AggregationsData,
@@ -22,7 +22,6 @@ import {
   useCoreSelector,
   useGetAggsQuery,
   useGetCountsQuery,
-  useSubmitSowerJobMutation,
 } from '@gen3/core';
 import { type CohortPanelConfiguration } from './types';
 import {
@@ -67,7 +66,6 @@ import {
 } from './hooks';
 import DropdownPanel from '../../components/facets/Panels/DropdownPanel';
 import QueryExpression from './QueryExpression';
-import useSowerJobEventBus from '../Sower/useSowerJobEventBus';
 
 const EmptyData = {};
 
@@ -396,16 +394,6 @@ export const CohortPanel = ({
     accessibility: accessLevel,
     queryId: cohortId,
   });
-
-  // oxlint-disable-next-line no-unused-vars
-  const [submitJob, result] = useSubmitSowerJobMutation();
-  const { update } = useSowerJobEventBus();
-
-  useEffect(() => {
-    if (result?.data) {
-      update(result.data?.uid);
-    }
-  }, [result]);
 
   if (isCountsError || isAggsQueryError) {
     return <ErrorCard message="Unable to fetch data from server" />; // TODO: replace with configurable message

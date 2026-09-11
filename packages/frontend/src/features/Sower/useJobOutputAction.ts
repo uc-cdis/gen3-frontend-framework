@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 import {
   selectSowerJobList,
   SowerJobStage,
-  updateSowerJobStage,
+  SowerJobStatus,
+  updateSowerJob,
   useCoreDispatch,
   useCoreSelector,
   useLazyGetSowerOutputQuery,
@@ -20,20 +21,23 @@ const useJobOutputAction = () => {
   const dispatch = useCoreDispatch();
   const [fetchOutput] = useLazyGetSowerOutputQuery();
 
+  console.log('jobs', jobs);
+
   useEffect(() => {
     const pending = jobs.filter(
       (j) =>
-        j.status === 'Completed' &&
-        j.stage === SowerJobStage.JobDispatched &&
-        j.actions?.outputActionFunction,
+        j.status === 'Completed' && j.stage === SowerJobStage.JobDispatched,
     );
+
+    console.log('pending jobs', pending);
 
     for (const job of pending) {
       // Advance stage immediately to prevent re-entry on the next render cycle.
       dispatch(
-        updateSowerJobStage({
+        updateSowerJob({
           jobId: job.uid,
           stage: SowerJobStage.SendJobOutput,
+          status: SowerJobStatus.Completed,
         }),
       );
 

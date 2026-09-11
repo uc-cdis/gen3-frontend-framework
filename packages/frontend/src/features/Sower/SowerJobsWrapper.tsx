@@ -1,32 +1,32 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   selectSowerJobDatetimeCache,
   useCoreSelector,
   useGetSowerJobListQuery,
 } from '@gen3/core';
 import JobPanel from './JobPanel';
-import { SowerProvider, useSowerContext } from './SowerContext';
 import { showNotification } from '@mantine/notifications';
 
-const SowerJobListInner = () => {
+const SowerJobListWrapper = () => {
   const { data, isLoading, refetch } = useGetSowerJobListQuery();
   const sowerJobDatetimeCache = useCoreSelector(selectSowerJobDatetimeCache);
-  const { on, off } = useSowerContext();
-  const activeJobs = useMemo(
-    () =>
-      (data || [])
-        .filter((job) => job.status === 'Running')
-        .map((job) => job.uid),
-    [data],
-  );
+  const prevRunningRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
-    on('jobWrapper', activeJobs, (uid) =>
-      showNotification({ message: `Job ${uid} completed` }),
+    if (!data) return;
+    const currentRunning = new Set(
+      data.filter((j) => j.status === 'Running').map((j) => j.uid),
     );
-
-    return () => off('jobWrapper');
-  }, [activeJobs]);
+    for (const uid of prevRunningRef.current) {
+      if (!currentRunning.has(uid)) {
+        const job = data.find((j) => j.uid === uid);
+        if (job?.status === 'Completed') {
+          showNotification({ message: `Job ${uid} completed` });
+        }
+      }
+    }
+    prevRunningRef.current = currentRunning;
+  }, [data]);
 
   return (
     <JobPanel
@@ -37,11 +37,5 @@ const SowerJobListInner = () => {
     />
   );
 };
-
-const SowerJobListWrapper = () => (
-  <SowerProvider>
-    <SowerJobListInner />
-  </SowerProvider>
-);
 
 export default SowerJobListWrapper;

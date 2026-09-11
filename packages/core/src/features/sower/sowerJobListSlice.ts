@@ -21,6 +21,13 @@ interface UpdateSowerJobStage {
   stage: SowerJobStage;
 }
 
+interface UpdateSowerJobCompleted {
+  jobId: JobId;
+  stage: SowerJobStage;
+  status: SowerJobStatus;
+  outputGUID?: string;
+}
+
 export const sowerJobListAdapter = createEntityAdapter<JobWithActions, JobId>({
   sortComparer: (a, b) => {
     if (a.updated <= b.updated) return 1;
@@ -74,6 +81,18 @@ const sowerJobsListSlice = createSlice({
         },
       });
     },
+    updateSowerJob: (state, action: PayloadAction<UpdateSowerJobCompleted>) => {
+      const { jobId, stage, status, outputGUID } = action.payload;
+      sowerJobListAdapter.updateOne(state, {
+        id: jobId,
+        changes: {
+          stage: stage,
+          updated: Date.now(),
+          status: status,
+          outputGUID: outputGUID,
+        },
+      });
+    },
   },
 });
 
@@ -82,6 +101,7 @@ export const {
   removeSowerJob,
   updateSowerJobStatus,
   updateSowerJobStage,
+  updateSowerJob,
 } = sowerJobsListSlice.actions;
 
 export const sowerJobsListReducer = sowerJobsListSlice.reducer;

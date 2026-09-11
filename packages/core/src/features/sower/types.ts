@@ -1,9 +1,12 @@
-export const enum SowerJobStatus {
-  Running = 'Running',
-  Completed = 'Completed',
-  Failed = 'Failed',
-  Unknown = 'Unknown',
-}
+export const SowerJobStatus = {
+  Running: 'Running',
+  Completed: 'Completed',
+  Failed: 'Failed',
+  Unknown: 'Unknown',
+};
+
+export type SowerJobStatus =
+  (typeof SowerJobStatus)[keyof typeof SowerJobStatus];
 
 export type JobId = string;
 

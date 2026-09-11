@@ -6,7 +6,6 @@ import { notifications } from '@mantine/notifications';
 import type { CreateAndExportOutputConfig } from '@gen3/core';
 import { useSubmitSowerJobMutation } from '@gen3/core';
 import { bindSowerOutputJob, buildSubmitSowerJob } from './sowerActions';
-import { useSowerContext } from '../SowerContext';
 
 interface SubmitSowerJobButtonProps {
   actions: CreateAndExportOutputConfig;
@@ -64,7 +63,7 @@ const SubmitSowerJobButton = forwardRef<
     }: SubmitSowerJobButtonProps,
     ref,
   ) => {
-    const [submitJob, { data, isLoading, isSuccess, error, isError }] =
+    const [submitJob, { isLoading, isSuccess, isError }] =
       useSubmitSowerJobMutation();
 
     useEffect(() => {
@@ -81,16 +80,6 @@ const SubmitSowerJobButton = forwardRef<
         });
       }
     }, [isSuccess, isError]);
-
-    const { update, on } = useSowerContext();
-    useEffect(() => {
-      if (data?.uid) {
-        update(data.uid);
-        on('SubmitSowerJobButton', [data.uid], (_uid) => {
-          // job completed — output action is handled by useJobOutputAction in SowerProvider
-        });
-      }
-    }, [data, on, update]);
 
     const { jobAction, outputAction } = actions;
 
