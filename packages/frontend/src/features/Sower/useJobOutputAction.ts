@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import {
-  selectSowerJobList,
+  selectSowerJobsList,
   SowerJobStage,
   SowerJobStatus,
   updateSowerJob,
@@ -17,7 +17,7 @@ import {
  * Mount this hook once near the top of the Sower feature tree.
  */
 const useJobOutputAction = () => {
-  const jobs = useCoreSelector(selectSowerJobList);
+  const jobs = useCoreSelector(selectSowerJobsList);
   const dispatch = useCoreDispatch();
   const [fetchOutput] = useLazyGetSowerOutputQuery();
 

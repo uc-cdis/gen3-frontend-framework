@@ -7,16 +7,11 @@ import {
   useMantineReactTable,
 } from 'mantine-react-table-open';
 import { PiDotsThreeOutlineFill as DotIcon } from 'react-icons/pi';
-import {
-  JobListResponse,
-  JobStatus,
-  useLazyGetSowerOutputQuery,
-} from '@gen3/core';
+import type { JobWithActions } from '@gen3/core';
+import { useLazyGetSowerOutputQuery } from '@gen3/core';
 
 export interface JobTableProps {
-  readonly data: JobListResponse | undefined;
-  readonly isLoading: boolean;
-  readonly sowerJobDatetimeCache: Record<string, number>;
+  readonly data?: Array<JobWithActions>;
 }
 
 interface ColorConfig {
@@ -30,11 +25,7 @@ const STATUS_TO_COLOR: Record<string, ColorConfig> = {
   Completed: { mantine: 'utility.1', tailwind: 'utility-success' },
 };
 
-const JobTable = ({
-  data,
-  isLoading,
-  sowerJobDatetimeCache,
-}: JobTableProps) => {
+const JobTable = ({ data }: JobTableProps) => {
   const [filterValue, setFilterValue] = useState('Running');
   const [getOutput, outputResponse] = useLazyGetSowerOutputQuery();
   const filteredData = useMemo(
@@ -66,7 +57,7 @@ const JobTable = ({
       {
         accessorKey: 'status',
         header: 'Status',
-        Cell: ({ row }: MRT_Cell<JobStatus>) => {
+        Cell: ({ row }: MRT_Cell<JobWithActions>) => {
           const color = STATUS_TO_COLOR[row.original.status];
           return (
             <Badge
@@ -85,15 +76,13 @@ const JobTable = ({
       {
         id: 'datetime',
         header: 'Datetime',
-        Cell: ({ row }: MRT_Cell<JobStatus>) =>
-          sowerJobDatetimeCache?.[row.original.uid]
-            ? dateFormat.format(sowerJobDatetimeCache[row.original.uid])
-            : '--',
+        Cell: ({ row }: MRT_Cell<JobWithActions>) =>
+          dateFormat.format(row.original.updated),
       },
       {
         id: 'options',
         header: '',
-        Cell: ({ row }: MRT_Cell<JobStatus>) => (
+        Cell: ({ row }: MRT_Cell<JobWithActions>) => (
           <>
             {row.original.status === 'Completed' ? (
               <Menu>
@@ -117,9 +106,8 @@ const JobTable = ({
   );
 
   const table = useMantineReactTable({
-    columns: columns as MRT_ColumnDef<JobStatus>[],
+    columns: columns as MRT_ColumnDef<JobWithActions>[],
     data: filteredData,
-    state: { isLoading },
     enableTopToolbar: false,
     enableColumnActions: false,
     enableSorting: false,

@@ -25,8 +25,6 @@ import {
   SowerJobStatus,
 } from './types';
 
-import { selectSowerJobDatetimeCache } from './sowerJobDatetime';
-
 import {
   isCreateAndExportOutputConfig,
   isJobActionFunctionConfig,
@@ -42,8 +40,8 @@ import {
 } from './sowerJobListSlice';
 
 import {
-  selectSowerJobList,
   selectSowerJobListById,
+  selectSowerJobsList,
 } from './sowerJobListSelectors';
 
 export {
@@ -67,7 +65,6 @@ export {
   SowerJobStatus,
   SowerJobStage,
   type BoundJobActionConfig,
-  selectSowerJobDatetimeCache,
   useLazyGetMultipleSowerJobStatusQuery,
   addSowerJob,
   removeSowerJob,
@@ -75,7 +72,7 @@ export {
   updateSowerJobStage,
   updateSowerJob,
   sowerJobListSelectors,
-  selectSowerJobList,
+  selectSowerJobsList,
   selectSowerJobListById,
   isJobActionFunctionConfig,
   isCreateAndExportOutputConfig,

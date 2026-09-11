@@ -1,24 +1,13 @@
 import React from 'react';
-import type { QueryActionCreatorResult } from '@reduxjs/toolkit/query';
-import { Button } from '@mantine/core';
-import type { GetSowerJobListQueryType, JobListResponse } from '@gen3/core';
-import { LuRefreshCw as RefreshIcon } from 'react-icons/lu';
+import type { JobWithActions } from '@gen3/core';
 import JobTable from './JobTable';
 import JobOverview from './JobOverview';
 
 export interface JobPanelProps {
-  readonly data: JobListResponse | undefined;
-  readonly isLoading: boolean;
-  readonly refetch: () => QueryActionCreatorResult<GetSowerJobListQueryType>;
-  readonly sowerJobDatetimeCache: Record<string, number>;
+  readonly data: JobWithActions[];
 }
 
-const JobPanel = ({
-  data,
-  isLoading,
-  refetch,
-  sowerJobDatetimeCache,
-}: JobPanelProps) => {
+const JobPanel = ({ data }: JobPanelProps) => {
   return (
     <div className="p-4">
       <div className="flex justify-between">
@@ -26,16 +15,9 @@ const JobPanel = ({
           <h1 className="text-2xl font-bold">Jobs</h1>
           <p>Monitor and manage all running and completed jobs.</p>
         </div>
-        <Button leftSection={<RefreshIcon />} variant="white" onClick={refetch}>
-          Refresh
-        </Button>
       </div>
-      <JobOverview data={data} isLoading={isLoading} />
-      <JobTable
-        data={data}
-        isLoading={isLoading}
-        sowerJobDatetimeCache={sowerJobDatetimeCache}
-      />
+      <JobOverview data={data} />
+      <JobTable data={data} />
     </div>
   );
 };
