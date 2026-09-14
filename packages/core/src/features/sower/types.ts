@@ -10,6 +10,7 @@ export type SowerJobStatus =
 
 export type JobId = string;
 
+// Job Status read from the sower service
 export interface JobStatus {
   uid: JobId;
   status: SowerJobStatus;
@@ -70,15 +71,15 @@ export enum SowerJobStage {
   SendJobOutput = 2,
 }
 
-export interface JobWithActions {
-  uid: string;
-  actions: BoundCreateAndOutputAction;
-  stage: SowerJobStage;
+export interface ExtendedJobStatus extends JobStatus {
   created: number;
   updated: number;
-  name?: string;
-  status: SowerJobStatus;
   outputGUID?: string;
+}
+
+export interface JobWithActions extends ExtendedJobStatus {
+  actions: BoundCreateAndOutputAction;
+  stage: SowerJobStage;
 }
 
 export interface DispatchJobParameters {
@@ -89,6 +90,10 @@ export interface DispatchJobParameters {
 export interface DispatchJobWithAction {
   dispatchJob: DispatchJobParameters;
   outputAction?: BoundJobActionConfig<JobOutputAction>;
+}
+
+export interface NamedDispatchJobWithAction extends DispatchJobWithAction {
+  name: string;
 }
 
 export interface DispatchJobResponse {

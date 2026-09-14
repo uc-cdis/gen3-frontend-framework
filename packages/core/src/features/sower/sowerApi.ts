@@ -1,6 +1,10 @@
 import { gen3Api } from '../gen3';
 import { GEN3_SOWER_API } from '../../constants';
-import type { DispatchJobWithAction, JobStatus, JobWithActions } from './types';
+import type {
+  JobStatus,
+  JobWithActions,
+  NamedDispatchJobWithAction,
+} from './types';
 import { SowerJobStage, SowerJobStatus } from './types';
 import { addSowerJob } from './sowerJobListSlice';
 
@@ -26,7 +30,7 @@ export const sowerJobApi = gen3Api.injectEndpoints({
     }),
     submitSowerJob: builder.mutation<
       DispatchJobResponse,
-      DispatchJobWithAction
+      NamedDispatchJobWithAction
     >({
       query: (params) => ({
         url: `${GEN3_SOWER_API}/dispatch`,
@@ -43,7 +47,11 @@ export const sowerJobApi = gen3Api.injectEndpoints({
         const timestamp = Date.now();
         const payload: JobWithActions = {
           uid: data.uid,
-          actions: _arg,
+          actions: {
+            dispatchJob: _arg.dispatchJob,
+            outputActionFunction: _arg.outputAction,
+          },
+          name: _arg.name,
           created: timestamp,
           updated: timestamp,
           status: SowerJobStatus.Running,

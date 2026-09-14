@@ -96,6 +96,7 @@ const SubmitSowerJobButton = forwardRef<
       }
 
       await submitJob({
+        name: label,
         dispatchJob: jobBody,
         outputAction: outputFunction ?? undefined,
       }).unwrap();

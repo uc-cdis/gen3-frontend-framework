@@ -25,6 +25,13 @@ const STATUS_TO_COLOR: Record<string, ColorConfig> = {
   Completed: { mantine: 'utility.1', tailwind: 'utility-success' },
 };
 
+const dateFormat = new Intl.DateTimeFormat('en-us', {
+  month: 'short',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+});
+
 const JobTable = ({ data }: JobTableProps) => {
   const [filterValue, setFilterValue] = useState('Running');
   const [getOutput, outputResponse] = useLazyGetSowerOutputQuery();
@@ -36,13 +43,6 @@ const JobTable = ({ data }: JobTableProps) => {
     [filterValue, data],
   );
   const groupedData = data ? Object.groupBy(data, (row) => row.status) : {};
-
-  const dateFormat = new Intl.DateTimeFormat('en-us', {
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-  });
 
   useEffect(() => {
     if (outputResponse.isSuccess && !outputResponse.isFetching) {
@@ -102,7 +102,7 @@ const JobTable = ({ data }: JobTableProps) => {
         ),
       },
     ],
-    [],
+    [getOutput],
   );
 
   const table = useMantineReactTable({
