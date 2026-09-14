@@ -66,7 +66,7 @@ const processTopBarItems = (
                 modals.openContextModal({
                   modal: item.modal,
                   innerProps: {},
-                  size: 'xl',
+                  size: '90vw',
                 })
               }
             />

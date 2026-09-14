@@ -5,6 +5,7 @@ import { LuClock as CompletedIcon } from 'react-icons/lu';
 import { FiActivity as ActiveIcon } from 'react-icons/fi';
 import type { IconBaseProps } from 'react-icons';
 import type { JobWithActions } from '@gen3/core';
+import { backgroundStyles, colorClasses } from './colors';
 
 interface JobOverviewCardProps {
   readonly Icon: React.FC<IconBaseProps>;
@@ -19,6 +20,7 @@ const JobOverviewCard = ({
   count,
   text,
 }: JobOverviewCardProps) => {
+  const { bg, text: textColor } = colorClasses[color] ?? { bg: '', text: '' };
   return (
     <Paper
       shadow="md"
@@ -27,9 +29,10 @@ const JobOverviewCard = ({
       className="w-full flex flex-row gap-4"
     >
       <div
-        className={`w-16 h-16 flex justify-center items-center rounded-md bg-${color} bg-opacity-25`}
+        className="w-16 h-16 flex justify-center items-center rounded-md"
+        style={backgroundStyles[color]}
       >
-        <Icon size={32} className={`text-${color}`} />
+        <Icon size={32} className={`${textColor}`} />
       </div>
       <div className="flex flex-col">
         <p className="text-2xl font-bold">{count}</p>

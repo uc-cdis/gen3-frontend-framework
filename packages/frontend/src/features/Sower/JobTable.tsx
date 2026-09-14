@@ -15,14 +15,31 @@ export interface JobTableProps {
 }
 
 interface ColorConfig {
-  readonly mantine: string;
-  readonly tailwind: string;
+  mantine: string;
+  text: string;
+  bg: string;
+  border: string;
 }
 
 const STATUS_TO_COLOR: Record<string, ColorConfig> = {
-  Running: { mantine: 'utility.1', tailwind: 'utility-success' },
-  Failed: { mantine: 'utility.3', tailwind: 'utility-error' },
-  Completed: { mantine: 'utility.1', tailwind: 'utility-success' },
+  Running: {
+    mantine: 'utility.1',
+    text: 'text-utility-success',
+    bg: 'bg-utility-success',
+    border: 'border-utility-success',
+  },
+  Failed: {
+    mantine: 'utility.3',
+    text: 'utility-error',
+    bg: 'bg-utility-error',
+    border: 'border-utility-error',
+  },
+  Completed: {
+    mantine: 'utility.1',
+    text: 'utility-success',
+    bg: 'bg-utility-success',
+    border: 'border-utility-success',
+  },
 };
 
 const dateFormat = new Intl.DateTimeFormat('en-us', {
@@ -64,7 +81,7 @@ const JobTable = ({ data }: JobTableProps) => {
               variant="dot"
               color={color?.mantine}
               classNames={{
-                root: `bg-${color?.tailwind} bg-opacity-25 text-${color?.tailwind} border-1 border-${color?.tailwind}`,
+                root: `${color?.bg} bg-opacity-25 ${color?.text} border-1 ${color?.border}`,
               }}
               radius="sm"
             >
