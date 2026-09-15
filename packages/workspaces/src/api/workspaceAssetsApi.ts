@@ -39,6 +39,11 @@ const DEFAULT_OPTIONS: WorkspaceAssetsHandlerOptions = {
   // launches/channels to the container; GPU kernel launches are gated (403)
   // with a message to use the Kernel Panel.
   remoteKernelsPath: '/lw-workspace/proxy/jeg-proxy',
+  // Proxy server extension REST calls (jupyterlmod /module/*, jupyter-server-proxy
+  // /server-proxy/*) to jeg-proxy. These calls originate from JupyterLab extensions
+  // in the remote build and resolve relative to the JupyterLite base URL, which points
+  // at this static-file handler — without a proxy they always 404.
+  serverExtensionProxyPath: '/lw-workspace/proxy/jeg-proxy',
   // The remote tier attaches to a real kernel gateway, so JupyterLite's
   // in-browser Pyodide kernel must not be offered alongside it.
   additionalDisabledExtensions: [
@@ -55,6 +60,7 @@ const STRING_OPTIONS = [
   'pageTitle',
   'remoteKernelsPath',
   'fullThemesUrl',
+  'serverExtensionProxyPath',
 ] as const satisfies ReadonlyArray<keyof WorkspaceAssetsHandlerOptions>;
 
 function configFilePath(): string {

@@ -3,4 +3,4 @@ jupyterlab>=4.6.3
 jupyterlite-pyodide-kernel
 jupyterlite-remote-server>=0.2.0
 jupyterlite-terminal
-jupyterlab-lmod
+jupyterlmod

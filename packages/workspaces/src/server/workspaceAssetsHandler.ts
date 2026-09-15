@@ -56,6 +56,19 @@ export interface WorkspaceAssetsHandlerOptions {
   remoteKernelsPath?: string;
   /** Override for the remote tier's `fullThemesUrl` (default: `/workspace-api/workspace-assets/remote/build/themes`). */
   fullThemesUrl?: string;
+  /**
+   * Origin-relative path to proxy server extension API calls for the remote tier
+   * (e.g. `/lw-workspace/proxy/jeg-proxy`).
+   *
+   * JupyterLab extensions such as `jupyterlmod` and `jupyter-server-proxy` make REST
+   * calls relative to the JupyterLite base URL.  Those requests land on this static-file
+   * handler and 404 because no matching file exists.  When this option is set, requests
+   * whose first path segment matches a known extension API prefix are proxied to
+   * `{origin}{serverExtensionProxyPath}/{rest}` instead.
+   *
+   * Omitted → extension API calls fall through to the static file handler (404).
+   */
+  serverExtensionProxyPath?: string;
 }
 
 // ---------- constants ----------
@@ -84,6 +97,13 @@ const MIME_TYPES: Record<string, string> = {
 
 const DEFAULT_FULL_THEMES_URL =
   '/workspace-api/workspace-assets/remote/build/themes';
+
+/**
+ * First path segments that identify server extension REST APIs (not static assets).
+ * Requests whose first segment matches one of these are proxied to
+ * `serverExtensionProxyPath` when that option is configured for the remote tier.
+ */
+const SERVER_EXTENSION_PREFIXES = new Set(['module', 'server-proxy']);
 
 const REMOTE_DISABLED_EXTENSIONS = [
   '@jupyterlite/services-extension:config-section-manager',
@@ -291,6 +311,84 @@ function injectBranding(html: string, branding: BrandingConfig): string {
   return replaceTitle(result, branding);
 }
 
+// ---------- server-extension proxy ----------
+
+function readBody(req: NextApiRequest): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    const chunks: Buffer[] = [];
+    req.on('data', (chunk: Buffer) => chunks.push(chunk));
+    req.on('end', () => resolve(Buffer.concat(chunks)));
+    req.on('error', reject);
+  });
+}
+
+async function proxyServerExtension(
+  req: NextApiRequest,
+  res: NextApiResponse,
+  targetUrl: string,
+): Promise<void> {
+  const forwardHeaders: Record<string, string> = {};
+  for (const [key, value] of Object.entries(req.headers)) {
+    if (!value) continue;
+    const lower = key.toLowerCase();
+    if (
+      lower === 'host' ||
+      lower === 'content-length' ||
+      lower === 'transfer-encoding'
+    )
+      continue;
+    forwardHeaders[key] = Array.isArray(value) ? value.join(',') : value;
+  }
+
+  const method = (req.method || 'GET').toUpperCase();
+  let body: Buffer | undefined;
+  if (!['GET', 'HEAD'].includes(method)) {
+    try {
+      body = await readBody(req);
+    } catch {
+      res.status(500).end('Failed to read request body');
+      return;
+    }
+    if (body?.length) {
+      forwardHeaders['content-length'] = String(body.length);
+    }
+  }
+
+  let upstream: Response;
+  try {
+    upstream = await fetch(targetUrl, {
+      method,
+      headers: forwardHeaders,
+      body: body ? (body as unknown as BodyInit) : undefined,
+      signal: AbortSignal.timeout(30_000),
+    });
+  } catch {
+    res.status(502).end('Extension proxy unreachable');
+    return;
+  }
+
+  res.status(upstream.status);
+  upstream.headers.forEach((value, key) => {
+    const lower = key.toLowerCase();
+    if (lower === 'transfer-encoding' || lower === 'content-length') return;
+    res.setHeader(key, value);
+  });
+
+  if (upstream.body) {
+    const reader = upstream.body.getReader();
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        res.write(value);
+      }
+    } finally {
+      reader.releaseLock();
+    }
+  }
+  res.end();
+}
+
 // ---------- factory ----------
 
 export function createWorkspaceAssetsHandler(
@@ -318,6 +416,8 @@ export function createWorkspaceAssetsHandler(
           pageTitle: options.pageTitle,
         }
       : undefined;
+
+  const serverExtensionProxyPath = options?.serverExtensionProxyPath;
 
   const remoteInjectionConfig: RemoteInjectionConfig = {
     gatewayBaseUrl,
@@ -352,7 +452,10 @@ export function createWorkspaceAssetsHandler(
     walkDir(nodePath.resolve(assetRoot, tier), allowedFilesByTier[tier]);
   }
 
-  return function handler(req: NextApiRequest, res: NextApiResponse): void {
+  return function handler(
+    req: NextApiRequest,
+    res: NextApiResponse,
+  ): Promise<void> | void {
     const { tier, path: pathSegments } = req.query;
 
     if (typeof tier !== 'string' || !ALLOWED_TIERS.has(tier)) {
@@ -388,6 +491,24 @@ export function createWorkspaceAssetsHandler(
         return;
       }
       safeSegments.push(nodePath.basename(seg));
+    }
+
+    // Proxy server extension API calls (e.g. jupyterlmod /module/*, jupyter-server-proxy
+    // /server-proxy/*) to the configured upstream rather than attempting a static file
+    // lookup, which would always 404.
+    if (
+      tier === 'remote' &&
+      serverExtensionProxyPath &&
+      safeSegments.length > 0 &&
+      SERVER_EXTENSION_PREFIXES.has(safeSegments[0])
+    ) {
+      const { proto, host } = resolveOrigin(req);
+      const extensionPath = safeSegments.join('/');
+      const rawQuery = req.url?.split('?')[1];
+      const qs = rawQuery ? `?${rawQuery}` : '';
+      const targetUrl = `${proto}://${host}${serverExtensionProxyPath}/${extensionPath}${qs}`;
+      console.log('[workspace-assets] proxying extension API to', targetUrl);
+      return proxyServerExtension(req, res, targetUrl);
     }
 
     const allowedFiles = allowedFilesByTier[tier];
@@ -503,7 +624,10 @@ export function createWorkspaceAssetsHandler(
 let lazyDefaultHandler:
   ReturnType<typeof createWorkspaceAssetsHandler> | undefined;
 
-const defaultHandler = (req: NextApiRequest, res: NextApiResponse): void => {
+const defaultHandler = (
+  req: NextApiRequest,
+  res: NextApiResponse,
+): Promise<void> | void => {
   if (!lazyDefaultHandler) {
     lazyDefaultHandler = createWorkspaceAssetsHandler();
   }
