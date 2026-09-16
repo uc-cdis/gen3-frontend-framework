@@ -15,6 +15,7 @@ import { fetchJWTKey } from '../../lib/auth/utils';
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   const params = req.body;
 
+  console.log('credentialsLogin', params);
   try {
     const response = await fetchFence<Record<string, string>>({
       endpoint: '/credentials/api/access_token',
@@ -27,6 +28,8 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
         key_id: params.key_id,
       },
     });
+
+    console.log('response', response);
 
     if (response.status !== 200) {
       res.setHeader(
@@ -85,6 +88,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
     return res.status(200).json({ message: 'Session token set' });
   } catch (error: unknown) {
+    console.log('error', error);
     getWebTokenErrorResponse(error, res); // will update res with error
   }
 }

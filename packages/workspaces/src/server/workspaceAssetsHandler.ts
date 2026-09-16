@@ -20,7 +20,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import nodePath from 'path';
 import fs from 'fs';
+import http from 'http';
+import https from 'https';
 import { getCookie } from 'cookies-next';
+import { decodeJwtClaims, extractTokenFallback } from './utils';
 
 const MAX_FILE_SIZE_BYTES = 67108864; // 64 * 1024 * 1024
 
@@ -47,6 +50,19 @@ export interface WorkspaceAssetsHandlerOptions {
    */
   pageTitle?: string;
   /**
+   * Token extractor injected by the host application — used to add identity
+   * headers (`Authorization`, `REMOTE_USER`, `X-Gen3-User-ID`) when proxying
+   * server extension API calls to `serverExtensionProxyPath`.
+   *
+   * The workspace-proxy checks `X-Gen3-User-ID` / `REMOTE_USER` (injected by
+   * nginx in normal traffic) but server-side proxy calls bypass nginx, so these
+   * headers must be set explicitly.
+   *
+   * In gen3-vectis: `(req) => getAccessToken(req.headers['cookie'] ?? '') ?? null`
+   * When omitted, `extractTokenFallback` is used (Bearer header → access_token cookie).
+   */
+  getToken?: (req: NextApiRequest) => string | null;
+  /**
    * Origin-relative path used to build the absolute `remoteKernelsBaseUrl`
    * injected into the remote tier (e.g. `/lw-workspace/proxy/jeg-proxy`).
    * The origin is resolved per-request from forwarding headers so JupyterLite
@@ -69,6 +85,21 @@ export interface WorkspaceAssetsHandlerOptions {
    * Omitted → extension API calls fall through to the static file handler (404).
    */
   serverExtensionProxyPath?: string;
+  /**
+   * Full base URL for proxying server extension API calls, overriding the
+   * origin resolved from the incoming request.
+   *
+   * Use this to target an internal Kubernetes service directly and avoid routing
+   * through the ingress (which may use a self-signed certificate).
+   * Example: `http://workspace-proxy-service.namespace.svc.cluster.local:8000`
+   *
+   * When set, the proxy target is built as
+   * `{serverExtensionProxyBaseUrl}{serverExtensionProxyPath}/{rest}`
+   * instead of `{requestOrigin}{serverExtensionProxyPath}/{rest}`.
+   *
+   * Omitted → origin is resolved from the incoming request headers (default behaviour).
+   */
+  serverExtensionProxyBaseUrl?: string;
 }
 
 // ---------- constants ----------
@@ -326,8 +357,10 @@ async function proxyServerExtension(
   req: NextApiRequest,
   res: NextApiResponse,
   targetUrl: string,
+  getToken?: (req: NextApiRequest) => string | null,
 ): Promise<void> {
   const forwardHeaders: Record<string, string> = {};
+
   for (const [key, value] of Object.entries(req.headers)) {
     if (!value) continue;
     const lower = key.toLowerCase();
@@ -338,6 +371,27 @@ async function proxyServerExtension(
     )
       continue;
     forwardHeaders[key] = Array.isArray(value) ? value.join(',') : value;
+  }
+
+  // Inject identity headers so workspace-proxy auth passes.
+  // Direct server-side calls bypass nginx (which normally injects X-Gen3-User-ID /
+  // REMOTE_USER from the validated access_token), so we must add them explicitly.
+  // only add in production mode
+  // TODO: refactor this to handle development mode better
+  if (process.env.NODE_ENV === 'production') {
+    const jwt = getToken ? getToken(req) : extractTokenFallback(req);
+    if (jwt) {
+      const claims = decodeJwtClaims(jwt);
+      const rawUsername =
+        claims?.sub ?? claims?.preferred_username ?? claims?.username;
+      if (typeof rawUsername === 'string') {
+        const safeUsername = rawUsername.replace(/[\r\n]/g, '');
+        const safeJwt = jwt.replace(/[\r\n]/g, '');
+        forwardHeaders['Authorization'] = `Bearer ${safeJwt}`;
+        forwardHeaders['REMOTE_USER'] = safeUsername;
+        forwardHeaders['X-Gen3-User-ID'] = safeUsername;
+      }
+    }
   }
 
   const method = (req.method || 'GET').toUpperCase();
@@ -354,39 +408,47 @@ async function proxyServerExtension(
     }
   }
 
-  let upstream: Response;
-  try {
-    upstream = await fetch(targetUrl, {
+  console.log('[workspace-assets] proxying extension API to', targetUrl);
+  await new Promise<void>((resolve) => {
+    const parsed = new URL(targetUrl);
+    const transport = parsed.protocol === 'https:' ? https : http;
+    const reqOptions: https.RequestOptions = {
       method,
+      hostname: parsed.hostname,
+      port: parsed.port || (parsed.protocol === 'https:' ? 443 : 80),
+      path: parsed.pathname + parsed.search,
       headers: forwardHeaders,
-      body: body ? (body as unknown as BodyInit) : undefined,
-      signal: AbortSignal.timeout(30_000),
-    });
-  } catch {
-    res.status(502).end('Extension proxy unreachable');
-    return;
-  }
+    };
 
-  res.status(upstream.status);
-  upstream.headers.forEach((value, key) => {
-    const lower = key.toLowerCase();
-    if (lower === 'transfer-encoding' || lower === 'content-length') return;
-    res.setHeader(key, value);
-  });
-
-  if (upstream.body) {
-    const reader = upstream.body.getReader();
-    try {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        res.write(value);
+    const proxyReq = transport.request(reqOptions, (proxyRes) => {
+      res.status(proxyRes.statusCode ?? 502);
+      const skip = new Set(['transfer-encoding', 'content-length']);
+      for (const [key, value] of Object.entries(proxyRes.headers)) {
+        if (!skip.has(key.toLowerCase()) && value !== undefined) {
+          res.setHeader(key, value);
+        }
       }
-    } finally {
-      reader.releaseLock();
+      proxyRes.pipe(res, { end: true });
+      proxyRes.on('end', resolve);
+    });
+
+    proxyReq.on('error', (err) => {
+      console.error(
+        '[workspace-assets] extension proxy failed for',
+        targetUrl,
+        err.message,
+      );
+      if (!res.headersSent) {
+        res.status(502).end('Extension proxy unreachable');
+      }
+      resolve();
+    });
+
+    if (body?.length) {
+      proxyReq.write(body);
     }
-  }
-  res.end();
+    proxyReq.end();
+  });
 }
 
 // ---------- factory ----------
@@ -418,6 +480,8 @@ export function createWorkspaceAssetsHandler(
       : undefined;
 
   const serverExtensionProxyPath = options?.serverExtensionProxyPath;
+  const serverExtensionProxyBaseUrl = options?.serverExtensionProxyBaseUrl;
+  const getToken = options?.getToken;
 
   const remoteInjectionConfig: RemoteInjectionConfig = {
     gatewayBaseUrl,
@@ -502,13 +566,18 @@ export function createWorkspaceAssetsHandler(
       safeSegments.length > 0 &&
       SERVER_EXTENSION_PREFIXES.has(safeSegments[0])
     ) {
-      const { proto, host } = resolveOrigin(req);
       const extensionPath = safeSegments.join('/');
       const rawQuery = req.url?.split('?')[1];
       const qs = rawQuery ? `?${rawQuery}` : '';
-      const targetUrl = `${proto}://${host}${serverExtensionProxyPath}/${extensionPath}${qs}`;
+      const proxyBase =
+        serverExtensionProxyBaseUrl ??
+        (() => {
+          const { proto, host } = resolveOrigin(req);
+          return `${proto}://${host}`;
+        })();
+      const targetUrl = `${proxyBase}${serverExtensionProxyPath}/${extensionPath}${qs}`;
       console.log('[workspace-assets] proxying extension API to', targetUrl);
-      return proxyServerExtension(req, res, targetUrl);
+      return proxyServerExtension(req, res, targetUrl, getToken);
     }
 
     const allowedFiles = allowedFilesByTier[tier];
