@@ -79,7 +79,7 @@ import SubmissionPage from './pages/Submission/SubmissionPage';
 import { SubmissionPageGetServerSideProps } from './pages/Submission/data';
 
 import WorkspacePage from './pages/Workspace/WorkspacePage';
-import { WorkspaceNoAccessPage } from './pages/Workspace/index';
+import { WorkspaceNoAccessPage, WorkspaceRequestAccessPage } from './pages/Workspace/index';
 import {
   WorkspaceNoAccessPageServerSideProps,
   WorkspacePageGetServerSideProps,
@@ -140,9 +140,10 @@ import {
 import type { AuthorizedRoutesConfig, RouteConfig } from './lib/authz/type';
 import { DefaultAuthorizedRoutesConfig } from './lib/authz/type';
 import OverflowTooltippedLabel from './components/OverflowTooltippedLabel';
-import NavigationRail, {
+import type {
   NavigationRailItem,
 } from './components/NavigationRail';
+import NavigationRail from './components/NavigationRail';
 import { ACTIVITY_CHANNEL } from './lib/session/constants';
 
 export * from './components/Profile';
@@ -229,6 +230,7 @@ export {
   WorkspacePageGetServerSideProps,
   WorkspaceNoAccessPage,
   WorkspaceNoAccessPageServerSideProps,
+  WorkspaceRequestAccessPage,
   AnalysisPage,
   AnalysisPageGetServerSideProps,
   ClinicalDataAnalysisPage,

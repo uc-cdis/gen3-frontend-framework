@@ -20,7 +20,7 @@ function getRouteRuleForPath(pathname: string, routeConfig: RouteConfig) {
       key.startsWith(startsWithPath),
     );
     // check if subdirectory ends with wildcard
-    if (routeConfigMatch && routeConfigMatch.endsWith('(.*)')) {
+    if (routeConfigMatch?.endsWith('(.*)')) {
       return routeConfig?.[routeConfigMatch];
     }
   }
@@ -85,6 +85,11 @@ export async function proxy(req: NextRequest) {
   if (!allowed) {
     // Already logged in if required; they just lack authz for this resource
     const forbiddenUrl = req.nextUrl.clone();
+    // Ceck for 403 redirect
+    if (rule?.redirect403 ) {
+      return NextResponse.redirect(new URL(rule.redirect403, req.url));
+    }
+
     forbiddenUrl.pathname = '/403';
     return NextResponse.rewrite(forbiddenUrl);
   }

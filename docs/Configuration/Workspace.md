@@ -4,7 +4,7 @@ The Workspace page configuration consists of sections:
 * launchStepIndicatorConfig (optional): LaunchStepIndicatorConfiguration; TODO fill in
 * requirePayModel (optional): boolean; TODO fill in
 * externalLoginsNotUsed (optional): boolean; TODO fill in
-* requestAccessForm (optional): Request Access Form
+* requestAccessForm (optional): Request Access Form Defaults to page "/WorkspaceRequestAccess"
 
 and example configuration:
 ```json
@@ -12,7 +12,6 @@ and example configuration:
   "requirePayModel": false,
   "requestAccessForm": {
     "enabled": true,
-    "onPage":["/Workspaces"],//Optional: Defaults to ["/Workspace"] can add an array of all page names you want to show this form if the user is given 403
     "remoteSupportService": {
       "service": "zenDesk",
       "configuration": {

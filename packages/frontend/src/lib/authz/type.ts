@@ -1,6 +1,7 @@
 export type RouteRule = {
   loginRequired?: boolean;
   authz?: string[];
+  redirect403?: string;
 };
 
 export type RouteConfig = Record<string, RouteRule>;

@@ -41,6 +41,16 @@ Authorization to a page is controlled by the `authz` entry in a route entry. For
 }
 ```
 
+
+Additionally redirect403 can be added to redirect the user to a custom page when they do not have access to the path, for example this redirects them to a access request page
+```
+"/Workspaces": {
+  "loginRequired": true,
+  "authz": ["/pages/see-workspace"],
+  "redirect403": "/WorkspaceRequestAccess"
+}
+```
+
 Will only allow users with the `/workspace` resource to view the `/Workspace` page. Note that the authz must be a **resource** - not a policy or group on the user YAML. Note also that the checks look for the existence of the resource in the user YAML, and not the mapping information, such as read/write. Support for mappings can be added, but this should be sufficient for most use cases.
 
 Select all can be used for directories only at the topmost level use `(.*)` to select all files in a directory for a policy example: 

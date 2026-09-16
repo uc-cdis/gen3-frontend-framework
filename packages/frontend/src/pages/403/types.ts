@@ -1,8 +1,7 @@
 import { type NavPageLayoutProps } from '../../features/Navigation';
-import { TextContentProps } from '../../components/Content/TextContent';
-import { Gen3AppConfigData } from '../../lib/content/types';
+import type { TextContentProps } from '../../components/Content/TextContent';
+import type { Gen3AppConfigData } from '../../lib/content/types';
 import { type ButtonVariant } from '@mantine/core';
-import { WorkspaceConfig } from '../../features/Workspace';
 
 
 export interface Config403Props extends Gen3AppConfigData {
@@ -10,16 +9,15 @@ export interface Config403Props extends Gen3AppConfigData {
   topIcon?: {
     src: string;
     alt: string;
-  }
+  };
   button?: {
     href: string;
     variant?: ButtonVariant;
     text: string;
-  }
+  };
 }
 
 //& 403Props;
 export interface Custom403PageProps extends NavPageLayoutProps {
   config403: Config403Props;
-  form403: WorkspaceConfig['requestAccessForm'];
 }
