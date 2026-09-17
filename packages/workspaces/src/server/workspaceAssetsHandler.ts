@@ -384,7 +384,27 @@ async function proxyServerExtension(
   // Only point serverExtensionProxyBaseUrl at a network path a user's own request cannot
   // otherwise forge, or add real signature verification (e.g. against Fence's JWKS)
   // here before trusting these claims.
+  // --- auth header injection with diagnostic logging ---
+  const tokenSource = getToken ? 'getToken(injected)' : 'extractTokenFallback';
   const jwt = getToken ? getToken(req) : extractTokenFallback(req);
+
+  // Log incoming auth signals so we can diagnose missing REMOTE_USER / 502s.
+  const hasBearerHeader =
+    typeof req.headers['authorization'] === 'string' &&
+    req.headers['authorization'].startsWith('Bearer ');
+  const cookieHeader = req.headers['cookie'] ?? '';
+  const hasAccessTokenCookie = /(?:^|;\s*)access_token=/.test(cookieHeader);
+  const cookieNames = cookieHeader
+    .split(';')
+    .map((p) => p.trim().split('=')[0])
+    .filter(Boolean);
+
+  console.warn(
+    `[workspace-assets] proxy auth-diag: tokenSource=${tokenSource} jwtFound=${!!jwt}` +
+      ` hasBearerHeader=${hasBearerHeader} hasAccessTokenCookie=${hasAccessTokenCookie}` +
+      ` cookieNames=[${cookieNames.join(',')}]`,
+  );
+
   if (jwt) {
     const claims = decodeJwtClaims(jwt);
     const rawUsername =
@@ -395,8 +415,28 @@ async function proxyServerExtension(
       forwardHeaders['Authorization'] = `Bearer ${safeJwt}`;
       forwardHeaders['REMOTE_USER'] = safeUsername;
       forwardHeaders['X-Gen3-User-ID'] = safeUsername;
+      console.warn(
+        `[workspace-assets] proxy auth-diag: injected REMOTE_USER/X-Gen3-User-ID for sub="${safeUsername}"` +
+          ` claimsKeys=[${Object.keys(claims ?? {}).join(',')}]`,
+      );
+    } else {
+      console.warn(
+        `[workspace-assets] proxy auth-diag: JWT decoded but no sub/preferred_username/username claim found` +
+          ` claimsKeys=[${Object.keys(claims ?? {}).join(',')}]` +
+          ` (REMOTE_USER NOT injected — workspace-proxy will likely reject)`,
+      );
     }
+  } else {
+    console.warn(
+      `[workspace-assets] proxy auth-diag: no JWT found via ${tokenSource}` +
+        ` — REMOTE_USER/X-Gen3-User-ID NOT injected — workspace-proxy will likely 502`,
+    );
   }
+
+  // Log the set of header keys being forwarded (no values — headers can contain tokens).
+  console.warn(
+    `[workspace-assets] proxy forwarding headers: [${Object.keys(forwardHeaders).join(',')}]`,
+  );
 
   const method = (req.method || 'GET').toUpperCase();
   let body: Buffer | undefined;
@@ -429,6 +469,9 @@ async function proxyServerExtension(
       port: parsed.port || (parsed.protocol === 'https:' ? 443 : 80),
       path: parsed.pathname + parsed.search,
       headers: forwardHeaders,
+      // 30-second socket timeout — without this, a stalled upstream holds the
+      // connection open indefinitely and the client sees no response.
+      timeout: 30_000,
     };
 
     const proxyReq = transport.request(reqOptions, (proxyRes) => {
@@ -444,6 +487,16 @@ async function proxyServerExtension(
       log(
         `[workspace-assets] ${method} ${targetUrl} -> ${statusCode} (${Date.now() - startedAt}ms)`,
       );
+      if (statusCode >= 400) {
+        // Log upstream response headers for non-2xx to surface auth/routing rejections.
+        const upstreamHeaders = Object.entries(proxyRes.headers)
+          .filter(([k]) => !k.toLowerCase().includes('cookie'))
+          .map(([k, v]) => `${k}:${Array.isArray(v) ? v.join(',') : v}`)
+          .join(' | ');
+        console.error(
+          `[workspace-assets] upstream response headers: ${upstreamHeaders}`,
+        );
+      }
       proxyRes.pipe(res, { end: true });
       proxyRes.on('end', resolve);
     });
