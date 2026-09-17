@@ -455,17 +455,7 @@ async function proxyServerExtension(
           ` (REMOTE_USER NOT injected — workspace-proxy will likely reject)`,
       );
     }
-  } else {
-    console.warn(
-      `[workspace-assets] proxy auth-diag: no JWT found via ${tokenSource}` +
-        ` — REMOTE_USER/X-Gen3-User-ID NOT injected — workspace-proxy will likely 502`,
-    );
   }
-
-  // Log the set of header keys being forwarded (no values — headers can contain tokens).
-  console.warn(
-    `[workspace-assets] proxy forwarding headers: [${Object.keys(forwardHeaders).join(',')}]`,
-  );
 
   const method = (req.method || 'GET').toUpperCase();
   let body: Buffer | undefined;
