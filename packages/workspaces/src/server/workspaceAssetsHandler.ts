@@ -376,30 +376,78 @@ async function proxyServerExtension(
   // Inject identity headers so workspace-proxy auth passes.
   // Direct server-side calls bypass nginx (which normally injects X-Gen3-User-ID /
   // REMOTE_USER from the validated access_token), so we must add them explicitly.
-  // only add in production mode
-  // TODO: refactor this to handle development mode better
-  if (process.env.NODE_ENV === 'production') {
-    const jwt = getToken ? getToken(req) : extractTokenFallback(req);
-    if (jwt) {
-      const claims = decodeJwtClaims(jwt);
-      const rawUsername =
-        claims?.sub ?? claims?.preferred_username ?? claims?.username;
-      if (typeof rawUsername === 'string') {
-        const safeUsername = rawUsername.replace(/[\r\n]/g, '');
-        const safeJwt = jwt.replace(/[\r\n]/g, '');
-        forwardHeaders['Authorization'] = `Bearer ${safeJwt}`;
-        forwardHeaders['REMOTE_USER'] = safeUsername;
-        forwardHeaders['X-Gen3-User-ID'] = safeUsername;
-      }
+  // SECURITY: decodeJwtClaims below does not verify the JWT signature — it relies on
+  // Ambassador/revproxy having already done so before this code path is reached. When
+  // serverExtensionProxyBaseUrl (WORKSPACE_PROXY_URL) targets workspace-proxy directly,
+  // that verification is skipped entirely, so a caller could supply a correctly-shaped
+  // but unsigned/forged JWT to impersonate another user via REMOTE_USER/X-Gen3-User-ID.
+  // Only point serverExtensionProxyBaseUrl at a network path a user's own request cannot
+  // otherwise forge, or add real signature verification (e.g. against Fence's JWKS)
+  // here before trusting these claims.
+  // --- auth header injection with diagnostic logging ---
+  const tokenSource = getToken ? 'getToken(injected)' : 'extractTokenFallback';
+  const jwt = getToken ? getToken(req) : extractTokenFallback(req);
+
+  // Log incoming auth signals so we can diagnose missing REMOTE_USER / 502s.
+  const hasBearerHeader =
+    typeof req.headers['authorization'] === 'string' &&
+    req.headers['authorization'].startsWith('Bearer ');
+  const cookieHeader = req.headers['cookie'] ?? '';
+  const hasAccessTokenCookie = /(?:^|;\s*)access_token=/.test(cookieHeader);
+  const cookieNames = cookieHeader
+    .split(';')
+    .map((p) => p.trim().split('=')[0])
+    .filter(Boolean);
+
+  console.warn(
+    `[workspace-assets] proxy auth-diag: tokenSource=${tokenSource} jwtFound=${!!jwt}` +
+      ` hasBearerHeader=${hasBearerHeader} hasAccessTokenCookie=${hasAccessTokenCookie}` +
+      ` cookieNames=[${cookieNames.join(',')}]`,
+  );
+
+  if (jwt) {
+    const claims = decodeJwtClaims(jwt);
+    const rawUsername =
+      claims?.sub ?? claims?.preferred_username ?? claims?.username;
+    if (typeof rawUsername === 'string') {
+      const safeUsername = rawUsername.replace(/[\r\n]/g, '');
+      const safeJwt = jwt.replace(/[\r\n]/g, '');
+      forwardHeaders['Authorization'] = `Bearer ${safeJwt}`;
+      forwardHeaders['REMOTE_USER'] = safeUsername;
+      forwardHeaders['X-Gen3-User-ID'] = safeUsername;
+      console.warn(
+        `[workspace-assets] proxy auth-diag: injected REMOTE_USER/X-Gen3-User-ID for sub="${safeUsername}"` +
+          ` claimsKeys=[${Object.keys(claims ?? {}).join(',')}]`,
+      );
+    } else {
+      console.warn(
+        `[workspace-assets] proxy auth-diag: JWT decoded but no sub/preferred_username/username claim found` +
+          ` claimsKeys=[${Object.keys(claims ?? {}).join(',')}]` +
+          ` (REMOTE_USER NOT injected — workspace-proxy will likely reject)`,
+      );
     }
+  } else {
+    console.warn(
+      `[workspace-assets] proxy auth-diag: no JWT found via ${tokenSource}` +
+        ` — REMOTE_USER/X-Gen3-User-ID NOT injected — workspace-proxy will likely 502`,
+    );
   }
+
+  // Log the set of header keys being forwarded (no values — headers can contain tokens).
+  console.warn(
+    `[workspace-assets] proxy forwarding headers: [${Object.keys(forwardHeaders).join(',')}]`,
+  );
 
   const method = (req.method || 'GET').toUpperCase();
   let body: Buffer | undefined;
   if (!['GET', 'HEAD'].includes(method)) {
     try {
       body = await readBody(req);
-    } catch {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(
+        `[workspace-assets] failed to read request body for ${method} ${targetUrl}: ${message}`,
+      );
       res.status(500).end('Failed to read request body');
       return;
     }
@@ -408,7 +456,10 @@ async function proxyServerExtension(
     }
   }
 
-  console.log('[workspace-assets] proxying extension API to', targetUrl);
+  const startedAt = Date.now();
+  console.warn(
+    `[workspace-assets] proxying ${method} ${targetUrl}${body?.length ? ` (body: ${body.length} bytes)` : ''}`,
+  );
   await new Promise<void>((resolve) => {
     const parsed = new URL(targetUrl);
     const transport = parsed.protocol === 'https:' ? https : http;
@@ -418,30 +469,53 @@ async function proxyServerExtension(
       port: parsed.port || (parsed.protocol === 'https:' ? 443 : 80),
       path: parsed.pathname + parsed.search,
       headers: forwardHeaders,
+      // 30-second socket timeout — without this, a stalled upstream holds the
+      // connection open indefinitely and the client sees no response.
+      timeout: 30_000,
     };
 
     const proxyReq = transport.request(reqOptions, (proxyRes) => {
-      res.status(proxyRes.statusCode ?? 502);
+      const statusCode = proxyRes.statusCode ?? 502;
+      res.status(statusCode);
       const skip = new Set(['transfer-encoding', 'content-length']);
       for (const [key, value] of Object.entries(proxyRes.headers)) {
         if (!skip.has(key.toLowerCase()) && value !== undefined) {
           res.setHeader(key, value);
         }
       }
+      const log = statusCode >= 400 ? console.error : console.warn;
+      log(
+        `[workspace-assets] ${method} ${targetUrl} -> ${statusCode} (${Date.now() - startedAt}ms)`,
+      );
+      if (statusCode >= 400) {
+        // Log upstream response headers for non-2xx to surface auth/routing rejections.
+        const upstreamHeaders = Object.entries(proxyRes.headers)
+          .filter(([k]) => !k.toLowerCase().includes('cookie'))
+          .map(([k, v]) => `${k}:${Array.isArray(v) ? v.join(',') : v}`)
+          .join(' | ');
+        console.error(
+          `[workspace-assets] upstream response headers: ${upstreamHeaders}`,
+        );
+      }
       proxyRes.pipe(res, { end: true });
       proxyRes.on('end', resolve);
     });
 
-    proxyReq.on('error', (err) => {
+    proxyReq.on('error', (err: NodeJS.ErrnoException) => {
       console.error(
-        '[workspace-assets] extension proxy failed for',
-        targetUrl,
-        err.message,
+        `[workspace-assets] extension proxy failed for ${method} ${targetUrl} after ${Date.now() - startedAt}ms: ${err.code ?? 'UNKNOWN'} ${err.message}`,
       );
       if (!res.headersSent) {
         res.status(502).end('Extension proxy unreachable');
       }
       resolve();
+    });
+
+    proxyReq.on('timeout', () => {
+      console.error(
+        `[workspace-assets] extension proxy timed out for ${method} ${targetUrl} after ${Date.now() - startedAt}ms`,
+      );
+      proxyReq.destroy();
     });
 
     if (body?.length) {
@@ -576,7 +650,6 @@ export function createWorkspaceAssetsHandler(
           return `${proto}://${host}`;
         })();
       const targetUrl = `${proxyBase}${serverExtensionProxyPath}/${extensionPath}${qs}`;
-      console.log('[workspace-assets] proxying extension API to', targetUrl);
       return proxyServerExtension(req, res, targetUrl, getToken);
     }
 
@@ -686,7 +759,7 @@ export function createWorkspaceAssetsHandler(
 /**
  * Default handler — for one-liner re-exports.
  *
- * Built lazily on first request: `createWorkspaceAssetsHandler` walks both tier
+ * Built lazily on the first request: `createWorkspaceAssetsHandler` walks both tier
  * asset trees at factory time, and this module is imported transitively by
  * `next.config.js` (via `@gen3/workspaces/server`), where that I/O is wasted.
  */

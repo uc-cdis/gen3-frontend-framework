@@ -71,6 +71,7 @@ Service CA patching:
                         Known service types:
                           nginx:  revproxy
                           go:     hatchery
+                          node:   gen3ff
                           python: requestor, fence, audit, metadata, indexd, etc.
 
 Configuration:
@@ -522,6 +523,7 @@ get_service_type() {
   case "$1" in
     revproxy)  echo "nginx" ;;
     hatchery)  echo "go" ;;
+    frontend-framework)    echo "node" ;;
     *)         echo "python" ;;
   esac
 }
@@ -565,6 +567,30 @@ spec:
         - name: mkcert-ca
           mountPath: /etc/ssl/certs/mkcert-ca.crt
           subPath: ca.crt
+YAML
+      ;;
+
+    node)
+      # Node: simple mount of the CA cert file plus NODE_EXTRA_CA_CERTS, which
+      # Node.js reads to additively trust an extra CA on top of its built-in
+      # bundle — no initContainer/combined-bundle needed like Go/Python.
+      cat > "$patch_file" <<YAML
+spec:
+  template:
+    spec:
+      volumes:
+      - name: mkcert-ca
+        secret:
+          secretName: mkcert-ca
+      containers:
+      - name: ${service}
+        volumeMounts:
+        - name: mkcert-ca
+          mountPath: /etc/ssl/certs/mkcert-ca.crt
+          subPath: ca.crt
+        env:
+        - name: NODE_EXTRA_CA_CERTS
+          value: /etc/ssl/certs/mkcert-ca.crt
 YAML
       ;;
 
