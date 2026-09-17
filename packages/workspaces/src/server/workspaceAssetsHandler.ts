@@ -376,21 +376,25 @@ async function proxyServerExtension(
   // Inject identity headers so workspace-proxy auth passes.
   // Direct server-side calls bypass nginx (which normally injects X-Gen3-User-ID /
   // REMOTE_USER from the validated access_token), so we must add them explicitly.
-  // only add in production mode
-  // TODO: refactor this to handle development mode better
-  if (process.env.NODE_ENV === 'production') {
-    const jwt = getToken ? getToken(req) : extractTokenFallback(req);
-    if (jwt) {
-      const claims = decodeJwtClaims(jwt);
-      const rawUsername =
-        claims?.sub ?? claims?.preferred_username ?? claims?.username;
-      if (typeof rawUsername === 'string') {
-        const safeUsername = rawUsername.replace(/[\r\n]/g, '');
-        const safeJwt = jwt.replace(/[\r\n]/g, '');
-        forwardHeaders['Authorization'] = `Bearer ${safeJwt}`;
-        forwardHeaders['REMOTE_USER'] = safeUsername;
-        forwardHeaders['X-Gen3-User-ID'] = safeUsername;
-      }
+  // SECURITY: decodeJwtClaims below does not verify the JWT signature — it relies on
+  // Ambassador/revproxy having already done so before this code path is reached. When
+  // serverExtensionProxyBaseUrl (WORKSPACE_PROXY_URL) targets workspace-proxy directly,
+  // that verification is skipped entirely, so a caller could supply a correctly-shaped
+  // but unsigned/forged JWT to impersonate another user via REMOTE_USER/X-Gen3-User-ID.
+  // Only point serverExtensionProxyBaseUrl at a network path a user's own request cannot
+  // otherwise forge, or add real signature verification (e.g. against Fence's JWKS)
+  // here before trusting these claims.
+  const jwt = getToken ? getToken(req) : extractTokenFallback(req);
+  if (jwt) {
+    const claims = decodeJwtClaims(jwt);
+    const rawUsername =
+      claims?.sub ?? claims?.preferred_username ?? claims?.username;
+    if (typeof rawUsername === 'string') {
+      const safeUsername = rawUsername.replace(/[\r\n]/g, '');
+      const safeJwt = jwt.replace(/[\r\n]/g, '');
+      forwardHeaders['Authorization'] = `Bearer ${safeJwt}`;
+      forwardHeaders['REMOTE_USER'] = safeUsername;
+      forwardHeaders['X-Gen3-User-ID'] = safeUsername;
     }
   }
 
@@ -399,7 +403,11 @@ async function proxyServerExtension(
   if (!['GET', 'HEAD'].includes(method)) {
     try {
       body = await readBody(req);
-    } catch {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(
+        `[workspace-assets] failed to read request body for ${method} ${targetUrl}: ${message}`,
+      );
       res.status(500).end('Failed to read request body');
       return;
     }
@@ -408,7 +416,10 @@ async function proxyServerExtension(
     }
   }
 
-  console.log('[workspace-assets] proxying extension API to', targetUrl);
+  const startedAt = Date.now();
+  console.warn(
+    `[workspace-assets] proxying ${method} ${targetUrl}${body?.length ? ` (body: ${body.length} bytes)` : ''}`,
+  );
   await new Promise<void>((resolve) => {
     const parsed = new URL(targetUrl);
     const transport = parsed.protocol === 'https:' ? https : http;
@@ -421,27 +432,37 @@ async function proxyServerExtension(
     };
 
     const proxyReq = transport.request(reqOptions, (proxyRes) => {
-      res.status(proxyRes.statusCode ?? 502);
+      const statusCode = proxyRes.statusCode ?? 502;
+      res.status(statusCode);
       const skip = new Set(['transfer-encoding', 'content-length']);
       for (const [key, value] of Object.entries(proxyRes.headers)) {
         if (!skip.has(key.toLowerCase()) && value !== undefined) {
           res.setHeader(key, value);
         }
       }
+      const log = statusCode >= 400 ? console.error : console.warn;
+      log(
+        `[workspace-assets] ${method} ${targetUrl} -> ${statusCode} (${Date.now() - startedAt}ms)`,
+      );
       proxyRes.pipe(res, { end: true });
       proxyRes.on('end', resolve);
     });
 
-    proxyReq.on('error', (err) => {
+    proxyReq.on('error', (err: NodeJS.ErrnoException) => {
       console.error(
-        '[workspace-assets] extension proxy failed for',
-        targetUrl,
-        err.message,
+        `[workspace-assets] extension proxy failed for ${method} ${targetUrl} after ${Date.now() - startedAt}ms: ${err.code ?? 'UNKNOWN'} ${err.message}`,
       );
       if (!res.headersSent) {
         res.status(502).end('Extension proxy unreachable');
       }
       resolve();
+    });
+
+    proxyReq.on('timeout', () => {
+      console.error(
+        `[workspace-assets] extension proxy timed out for ${method} ${targetUrl} after ${Date.now() - startedAt}ms`,
+      );
+      proxyReq.destroy();
     });
 
     if (body?.length) {
@@ -576,7 +597,6 @@ export function createWorkspaceAssetsHandler(
           return `${proto}://${host}`;
         })();
       const targetUrl = `${proxyBase}${serverExtensionProxyPath}/${extensionPath}${qs}`;
-      console.log('[workspace-assets] proxying extension API to', targetUrl);
       return proxyServerExtension(req, res, targetUrl, getToken);
     }
 
@@ -686,7 +706,7 @@ export function createWorkspaceAssetsHandler(
 /**
  * Default handler — for one-liner re-exports.
  *
- * Built lazily on first request: `createWorkspaceAssetsHandler` walks both tier
+ * Built lazily on the first request: `createWorkspaceAssetsHandler` walks both tier
  * asset trees at factory time, and this module is imported transitively by
  * `next.config.js` (via `@gen3/workspaces/server`), where that I/O is wasted.
  */

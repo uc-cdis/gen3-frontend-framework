@@ -78,6 +78,8 @@ FROM node:24.18.1-alpine3.23 AS runner
 
 WORKDIR /gen3
 
+RUN apk add --no-cache curl
+
 # Create non-root user
 RUN addgroup --system --gid 1001 nextjs \
     && adduser --system --uid 1001 nextjs
