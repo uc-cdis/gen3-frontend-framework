@@ -20,6 +20,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
 import nodePath from 'path';
 import { GEN3_COMMONS_NAME } from '@gen3/core';
+import { getAccessToken } from '@gen3/frontend/server';
 import {
   createWorkspaceAssetsHandler,
   type WorkspaceAssetsHandlerOptions,
@@ -39,7 +40,20 @@ const DEFAULT_OPTIONS: WorkspaceAssetsHandlerOptions = {
   // launches/channels to the container; GPU kernel launches are gated (403)
   // with a message to use the Kernel Panel.
   remoteKernelsPath: '/lw-workspace/proxy/jeg-proxy',
-  // The remote tier attaches to a real kernel gateway, so JupyterLite's
+  // Proxy server extension REST calls (jupyterlmod /module/*, jupyter-server-proxy
+  // /server-proxy/*) to jeg-proxy. These calls originate from JupyterLab extensions
+  // in the remote build and resolve relative to the JupyterLite base URL, which points
+  // at this static-file handler — without a proxy they always 404.
+  serverExtensionProxyPath: '/lw-workspace/proxy',
+  // Optional internal k8s service base URL for the extension proxy. When set,
+  // proxy requests target this address directly instead of routing through the
+  // ingress (avoiding self-signed-cert issues). Readable from the JSON config
+  // file or the WORKSPACE_PROXY_URL env var.
+  serverExtensionProxyBaseUrl: process.env.WORKSPACE_PROXY_URL || undefined,
+  // Direct calls to serverExtensionProxyBaseUrl bypass nginx, which normally
+  // injects the X-Gen3-User-ID/REMOTE_USER headers workspace-proxy requires —
+  // reuse this app's cookie extraction to inject them explicitly instead.
+  getToken: (req) => getAccessToken(req.headers['cookie'] ?? '') ?? null,
   // in-browser Pyodide kernel must not be offered alongside it.
   additionalDisabledExtensions: [
     '@jupyterlite/pyodide-kernel-extension:kernel',
@@ -55,6 +69,8 @@ const STRING_OPTIONS = [
   'pageTitle',
   'remoteKernelsPath',
   'fullThemesUrl',
+  'serverExtensionProxyPath',
+  'serverExtensionProxyBaseUrl',
 ] as const satisfies ReadonlyArray<keyof WorkspaceAssetsHandlerOptions>;
 
 function configFilePath(): string {
