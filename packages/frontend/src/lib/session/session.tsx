@@ -301,9 +301,6 @@ const unhealthyRefreshDelay = (failures: number) =>
  * @param renewAccessTokenEarlyMilliseconds - How far ahead of the token's own
  *   `exp` to trigger the proactive refresh. `0` (default) refreshes at `exp`
  *   itself;
- * @param refreshRateMinutes - When set (> 0), schedules the proactive refresh on
- *   this fixed interval instead of deriving it from the access_token's `exp`.
- *   `0` (default) keeps the exp-driven schedule.
  * @returns a Session context that can be used to keep track of user session activity
  */
 export const SessionProvider = ({
@@ -315,7 +312,6 @@ export const SessionProvider = ({
   monitorWorkspace = true,
   expireWarningMinutes = 5,
   renewAccessTokenEarlyMilliseconds = 0,
-  refreshRateMinutes = 0,
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
@@ -407,13 +403,6 @@ export const SessionProvider = ({
   );
   const updateSessionIntervalMilliseconds =
     minutesToMilliseconds(updateSessionTime);
-
-  // Set only when the caller wants the refresh on a fixed cadence rather than
-  // one derived from the access_token's own `exp` — see `refreshRateMinutes`.
-  const fixedRefreshDelayMilliseconds =
-    refreshRateMinutes > 0
-      ? minutesToMilliseconds(refreshRateMinutes)
-      : undefined;
 
   // update session status using the user status
 
@@ -593,9 +582,32 @@ export const SessionProvider = ({
       }
 
       if (session.expires) {
+        const accessDelay = refreshDelayFromToken(
+          session,
+          renewAccessTokenEarlyMilliseconds,
+        );
+        // Fence's own session cookie expires on its own schedule
+        // (SESSION_TIMEOUT/SESSION_LIFETIME), independent of the access
+        // token's lifetime. When it reads as healthy, refresh ahead of
+        // whichever of the two comes first — a dead `fence` cookie is not
+        // treated as fatal here, it just leaves this undefined and falls
+        // back to the access-token-only schedule below.
+        const fenceDelay =
+          session.fenceStatus === 'issued' && session.fenceExpires
+            ? refreshDelayFromToken(
+                {
+                  status: session.fenceStatus,
+                  issued: session.fenceIssued,
+                  expires: session.fenceExpires,
+                  expiresInMs: session.fenceExpiresInMs,
+                },
+                renewAccessTokenEarlyMilliseconds,
+              )
+            : undefined;
         const delay =
-          fixedRefreshDelayMilliseconds ??
-          refreshDelayFromToken(session, renewAccessTokenEarlyMilliseconds);
+          fenceDelay !== undefined
+            ? Math.min(accessDelay, fenceDelay)
+            : accessDelay;
         if (delay >= MIN_REFRESH_DELAY_MILLISECONDS) {
           refreshFailuresRef.current = 0;
           expiredRecoveryAttemptedRef.current = false;
@@ -610,12 +622,7 @@ export const SessionProvider = ({
       armRefreshTimer(unhealthyRefreshDelay(refreshFailuresRef.current));
       refreshFailuresRef.current += 1;
     },
-    [
-      armRefreshTimer,
-      resettleLoginState,
-      renewAccessTokenEarlyMilliseconds,
-      fixedRefreshDelayMilliseconds,
-    ],
+    [armRefreshTimer, resettleLoginState, renewAccessTokenEarlyMilliseconds],
   );
 
   const performScheduledRefresh = useCallback(async () => {

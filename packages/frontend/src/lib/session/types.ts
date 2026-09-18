@@ -13,6 +13,19 @@ export interface AuthTokenData {
   expiresInMs?: number;
   status: JWTSessionStatus;
   userContext?: Record<string, string>;
+
+  /**
+   * Fence's own session cookie (`fence`) — an RS256 JWT signed by the same key
+   * as `access_token`, but on Fence's own SESSION_TIMEOUT/SESSION_LIFETIME
+   * schedule, independent of the access token's lifetime. Present only when
+   * Fence set that cookie and it decoded and verified cleanly; absent
+   * otherwise (older Fence deployments, credentials-login dev mode, a bad
+   * signature), in which case scheduling falls back to `expires` alone.
+   */
+  fenceStatus?: JWTSessionStatus;
+  fenceIssued?: number;
+  fenceExpires?: number;
+  fenceExpiresInMs?: number;
 }
 
 export interface Session extends AuthTokenData {
@@ -88,18 +101,6 @@ export interface SessionConfiguration {
    * and frontend calls get 401s.
    */
   renewAccessTokenEarlyMilliseconds?: number;
-
-  /**
-   * Fixed refresh cadence, in minutes. When set (> 0), the proactive refresh is
-   * scheduled on this fixed interval instead of being derived from the
-   * access_token's own `exp`. Use this when something with its own,
-   * independently expiring session — e.g. Fence's own session cookie — needs
-   * `/user` touched on a known cadence regardless of the access token's
-   * lifetime.
-   *
-   * `0` / unset (the default) keeps the existing exp-driven schedule.
-   */
-  refreshRateMinutes?: number;
 }
 
 export interface SessionProviderProps extends SessionConfiguration {
