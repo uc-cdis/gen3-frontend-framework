@@ -88,6 +88,18 @@ export interface SessionConfiguration {
    * and frontend calls get 401s.
    */
   renewAccessTokenEarlyMilliseconds?: number;
+
+  /**
+   * Fixed refresh cadence, in minutes. When set (> 0), the proactive refresh is
+   * scheduled on this fixed interval instead of being derived from the
+   * access_token's own `exp`. Use this when something with its own,
+   * independently expiring session — e.g. Fence's own session cookie — needs
+   * `/user` touched on a known cadence regardless of the access token's
+   * lifetime.
+   *
+   * `0` / unset (the default) keeps the existing exp-driven schedule.
+   */
+  refreshRateMinutes?: number;
 }
 
 export interface SessionProviderProps extends SessionConfiguration {

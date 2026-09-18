@@ -301,6 +301,9 @@ const unhealthyRefreshDelay = (failures: number) =>
  * @param renewAccessTokenEarlyMilliseconds - How far ahead of the token's own
  *   `exp` to trigger the proactive refresh. `0` (default) refreshes at `exp`
  *   itself;
+ * @param refreshRateMinutes - When set (> 0), schedules the proactive refresh on
+ *   this fixed interval instead of deriving it from the access_token's `exp`.
+ *   `0` (default) keeps the exp-driven schedule.
  * @returns a Session context that can be used to keep track of user session activity
  */
 export const SessionProvider = ({
@@ -312,6 +315,7 @@ export const SessionProvider = ({
   monitorWorkspace = true,
   expireWarningMinutes = 5,
   renewAccessTokenEarlyMilliseconds = 0,
+  refreshRateMinutes = 0,
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
@@ -403,6 +407,13 @@ export const SessionProvider = ({
   );
   const updateSessionIntervalMilliseconds =
     minutesToMilliseconds(updateSessionTime);
+
+  // Set only when the caller wants the refresh on a fixed cadence rather than
+  // one derived from the access_token's own `exp` — see `refreshRateMinutes`.
+  const fixedRefreshDelayMilliseconds =
+    refreshRateMinutes > 0
+      ? minutesToMilliseconds(refreshRateMinutes)
+      : undefined;
 
   // update session status using the user status
 
@@ -582,10 +593,9 @@ export const SessionProvider = ({
       }
 
       if (session.expires) {
-        const delay = refreshDelayFromToken(
-          session,
-          renewAccessTokenEarlyMilliseconds,
-        );
+        const delay =
+          fixedRefreshDelayMilliseconds ??
+          refreshDelayFromToken(session, renewAccessTokenEarlyMilliseconds);
         if (delay >= MIN_REFRESH_DELAY_MILLISECONDS) {
           refreshFailuresRef.current = 0;
           expiredRecoveryAttemptedRef.current = false;
@@ -600,7 +610,12 @@ export const SessionProvider = ({
       armRefreshTimer(unhealthyRefreshDelay(refreshFailuresRef.current));
       refreshFailuresRef.current += 1;
     },
-    [armRefreshTimer, resettleLoginState, renewAccessTokenEarlyMilliseconds],
+    [
+      armRefreshTimer,
+      resettleLoginState,
+      renewAccessTokenEarlyMilliseconds,
+      fixedRefreshDelayMilliseconds,
+    ],
   );
 
   const performScheduledRefresh = useCallback(async () => {
