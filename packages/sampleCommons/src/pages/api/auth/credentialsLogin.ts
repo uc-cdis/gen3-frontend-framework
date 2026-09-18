@@ -1,3 +1,3 @@
-import credentialsLogin from '@gen3/frontend/api/auth/credentialsLogin';
+import { credentialsLogin } from '@gen3/frontend/server';
 
 export default credentialsLogin;

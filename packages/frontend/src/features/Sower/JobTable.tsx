@@ -9,6 +9,7 @@ import {
 import { PiDotsThreeOutlineFill as DotIcon } from 'react-icons/pi';
 import type { JobWithActions } from '@gen3/core';
 import { useLazyGetSowerOutputQuery } from '@gen3/core';
+import { backgroundStyles } from './colors';
 
 export interface JobTableProps {
   readonly data?: Array<JobWithActions>;

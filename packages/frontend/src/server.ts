@@ -4,6 +4,7 @@ import { DefaultAuthorizedRoutesConfig } from './lib/authz/type';
 import { fetchJWTKey, getAccessToken } from './lib/auth/utils';
 import sessionToken from './api/auth/sessionToken';
 import sessionLogout from './api/auth/sessionLogout';
+import credentialsLogin from './api/auth/credentialsLogin';
 
 export {
   type RouteConfig,
@@ -14,4 +15,5 @@ export {
   getAccessToken,
   sessionToken,
   sessionLogout,
+  credentialsLogin,
 };
