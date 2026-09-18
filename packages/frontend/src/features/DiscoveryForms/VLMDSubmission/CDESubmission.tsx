@@ -39,7 +39,8 @@ const CDESubmission = ({
   config,
   existingCDENames = [],
 }: VLMDSubmissionProps): ReactElement => {
-  const [submissionStatus, setSubmissionStatus] = useState<FormSubmissionStatus | null>(null);
+  const [submissionStatus, setSubmissionStatus] =
+    useState<FormSubmissionStatus | null>(null);
   const [cdeInfoFromMDS, setCDEInfoFromMDS] = useState<CDEInfo[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
@@ -83,14 +84,16 @@ const CDESubmission = ({
         }
       })
       .catch((err) => console.error('Failed to load CDE info from MDS:', err));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCoreCDEChange = (newCore: string[]) => {
     const nonCore = form.values.selectedCDEs.filter(
       (opt) => !cdeInfoFromMDS.find((e) => e.option === opt && e.isCoreCDE),
     );
-    form.setValues({ coreCDEs: newCore, selectedCDEs: [...newCore, ...nonCore] });
+    form.setValues({
+      coreCDEs: newCore,
+      selectedCDEs: [...newCore, ...nonCore],
+    });
   };
 
   const handleAllCDEChange = (newSelected: string[]) => {
@@ -120,8 +123,10 @@ const CDESubmission = ({
         config.tagsListFieldName,
       );
 
-      const hostname = typeof window !== 'undefined' ? window.location.hostname : '';
-      const subject = `CDE submission for ${studyNumber ?? ''} ${studyName ?? ''}`.trim();
+      const hostname =
+        typeof window !== 'undefined' ? window.location.hostname : '';
+      const subject =
+        `CDE submission for ${studyNumber ?? ''} ${studyName ?? ''}`.trim();
       const fullName = `${values.firstName} ${values.lastName}`;
       const contents = [
         `Grant Number: ${studyNumber ?? ''}`,
@@ -169,7 +174,10 @@ const CDESubmission = ({
         </Alert>
         <Button
           variant="outline"
-          onClick={() => { setSubmitting(false); setSubmissionStatus(null); }}
+          onClick={() => {
+            setSubmitting(false);
+            setSubmissionStatus(null);
+          }}
         >
           Try Again
         </Button>
@@ -178,30 +186,44 @@ const CDESubmission = ({
   }
 
   const coreCDEs = cdeInfoFromMDS.filter((e) => e.isCoreCDE);
-  const allCDEOptions = cdeInfoFromMDS.map((e) => ({ value: e.option, label: e.option }));
+  const allCDEOptions = cdeInfoFromMDS.map((e) => ({
+    value: e.option,
+    label: e.option,
+  }));
 
   return (
     <Stack>
       <Divider label="HEAL CDEs" labelPosition="center" />
       {disableCDESubmissionForm ? (
         <Text size="sm" ta="center">
-          We have received your CDE selections from the HEAL CDE team. If you need
-          to update your selections, please contact{' '}
-          <Anchor href="mailto:heal_cde@hsc.utah.edu">heal_cde@hsc.utah.edu</Anchor>.
+          We have received your CDE selections from the HEAL CDE team. If you
+          need to update your selections, please contact{' '}
+          <Anchor href="mailto:heal_cde@hsc.utah.edu">
+            heal_cde@hsc.utah.edu
+          </Anchor>
+          .
         </Text>
       ) : (
         <Text size="sm" ta="center">
           Use this form to indicate which HEAL Common Data Elements (CDEs) are
           utilized in this study (select all that apply). View the HEAL CDE
           Repository{' '}
-          <Anchor href="https://github.com/HEAL/heal-metadata-schemas" target="_blank" rel="noreferrer">
+          <Anchor
+            href="https://github.com/HEAL/heal-metadata-schemas"
+            target="_blank"
+            rel="noreferrer"
+          >
             here
-          </Anchor>.
+          </Anchor>
+          .
         </Text>
       )}
       <Divider />
       <Text size="xs" c="dimmed">
-        <Text span c="red">*</Text> Indicates required fields
+        <Text span c="red">
+          *
+        </Text>{' '}
+        Indicates required fields
       </Text>
 
       <Textarea
@@ -213,7 +235,9 @@ const CDESubmission = ({
       />
 
       <div>
-        <Text size="sm" fw={500} mb="xs">Core CDEs</Text>
+        <Text size="sm" fw={500} mb="xs">
+          Core CDEs
+        </Text>
         <Checkbox.Group
           value={form.values.coreCDEs}
           onChange={handleCoreCDEChange}
