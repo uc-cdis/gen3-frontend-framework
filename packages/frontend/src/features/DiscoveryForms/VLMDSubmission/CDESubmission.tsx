@@ -84,7 +84,7 @@ const CDESubmission = ({
         }
       })
       .catch((err) => console.error('Failed to load CDE info from MDS:', err));
-  }, []);
+  }, [existingCDENames, existingCDENames.length, form]);
 
   const handleCoreCDEChange = (newCore: string[]) => {
     const nonCore = form.values.selectedCDEs.filter(
