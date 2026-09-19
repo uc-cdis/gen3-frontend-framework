@@ -611,6 +611,15 @@ export const SessionProvider = ({
                 renewAccessTokenEarlyMilliseconds,
               )
             : undefined;
+
+        // Fence session expired while the access_token is still valid. A /user
+        // call with a live access_token will either renew the fence session or
+        // confirm 401 and clear the store. Arm the access_token timer below as
+        // a fallback in case the call fails transiently.
+        if (session.fenceStatus === 'expired' && !loginStateIsFresh) {
+          resettleLoginState();
+        }
+
         const usedFence = fenceDelay !== undefined && fenceDelay < accessDelay;
         const delay = usedFence ? fenceDelay : accessDelay;
         if (SESSION_DEBUG_LOGGING) {
@@ -809,7 +818,10 @@ export const SessionProvider = ({
       // endpoint must not get fast retries again just because we came back.
       expiredRecoveryAttemptedRef.current = false;
 
-      void rescheduleFromToken();
+      // Call /user directly rather than just re-reading the cookie: the tab may
+      // have been frozen long enough for the fence session to expire while the
+      // access_token cookie still looks valid locally.
+      void performScheduledRefreshRef.current?.();
     };
 
     // A visibility change also fires on the way *out*, which is not a catch-up.
