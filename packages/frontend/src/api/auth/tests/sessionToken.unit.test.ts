@@ -137,9 +137,9 @@ describe('sessionToken handler', () => {
 
   it('reports an expired token as a definitive 200, not an error', async () => {
     // jwtVerify checks the signature before the claims, so an expired token has
-    // already proven its signature and its claims can be reported. Answering with
+    // already proven its signature, and its claims can be reported. Answering with
     // an error instead would tell the client "state unknown" and make it retry a
-    // token that is never coming back.
+    // token that will never return
     mockJwtVerify.mockRejectedValue(newMockError(MockJWTExpired, 'exp'));
     mockDecodeJwt.mockReturnValue(claimsFor({ exp: NOW_SECONDS - 60 }));
 
