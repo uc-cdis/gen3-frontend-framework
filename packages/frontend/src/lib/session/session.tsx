@@ -539,6 +539,13 @@ export const SessionProvider = ({
           remainingSeconds: session.expires
             ? Math.round(session.expires - Date.now() / 1000)
             : undefined,
+          fenceStatus: session.fenceStatus,
+          fenceExpires: session.fenceExpires
+            ? new Date(session.fenceExpires * 1000).toISOString()
+            : undefined,
+          fenceRemainingSeconds: session.fenceExpires
+            ? Math.round(session.fenceExpires - Date.now() / 1000)
+            : undefined,
           loginStateIsFresh,
           failures: refreshFailuresRef.current,
         });
@@ -604,10 +611,19 @@ export const SessionProvider = ({
                 renewAccessTokenEarlyMilliseconds,
               )
             : undefined;
-        const delay =
-          fenceDelay !== undefined
-            ? Math.min(accessDelay, fenceDelay)
-            : accessDelay;
+        const usedFence = fenceDelay !== undefined && fenceDelay < accessDelay;
+        const delay = usedFence ? fenceDelay : accessDelay;
+        if (SESSION_DEBUG_LOGGING) {
+          // eslint-disable-next-line no-console
+          console.log(
+            `[session-refresh] using ${usedFence ? 'fence' : 'access_token'} expiration ` +
+              `(access: ${(accessDelay / 1000).toFixed(1)}s${
+                fenceDelay !== undefined
+                  ? `, fence: ${(fenceDelay / 1000).toFixed(1)}s`
+                  : ', fence: n/a'
+              })`,
+          );
+        }
         if (delay >= MIN_REFRESH_DELAY_MILLISECONDS) {
           refreshFailuresRef.current = 0;
           expiredRecoveryAttemptedRef.current = false;
