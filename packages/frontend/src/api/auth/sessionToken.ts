@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { parse } from 'cookie';
-import type { JWTPayload } from 'jose';
+import type { CryptoKey, JWTPayload } from 'jose';
 import { decodeJwt, errors as joseErrors, importSPKI, jwtVerify } from 'jose';
+import type { JWTSessionStatus } from '@gen3/core';
 import { fetchJWTKey } from '../../lib/auth/utils';
 import { getWebTokenErrorResponse } from './errorHandler';
 
@@ -32,6 +33,33 @@ const tokenClaims = (accessToken: string) => {
       expires !== undefined ? expires * 1000 - Date.now() : undefined,
     userContext: decoded.context?.user,
   };
+};
+
+/**
+ * Verifies a token's signature, then decodes its claims — the same
+ * verify-then-decode sequence used for `access_token` below, shared so the
+ * `fence` session cookie (signed with the same key) can be read the same way.
+ *
+ * jwtVerify checks the signature before the claims, so an expired token has
+ * already proven its signature and its claims can still be reported as
+ * `'expired'` rather than thrown away. Any other verification failure (bad
+ * signature, wrong key, malformed token) is left to the caller.
+ */
+const verifyAndDecodeToken = async (
+  token: string,
+  publicKey: CryptoKey,
+): Promise<ReturnType<typeof tokenClaims> & { status: JWTSessionStatus }> => {
+  try {
+    await jwtVerify(token, publicKey);
+  } catch (error: unknown) {
+    if (error instanceof joseErrors.JWTExpired) {
+      return { ...tokenClaims(token), status: 'expired' };
+    }
+    throw error;
+  }
+  const claims = tokenClaims(token);
+  // A token with no `exp` never expires, which we will not honour
+  return { ...claims, status: claims.expires ? 'issued' : 'invalid' };
 };
 
 /**
@@ -70,28 +98,37 @@ export default async function handler(
       }
       // validate the token
       const publicKey = await importSPKI(jwtKey, 'RS256');
-      try {
-        await jwtVerify(accessToken, publicKey);
-      } catch (error: unknown) {
-        // jwtVerify checks the signature before the claims, so an expired token
-        // has already proven its signature, and its claims can be reported. This
-        // has to be caught here: letting it reach the error handler would turn a
-        // definitive "expired" into an opaque 401.
-        if (error instanceof joseErrors.JWTExpired) {
-          res.status(200).json({
-            ...tokenClaims(accessToken),
-            status: 'expired',
-          });
-          return;
+      const accessResult = await verifyAndDecodeToken(accessToken, publicKey);
+
+      // Fence's own session cookie (`SESSION_COOKIE_NAME`, default `fence`) is
+      // an RS256 JWT signed with the same key as `access_token`, but on
+      // Fence's own SESSION_TIMEOUT/SESSION_LIFETIME schedule — independent of
+      // the access token's lifetime. Decoded in its own try/catch: a
+      // malformed, tampered, or key-rotated `fence` cookie must not turn an
+      // otherwise-healthy `access_token` read into a 500. On any failure it is
+      // simply omitted, and the caller falls back to `access_token` alone.
+      let fenceResult:
+        | (ReturnType<typeof tokenClaims> & {
+            status: JWTSessionStatus;
+          })
+        | undefined;
+      if (cookies.fence) {
+        try {
+          fenceResult = await verifyAndDecodeToken(cookies.fence, publicKey);
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (_error: unknown) {
+          fenceResult = undefined;
         }
-        throw error;
       }
 
-      const claims = tokenClaims(accessToken);
       res.status(200).json({
-        ...claims,
-        // A token with no `exp` never expires, which we will not honour
-        status: claims.expires ? 'issued' : 'invalid',
+        ...accessResult,
+        ...(fenceResult && {
+          fenceStatus: fenceResult.status,
+          fenceIssued: fenceResult.issued,
+          fenceExpires: fenceResult.expires,
+          fenceExpiresInMs: fenceResult.expiresInMs,
+        }),
       });
       return;
     }

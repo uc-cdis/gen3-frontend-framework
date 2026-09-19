@@ -14,10 +14,36 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import handler from '../sessionToken';
 
-class MockJWTExpired extends Error {}
-class MockJWTInvalid extends Error {}
-class MockJWSInvalid extends Error {}
-class MockJWKSNoMatchingKey extends Error {}
+// `jest.mock` factories are hoisted above every other statement in this file,
+// including these declarations. Class declarations are TDZ-restricted, so a
+// hoisted reference to one throws `ReferenceError` before it runs — function
+// declarations are hoisted with their body instead, so these use the old
+// ES5 subclassing pattern rather than `class ... extends Error`.
+function MockJWTExpired(this: Error, message?: string) {
+  Error.call(this, message);
+}
+MockJWTExpired.prototype = Object.create(Error.prototype);
+
+function MockJWTInvalid(this: Error, message?: string) {
+  Error.call(this, message);
+}
+MockJWTInvalid.prototype = Object.create(Error.prototype);
+
+function MockJWSInvalid(this: Error, message?: string) {
+  Error.call(this, message);
+}
+MockJWSInvalid.prototype = Object.create(Error.prototype);
+
+function MockJWKSNoMatchingKey(this: Error, message?: string) {
+  Error.call(this, message);
+}
+MockJWKSNoMatchingKey.prototype = Object.create(Error.prototype);
+
+// These ES5-style constructors have no construct signature TS can see, so
+// `new`-ing them directly is a type error. This is the one place that casts.
+type MockErrorCtor = new (message?: string) => Error;
+const newMockError = (Ctor: unknown, message?: string): Error =>
+  new (Ctor as MockErrorCtor)(message);
 
 const mockJwtVerify = jest.fn();
 const mockDecodeJwt = jest.fn();
@@ -114,7 +140,7 @@ describe('sessionToken handler', () => {
     // already proven its signature and its claims can be reported. Answering with
     // an error instead would tell the client "state unknown" and make it retry a
     // token that is never coming back.
-    mockJwtVerify.mockRejectedValue(new MockJWTExpired('exp'));
+    mockJwtVerify.mockRejectedValue(newMockError(MockJWTExpired, 'exp'));
     mockDecodeJwt.mockReturnValue(claimsFor({ exp: NOW_SECONDS - 60 }));
 
     const res = makeRes();
@@ -173,7 +199,9 @@ describe('sessionToken handler', () => {
   });
 
   it('errors on a signature failure rather than reporting a token state', async () => {
-    mockJwtVerify.mockRejectedValue(new MockJWSInvalid('bad signature'));
+    mockJwtVerify.mockRejectedValue(
+      newMockError(MockJWSInvalid, 'bad signature'),
+    );
 
     const res = makeRes();
     await handler(makeReq('access_token=a.b.c'), res);
@@ -183,11 +211,90 @@ describe('sessionToken handler', () => {
   });
 
   it('does not decode a token it could not verify', async () => {
-    mockJwtVerify.mockRejectedValue(new MockJWSInvalid('bad signature'));
+    mockJwtVerify.mockRejectedValue(
+      newMockError(MockJWSInvalid, 'bad signature'),
+    );
 
     await handler(makeReq('access_token=a.b.c'), makeRes());
 
     // Claims from an unverified token are attacker-controlled
     expect(mockDecodeJwt).not.toHaveBeenCalled();
+  });
+
+  describe('fence session cookie', () => {
+    // Fence signs the `fence` session cookie with the same key as
+    // `access_token`, but on its own SESSION_TIMEOUT/SESSION_LIFETIME
+    // schedule. These claims are distinguished from the access token's by
+    // decodeJwt's mock return value differing per call.
+    const accessClaims = claimsFor();
+    const fenceClaims = claimsFor({ exp: NOW_SECONDS + 7200 });
+
+    it('reports a healthy fence cookie alongside the access token', async () => {
+      mockDecodeJwt
+        .mockReturnValueOnce(accessClaims)
+        .mockReturnValueOnce(fenceClaims);
+
+      const res = makeRes();
+      await handler(makeReq('access_token=a.b.c; fence=f.g.h'), res);
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual({
+        issued: NOW_SECONDS,
+        expires: NOW_SECONDS + 1200,
+        expiresInMs: 1200 * 1000,
+        userContext: { name: 'alice' },
+        status: 'issued',
+        fenceStatus: 'issued',
+        fenceIssued: NOW_SECONDS,
+        fenceExpires: NOW_SECONDS + 7200,
+        fenceExpiresInMs: 7200 * 1000,
+      });
+    });
+
+    it('reports an expired fence cookie as a definitive status, not an error', async () => {
+      const expiredFenceClaims = claimsFor({ exp: NOW_SECONDS - 60 });
+      mockJwtVerify
+        .mockResolvedValueOnce({ payload: {} }) // access_token
+        .mockRejectedValueOnce(newMockError(MockJWTExpired, 'exp')); // fence
+      mockDecodeJwt
+        .mockReturnValueOnce(accessClaims)
+        .mockReturnValueOnce(expiredFenceClaims);
+
+      const res = makeRes();
+      await handler(makeReq('access_token=a.b.c; fence=f.g.h'), res);
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.status).toBe('issued');
+      expect(res.body.fenceStatus).toBe('expired');
+      expect(res.body.fenceExpires).toBe(NOW_SECONDS - 60);
+    });
+
+    it('omits fence fields and leaves the access token result unaffected when fence fails verification', async () => {
+      mockJwtVerify
+        .mockResolvedValueOnce({ payload: {} }) // access_token
+        .mockRejectedValueOnce(newMockError(MockJWSInvalid, 'bad signature')); // fence
+      mockDecodeJwt.mockReturnValueOnce(accessClaims);
+
+      const res = makeRes();
+      await handler(makeReq('access_token=a.b.c; fence=f.g.h'), res);
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual({
+        issued: NOW_SECONDS,
+        expires: NOW_SECONDS + 1200,
+        expiresInMs: 1200 * 1000,
+        userContext: { name: 'alice' },
+        status: 'issued',
+      });
+    });
+
+    it('does not read a fence cookie when none is present', async () => {
+      const res = makeRes();
+      await handler(makeReq('access_token=a.b.c'), res);
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.fenceStatus).toBeUndefined();
+      expect(mockJwtVerify).toHaveBeenCalledTimes(1);
+    });
   });
 });

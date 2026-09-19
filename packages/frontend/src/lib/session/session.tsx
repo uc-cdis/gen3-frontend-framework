@@ -539,6 +539,13 @@ export const SessionProvider = ({
           remainingSeconds: session.expires
             ? Math.round(session.expires - Date.now() / 1000)
             : undefined,
+          fenceStatus: session.fenceStatus,
+          fenceExpires: session.fenceExpires
+            ? new Date(session.fenceExpires * 1000).toISOString()
+            : undefined,
+          fenceRemainingSeconds: session.fenceExpires
+            ? Math.round(session.fenceExpires - Date.now() / 1000)
+            : undefined,
           loginStateIsFresh,
           failures: refreshFailuresRef.current,
         });
@@ -582,10 +589,50 @@ export const SessionProvider = ({
       }
 
       if (session.expires) {
-        const delay = refreshDelayFromToken(
+        const accessDelay = refreshDelayFromToken(
           session,
           renewAccessTokenEarlyMilliseconds,
         );
+        // Fence's own session cookie expires on its own schedule
+        // (SESSION_TIMEOUT/SESSION_LIFETIME), independent of the access
+        // token's lifetime. When it reads as healthy, refresh ahead of
+        // whichever of the two comes first — a dead `fence` cookie is not
+        // treated as fatal here, it just leaves this undefined and falls
+        // back to the access-token-only schedule below.
+        const fenceDelay =
+          session.fenceStatus === 'issued' && session.fenceExpires
+            ? refreshDelayFromToken(
+                {
+                  status: session.fenceStatus,
+                  issued: session.fenceIssued,
+                  expires: session.fenceExpires,
+                  expiresInMs: session.fenceExpiresInMs,
+                },
+                renewAccessTokenEarlyMilliseconds,
+              )
+            : undefined;
+
+        // Fence session expired while the access_token is still valid. A /user
+        // call with a live access_token will either renew the fence session or
+        // confirm 401 and clear the store. Arm the access_token timer below as
+        // a fallback in case the call fails transiently.
+        if (session.fenceStatus === 'expired' && !loginStateIsFresh) {
+          resettleLoginState();
+        }
+
+        const usedFence = fenceDelay !== undefined && fenceDelay < accessDelay;
+        const delay = usedFence ? fenceDelay : accessDelay;
+        if (SESSION_DEBUG_LOGGING) {
+          // eslint-disable-next-line no-console
+          console.log(
+            `[session-refresh] using ${usedFence ? 'fence' : 'access_token'} expiration ` +
+              `(access: ${(accessDelay / 1000).toFixed(1)}s${
+                fenceDelay !== undefined
+                  ? `, fence: ${(fenceDelay / 1000).toFixed(1)}s`
+                  : ', fence: n/a'
+              })`,
+          );
+        }
         if (delay >= MIN_REFRESH_DELAY_MILLISECONDS) {
           refreshFailuresRef.current = 0;
           expiredRecoveryAttemptedRef.current = false;
@@ -771,7 +818,10 @@ export const SessionProvider = ({
       // endpoint must not get fast retries again just because we came back.
       expiredRecoveryAttemptedRef.current = false;
 
-      void rescheduleFromToken();
+      // Call /user directly rather than just re-reading the cookie: the tab may
+      // have been frozen long enough for the fence session to expire while the
+      // access_token cookie still looks valid locally.
+      void performScheduledRefreshRef.current?.();
     };
 
     // A visibility change also fires on the way *out*, which is not a catch-up.
