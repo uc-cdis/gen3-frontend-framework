@@ -483,6 +483,9 @@ export const SessionProvider = ({
   // any scheduling logic — purely for the console logging below.
   const lastRefreshedAtRef = useRef<number | null>(null);
 
+  // Debug-only: when the current session became 'issued'. Cleared on logout.
+  const sessionStartRef = useRef<number | null>(null);
+
   const clearScheduledRefresh = useCallback(() => {
     if (refreshTimeoutRef.current) {
       if (SESSION_DEBUG_LOGGING) {
@@ -746,6 +749,9 @@ export const SessionProvider = ({
       // eslint-disable-next-line no-console
       console.log('[session-refresh] heartbeat', {
         currentTime: new Date(now).toISOString(),
+        sessionDurationMinutes: sessionStartRef.current
+          ? parseFloat(((now - sessionStartRef.current) / 60000).toFixed(2))
+          : null,
         dueAt: dueAt ? new Date(dueAt).toISOString() : null,
         remainingSeconds: dueAt ? Math.round((dueAt - now) / 1000) : null,
         refreshInFlight: refreshInFlightRef.current,
@@ -778,10 +784,14 @@ export const SessionProvider = ({
   // Seed (and cancel) the schedule as login state changes.
   useEffect(() => {
     if (sessionInfo.status !== 'issued') {
+      sessionStartRef.current = null;
       clearScheduledRefresh();
       return;
     }
 
+    if (sessionStartRef.current === null) {
+      sessionStartRef.current = Date.now();
+    }
     refreshFailuresRef.current = 0; // a fresh login starts from a clean backoff
     expiredRecoveryAttemptedRef.current = false;
     void rescheduleFromToken();
