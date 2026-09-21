@@ -81,9 +81,7 @@ const JobTable = ({ data }: JobTableProps) => {
             <Badge
               variant="dot"
               color={color?.mantine}
-              classNames={{
-                root: `${color?.bg} bg-opacity-25 ${color?.text} border-1 ${color?.border}`,
-              }}
+              styles={{ root: backgroundStyles[color.bg] }}
               radius="sm"
             >
               {row.original.status}

@@ -28,7 +28,7 @@ const useSowerPolling = () => {
     .filter((j) => j.status === SowerJobStatus.Running)
     .map((j) => j.uid);
 
-  const pollerKey = [...runningIds].sort().join(',');
+  const pollerKey = [...runningIds].sort((a, b) => a.localeCompare(b)).join(',');
 
   // Manage our own interval so polling stops immediately when there are no
   // running jobs. RTK Query's built-in pollingInterval keeps the subscription
