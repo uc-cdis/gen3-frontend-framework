@@ -1,4 +1,6 @@
 import React from 'react';
+export { default as GenericRegistrationAccessRequestForm } from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest';
+export type { GenericRegistrationAccessRequestFormConfig } from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest/types';
 import { NavPageLayout } from '../../../features/Navigation';
 import type { NavPageLayoutProps } from '../../../features/Navigation';
 import GenericRegistrationAccessRequestForm from '../../../features/DiscoveryForms/GenericRegistrationAccessRequest';
