@@ -407,16 +407,45 @@ async function proxyServerExtension(
 
   if (jwt) {
     const claims = decodeJwtClaims(jwt);
+    // Gen3 nginx extracts the username from context.user.name (not sub, which is
+    // a numeric ID). Check context.user.name first so REMOTE_USER matches what
+    // workspace-proxy expects for per-user container routing.
+    const contextUserName = (
+      claims?.context as { user?: { name?: unknown } } | undefined
+    )?.user?.name;
+    // String username (what Ambassador stores in k8s service names via Hatchery).
     const rawUsername =
-      claims?.sub ?? claims?.preferred_username ?? claims?.username;
-    if (typeof rawUsername === 'string') {
-      const safeUsername = rawUsername.replace(/[\r\n]/g, '');
+      (typeof contextUserName === 'string' ? contextUserName : undefined) ??
+      claims?.preferred_username ??
+      claims?.username;
+    // Numeric sub — used as UID in workspace-proxy's uid:<UID>,<username> format.
+    const rawSub = claims?.sub;
+    const safeSub =
+      typeof rawSub === 'string' ? rawSub.replace(/[\r\n]/g, '') : undefined;
+
+    // workspace-proxy identity.go parses the composite "uid:<UID>,<username>" format:
+    //   normalizeUsername → extracts the username part (used for k8s service lookup)
+    //   parseUID          → extracts the UID part (used for UID-based fallback lookup)
+    // Ambassador normally injects this format; we must replicate it here since we
+    // bypass nginx when calling workspace-proxy server-side.
+    const safeUsername =
+      typeof rawUsername === 'string'
+        ? rawUsername.replace(/[\r\n]/g, '')
+        : safeSub;
+
+    if (safeUsername !== undefined) {
       const safeJwt = jwt.replace(/[\r\n]/g, '');
+      const remoteUserValue =
+        safeSub && safeUsername !== safeSub
+          ? `uid:${safeSub},${safeUsername}`
+          : safeUsername;
       forwardHeaders['Authorization'] = `Bearer ${safeJwt}`;
-      forwardHeaders['REMOTE_USER'] = safeUsername;
-      forwardHeaders['X-Gen3-User-ID'] = safeUsername;
+      forwardHeaders['REMOTE_USER'] = remoteUserValue;
+      forwardHeaders['remote_user'] = remoteUserValue;
+      forwardHeaders['X-Gen3-User-ID'] = remoteUserValue;
       console.warn(
-        `[workspace-assets] proxy auth-diag: injected REMOTE_USER/X-Gen3-User-ID for sub="${safeUsername}"` +
+        `[workspace-assets] proxy auth-diag: injected REMOTE_USER="${remoteUserValue}"` +
+          ` (contextUserName=${String(contextUserName)} sub=${String(rawSub)})` +
           ` claimsKeys=[${Object.keys(claims ?? {}).join(',')}]`,
       );
     } else {
@@ -426,17 +455,7 @@ async function proxyServerExtension(
           ` (REMOTE_USER NOT injected — workspace-proxy will likely reject)`,
       );
     }
-  } else {
-    console.warn(
-      `[workspace-assets] proxy auth-diag: no JWT found via ${tokenSource}` +
-        ` — REMOTE_USER/X-Gen3-User-ID NOT injected — workspace-proxy will likely 502`,
-    );
   }
-
-  // Log the set of header keys being forwarded (no values — headers can contain tokens).
-  console.warn(
-    `[workspace-assets] proxy forwarding headers: [${Object.keys(forwardHeaders).join(',')}]`,
-  );
 
   const method = (req.method || 'GET').toUpperCase();
   let body: Buffer | undefined;
