@@ -5,6 +5,7 @@ export { registerCohortDiscoveryApp } from '../features/CohortDiscovery/register
 export { registerExplorerDefaultCellRenderers } from '../features/CohortBuilder/ExplorerTable/ExplorerTableCellRenderers';
 export { registerCohortBuilderDefaultPreviewRenderers } from '../features/CohortBuilder/ExplorerTable/ExploreTableDetails/ExplorerTableDetailsPanelFactory';
 export { registerCohortSowerActions } from '../features/CohortBuilder/downloads/actions/sowerActions';
+export { registerBaseSowerActions } from '../features/Sower/actions/registerSowerActions';
 export { registerIGVApp } from '../features/genomic/igv/registerApp';
 export { type TenStringArray } from '../utils/types';
 export {

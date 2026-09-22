@@ -8,7 +8,6 @@ import {
   findCreateJobAction,
   findSendResultsAction,
 } from './sowerActionFactory';
-import { hasOutputAction } from './utils';
 
 /**
  * Called from a SowerActionButton. This function dispatches a sower job by first creating the
@@ -95,28 +94,17 @@ export const bindSowerOutputJob = (
     if (onError) onError(new Error('No jobAction provided'));
     return null;
   }
-  if (!parameters) {
-    if (onError) onError(new Error('No jobParameters provided'));
-    return null;
-  }
 
-  if (!hasOutputAction(parameters)) {
-    return null;
-  }
-  const outputAction = findSendResultsAction(parameters.sendAction.actionName);
+  // look for the output action, we can't bind it yet but confirm it exists
+  const outputAction = findSendResultsAction(action);
   if (!outputAction) {
-    if (onError)
-      onError(
-        new Error(
-          `Send action ${parameters.sendAction.actionName} not registered`,
-        ),
-      );
+    if (onError) onError(new Error(`Send action ${action} not registered`));
     return null;
   }
 
   return {
-    name: parameters.sendAction.name,
-    parameters: parameters.sendAction.parameters ?? {},
+    name: action,
+    parameters: parameters,
     actionFunction: outputAction,
   };
 };

@@ -6,7 +6,7 @@ class ActionRegistry<T> {
   register(name: string, action: T): void {
     if (this.actions.has(name)) {
       console.warn(
-        `ActionRegistry: overwriting already-registered action "${name}"`,
+        `SowerActionRegistry: overwriting already-registered action "${name}"`,
       );
     }
     this.actions.set(name, action);
@@ -30,3 +30,5 @@ export const findCreateJobAction = (name: string) =>
   sowerJobBuilderRegistry.getAction(name);
 export const findSendResultsAction = (name: string) =>
   sowerOutputActionRegistry.getAction(name);
+export const hasOutputAction = (name: string) =>
+  sowerOutputActionRegistry.hasAction(name);

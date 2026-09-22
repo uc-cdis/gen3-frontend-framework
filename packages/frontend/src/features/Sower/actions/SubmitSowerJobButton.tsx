@@ -5,7 +5,8 @@ import { Button, Tooltip } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import type { CreateAndExportOutputConfig } from '@gen3/core';
 import { useIsUserLoggedIn, useSubmitSowerJobMutation } from '@gen3/core';
-import { bindSowerOutputJob, buildSubmitSowerJob } from './sowerActions';
+import { buildSubmitSowerJob } from './sowerActions';
+import { hasOutputAction } from './sowerActionFactory';
 
 interface SubmitSowerJobButtonProps {
   actions: CreateAndExportOutputConfig;
@@ -89,19 +90,18 @@ const SubmitSowerJobButton = forwardRef<
     const handleSubmitJob = async () => {
       const jobBody = buildSubmitSowerJob(jobAction.name, jobAction.parameters);
       if (!jobBody) {
-        console.error('No job body provided');
+        console.error(`No job body found for ${jobAction.name}`);
         return;
       }
 
-      const outputFunction = bindSowerOutputJob(outputAction?.name);
-      if (outputAction && !outputFunction) {
-        console.warn('No output function provided');
+      if (outputAction?.name && !hasOutputAction(outputAction?.name)) {
+        console.warn(`No output function found for ${outputAction?.name}`);
       }
 
       await submitJob({
         name: label,
         dispatchJob: jobBody,
-        outputAction: outputFunction ?? undefined,
+        outputAction: outputAction,
       }).unwrap();
     };
 

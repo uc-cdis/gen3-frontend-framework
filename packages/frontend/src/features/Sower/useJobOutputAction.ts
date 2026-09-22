@@ -8,6 +8,7 @@ import {
   useCoreSelector,
   useLazyGetSowerOutputQuery,
 } from '@gen3/core';
+import { bindSowerOutputJob } from './actions/sowerActions';
 
 /**
  * Watches the sower job list for completed jobs that have a sendJobAction pending.
@@ -35,8 +36,6 @@ const useJobOutputAction: () => void = () => {
         j.status === 'Completed' && j.stage === SowerJobStage.JobDispatched,
     );
 
-    console.log('pending jobs', pending);
-
     for (const job of pending) {
       // Advance stage immediately to prevent re-entry on the next render cycle.
       dispatch(
@@ -60,20 +59,29 @@ const useJobOutputAction: () => void = () => {
       fetchOutputRef
         .current(job.uid)
         .then(async ({ data, error }) => {
+          console.log('fetch output', data, error);
           if (error) {
             setOutputStageError();
             // notify
             return;
           }
-          if (!job.actions.outputActionFunction) {
+          if (!job.actions.outputAction) {
             console.warn(
               `useJobOutputAction: job ${job.uid} has no outputActionFunction`,
             );
             return;
           }
-          await job.actions.outputActionFunction.actionFunction({
+
+          // bind the output action function
+          const outputAction = bindSowerOutputJob(
+            job.actions.outputAction.name,
+            job.actions.outputAction.parameters,
+          );
+
+          // execute the output action function
+          await outputAction?.actionFunction({
             parameters: {
-              ...job.actions.outputActionFunction.parameters,
+              ...job.actions.outputAction.parameters,
               output: data?.output,
               guid: job.uid,
             },

@@ -11,6 +11,7 @@ import {
   useLazyGetSowerJobListQuery,
 } from '@gen3/core';
 import useJobOutputAction from './useJobOutputAction';
+import { useDeepCompareEffect } from 'use-deep-compare';
 
 /**
  * Polls the status of all Running jobs tracked in the sower slice and
@@ -28,20 +29,21 @@ const useSowerPolling = () => {
     .filter((j) => j.status === SowerJobStatus.Running)
     .map((j) => j.uid);
 
-  const pollerKey = [...runningIds].sort((a, b) => a.localeCompare(b)).join(',');
+  const pollerKey = [...runningIds]
+    .sort((a, b) => a.localeCompare(b))
+    .join(',');
 
   // Manage our own interval so polling stops immediately when there are no
   // running jobs. RTK Query's built-in pollingInterval keeps the subscription
   // alive even after the trigger list empties.
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (runningIds.length === 0) return;
     void trigger(runningIds);
     const id = setInterval(() => {
       void trigger(runningIds);
     }, POLL_INTERVAL_MS);
     return () => clearInterval(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pollerKey, trigger]);
+  }, [pollerKey, trigger, runningIds]);
 
   useEffect(() => {
     if (!result.isSuccess || !result.currentData) return;

@@ -124,14 +124,14 @@ export const selectUserData = (
 
 export const selectUser = (state: CoreState): Gen3UserState => state.user;
 
-export const selectUserLoginStatus = (state: CoreState): LoginStatus =>
-  state.user.loginStatus;
-
-export const useIsUserLoggedIn = (): boolean => {
-  return useCoreSelector((state) =>
-    isAuthenticated(selectUserLoginStatus(state)),
-  );
-};
+// export const selectUserLoginStatus = (state: CoreState): LoginStatus =>
+//   state.user.loginStatus;
+//
+// export const useIsUserLoggedIn = (): boolean => {
+//   return useCoreSelector((state) =>
+//     isAuthenticated(selectUserLoginStatus(state)),
+//   );
+// };
 
 /**
  * Hook to return get the authenticated state of the user and if logged in,

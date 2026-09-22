@@ -13,9 +13,9 @@ import {
 } from './sowerApi';
 
 import {
-  type BoundCreateAndOutputAction,
   type BoundJobActionConfig,
   type CreateAndExportOutputConfig,
+  type DispatchedJobWithOutputAction,
   type DispatchJobParameters,
   type ExtendedJobStatus,
   type JobBuilderAction,
@@ -60,7 +60,7 @@ export {
   type JobBuilderAction,
   type JobOutputAction,
   type DispatchJobParameters,
-  type BoundCreateAndOutputAction,
+  type DispatchedJobWithOutputAction,
   type CreateAndExportOutputConfig,
   SowerJobStatus,
   SowerJobStage,

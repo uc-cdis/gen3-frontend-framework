@@ -16,6 +16,7 @@ import {
   type Fonts,
   Gen3Provider,
   type ModalsConfig,
+  registerBaseSowerActions,
   registerCohortBuilderDefaultPreviewRenderers,
   registerCohortSowerActions,
   registerExplorerDefaultCellRenderers,
@@ -87,6 +88,7 @@ const Gen3App = ({
       registerIGVApp();
       registerExplorerDefaultCellRenderers();
       registerCohortBuilderDefaultPreviewRenderers();
+      registerBaseSowerActions();
       registerCohortSowerActions();
       registerCohortTableCustomCellRenderers();
       registerCustomExplorerDetailsPanels();

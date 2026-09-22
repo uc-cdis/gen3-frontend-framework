@@ -49,7 +49,7 @@ export const sowerJobApi = gen3Api.injectEndpoints({
           uid: data.uid,
           actions: {
             dispatchJob: _arg.dispatchJob,
-            outputActionFunction: _arg.outputAction,
+            outputAction: _arg.outputAction,
           },
           name: _arg.name,
           created: timestamp,

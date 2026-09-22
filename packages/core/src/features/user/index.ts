@@ -5,8 +5,6 @@ import {
   resetUserState,
   selectUser,
   selectUserData,
-  selectUserLoginStatus,
-  useIsUserLoggedIn,
   useUserAuth,
 } from './userSlice';
 
@@ -17,9 +15,11 @@ import {
   selectHeadersWithCSRFToken,
   selectUserAuthStatus,
   selectUserDetails,
+  selectUserLoginStatus,
   useFetchUserDetailsQuery,
   useGetCSRFQuery,
   useGetUserDetailsRequestStatus,
+  useIsUserLoggedIn,
   useLazyFetchUserDetailsQuery,
   useLazyGetCSRFQuery,
 } from './userSliceRTK';

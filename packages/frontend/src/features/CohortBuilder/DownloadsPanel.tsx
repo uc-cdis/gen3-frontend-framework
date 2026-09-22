@@ -44,7 +44,7 @@ const createDownloadMenuButton = (
     return {
       title: button.title,
       activeText: 'Cancel',
-      disabled: button.enabled !== undefined ? !button.enabled : true,
+      disabled: button.enabled !== undefined ? !button.enabled : false,
       icon: button?.leftIcon ? (
         <Icon icon={button.leftIcon} />
       ) : (
@@ -78,7 +78,6 @@ interface DownloadsPanelProps {
   readonly buttons: ReadonlyArray<DownloadButtonProps>;
   readonly loginForDownload?: boolean;
   readonly accessibility?: Accessibility;
-  readonly rootPath?: string;
   readonly index: string;
   readonly totalCount: number;
   readonly fields: ReadonlyArray<string>;
@@ -128,9 +127,9 @@ const DownloadsPanel = ({
           [key]: {
             ...dropdown,
             title: `${dropdown.title}`,
-            buttons: dropdown.dropdownItems?.map((button) => ({
+            dropdownItems: dropdown.dropdownItems?.map((button) => ({
               ...button,
-              title: `${button.title}`,
+              title: button.title,
               enabled: false,
             })),
           },
@@ -151,7 +150,6 @@ const DownloadsPanel = ({
     return buttons.map((button) => {
       const buttonAction = button.action ?? button.type;
 
-      console.log('button', button, 'button action', buttonAction);
       const disabled = loginRequired && !isUserLoggedIn;
 
       // sower action contains additional parameters in the actionArgs member
@@ -170,7 +168,6 @@ const DownloadsPanel = ({
        }
        */
       if (buttonAction === 'sower') {
-        console.log('Sower args', button.actionArgs);
         if (isCreateAndExportOutputConfig(button.actionArgs)) {
           const { jobAction, outputAction } = button.actionArgs;
           return (
@@ -194,6 +191,9 @@ const DownloadsPanel = ({
             />
           );
         }
+        console.warn(
+          `DownloadsPanel: sower button "${button.title}" has invalid or missing actionArgs — skipping`,
+        );
         return null;
       }
 

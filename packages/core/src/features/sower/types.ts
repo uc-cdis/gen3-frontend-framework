@@ -61,9 +61,9 @@ export interface CreateAndExportOutputConfig {
 }
 
 // Bound actions: action that are bound to a function
-export interface BoundCreateAndOutputAction {
+export interface DispatchedJobWithOutputAction {
   dispatchJob: DispatchJobParameters;
-  outputActionFunction?: BoundJobActionConfig<JobOutputAction>;
+  outputAction?: JobActionFunctionConfig; // output action is optional
 }
 
 export enum SowerJobStage {
@@ -78,7 +78,7 @@ export interface ExtendedJobStatus extends JobStatus {
 }
 
 export interface JobWithActions extends ExtendedJobStatus {
-  actions: BoundCreateAndOutputAction;
+  actions: DispatchedJobWithOutputAction;
   stage: SowerJobStage;
 }
 
@@ -87,12 +87,7 @@ export interface DispatchJobParameters {
   input: Record<string, any>;
 }
 
-export interface DispatchJobWithAction {
-  dispatchJob: DispatchJobParameters;
-  outputAction?: BoundJobActionConfig<JobOutputAction>;
-}
-
-export interface NamedDispatchJobWithAction extends DispatchJobWithAction {
+export interface NamedDispatchJobWithAction extends DispatchedJobWithOutputAction {
   name: string;
 }
 
