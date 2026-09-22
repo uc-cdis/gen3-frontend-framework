@@ -1,6 +1,7 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex */
 import React, { useMemo, useRef, useState, useCallback } from 'react';
 import { formatDataForGraph } from './graphViewDataUtils';
-import { DataDictionary } from './types';
+import type { DataDictionary } from './types';
 
 interface GraphViewType {
   categories: string;
