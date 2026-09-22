@@ -114,7 +114,7 @@ const GraphView = ({ dictionary }: GraphViewType) => {
   }, [dataAndLinks.rawEdges, posMap]);
 
   const handleMouseDown = useCallback(
-    (e: React.MouseEvent<SVGSVGElement>) => {
+    (e: React.MouseEvent) => {
       if (e.button !== 0) return;
       setIsPanning(true);
       panStart.current = {
@@ -127,7 +127,7 @@ const GraphView = ({ dictionary }: GraphViewType) => {
   );
 
   const handleMouseMove = useCallback(
-    (e: React.MouseEvent<SVGSVGElement>) => {
+    (e: React.MouseEvent) => {
       if (!isPanning) return;
       setTranslate({
         x: e.clientX - panStart.current.x,
@@ -139,7 +139,7 @@ const GraphView = ({ dictionary }: GraphViewType) => {
 
   const stopPanning = useCallback(() => setIsPanning(false), []);
 
-  const handleWheel = useCallback((e: React.WheelEvent<SVGSVGElement>) => {
+  const handleWheel = useCallback((e: React.WheelEvent) => {
     e.preventDefault();
     setScale((s) => Math.max(0.2, Math.min(3, s * (1 - e.deltaY * 0.001))));
   }, []);
@@ -155,7 +155,18 @@ const GraphView = ({ dictionary }: GraphViewType) => {
     'w-8 h-8 bg-white border border-gray-300 rounded flex items-center justify-center hover:bg-gray-100 text-gray-600 select-none text-base font-bold shadow-sm';
 
   return (
-    <div className="relative w-full h-full min-h-[800px] overflow-hidden bg-base-lighter">
+    <div
+      role="application"
+      aria-label="Data dictionary graph view"
+      tabIndex={0}
+      className="relative w-full h-full min-h-[800px] overflow-hidden bg-base-lighter"
+      style={{ cursor: isPanning ? 'grabbing' : 'grab' }}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={stopPanning}
+      onMouseLeave={stopPanning}
+      onWheel={handleWheel}
+    >
       <div className="absolute top-4 left-4 z-10 flex flex-col gap-1">
         <button onClick={reset} className={btnClass} title="Reset view">
           ⤢
@@ -169,15 +180,8 @@ const GraphView = ({ dictionary }: GraphViewType) => {
       </div>
 
       <svg
-        role="application"
-        aria-label="Data dictionary graph view"
+        aria-hidden="true"
         className="w-full h-full"
-        style={{ cursor: isPanning ? 'grabbing' : 'grab' }}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={stopPanning}
-        onMouseLeave={stopPanning}
-        onWheel={handleWheel}
       >
         <g transform={`translate(${translate.x},${translate.y}) scale(${scale})`}>
           {/* ── Edges ─────────────────────────────────────────────────────────
