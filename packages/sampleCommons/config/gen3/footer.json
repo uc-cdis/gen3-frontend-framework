@@ -1,6 +1,6 @@
 {
   "classNames": {
-    "root": "bg-base-min",
+    "root": "bg-base-darker",
     "layout": "flex items-center justify-end"
   },
   "rightSection": {
@@ -25,7 +25,8 @@
               "logo": "/icons/createdby.png",
               "width": 170,
               "height": 60,
-              "description": "Created by CTDS"
+              "description": "Center for Translational Data Science at the University of Chicago",
+              "href": "https://ctds.uchicago.edu/"
             }
           }
         ]

@@ -1,6 +1,7 @@
 import React from 'react';
-import { GetServerSideProps } from 'next';
-import { NextRouter, useRouter } from 'next/dist/client/router';
+import type { GetServerSideProps } from 'next';
+import type { NextRouter} from 'next/dist/client/router';
+import { useRouter } from 'next/dist/client/router';
 
 import { getNavPageLayoutPropsFromConfig } from '@gen3/frontend/lib/common/staticProps';
 import {
@@ -28,7 +29,7 @@ const AppsPage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
           width="100%"
           height="100%"
           title="client notebook"
-        />
+         />
       </div>
     </NavPageLayout>
   );
