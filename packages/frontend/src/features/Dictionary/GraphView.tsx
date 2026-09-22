@@ -169,6 +169,8 @@ const GraphView = ({ dictionary }: GraphViewType) => {
       </div>
 
       <svg
+        role="application"
+        aria-label="Data dictionary graph view"
         className="w-full h-full"
         style={{ cursor: isPanning ? 'grabbing' : 'grab' }}
         onMouseDown={handleMouseDown}
