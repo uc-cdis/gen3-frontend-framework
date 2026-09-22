@@ -4,7 +4,7 @@ import type { ButtonProps } from '@mantine/core';
 import { Button, Tooltip } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import type { CreateAndExportOutputConfig } from '@gen3/core';
-import { useSubmitSowerJobMutation } from '@gen3/core';
+import { useIsUserLoggedIn, useSubmitSowerJobMutation } from '@gen3/core';
 import { bindSowerOutputJob, buildSubmitSowerJob } from './sowerActions';
 
 interface SubmitSowerJobButtonProps {
@@ -66,6 +66,9 @@ const SubmitSowerJobButton = forwardRef<
     const [submitJob, { isLoading, isSuccess, isError }] =
       useSubmitSowerJobMutation();
 
+    const isLoggedIn = useIsUserLoggedIn();
+    const buttonDisabled = disabled || !isLoggedIn;
+
     useEffect(() => {
       if (isSuccess) {
         notifications.show({
@@ -108,7 +111,7 @@ const SubmitSowerJobButton = forwardRef<
           ref={ref}
           loading={isLoading}
           onClick={handleSubmitJob}
-          disabled={disabled}
+          disabled={buttonDisabled}
           {...props}
         >
           {label}

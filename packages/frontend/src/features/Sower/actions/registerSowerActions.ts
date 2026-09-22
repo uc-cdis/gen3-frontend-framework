@@ -1,6 +1,7 @@
 import type { JobOutputAction } from '@gen3/core';
 import { fetchFencePresignedURL } from '@gen3/core';
 import { sowerOutputActionRegistry } from './sowerActionFactory';
+import { notificationOutputAction } from './outputActions';
 
 const PRESIGNED_URL_TEMPLATE_VARIABLE = '{{PRESIGNED_URL}}';
 interface SendPFBToURLParameters {
@@ -62,3 +63,4 @@ export const sendPFBToURL: JobOutputAction = async ({
 // register functions
 
 sowerOutputActionRegistry.register('handoff-pfb-to-url', sendPFBToURL);
+sowerOutputActionRegistry.register('notification', notificationOutputAction);
