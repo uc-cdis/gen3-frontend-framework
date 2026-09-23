@@ -912,10 +912,10 @@ export const SessionProvider = ({
           userStatus === 'authenticated'
         ) {
           if (SESSION_DEBUG_LOGGING) {
+            // oxlint-disable-next-line no-console
             console.log(
               'Session has ended at at ${new Date(timestamp).toISOString()',
             );
-
           }
           coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
           void endSession();
