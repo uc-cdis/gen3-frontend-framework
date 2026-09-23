@@ -81,7 +81,7 @@ const CostTracker = ({workspaceAccountManagerTarget = ''}) => {
 
   const { usersPayModels, workspaceName, hardLimit, totalUsage } =
     useDeepCompareMemo(() => {
-      if (!data)
+      if (!(data && data.currentPayModel !== null)) {
         return {
           usersPayModels: [],
           selectedPayModel: [],
@@ -89,6 +89,7 @@ const CostTracker = ({workspaceAccountManagerTarget = ''}) => {
           totalUsage: undefined,
           hardLimit: undefined,
         };
+      }
       const usersPayModels = data.allPayModels.map(
         (payModel: PayModel): PayModelMenuItem => {
           return {
