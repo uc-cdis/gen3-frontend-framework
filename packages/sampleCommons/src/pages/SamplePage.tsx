@@ -1,27 +1,10 @@
 import React from 'react';
-import { Center, Paper, Text } from '@mantine/core';
+import { Center, Text, Paper } from '@mantine/core';
 import { getNavPageLayoutPropsFromConfig } from '@gen3/frontend/lib/common/staticProps';
-import {
-  NavPageLayout,
-  type NavPageLayoutProps,
-} from '@gen3/frontend/features/Navigation';
-import { GetServerSideProps } from 'next';
+import { NavPageLayout } from '@gen3/frontend/features/Navigation';
+import type { NavPageLayoutProps } from '@gen3/frontend/features/Navigation';
 
-const CustomHeader = () => {
-  return (
-    <div className="bg-secondary flex justify-items-center w-full h-12">
-      <Text>Custom Header</Text>
-    </div>
-  );
-};
-
-const CustomFooter = () => {
-  return (
-    <div className="bg-primary flex justify-items-center w-full h-12">
-      <Text>Custom Footer</Text>
-    </div>
-  );
-};
+import type { GetServerSideProps } from 'next';
 
 const SamplePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
   return (
@@ -32,8 +15,6 @@ const SamplePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
         content: 'Sample Data',
         key: 'gen3-sample-page',
       }}
-      CustomHeaderComponent={CustomHeader}
-      CustomFooterComponent={CustomFooter}
     >
       <div className="w-full m-10">
         <Center>
@@ -42,9 +23,6 @@ const SamplePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
             <Text>
               You can add your own content here, and add a link to this page in
               the navigation bar by editing the config file in navigation.json
-              You can also add a custom header and footer by using the
-              CustomHeaderComponent and CustomFooterComponent props in the
-              NavPageLayout component.
             </Text>
           </Paper>
         </Center>

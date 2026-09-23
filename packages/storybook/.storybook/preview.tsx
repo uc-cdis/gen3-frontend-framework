@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Preview } from '@storybook/nextjs';
+import type { Preview } from '@storybook/nextjs-vite';
 import { MantineProvider } from '@mantine/core';
 import { GEN3_API, GEN3_AUTHZ_API, GEN3_FENCE_API } from '@gen3/core';
 import { Gen3Provider } from '@gen3/frontend/app';
@@ -20,6 +20,9 @@ import '@fontsource/poppins';
  * to learn how to customize it
  */
 initialize({}, [
+  http.get('/api/auth/sessionToken', () => {
+    return HttpResponse.json({ status: 'not present' });
+  }),
   http.get(`${GEN3_API}/_status`, () => {
     return HttpResponse.json({
       message: 'Feeling good with storybook!',
@@ -73,6 +76,14 @@ const preview: Preview = {
       matchers: {
         color: /(background|color)$/i,
         date: /Date$/i,
+      },
+    },
+    nextjs: {
+      // Storybook's router mock defaults basePath to "/", which causes
+      // `${basePath}/api/auth/sessionToken` → `//api/auth/sessionToken`
+      // (a protocol-relative URL with hostname "api"). Override to empty string.
+      router: {
+        basePath: '',
       },
     },
   },

@@ -36,7 +36,7 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   const studyName = studyDetails.study_metadata?.minimal_info?.study_name;
   const studyRegistrationAuthZ = studyDetails.registration_authz;
   const studyProjectNumber = studyDetails.project_number;
-  const showSubmitButton = config.detailView.showSubmitButton;
+  const showSubmitButton = config.detailView?.showSubmitButton;
 
   const userAuthMapping = useCoreSelector((state: CoreState) =>
     selectAuthzMappingData(state),

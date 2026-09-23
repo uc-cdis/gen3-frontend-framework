@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import CodingAssistantPanel from './CodingAssistantPanel';
 
 const meta = {
-  title: "Workspace Components/CodingAssistantPanel",
+  title: 'Workspace Components/CodingAssistantPanel',
   component: CodingAssistantPanel,
 } satisfies Meta<typeof CodingAssistantPanel>;
 
@@ -12,5 +12,5 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  args: {}
+  args: {},
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { MantineProvider } from '@mantine/core';
 import { DiscoveryContext } from '../../DiscoveryProvider';
 import { DataAccessCellRenderer } from './DataAccessCellRenderer';

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta } from '@storybook/nextjs';
+import type { Meta } from '@storybook/nextjs-vite';
 import UnlabeledMultipleLinkField from './UnlabeledMultipleLinkField';
 import { JSONValue } from '@gen3/core';
 
