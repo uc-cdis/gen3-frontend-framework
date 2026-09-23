@@ -1,10 +1,8 @@
-// This file has been automatically migrated to valid ESM format by Storybook.
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import { dirname } from 'node:path';
 import path from 'path';
-import webpack from 'webpack';
-import type { StorybookConfig } from '@storybook/nextjs';
+import type { StorybookConfig } from '@storybook/nextjs-vite';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -43,75 +41,68 @@ const config: StorybookConfig = {
   ],
   typescript: {
     check: false,
-    checkOptions: {},
     skipCompiler: false,
   },
   framework: {
-    name: getAbsolutePath('@storybook/nextjs'),
+    name: getAbsolutePath('@storybook/nextjs-vite'),
     options: {
-      builder: {
-        useSWC: true, // Enables SWC support
-      },
-      image: {
-        loading: 'eager',
-      },
       nextConfigPath: path.resolve(__dirname, '../next.config.js'),
     },
   },
   staticDirs: ['../../sampleCommons/public'],
-  webpackFinal: async (config) => {
-    const imageRule = config.module?.rules?.find((rule) => {
-      const test = (rule as { test: RegExp }).test;
+  viteFinal: async (config) => {
+    const { mergeConfig } = await import('vite');
+    const { default: svgr } = await import('vite-plugin-svgr');
 
-      if (!test) {
-        return false;
-      }
-
-      return test.test('.svg');
-    }) as { [key: string]: any };
-
-    imageRule.exclude = /\.svg$/;
-
-    config.module?.rules?.push({
-      test: /\.svg$/,
-      use: ['@svgr/webpack'],
-    });
-
-    // @storybook/nextjs aliases react to next/dist/compiled/react (a canary build).
-    // Remove the non-exact prefix aliases so they don't shadow our explicit overrides below.
-    if (config.resolve?.alias && !Array.isArray(config.resolve.alias)) {
-      delete (config.resolve.alias as Record<string, string>)['react'];
-      delete (config.resolve.alias as Record<string, string>)['react-dom'];
-    }
-
-    config.resolve = {
-      ...config.resolve,
-      alias: {
-        ...config.resolve?.alias,
-        'next/router': 'next-router-mock',
-        // Pin all react/react-dom imports to the project's installed versions (19.2.6),
-        // not the canary build bundled with Next.js.
-        react$: require.resolve('react'),
-        'react/jsx-runtime': require.resolve('react/jsx-runtime'),
-        'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime'),
-        'react-dom$': require.resolve('react-dom'),
-        'react-dom/client': require.resolve('react-dom/client'),
+    // mergeConfig concatenates alias arrays as [...base, ...ours], so the framework's
+    // aliases would win for any shared key. Build the merged config first, then prepend
+    // our aliases so they are tested before the framework's.
+    const ourAliases = [
+      {
+        find: '@gen3/core/server',
+        replacement: path.resolve(__dirname, '../../core/src/server.ts'),
       },
-    };
-
-    config.plugins = [
-      ...(config.plugins ?? []),
-      new webpack.DefinePlugin(
-        Object.keys(process.env)
-          .filter((key) => key.startsWith('NEXT_PUBLIC_'))
-          .reduce(
-            (state, nextKey) => ({ ...state, [nextKey]: process.env[nextKey] }),
-            {},
-          ),
-      ),
+      {
+        find: '@gen3/frontend/app',
+        replacement: path.resolve(
+          __dirname,
+          '../../frontend/src/exports/app.ts',
+        ),
+      },
+      {
+        find: '@gen3/frontend/explorerRenderers',
+        replacement: path.resolve(
+          __dirname,
+          '../../frontend/src/exports/explorerRenderers.ts',
+        ),
+      },
+      {
+        find: '@gen3/frontend/content',
+        replacement: path.resolve(
+          __dirname,
+          '../../frontend/src/exports/content.ts',
+        ),
+      },
+      {
+        find: /^@gen3\/core$/,
+        replacement: path.resolve(__dirname, '../../core/src/index.ts'),
+      },
+      {
+        find: /^@gen3\/workspaces$/,
+        replacement: path.resolve(__dirname, '../../workspaces/src/index.ts'),
+      },
+      { find: 'next/router', replacement: 'next-router-mock' },
     ];
 
-    return config;
+    const merged = mergeConfig(config, { plugins: [svgr()] });
+
+    merged.resolve ??= {};
+    const frameworkAliases = Array.isArray(merged.resolve.alias)
+      ? merged.resolve.alias
+      : [];
+    merged.resolve.alias = [...ourAliases, ...frameworkAliases];
+
+    return merged;
   },
 };
 export default config;
