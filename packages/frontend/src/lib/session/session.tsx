@@ -911,6 +911,12 @@ export const SessionProvider = ({
           obj.data?.loginStatus !== 'authenticated' &&
           userStatus === 'authenticated'
         ) {
+          if (SESSION_DEBUG_LOGGING) {
+            console.log(
+              'Session has ended at at ${new Date(timestamp).toISOString()',
+            );
+
+          }
           coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
           void endSession();
         }
