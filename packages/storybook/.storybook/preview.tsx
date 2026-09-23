@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Preview } from '@storybook/nextjs';
+import type { Preview } from '@storybook/nextjs-vite';
 import { MantineProvider } from '@mantine/core';
 import { GEN3_API, GEN3_AUTHZ_API, GEN3_FENCE_API } from '@gen3/core';
 import { Gen3Provider } from '@gen3/frontend/app';
@@ -30,7 +30,55 @@ initialize({}, [
     return HttpResponse.json({});
   }),
   http.get(`${GEN3_FENCE_API}/user`, () => {
-    return HttpResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return HttpResponse.json(
+      {
+        active: true,
+        authz: {
+          '/open': [
+            {
+              method: 'read',
+              service: 'fence',
+            },
+            {
+              method: 'read-storage',
+              service: 'fence',
+            },
+            {
+              method: 'read',
+              service: 'guppy',
+            },
+            {
+              method: 'read',
+              service: 'peregrine',
+            },
+            {
+              method: 'read',
+              service: 'sheepdog',
+            },
+          ],
+        },
+        azp: null,
+        certificates_uploaded: [],
+        display_name: null,
+        email: 'storybook@uchicago.edu',
+        groups: [],
+        idp: 'storybook',
+        is_admin: false,
+        message: '',
+        name: 'storybook@uchicago.edu',
+        phone_number: null,
+        preferred_username: null,
+        primary_google_service_account: null,
+        project_access: {},
+        resources: ['/open'],
+        resources_granted: [],
+        role: 'user',
+        sub: '374',
+        user_id: 374,
+        username: 'storybook@uchicago.edu',
+      },
+      { status: 200 },
+    );
   }),
 ]);
 
