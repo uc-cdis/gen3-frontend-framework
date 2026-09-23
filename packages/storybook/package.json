@@ -16,8 +16,8 @@
   "main": ".storybook/main.ts",
   "scripts": {
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
-    "test-storybook": "vitest --config vitest.config.mts"
+    "storybook:build": "storybook build",
+    "storybook:test": "vitest --config vitest.config.mts"
   },
   "dependencies": {
     "@mantine/core": "^9.4.0",
