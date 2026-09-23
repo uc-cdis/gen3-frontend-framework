@@ -11,13 +11,20 @@ import { LoginButton } from './LoginButton';
 import type { TopBarItems, TopBarProps } from './types';
 import { isTopBarLinkButton } from './types';
 import { modals } from '@mantine/modals';
+import { useIsUserLoggedIn } from '@gen3/core';
 
 const processTopBarItems = (
   items: TopBarItems[],
+  isLoggedIn: boolean,
   classNames: StylingOverrideWithMergeControl,
   dividerClassname: string,
 ): ReactElement[] => {
   return items.reduce((acc: ReactElement[], item: TopBarItems) => {
+    // check to see if item requires login
+    if (item.requireLogin && !isLoggedIn) {
+      return acc;
+    }
+
     const mergedClassnames = item?.classNames
       ? mergeDefaultTailwindClassnames(classNames, item.classNames)
       : classNames;
@@ -105,6 +112,8 @@ const TopBar = ({
     rightIcon: 'text-secondary-contrast-lighter pl-1',
   };
 
+  const isLoggedIn = useIsUserLoggedIn();
+
   const mergedClassnames = mergeDefaultTailwindClassnames(
     classNamesDefaults,
     classNames,
@@ -125,6 +134,7 @@ const TopBar = ({
         >
           {processTopBarItems(
             items,
+            isLoggedIn,
             mergedItemClassnames,
             extractClassName('divider', mergedClassnames),
           )}

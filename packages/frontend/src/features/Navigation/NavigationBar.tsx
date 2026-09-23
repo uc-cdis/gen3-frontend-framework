@@ -41,7 +41,6 @@ const NavigationBarItem = ({
         mergedClassnames,
       )}`}
     >
-      {/*<LoadingOverlay visible={authStatus === LinkAuthStatus.Pending} />*/}
       <NavigationBarButton
         tooltip={item.tooltip}
         icon={item.icon}

@@ -13,6 +13,7 @@ export interface TopIconButtonProps extends NameAndIcon {
   clickHandler?: () => void;
   ariaLabel?: string;
   component?: React.ReactElement;
+  requireLogin?: boolean;
 }
 
 export interface TopIconButtonPropsWithLink extends TopIconButtonProps {
@@ -26,13 +27,13 @@ export interface TopIconButtonPropsWithModal extends TopIconButtonProps {
 
 export const IconButton = ({
   name,
-  leftIcon = undefined,
-  rightIcon = undefined,
+  leftIcon,
+  rightIcon,
   iconSize = 'md',
-  tooltip = undefined,
+  tooltip,
   classNames = {},
-  clickHandler = undefined,
-  ariaLabel = undefined,
+  clickHandler,
+  ariaLabel,
 }: TopIconButtonProps) => {
   const classNamesDefaults = {
     root: `flex items-center align-middle px-2 my-2`,
