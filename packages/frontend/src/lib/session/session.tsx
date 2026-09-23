@@ -903,16 +903,16 @@ export const SessionProvider = ({
    * Check if the user session has ended
    */
   const isSessionActive = useThrottledCallback(() => {
-    // Check session token, this call updates info
-    void getUserDetails(undefined, true)
+    // Check session token, which will slide the session token
+    void getUserDetails()
       .then((obj) => {
-        // use cache value to prevent excessive calls to /user/user
         // check to make sure logged-out users are logged out
         if (
           obj.data?.loginStatus !== 'authenticated' &&
           userStatus === 'authenticated'
         ) {
           coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
+          void endSession();
         }
       })
       .catch(() => {
