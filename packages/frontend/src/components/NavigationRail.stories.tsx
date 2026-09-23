@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { CartIcon, PersonIcon } from '../types/icons';
 import NavigationRail, { NavigationRailItem } from './NavigationRail';
 
