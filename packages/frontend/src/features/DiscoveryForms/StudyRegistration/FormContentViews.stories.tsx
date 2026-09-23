@@ -2,7 +2,7 @@ import React from 'react';
 import { FormContentViews } from './FormContentViews';
 import { FormOutcome } from './types';
 import type { FormPropsBody } from '../../../components/Content/Form';
-import type { Meta } from '@storybook/nextjs';
+import type { Meta } from '@storybook/nextjs-vite';
 
 const mockFormBody = [
   {
