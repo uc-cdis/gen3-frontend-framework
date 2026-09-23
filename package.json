@@ -47,6 +47,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
+    "@vitest/browser-playwright": "^4.1.11",
     "classnames": "^2.3.1",
     "dayjs": "^1.11.19",
     "glob": "^13.0.6",
@@ -160,7 +161,6 @@
   },
   "allowScripts": {
     "unrs-resolver": true,
-    "esbuild": true,
     "core-js-pure": true,
     "msw": true,
     "sharp": true,
@@ -169,6 +169,7 @@
     "nx": true,
     "uuid@8.3.2": true,
     "uuid@11.1.1": true,
-    "@parcel/watcher@2.6.0": true
+    "@parcel/watcher@2.6.0": true,
+    "esbuild@0.28.2": true
   }
 }
