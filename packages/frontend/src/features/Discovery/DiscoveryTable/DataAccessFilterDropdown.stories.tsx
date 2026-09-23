@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import React, { useState } from 'react';
 import { MantineProvider } from '@mantine/core';
 import { DiscoveryContext } from '../DiscoveryProvider';

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta } from '@storybook/nextjs';
+import type { Meta } from '@storybook/nextjs-vite';
 import StudyDetailsPanel from './StudyDetailsPanel';
 import { JSONObject } from '@gen3/core';
 import { StudyDetailView } from '../types';

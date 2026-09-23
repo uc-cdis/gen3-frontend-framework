@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import AddToDataLibrary from './AddToDataLibrary';
 import { DataLibraryStoreMode } from '@gen3/core';

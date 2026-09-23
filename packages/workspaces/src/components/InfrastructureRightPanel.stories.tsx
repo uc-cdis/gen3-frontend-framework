@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import InfrastructureRightPanel from './InfrastructureRightPanel';
 import { KERNEL_DEFAULT_ARGS } from './KernelLifecyclePanel/KernelLifecyclePanel.stories';

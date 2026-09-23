@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import MessageBubble from './MessageBubble';
 
 const meta = {
-  title: "Workspace Components/MessageBubble",
+  title: 'Workspace Components/MessageBubble',
   component: MessageBubble,
 } satisfies Meta<typeof MessageBubble>;
 
@@ -14,11 +14,11 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     message: {
-      id: "1",
-      role: "assistant",
-      content: "Hi",
-      streaming: true
+      id: '1',
+      role: 'assistant',
+      content: 'Hi',
+      streaming: true,
     },
-    onInsert: () => {}
-  }
+    onInsert: () => {},
+  },
 };
