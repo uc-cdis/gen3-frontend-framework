@@ -72,9 +72,7 @@ const nextConfig = {
 
     config.resolve.alias = {
       ...config.resolve.alias,
-
       '@gen3/core$': path.resolve(__dirname, '../core/src/index.ts'),
-
       // Specific sub-path aliases (these bypass barrel files)
       '@gen3/frontend/app': path.resolve(
         __dirname,
@@ -88,10 +86,7 @@ const nextConfig = {
         __dirname,
         '../frontend/src/exports/content.ts',
       ),
-      '@gen3/workspaces$': path.resolve(
-        __dirname,
-        '../workspaces/src/index.ts',
-      ),
+      '@gen3/workspaces': path.resolve(__dirname, '../workspaces/src/index.ts'),
       '@gen3/workspaces/server': path.resolve(
         __dirname,
         '../workspaces/src/server.ts',
