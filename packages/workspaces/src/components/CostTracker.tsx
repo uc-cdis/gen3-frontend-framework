@@ -1,19 +1,21 @@
-import React, { ReactElement, useState } from 'react';
+import type { ReactElement } from 'react';
+import React, { useState } from 'react';
+import type { SelectProps } from '@mantine/core';
 import {
   Accordion,
+  Badge,
+  Button,
+  Divider,
   Group,
   Loader,
-  SelectProps,
-  Text,
   Popover,
-  Button,
   Progress,
-  Divider,
   Radio,
-  Badge,
+  Text,
 } from '@mantine/core';
 import {
   type PayModel,
+  useGetActivePayModelQuery,
   useGetWorkspacePayModelsQuery,
   useSetCurrentPayModelMutation,
 } from '@gen3/core';
@@ -23,10 +25,15 @@ import {
   FaUser as ActiveIcon,
 } from 'react-icons/fa';
 import { MdExpandMore, MdOpenInNew } from 'react-icons/md';
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
-import { SerializedError } from '@reduxjs/toolkit';
+import type { FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
+import type { SerializedError } from '@reduxjs/toolkit';
 
 // TODO rework once requirements are made
+
+const usdFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+});
 
 interface PayModelMenuItem {
   value: string;
@@ -36,16 +43,15 @@ interface PayModelMenuItem {
   currentPayModel: boolean; // temp
 }
 
-const PaymentNumberToString = (
+const paymentNumberToString = (
   x: number | undefined,
   undefinedValue = 'N/A',
   precision = 2,
 ): string => {
   if (typeof x !== 'number' || Number.isNaN(x)) return undefinedValue;
 
-  return x.toFixed(precision);
+  return usdFormatter.format(x);
 };
-
 
 const isNoPayModelError = (error: FetchBaseQueryError | SerializedError) => {
   return (
@@ -55,25 +61,21 @@ const isNoPayModelError = (error: FetchBaseQueryError | SerializedError) => {
   );
 };
 
-const CostTracker = ({workspaceAccountManagerTarget = ''}) => {
-  const { data, isLoading, isFetching, isError, error } =
-    useGetWorkspacePayModelsQuery(
-      undefined,
-      {
-        pollingInterval: 120000, // 2 min
-        refetchOnMountOrArgChange: true,
-      }
-    );
+const CostTracker = ({ workspaceAccountManagerTarget = '' }) => {
+  const { data, isLoading, isFetching, isError, error, isSuccess } =
+    useGetWorkspacePayModelsQuery(undefined, {
+      pollingInterval: 120000, // 2 min
+      refetchOnMountOrArgChange: true,
+    });
 
-  const [setWorkspacePayModel] = useSetCurrentPayModelMutation();
-
+  const { data: currentPaymodelData, isFetching: isCurrentPayModelFetching } =
+    useGetActivePayModelQuery();
+  const [setWorkspacePayModel, result] = useSetCurrentPayModelMutation();
   const [selectedPayModel, setSelectedPayModel] = useState<string | null>(null);
-
   const [opened, setOpened] = useState<boolean>(false);
-
   const setPayModel = useDeepCompareCallback(
     (id: string) => {
-      void setWorkspacePayModel(id); // triggers the call to the service to select the pay model
+      void setWorkspacePayModel(id).unwrap(); // triggers the call to the service to select the pay model
       setSelectedPayModel(id); // set the paymodel value for the select component
     },
     [setWorkspacePayModel, selectedPayModel],
@@ -81,7 +83,53 @@ const CostTracker = ({workspaceAccountManagerTarget = ''}) => {
 
   const { usersPayModels, workspaceName, hardLimit, totalUsage } =
     useDeepCompareMemo(() => {
-      if (!(data && data.currentPayModel !== null)) {
+      if (isSuccess && data) {
+        const usersPayModels = data?.allPayModels.map(
+          (payModel: PayModel): PayModelMenuItem => {
+            return {
+              value: payModel.bmh_workspace_id ?? payModel.workspace_type,
+              label: payModel.workspace_type,
+              totalUsage: payModel['total-usage'],
+              currentPayModel: payModel.current_pay_model ?? null, //TODO temp rework with existing code
+              icon:
+                payModel.request_status === 'active' ? (
+                  <ActiveIcon />
+                ) : (
+                  <InactiveIcon />
+                ),
+            };
+          },
+        );
+
+        let currentPayModel = null;
+        if (data?.currentPayModel) {
+          currentPayModel =
+            data?.currentPayModel.bmh_workspace_id ??
+            data?.currentPayModel.workspace_type;
+        }
+
+        setSelectedPayModel(currentPayModel);
+
+        let workspaceName = 'Not Set';
+        let totalUsage = undefined;
+        let hardLimit = undefined;
+        if (data.currentPayModel !== null) {
+          workspaceName =
+            data.currentPayModel.bmh_workspace_id.length > 0
+              ? data.currentPayModel.bmh_workspace_id
+              : data.currentPayModel.workspace_type;
+          totalUsage = data.currentPayModel?.['total-usage'];
+          hardLimit = data.currentPayModel?.['hard-limit'];
+        }
+
+        return {
+          usersPayModels,
+          workspaceName,
+          selectedPayModel,
+          totalUsage,
+          hardLimit,
+        };
+      } else {
         return {
           usersPayModels: [],
           selectedPayModel: [],
@@ -90,36 +138,6 @@ const CostTracker = ({workspaceAccountManagerTarget = ''}) => {
           hardLimit: undefined,
         };
       }
-      const usersPayModels = data.allPayModels.map(
-        (payModel: PayModel): PayModelMenuItem => {
-          return {
-            value: payModel.bmh_workspace_id ?? payModel.workspace_type,
-            label: payModel.workspace_type,
-            totalUsage: payModel['total-usage'],
-            currentPayModel: payModel['current_pay_model'],//TODO temp rework with existing code
-            icon:
-              payModel.request_status === 'active' ? (
-                <ActiveIcon />
-              ) : (
-                <InactiveIcon />
-              ),
-          };
-        },
-      );
-
-      setSelectedPayModel(
-        data.currentPayModel.bmh_workspace_id ??
-          data.currentPayModel.workspace_type,
-      );
-      return {
-        usersPayModels,
-        workspaceName:
-          data.currentPayModel.bmh_workspace_id.length > 0
-            ? data.currentPayModel.bmh_workspace_id
-            : data.currentPayModel.workspace_type,
-        totalUsage: data.currentPayModel['total-usage'],
-        hardLimit: data.currentPayModel['hard-limit'],
-      };
     }, [data]);
 
   const PayModelSelectItem: SelectProps['renderOption'] = ({ option }) => {
@@ -138,68 +156,64 @@ const CostTracker = ({workspaceAccountManagerTarget = ''}) => {
 
   if (isLoading && isFetching)
     return (
-      <Badge 
-          leftSection={<Loader size="xs" type="dots" className='m-1'/>} 
-          variant="default"
-        >
+      <Badge
+        leftSection={<Loader size="xs" type="dots" className="m-1" />}
+        variant="default"
+      >
         Loading...
       </Badge>
     );
-    
+
   const PayModelError = (message: string) => {
     // dropdown error state to provide user access to Account Manager if available
     if (workspaceAccountManagerTarget) {
-      return (<Popover
-        width="target"
-        position="bottom"
-        shadow="lg"
-        trapFocus
-        opened={opened} onChange={setOpened}
-      >
-        <Popover.Target>
-          <Button
-            onClick={() => setOpened((o) => !o)}
-            size="xs" 
-            radius="xl"
-            className='h-[--badge-height] uppercase'
-            color='utility.3'
-            rightSection={
-              <MdExpandMore
-                size="1.5em"
-                aria-label={opened ? 'close': 'open'}
-                style={{
-                  transform: opened ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 200ms ease',
-                }}
-              />}
+      return (
+        <Popover
+          width="target"
+          position="bottom"
+          shadow="lg"
+          trapFocus
+          opened={opened}
+          onChange={setOpened}
+        >
+          <Popover.Target>
+            <Button
+              onClick={() => setOpened((o) => !o)}
+              size="xs"
+              radius="xl"
+              className="h-[--badge-height] uppercase"
+              color="utility.3"
+              rightSection={
+                <MdExpandMore
+                  size="1.5em"
+                  aria-label={opened ? 'close' : 'open'}
+                  style={{
+                    transform: opened ? 'rotate(180deg)' : 'rotate(0deg)',
+                    transition: 'transform 200ms ease',
+                  }}
+                />
+              }
             >
-              <span className='font-black'>{message}</span>
-          </Button>
-        </Popover.Target>
-        <Popover.Dropdown className='px-2'>
-          <Button
-            component="a"
-            href={workspaceAccountManagerTarget}
-            target="_blank"
-            variant="outline"
-            leftSection={
-              <MdOpenInNew
-                size="1.1em"
-                aria-label='external'
-              />}
-            size="xs"
-            className='w-full'
-          >
-            Workspace Account Manager
-          </Button>
-        </Popover.Dropdown>
-      </Popover>);
+              <span className="font-black">{message}</span>
+            </Button>
+          </Popover.Target>
+          <Popover.Dropdown className="px-2">
+            <Button
+              component="a"
+              href={workspaceAccountManagerTarget}
+              target="_blank"
+              variant="outline"
+              leftSection={<MdOpenInNew size="1.1em" aria-label="external" />}
+              size="xs"
+              className="w-full"
+            >
+              Workspace Account Manager
+            </Button>
+          </Popover.Dropdown>
+        </Popover>
+      );
     }
-    return (
-      <Badge color='utility.3'>
-          {message}
-      </Badge>
-    );
+    return <Badge color="utility.3">{message}</Badge>;
   };
   if (isError) {
     if (isNoPayModelError(error)) {
@@ -213,9 +227,13 @@ const CostTracker = ({workspaceAccountManagerTarget = ''}) => {
     <Progress
       size="sm"
       radius="xl"
-      aria-label='Monthly Workflow Limit'
-      value={!hardLimit ? 100 : (hardLimit / totalUsage) * 100}
-      color={!hardLimit || totalUsage >= hardLimit ? 'red.5' : 'green.1'}
+      aria-label="Monthly Workflow Limit"
+      value={!hardLimit || !totalUsage ? 100 : (hardLimit / totalUsage) * 100}
+      color={
+        !hardLimit || (totalUsage && totalUsage >= hardLimit)
+          ? 'red.5'
+          : 'green.1'
+      }
       className={className}
     />
   );
@@ -226,51 +244,62 @@ const CostTracker = ({workspaceAccountManagerTarget = ''}) => {
       position="bottom"
       shadow="lg"
       trapFocus
-      opened={opened} onChange={setOpened}
+      opened={opened}
+      onChange={setOpened}
     >
       <Popover.Target>
         <Button
           onClick={() => setOpened((o) => !o)}
-          size="xs" 
+          size="xs"
           radius="xl"
           variant="default"
-          className='h-[--badge-height]'
+          className="h-[--badge-height]"
           rightSection={
             <MdExpandMore
               className="text-accent"
               size="1.5em"
-              aria-label={opened ? 'close': 'open'}
+              aria-label={opened ? 'close' : 'open'}
               style={{
                 transform: opened ? 'rotate(180deg)' : 'rotate(0deg)',
                 transition: 'transform 200ms ease',
               }}
-            />}
-          >
-            {ProgressBar('w-[110px]')}
-            <span className='font-black pl-3 pr-2'>${PaymentNumberToString(totalUsage)}</span>
-            <span className='font-normal'>/${PaymentNumberToString(hardLimit)}</span>
+            />
+          }
+        >
+          {ProgressBar('w-[110px]')}
+          <span className="font-black pl-3 pr-1">
+            {paymentNumberToString(totalUsage)}
+          </span>
+          <span className="font-normal">
+            /{paymentNumberToString(hardLimit)}
+          </span>
         </Button>
       </Popover.Target>
-      <Popover.Dropdown className='px-2'>
-        {workspaceAccountManagerTarget && <Button
-          component="a"
-          href={workspaceAccountManagerTarget}
-          target="_blank"
-          variant="outline"
-          leftSection={
-            <MdOpenInNew
-              size="1.1em"
-              aria-label='external'
-            />}
-          size="xs"
-          className='w-full mb-4'
-        >
-          Workspace Account Manager
-        </Button>}
-        <Text size="sm" className='uppercase pb-2 px-2'>Limit <span className='font-black pl-1'>${PaymentNumberToString(hardLimit)}</span></Text>
+      <Popover.Dropdown className="px-2">
+        {workspaceAccountManagerTarget && (
+          <Button
+            component="a"
+            href={workspaceAccountManagerTarget}
+            target="_blank"
+            variant="outline"
+            leftSection={<MdOpenInNew size="1.1em" aria-label="external" />}
+            size="xs"
+            className="w-full mb-4"
+          >
+            Workspace Account Manager
+          </Button>
+        )}
+        <Text size="sm" className="uppercase pb-2 px-2">
+          Limit{' '}
+          <span className="font-black pl-1">
+            {paymentNumberToString(hardLimit)}
+          </span>
+        </Text>
         {ProgressBar('mx-2')}
         <Divider my="sm" />
-        <Text size="sm" className='uppercase pb-2 px-2'>Account &amp; Charges</Text>
+        <Text size="sm" className="uppercase pb-2 px-2">
+          Account &amp; Charges
+        </Text>
         <Accordion
           variant="unstyled"
           classNames={{
@@ -279,28 +308,34 @@ const CostTracker = ({workspaceAccountManagerTarget = ''}) => {
             label: 'p-0',
             chevron: 'text-accent',
             panel: 'p-0',
-            content: 'p-0'
+            content: 'p-0',
           }}
         >
           <Accordion.Item value="accountInformation">
             <Accordion.Control>
-              <Text size="sm" className='font-black'>{workspaceName} - ${PaymentNumberToString(totalUsage)}</Text>
+              <Text
+                size="sm"
+                className="font-black"
+              >{`${workspaceName} - ${paymentNumberToString(totalUsage)}`}</Text>
             </Accordion.Control>
             <Accordion.Panel>
               <Radio.Group
-                className='pt-2'
+                className="pt-2"
+                onChange={setPayModel}
+                value={selectedPayModel}
               >
-                {usersPayModels.map((obj)=>(
+                {usersPayModels.map((obj) => (
                   <Radio.Card
-                    checked={obj.currentPayModel}
-                    disabled
                     key={obj.value}
-                    className='p-2 border-none data-checked:bg-primary-lightest data-checked:border-primary-darker data-checked:font-black hover:bg-primary-max '
+                    value={obj.value}
+                    className="p-2 border-none data-checked:bg-primary-lightest data-checked:border-primary-darker data-checked:font-black hover:bg-primary-max "
                   >
                     <Group wrap="nowrap" align="flex-start">
-                      <Text size="sm" className='grow'>{obj.label}</Text>
-                      <Text size="sm">${PaymentNumberToString(obj.totalUsage)}</Text>
-                      <Radio.Indicator color='accent'/>
+                      <Text size="sm" className="grow">
+                        {obj.label}
+                      </Text>
+                      <Text size="sm">{`${paymentNumberToString(obj.totalUsage)}`}</Text>
+                      <Radio.Indicator color="accent" />
                     </Group>
                   </Radio.Card>
                 ))}
