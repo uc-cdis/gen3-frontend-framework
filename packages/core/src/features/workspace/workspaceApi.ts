@@ -68,9 +68,8 @@ export const workspacesApi = WorkspaceWithTags.injectEndpoints({
       }),
       setCurrentPayModel: builder.mutation<void, string>({
         query: (id: string) => ({
-          url: `${GEN3_WORKSPACE_API}/setpaymodel`,
+          url: `${GEN3_WORKSPACE_API}/setpaymodel?id=${id}`,
           method: 'POST',
-          body: id,
           invalidatesTags: ['PayModel'],
         }),
       }),
