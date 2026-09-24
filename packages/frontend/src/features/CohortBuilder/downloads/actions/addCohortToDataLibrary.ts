@@ -45,6 +45,7 @@ export const mapDataToMappingDefinition = (
   manifestData: JSONObject[],
   path: string,
   fieldMapping: Record<string, string> = {
+    // default field mapping
     file_name: 'file_name',
     file_size: 'file_size',
     md5sum: 'md5Sum',
@@ -55,26 +56,27 @@ export const mapDataToMappingDefinition = (
   const missing: JSONObject[] = [];
   const results = manifestData.reduce(
     (acc: Record<string, JSONObject>[], data) => {
-      const root = JSONPath({ path: path, json: data });
-      if (root?.length > 0) {
-        root[0].forEach((dataFileItem: any) => {
-          const manifestEntry = Object.keys(fieldMapping).reduce(
-            (entry: Record<string, any>, field) => {
-              if (fieldMapping[field] in dataFileItem) {
-                entry[field] = dataFileItem[fieldMapping[field]];
-              }
-              return entry;
-            },
-            { type: 'GA4GH_DRS' },
-          );
-          if (manifestEntry['id'] !== undefined) {
-            // only add if we have an object_id
-            acc.push(manifestEntry);
-          } else {
-            missing.push(manifestEntry);
+      let dataFileItem = data;
+      if (path !== '$.*') {
+        dataFileItem = JSONPath({ path: path, json: data });
+      } // replace it with assumption each entry is a data file
+
+      const manifestEntry = Object.keys(fieldMapping).reduce(
+        (entry: Record<string, any>, field) => {
+          if (fieldMapping[field] in dataFileItem) {
+            entry[field] = dataFileItem[fieldMapping[field]];
           }
-        });
+          return entry;
+        },
+        { type: 'GA4GH_DRS' },
+      );
+      if (manifestEntry['id'] !== undefined) {
+        // only add if we have an object_id
+        acc.push(manifestEntry);
+      } else {
+        missing.push(manifestEntry);
       }
+
       return acc;
     },
     [],

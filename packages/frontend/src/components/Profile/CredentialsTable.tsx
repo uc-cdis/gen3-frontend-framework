@@ -9,10 +9,9 @@ import {
 import { MdDelete as DeleteIcon } from 'react-icons/md';
 import { unixTimeToString } from '../../utils';
 import { TableIcons } from '../../components/Tables/TableIcons';
+import type { MRT_Cell, MRT_ColumnDef } from 'mantine-react-table-open';
 import {
   MantineReactTable,
-  MRT_Cell,
-  MRT_ColumnDef,
   useMantineReactTable,
 } from 'mantine-react-table-open';
 

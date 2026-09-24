@@ -7,7 +7,7 @@ import SearchAndActions from './SearchAndActions';
 import { useDataLibrarySelection } from './selection/SelectionContext';
 import SelectedItemsModal from './modals/SelectedItemsModal';
 import { DatalistAccordionItem } from './DatalistAccordionItem';
-import { DataLibraryConfig } from './types';
+import type { DataLibraryConfig } from './types';
 import { ErrorCard } from '../../components/MessageCards';
 import { useIsAuthenticated } from '../../lib/session/session';
 import { useDeepCompareEffect } from 'use-deep-compare';

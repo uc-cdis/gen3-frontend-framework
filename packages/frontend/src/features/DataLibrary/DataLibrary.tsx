@@ -1,7 +1,7 @@
 import React from 'react';
 import { DataLibrarySelectionProvider } from './selection/SelectionContext';
 import DataLibraryLists from './DataLibraryLists';
-import { DataLibraryConfig } from './types';
+import type { DataLibraryConfig } from './types';
 
 const DataLibrary = (config: DataLibraryConfig) => {
   return (

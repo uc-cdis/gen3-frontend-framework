@@ -354,7 +354,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
         <Button
           color="secondary.4"
           classNames={{ root: 'w-1/3 ml-2' }}
-          loading={isLoading || !!isUpdating}
+          loading={isLoading || isUpdating !== null}
           disabled={isDisabled}
           onClick={() => {
             if (currentList) {

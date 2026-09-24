@@ -1,13 +1,8 @@
-import React, {
-  createContext,
-  useContext,
-  useReducer,
-  Dispatch,
-  useState,
-} from 'react';
+import type { Dispatch } from 'react';
+import React, { createContext, useContext, useReducer, useState } from 'react';
 import { getSelectedItemsFromDataLibrary } from './utils';
-import { DataLibrary, CohortItem } from '@gen3/core';
-import { FileItemWithParentDatasetNameAndID } from '../types';
+import type { CohortItem, DataLibrary } from '@gen3/core';
+import type { FileItemWithParentDatasetNameAndID } from '../types';
 // Define types
 type ListId = string;
 

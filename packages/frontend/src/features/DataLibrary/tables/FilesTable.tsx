@@ -1,14 +1,18 @@
-import {
-  MantineReactTable,
+import type {
+  MRT_ColumnDef,
   MRT_RowSelectionState,
   MRT_Updater,
+} from 'mantine-react-table-open';
+import {
+  MantineReactTable,
   useMantineReactTable,
 } from 'mantine-react-table-open';
 import React, { useEffect, useState } from 'react';
-import { FileItem } from '@gen3/core';
+import type { FileItem } from '@gen3/core';
 import { Text } from '@mantine/core';
 import { commonTableSettings } from './tableSettings';
 import { useDataLibrarySelection } from '../selection/SelectionContext';
+import { filesize } from 'filesize';
 
 interface FilesTableProps {
   datasetId: string;
@@ -18,7 +22,7 @@ interface FilesTableProps {
   size?: string;
 }
 
-const columns = [
+const columns: MRT_ColumnDef<FileItem>[] = [
   {
     accessorKey: 'name',
     header: 'Name',
@@ -34,6 +38,9 @@ const columns = [
   {
     accessorKey: 'size',
     header: 'Size',
+    Cell: ({ row }) => (
+      <Text>{row.original.size ? filesize(row.original.size) : 'N/A'}</Text>
+    ),
   },
 ];
 
@@ -64,7 +71,7 @@ const FilesTable = ({
     updateListMemberSelections(listId, datasetId, value);
   };
 
-  const table = useMantineReactTable({
+  const table = useMantineReactTable<FileItem>({
     columns,
     data: data,
     ...commonTableSettings(size),
