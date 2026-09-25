@@ -1,19 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
-import {
+import type {
   DataLibrary,
-  DataLibraryStoreMode,
   Datalist,
   DataListUpdate,
   DatasetOrCohort,
   LibraryListItemsGroupedByDataset,
 } from './types';
+import { DataLibraryStoreMode } from './types';
 import {
   convertDatasetOrCohortToLibraryListItemsAPI,
   flattenDataList,
 } from './utils';
 import { DataLibraryStorageService } from './storage/DataLibraryStorageService';
-import { StorageOperationResults } from '../../types';
+import type { StorageOperationResults } from '../../types';
 
 const EMPTY_LIST: Datalist = {
   items: {},

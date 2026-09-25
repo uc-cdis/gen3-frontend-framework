@@ -28,6 +28,8 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
     deleteListFromDataLibrary,
   } = useDataLibrary({ storageMode });
 
+  console.log('datalibrary', dataLibrary);
+
   const { isAuthenticated } = useIsAuthenticated();
   const [selectedItemsOpen, { open, close }] = useDisclosure(false);
   const { gatherSelectedItems } = useDataLibrarySelection();
@@ -71,7 +73,7 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
   }
 
   return (
-    <div className="flex flex-col w-full ml-2">
+    <div className="flex flex-col w-full mx-2">
       <SelectedItemsModal
         opened={selectedItemsOpen}
         onClose={close}

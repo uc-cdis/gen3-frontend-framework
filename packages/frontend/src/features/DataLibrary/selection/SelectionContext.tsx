@@ -193,7 +193,9 @@ export const DataLibrarySelectionProvider: React.FC<{
 export const useDataLibrarySelection = (): DataLibraryContextType => {
   const context = useContext(DataLibrarySelectionContext);
   if (!context) {
-    throw new Error('useDataLibrary must be used within a DataLibraryProvider');
+    throw new Error(
+      'useDataLibrarySelection must be used within a DataLibrarySelectionProvider',
+    );
   }
   return context;
 };

@@ -11,11 +11,12 @@ import {
 } from '@mantine/core';
 import { Icon } from '@iconify-icon/react';
 import { notifications } from '@mantine/notifications';
+import type { FileItem } from '@gen3/core';
 import { HTTPError, HTTPUserFriendlyErrorMessages } from '@gen3/core';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import type { MRT_RowSelectionState } from 'mantine-react-table-open';
 import { useDataLibrarySelection } from '../selection/SelectionContext';
-import SelectedItemsTable from '../tables/SelectedItemsTable';
+import CheckoutFilesTable from '../tables/CheckoutFilesTable';
 import {
   doesGroupFailRule,
   doesItemFailRule,
@@ -28,6 +29,7 @@ import type {
   DataLibraryActionConfig,
   DataLibraryActionsConfig,
 } from '../selection/types';
+import { filesize } from 'filesize';
 
 interface StatCardProps {
   label: string;
@@ -37,11 +39,16 @@ interface StatCardProps {
   borderColorClass?: string;
 }
 
+interface CheckoutFileStats {
+  totalFilesCount: number;
+  totalFilesSize: number;
+}
+
 const StatCard: React.FC<StatCardProps> = ({
   label,
   value,
   unit,
-  colorClass = 'bg-accent-light',
+  colorClass = 'bg-accent-lighter',
   borderColorClass = 'border-accent',
 }) => (
   <Paper
@@ -49,14 +56,23 @@ const StatCard: React.FC<StatCardProps> = ({
     radius="sm"
     withBorder={false}
   >
-    <Text fw={600} size="sm" tt="uppercase" className="text-base-contrast">
+    <Text
+      fw={600}
+      size="sm"
+      tt="uppercase"
+      className={`${colorClass}-contrast`}
+    >
       {label}
     </Text>
-    <Text fw={700} size="xl" className="text-base-contrast leading-none mt-1">
+    <Text
+      fw={700}
+      size="xl"
+      className={`${colorClass}-contrast leading-none mt-1`}
+    >
       {value}
     </Text>
     {unit && (
-      <Text size="sm" className="text-base-contrast mt-1">
+      <Text size="sm" className={`${colorClass}-contrast leading-none mt-1`}>
         {unit}
       </Text>
     )}
@@ -70,16 +86,12 @@ interface ActionFunctionWithParams extends ActionCreatorFactoryItem {
 export interface CheckoutSummaryProps {
   actions: DataLibraryActionsConfig;
   onBack?: () => void;
-  totalFilesCount?: number;
-  totalFilesSize?: string;
   size?: string;
 }
 
 const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
   actions,
   onBack,
-  totalFilesCount,
-  totalFilesSize,
   size = 'sm',
 }) => {
   const [value, setValue] = useState<ComboboxItem | null>(null);
@@ -90,6 +102,26 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
   const [actionConfig, setActionConfig] =
     useState<DataLibraryActionConfig | null>(null);
   const [isRunning, setIsRunning] = useState(false);
+
+  const fileSummary = useMemo(
+    () =>
+      gatheredItems.reduce(
+        (acc, item) => {
+          if (item.itemType === 'Data') {
+            const fileItem = item satisfies FileItem;
+            return {
+              totalFilesSize: acc.totalFilesSize + Number(fileItem.size ?? 0),
+              totalFilesCount: acc.totalFilesCount + 1,
+            };
+          }
+          return acc;
+        },
+        { totalFilesCount: 0, totalFilesSize: 0 } satisfies CheckoutFileStats,
+      ),
+    [gatheredItems],
+  );
+
+  const { totalFilesCount, totalFilesSize } = fileSummary;
 
   const destinations = useMemo(
     () => actions.map((action) => ({ label: action.label, value: action.id })),
@@ -109,14 +141,14 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
       .map((item) => {
         if ('size' in item && item.size) {
           const match = String(item.size).match(/^([\d.]+)/);
-          return match ? parseFloat(match[1]) : 0;
+          return match ? parseInt(match[1]) : 0;
         }
         return 0;
       })
       .filter(Boolean);
     if (sizes.length === 0) return '--';
     const total = sizes.reduce((sum, s) => sum + s, 0);
-    return `${total.toFixed(1)} MB`;
+    return filesize(total);
   }, [selectedItems]);
 
   const onError = (error: HTTPError | Error) => {
@@ -200,7 +232,7 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
   const displayTotalCount =
     totalFilesCount !== undefined ? totalFilesCount : gatheredItems.length;
   const displaySelectedCount = selectedCount > 0 ? selectedCount : '--';
-  const displaySelectedSize = selectedCount > 0 ? selectedSize : '-- MB';
+  const displaySelectedSize = selectedSize ?? '-- MB';
 
   return (
     <div className="flex flex-col w-full px-4 py-4">
@@ -237,7 +269,7 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
           <StatCard
             label="Total Files"
             value={displayTotalCount}
-            unit={totalFilesSize}
+            unit={filesize(totalFilesSize)}
             colorClass="bg-accent-light"
             borderColorClass="border-accent"
           />
@@ -245,8 +277,8 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
             label="Selected Files"
             value={displaySelectedCount}
             unit={displaySelectedSize}
-            colorClass="bg-utility-success-lighter"
-            borderColorClass="border-utility-success"
+            colorClass="bg-accentWarm-lighter"
+            borderColorClass="border-accentWarm"
           />
         </Group>
 
@@ -273,12 +305,7 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
               Files
             </Text>
           </div>
-          <SelectedItemsTable
-            validatedItems={validatedLibrarySelections}
-            rowSelection={rowSelection}
-            setRowSelection={setRowSelection}
-            size={size}
-          />
+          <CheckoutFilesTable items={validatedLibrarySelections} size={size} />
         </div>
 
         <Paper

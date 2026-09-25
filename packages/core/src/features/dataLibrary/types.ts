@@ -1,4 +1,4 @@
-import { JSONObject } from '../../types';
+import type { JSONObject } from '../../types';
 
 // represents the auth access control for a DataList
 export interface AuthZAccess {
@@ -8,11 +8,7 @@ export interface AuthZAccess {
 
 // Possible values of an Item: File, Additional Value, Cohort
 export type ItemValue =
-  | string
-  | number
-  | undefined
-  | Record<string, any>
-  | boolean;
+  string | number | undefined | Record<string, any> | boolean;
 
 // Object representing an Item with its type
 export interface ListItem {

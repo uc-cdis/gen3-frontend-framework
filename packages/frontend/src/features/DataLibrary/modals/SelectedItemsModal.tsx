@@ -69,6 +69,8 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
     useState<DataLibraryActionConfig | null>(null);
   const [isRunning, setIsRunning] = useState(false);
 
+  console.log('gathered', gatheredItems);
+
   const destinations = useMemo(() => {
     return actions.map((action) => {
       return { label: action.label, value: action.id };

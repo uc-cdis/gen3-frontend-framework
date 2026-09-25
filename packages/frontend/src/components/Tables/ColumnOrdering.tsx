@@ -1,4 +1,5 @@
-import React, { Dispatch, JSX, SetStateAction, useState } from 'react';
+import type { Dispatch, JSX, SetStateAction } from 'react';
+import React, { useState } from 'react';
 import {
   ActionIcon,
   Divider,
@@ -7,7 +8,7 @@ import {
   TextInput,
   Tooltip,
 } from '@mantine/core';
-import {
+import type {
   MRT_Column,
   MRT_ColumnOrderState,
   MRT_RowData,
@@ -15,10 +16,10 @@ import {
 } from 'mantine-react-table-open';
 import { isEqual } from 'lodash';
 import { humanify } from '@gen3/core';
+import type { DragEndEvent } from '@dnd-kit/core';
 import {
   closestCenter,
   DndContext,
-  DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   useSensor,
@@ -45,21 +46,27 @@ import {
   XIcon,
 } from '../../types/icons';
 
+import { FontSize } from '../../utils/sizes';
+
 function ColumnOrdering<TData extends MRT_RowData>({
   table,
   handleColumnOrderingReset,
   columnOrder,
   setColumnOrder,
-  noColumnOrdering = ['mrt-row-actions'],
+  noColumnOrdering = ['mrt-row-select', 'mrt-row-actions'],
+  size = 'sm',
 }: {
   table: MRT_TableInstance<TData>;
   handleColumnOrderingReset: () => void;
   columnOrder: MRT_ColumnOrderState;
   setColumnOrder: Dispatch<SetStateAction<MRT_ColumnOrderState>>;
   noColumnOrdering?: string[];
+  size?: string;
 }): JSX.Element {
   const [showColumnMenu, setShowColumnMenu] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+
+  const textSize = FontSize[size];
 
   const isBackToDefaults =
     isEqual(table.initialState.columnOrder, columnOrder) &&
@@ -107,10 +114,11 @@ function ColumnOrdering<TData extends MRT_RowData>({
         <Menu.Target>
           <ActionIcon
             variant="outline"
-            size="lg"
+            size={size}
             aria-label="Customize Columns"
             color="primary"
             data-testid="button-column-selector-box"
+            radius="xs"
             className={`${
               showColumnMenu && 'border-2 border-primary'
             } hover:bg-primary hover:text-base-max`}
@@ -125,7 +133,7 @@ function ColumnOrdering<TData extends MRT_RowData>({
       </Tooltip>
 
       <Menu.Dropdown
-        className="bg-base-max border-2 border-primary p-2 rounded-md"
+        className="bg-base-max border-2 border-primary p-2 rounded-sm mt-2"
         data-testid="column-selector-popover-modal"
       >
         <div className="flex justify-between items-center">
@@ -159,6 +167,7 @@ function ColumnOrdering<TData extends MRT_RowData>({
           leftSection={<SearchIcon aria-hidden="true" />}
           className="mb-2 mt-4"
           data-testid="textbox-column-selector"
+          size={size}
         />
         <DndContext
           sensors={sensors}
@@ -208,6 +217,7 @@ function List<TData extends MRT_RowData>({
           }
         })
         .map((column, index) => {
+          console.log('Cordering', column.id, 'vis', column.getIsVisible());
           return !noColumnOrdering.includes(column.id) ? (
             <DraggableColumnItem
               key={column.id}
@@ -236,22 +246,26 @@ function DraggableColumnItem<TData extends MRT_RowData>({
     transform: CSS.Transform.toString(transform),
     transition,
   };
-
   return (
     <li
       ref={setNodeRef}
       style={style}
-      {...listeners}
       className={` ${isNotLast ? 'mb-2' : ''}`}
       data-testid={`column-selector-row-${column.id}`}
     >
       <div
-        {...attributes}
         role="switch"
         aria-checked={column.getIsVisible()}
-        className="flex gap-2 items-center bg-nci-violet-lightest px-1 py-1.5 h-6 cursor-move"
+        className="flex gap-2 items-center bg-nci-violet-lightest px-1 py-1.5 h-6"
       >
-        <DragIcon size="1rem" className="text-primary" />
+        <span
+          {...attributes}
+          {...listeners}
+          className="cursor-move flex items-center"
+          aria-label="Drag to reorder"
+        >
+          <DragIcon size="1rem" className="text-primary" />
+        </span>
         <Switch
           labelPosition="left"
           label={

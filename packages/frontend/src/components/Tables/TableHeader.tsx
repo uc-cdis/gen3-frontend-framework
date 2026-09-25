@@ -1,12 +1,13 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import type { ChangeEvent } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ActionIcon, TextInput, Tooltip } from '@mantine/core';
-import { MRT_RowData, MRT_TableInstance } from 'mantine-react-table-open';
+import type { MRT_RowData, MRT_TableInstance } from 'mantine-react-table-open';
 
 import ColumnOrdering from './ColumnOrdering';
 import { useViewportSize } from '@mantine/hooks';
 import { XL_BREAKPOINT } from '../../types/constants';
 import { CloseIcon, SearchIcon } from '../../types/icons';
-import { HandleTableSearchOrPaginationChange } from './types';
+import type { HandleTableSearchOrPaginationChange } from './types';
 
 interface TableHeaderProps<TData extends MRT_RowData> {
   additionalControls?: React.ReactNode;
@@ -26,6 +27,7 @@ interface TableHeaderProps<TData extends MRT_RowData> {
   baseZIndex?: number;
   customBreakpoint?: number;
   noColumnOrdering?: string[];
+  size?: string;
 }
 
 const TitleWrapper: React.FC<{ title: React.ReactNode }> = ({ title }) => (
@@ -137,6 +139,7 @@ function TableHeader<TData extends MRT_RowData>({
   baseZIndex,
   customBreakpoint,
   noColumnOrdering,
+  size = 'sm',
 }: TableHeaderProps<TData>) {
   const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? '');
   const [searchFocused, setSearchFocused] = useState(false);
@@ -193,6 +196,7 @@ function TableHeader<TData extends MRT_RowData>({
           columnOrder={columnOrder}
           setColumnOrder={setColumnOrder as any}
           noColumnOrdering={noColumnOrdering}
+          size={size}
         />
       )}
     </div>
