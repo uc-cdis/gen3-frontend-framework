@@ -1,12 +1,12 @@
+import type { FileItem } from '@gen3/core';
 import {
   fetchFencePresignedURL,
-  FileItem,
   HTTPError,
   HTTPUserFriendlyErrorMessages,
   isFileItem,
 } from '@gen3/core';
 import { notifications } from '@mantine/notifications';
-import { DataActionFunction } from './types';
+import type { DataActionFunction } from './types';
 
 const PRESIGNED_URL_TEMPLATE_VARIABLE = '{{PRESIGNED_URL}}';
 interface SendExistingPFBToURLParameters {
@@ -32,7 +32,7 @@ export const sendExistingPFBToURL: DataActionFunction = async (
   onDone = () => null,
   onError = () => null,
   onAbort = () => null,
-  signal = undefined,
+  signal,
 ) => {
   if (!isSendExistingPFBToURLParameters(params)) {
     console.error('Invalid parameters for sendPFBToURL action:', params);

@@ -1,16 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { DataItemSelectedState, DatasetContents } from './types';
-import {
+import type { DataItemSelectedState, DatasetContents } from './types';
+import type {
   AdditionalDataItem,
   CohortItem,
   Datalist,
   DataListUpdate,
   FileItem,
+  StorageOperationResults,
+} from '@gen3/core';
+import {
   getNumberOfItemsInDatalist,
   isAdditionalDataItem,
   isCohortItem,
   isFileItem,
-  StorageOperationResults,
 } from '@gen3/core';
 import {
   getNumberOfSelectedItemsInList,

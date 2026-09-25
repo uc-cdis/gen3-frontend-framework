@@ -5,7 +5,7 @@ import { Button, Tooltip } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import type { CreateAndExportOutputConfig } from '@gen3/core';
 import { useIsUserLoggedIn, useSubmitSowerJobMutation } from '@gen3/core';
-import { buildSubmitSowerJob } from './sowerActions';
+import { buildSubmitSowerJob } from './sowerActionUtils';
 import { hasOutputAction } from './sowerActionFactory';
 
 interface SubmitSowerJobButtonProps {
