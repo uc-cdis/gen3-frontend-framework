@@ -52,7 +52,7 @@ const StatCard: React.FC<StatCardProps> = ({
   borderColorClass = 'border-accent',
 }) => (
   <Paper
-    className={`flex-1 ${colorClass} border ${borderColorClass} px-8 py-6`}
+    className={`${colorClass} border ${borderColorClass} px-8 py-6`}
     radius="sm"
     withBorder={false}
   >
@@ -270,14 +270,14 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
             label="Total Files"
             value={displayTotalCount}
             unit={filesize(totalFilesSize)}
-            colorClass="bg-accent-light"
+            colorClass="bg-accent-lightest"
             borderColorClass="border-accent"
           />
           <StatCard
             label="Selected Files"
             value={displaySelectedCount}
             unit={displaySelectedSize}
-            colorClass="bg-accentWarm-lighter"
+            colorClass="bg-accentWarm-lightest"
             borderColorClass="border-accentWarm"
           />
         </Group>
@@ -305,7 +305,12 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
               Files
             </Text>
           </div>
-          <CheckoutFilesTable items={validatedLibrarySelections} size={size} />
+          <CheckoutFilesTable
+            items={validatedLibrarySelections}
+            rowSelection={rowSelection}
+            setRowSelection={setRowSelection}
+            size={size}
+          />
         </div>
 
         <Paper

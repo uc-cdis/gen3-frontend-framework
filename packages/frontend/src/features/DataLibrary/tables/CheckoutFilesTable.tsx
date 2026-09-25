@@ -146,15 +146,17 @@ const createRowsFromItems = (items: ReadonlyArray<ValidatedSelectedItem>) => {
 
 interface CheckoutFileTableProps {
   items: ReadonlyArray<ValidatedSelectedItem>;
+  rowSelection: MRT_RowSelectionState;
+  setRowSelection: React.Dispatch<React.SetStateAction<MRT_RowSelectionState>>;
   size?: string;
 }
 
 export const CheckoutFilesTable = ({
   items,
+  rowSelection,
+  setRowSelection,
   size = 'sm',
 }: CheckoutFileTableProps) => {
-  const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
-
   const handleRowSelectionChange = (
     updater: MRT_Updater<MRT_RowSelectionState>,
   ) => {

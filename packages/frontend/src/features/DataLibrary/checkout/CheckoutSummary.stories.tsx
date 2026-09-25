@@ -9,7 +9,7 @@ import {
   useDataLibrarySelection,
 } from '../selection/SelectionContext';
 import type { DataLibrary } from '@gen3/core';
-import dataLibraryContents from './data/test_list_1.json';
+import dataLibraryContents from './data/test_list.json';
 
 const meta = {
   component: CheckoutSummary,
