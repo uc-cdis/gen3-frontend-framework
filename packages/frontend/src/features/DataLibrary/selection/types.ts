@@ -32,7 +32,7 @@ export interface DataLibraryActionConfig {
   rightIcon?: string;
   leftIcon?: string;
   buttonLabel: string;
-  actionFunction: string;
+  actionName: string;
   parameters?: Record<string, unknown>;
   itemRules?: ItemRule[];
   groupRules?: GroupRule[];

@@ -11,11 +11,37 @@ import type { DataLibraryConfig } from './types';
 import { ErrorCard } from '../../components/MessageCards';
 import { useIsAuthenticated } from '../../lib/session/session';
 import { useDeepCompareEffect } from 'use-deep-compare';
+import type {
+  DataLibraryActionConfig,
+  DataLibraryActionsConfig,
+} from './selection/types';
+import ListSowerActionButton from './ListSowerActionButton';
+
+const buildListActionPanel = (
+  listId: string,
+  listActions?: DataLibraryActionsConfig,
+) => {
+  if (!listActions) return null;
+
+  // find list actions and build additional controls if there are any
+
+  return listActions.map((action: DataLibraryActionConfig) => {
+    return (
+      <ListSowerActionButton
+        listId={listId}
+        sowerJobName={action.actionName}
+        {...action}
+        key={action.actionName}
+      />
+    );
+  });
+};
 
 const DataLibraryLists: React.FC<DataLibraryConfig> = ({
   storageMode,
   requiresLogin = true,
   actions,
+  listActions,
   size,
 }) => {
   const {
@@ -27,8 +53,6 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
     updateListInDataLibrary,
     deleteListFromDataLibrary,
   } = useDataLibrary({ storageMode });
-
-  console.log('datalibrary', dataLibrary);
 
   const { isAuthenticated } = useIsAuthenticated();
   const [selectedItemsOpen, { open, close }] = useDisclosure(false);
@@ -95,6 +119,12 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
         >
           {dataLibrary &&
             Object.values(dataLibrary).map((datalist) => {
+              // process list actions and build additional controls if there are any
+              const actionButtons = buildListActionPanel(
+                datalist.id,
+                listActions,
+              );
+
               return (
                 <DatalistAccordionItem
                   dataList={datalist}
@@ -103,6 +133,7 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
                   isUpdating={isUpdating}
                   updateListInDataLibrary={updateListInDataLibrary}
                   deleteListFromDataLibrary={deleteListFromDataLibrary}
+                  additionalControls={<div>{actionButtons}</div>}
                 />
               );
             })}

@@ -189,7 +189,7 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
       const config = getActionById(actions, actionId);
       if (config) {
         setActionConfig(config);
-        const action = findAction(config.actionFunction);
+        const action = findAction(config.actionName);
         if (action)
           setActionFunction({
             action: action.action,

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { JSX, useEffect, useMemo, useState } from 'react';
 import type { DataItemSelectedState, DatasetContents } from './types';
 import type {
   AdditionalDataItem,
@@ -32,6 +32,7 @@ interface DatalistAccordionProps {
   deleteListFromDataLibrary: (id: string) => Promise<StorageOperationResults>;
   isUpdating: string | null;
   size?: string;
+  additionalControls?: JSX.Element;
 }
 
 /**
@@ -48,6 +49,7 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
   deleteListFromDataLibrary,
   isUpdating,
   size = 'sm',
+  additionalControls,
 }) => {
   const [selectedState, setSelectedState] =
     useState<DataItemSelectedState>('unchecked');
@@ -187,6 +189,7 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
         selectListHandler={handleSelectList}
         selectedState={selectedState}
         size={size}
+        additionalControls={additionalControls}
       />
       <Accordion.Panel>
         <DataSetContentsTable

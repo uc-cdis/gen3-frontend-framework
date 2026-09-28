@@ -43,7 +43,7 @@ const ModalHeader = () => {
 };
 
 const bindAction = (action: DataLibraryActionConfig) => {
-  const actionFunction = findAction(action.actionFunction);
+  const actionFunction = findAction(action.actionName);
   if (!actionFunction) {
     return NullAction;
   }

@@ -9,3 +9,7 @@ const {
 } = createActionRegistry<ListActionFunction>();
 
 export { registerListAction, findListAction, NullListAction };
+
+export const registerListActions = () => {};
+
+registerListActions();

@@ -91,7 +91,7 @@ export const sendExistingPFBToURL: DataActionFunction = async (
       });
     }
     if (error instanceof Error) {
-      if (error.name == 'AbortError') {
+      if (error.name === 'AbortError') {
         onAbort?.();
       }
 

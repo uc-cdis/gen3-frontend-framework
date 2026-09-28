@@ -234,7 +234,9 @@ function TableHeader<TData extends MRT_RowData>({
           <TitleWrapper title={tableTitle} />
         </div>
       )}
-      {additionalControls}
+      <div className="flex items-center space-x-2">
+        {additionalControls ?? null}
+      </div>
       {tableTotalDetail && (
         <div className={detailClass}>
           <TotalDetailWrapper detail={tableTotalDetail} />

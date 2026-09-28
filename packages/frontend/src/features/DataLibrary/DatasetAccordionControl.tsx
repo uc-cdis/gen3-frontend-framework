@@ -30,6 +30,7 @@ interface DatasetAccordionControlProps extends AccordionControlProps {
   selectListHandler: (checked: boolean) => void;
   selectedState: DataItemSelectedState;
   size?: string;
+  additionalControls?: JSX.Element;
 }
 
 export const DatasetAccordionControl = ({
@@ -42,6 +43,7 @@ export const DatasetAccordionControl = ({
   selectListHandler,
   selectedState,
   size = 'sm',
+  additionalControls,
   ...props
 }: DatasetAccordionControlProps): JSX.Element => {
   const [value, setValue] = useState<string | undefined>(undefined);
@@ -131,7 +133,7 @@ export const DatasetAccordionControl = ({
             {formatDate(updatedTime)}
           </Text>
         </div>
-        {}
+        <div className="flex items-center space-x-2">{additionalControls}</div>
         <Tooltip
           label={`Delete list ${listName}. Will not delete the actual dataset`}
         >
