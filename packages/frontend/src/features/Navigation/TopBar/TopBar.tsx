@@ -48,6 +48,7 @@ const processTopBarItems = (
                 leftIcon={item.leftIcon}
                 rightIcon={item.rightIcon}
                 classNames={mergedClassnames}
+                tooltip={item.tooltip}
               />
             )}
           </a>
@@ -68,6 +69,7 @@ const processTopBarItems = (
               leftIcon={item.leftIcon}
               rightIcon={item.rightIcon}
               classNames={mergedClassnames}
+              tooltip={item.tooltip}
               clickHandler={() =>
                 item?.modal &&
                 modals.openContextModal({

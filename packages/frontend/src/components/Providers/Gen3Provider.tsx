@@ -1,7 +1,7 @@
 import type { FC, ReactNode } from 'react';
 import React, { useEffect } from 'react';
 import { CoreProvider } from '@gen3/core';
-import { createTheme, Modal, Pagination } from '@mantine/core';
+import { createTheme, Modal, Pagination, Tooltip } from '@mantine/core';
 import type { TenStringArray } from '../../utils';
 import { SessionProvider } from '../../lib/session/session';
 import { type Fonts, type RegisteredIcons } from '../../lib/content/types';
@@ -98,6 +98,23 @@ export const createMantineTheme = (
               backgroundColor: 'var(--mantine-color-accent-3)',
               color: 'var(--mantine-color-accent-contrast-3)',
             },
+          },
+        },
+      }),
+      Tooltip: Tooltip.extend({
+        styles: {
+          tooltip: {
+            color: 'var(--mantine-color-accent-contrast-1)',
+            textColor: 'var(--mantine-color-accent-contrast-1)',
+            backgroundColor: 'var(--mantine-color-accent-1)',
+            opacity: 0.75,
+            fontFamily: '"Montserrat", "sans-serif"',
+            fontWeight: 500,
+          },
+          arrow: {
+            color: 'var(--mantine-color-accent-1)',
+            backgroundColor: 'var(--mantine-color-accent-1)',
+            opacity: 0.75,
           },
         },
       }),

@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import {
   selectSowerJobsList,
   selectUserAuthStatus,
+  SowerJobStage,
   SowerJobStatus,
   updateSowerJobStatus,
   useCoreDispatch,
@@ -12,6 +13,7 @@ import {
 } from '@gen3/core';
 import useJobOutputAction from './useJobOutputAction';
 import { useDeepCompareEffect } from 'use-deep-compare';
+import { notifications } from '@mantine/notifications';
 
 /**
  * Polls the status of all Running jobs tracked in the sower slice and
@@ -98,6 +100,45 @@ const useSowerHydration = () => {
   }, [userStatus, fetchJobList, dispatch]);
 };
 
+/**
+ * Shows a notification once per job when it transitions to Failed, whether
+ * the failure came from polling, hydration, or the output action stage.
+ * Jobs already Failed when the provider mounts (restored from persisted
+ * state) are not re-notified.
+ */
+const useSowerFailureNotifications = () => {
+  const jobs = useCoreSelector(selectSowerJobsList);
+  const notifiedRef = useRef<Set<string> | null>(null);
+
+  useEffect(() => {
+    if (notifiedRef.current === null) {
+      notifiedRef.current = new Set(
+        jobs
+          .filter((j) => j.status === SowerJobStatus.Failed)
+          .map((j) => j.uid),
+      );
+      return;
+    }
+    for (const job of jobs) {
+      if (
+        job.status !== SowerJobStatus.Failed ||
+        notifiedRef.current.has(job.uid)
+      )
+        continue;
+      notifiedRef.current.add(job.uid);
+      notifications.show({
+        id: `sower-failed-${job.uid}`,
+        title: 'Job Failed',
+        message:
+          job.stage === SowerJobStage.SendJobOutput
+            ? `${job.name} finished, but its output could not be processed`
+            : `${job.name} failed`,
+        color: 'red',
+      });
+    }
+  }, [jobs]);
+};
+
 export const SowerProvider = ({
   children,
 }: {
@@ -106,5 +147,6 @@ export const SowerProvider = ({
   useSowerPolling();
   useSowerHydration();
   useJobOutputAction();
+  useSowerFailureNotifications();
   return <>{children}</>;
 };

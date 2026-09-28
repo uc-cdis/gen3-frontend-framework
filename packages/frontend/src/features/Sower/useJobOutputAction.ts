@@ -28,8 +28,6 @@ const useJobOutputAction: () => void = () => {
     fetchOutputRef.current = fetchOutput;
   }, [fetchOutput]);
 
-  console.log('jobs', jobs);
-
   useEffect(() => {
     const pending = jobs.filter(
       (j) =>
@@ -59,10 +57,9 @@ const useJobOutputAction: () => void = () => {
       fetchOutputRef
         .current(job.uid)
         .then(async ({ data, error }) => {
-          console.log('fetch output', data, error);
           if (error) {
+            // failure notification is handled by useSowerFailureNotifications
             setOutputStageError();
-            // notify
             return;
           }
           if (!job.actions.outputAction) {
