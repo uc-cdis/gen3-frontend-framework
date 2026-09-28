@@ -61,10 +61,11 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
   const searchInputRef = useRef<HTMLInputElement>(null);
   const settingRef = useRef<HTMLDivElement>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  // const [combineMode, setCombineMode] = useState<'or' | 'and'>('or');
-
   const { data, enumFilters, combineMode, isSuccess, error } =
     hooks.useGetFacetData(field);
+  const [selectedCombineMode, setSelectedCombineMode] = useState<CombineMode>(
+    combineMode ?? 'or',
+  );
   const [selectedEnums, setSelectedEnums] = useState(enumFilters ?? []);
   const totalCount = hooks?.useTotalCounts ? hooks.useTotalCounts() : 1;
   const clearFilters = hooks.useClearFilter();
@@ -100,6 +101,15 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
     setSelectedEnums(enumFilters ?? []);
   }, [enumFilters]);
 
+  useEffect(() => {
+    // Existing filters are the source of truth when loading or externally
+    // updating a cohort. Keep a user's selected mode when the facet is empty
+    // so they can choose "Match all" before selecting values.
+    if ((enumFilters?.length ?? 0) > 0) {
+      setSelectedCombineMode(combineMode ?? 'or');
+    }
+  }, [combineMode, enumFilters]);
+
   const maxValuesToDisplay = DEFAULT_VISIBLE_ITEMS;
 
   // update filters when checkbox is selected
@@ -115,7 +125,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
         updated,
         updateFacetFilters,
         clearFilters,
-        combineMode,
+        selectedCombineMode,
       );
     } else {
       const updated = selectedEnums?.filter((x) => x !== value);
@@ -124,12 +134,15 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
         updated ?? [],
         updateFacetFilters,
         clearFilters,
-        combineMode,
+        selectedCombineMode,
       );
     }
   };
 
   const handleCombineModeChange = (mode: CombineMode) => {
+    setSelectedCombineMode(mode);
+    if ((selectedEnums?.length ?? 0) === 0) return;
+
     updateFacetEnum(
       field,
       selectedEnums ?? [],
@@ -329,16 +342,17 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                     indicator: 'bg-accent text-accent-contrast',
                   }}
                   ref={settingRef}
-                  value={combineMode}
+                  value={selectedCombineMode}
+                  aria-label="How selected facet values are matched"
                   onChange={(value: string) => {
                     handleCombineModeChange(value as 'and' | 'or');
                   }}
                   data={[
-                    { label: 'AND', value: 'and' },
-                    { label: 'OR', value: 'or' },
+                    { label: 'Match any', value: 'or' },
+                    { label: 'Match all', value: 'and' },
                   ]}
                 />
-                <Tooltip label="Combine filters with AND or OR 2">
+                <Tooltip label="Match any includes cases with at least one selected value. Match all requires every selected value.">
                   <Icon
                     icon="gen3:info"
                     height={12}

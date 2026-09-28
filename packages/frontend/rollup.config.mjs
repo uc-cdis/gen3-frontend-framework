@@ -78,6 +78,8 @@ const globals = {
 const external = [
   ...Object.keys(globals),
   'tailwindcss/plugin',
+  'tailwindcss/colors',
+  'postcss-selector-parser',
   '@iconify/react',
   'next/router',
   'next/dynamic',
@@ -90,6 +92,7 @@ const external = [
   'tinycolor2',
   'tailwind-styled-components',
   '@graphiql/plugin-explorer',
+  'graphiql/setup-workers/webpack',
   'mantine-react-table',
   'victory',
   'echarts',
@@ -103,6 +106,8 @@ const external = [
   '@theothergothamdev/pluralize-ts',
   '@tanstack/react-table',
   'rehype-sanitize',
+  'react-icons/fa6',
+  'react-icons/md',
 ];
 
 const jsBundle = (input, baseName, additionalExternal) => ({
@@ -112,6 +117,7 @@ const jsBundle = (input, baseName, additionalExternal) => ({
       dir: `dist/${baseName}/cjs`,
       format: 'cjs',
       globals,
+      interop: 'auto',
       sourcemap: true,
     },
     {

@@ -84,7 +84,7 @@ export const SaveCohortModal = ({
         }),
       );
       context.closeModal(id);
-    } catch (error) {
+    } catch {
       setIsSaving(false);
     }
   };

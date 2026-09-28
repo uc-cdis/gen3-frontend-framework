@@ -33,7 +33,7 @@ const ClinicalDataAnalysisPage = ({
               />
             }
           />
-          <QueryExpression index={configuration.index}></QueryExpression>
+          <QueryExpression index={configuration.index} />
           <ClinicalDataAnalysis
             index={configuration.index}
             indexPrefix={configuration.index}

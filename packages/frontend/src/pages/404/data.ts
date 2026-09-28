@@ -8,16 +8,16 @@ import { GEN3_COMMONS_NAME } from '@gen3/core';
 export const Custom404PageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async () => {
-  
   try {
-    const config404: Config404Props = await ContentSource.getContentDatabase().get(
-      `${GEN3_COMMONS_NAME}/404.json`,
-    );
+    const config404: Config404Props =
+      await ContentSource.getContentDatabase().get(
+        `${GEN3_COMMONS_NAME}/404.json`,
+      );
 
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
-        ...{ config404: config404 },
+        config404: config404,
       },
     };
   } catch (err) {
@@ -26,13 +26,13 @@ export const Custom404PageGetServerSideProps: GetServerSideProps<
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
         config404: {
-          "content": [
+          content: [
             {
-              "type": "markdown",
-              "text": "# 404: Page Not Found \n Sorry, we couldn&apos;t find the page you were looking for.",
-              "className": "text-center"
-            }
-          ]
+              type: 'markdown',
+              text: '# 404: Page Not Found \n Sorry, we couldn&apos;t find the page you were looking for.',
+              className: 'text-center',
+            },
+          ],
         },
       },
     };

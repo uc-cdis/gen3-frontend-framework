@@ -3,11 +3,11 @@ import { capitalize } from 'lodash';
 import {
   MantineReactTable,
   MRT_Cell,
-  MRT_Row,
   MRT_ColumnDef,
-  useMantineReactTable,
+  MRT_Row,
   MRT_RowSelectionState,
-} from 'mantine-react-table';
+  useMantineReactTable,
+} from 'mantine-react-table-open';
 import { DictionaryProperty } from './types';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { List } from '@mantine/core';
@@ -141,10 +141,10 @@ const PropertiesTable = ({
             type: Object.keys(row).includes('anyOf')
               ? row.anyOf?.map(({ type }) => type)
               : Object.keys(row).includes('oneOf')
-              ? row.oneOf?.map(({ type }) => type)
-              : Object.keys(row).includes('enum')
-              ? row.enum
-              : [row.type],
+                ? row.oneOf?.map(({ type }) => type)
+                : Object.keys(row).includes('enum')
+                  ? row.enum
+                  : [row.type],
             required: required?.includes(k) ? 'Required' : 'No',
             description:
               row?.description ?? row?.term?.description ?? 'No Description',

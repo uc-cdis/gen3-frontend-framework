@@ -7,12 +7,16 @@ interface DiscoveryProviderValue {
   setSelectedTags: React.Dispatch<
     React.SetStateAction<{ [key: string]: boolean }>
   >;
+  selectedAccessLevels: number[];
+  setSelectedAccessLevels: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 const DiscoveryContext = createContext<DiscoveryProviderValue>({
   discoveryConfig: {} as DiscoveryIndexConfig,
   selectedTags: {},
   setSelectedTags: () => {},
+  selectedAccessLevels: [],
+  setSelectedAccessLevels: () => [],
 });
 
 const useDiscoveryContext = () => {
@@ -33,6 +37,9 @@ const DiscoveryProvider = ({
   const [selectedTags, setSelectedTags] = useState<{ [key: string]: boolean }>(
     {},
   );
+  const [selectedAccessLevels, setSelectedAccessLevels] = useState<number[]>(
+    [],
+  );
 
   return (
     <DiscoveryContext.Provider
@@ -40,6 +47,8 @@ const DiscoveryProvider = ({
         discoveryConfig: discoveryIndexConfig,
         selectedTags,
         setSelectedTags,
+        selectedAccessLevels,
+        setSelectedAccessLevels,
       }}
     >
       {children}
@@ -47,4 +56,4 @@ const DiscoveryProvider = ({
   );
 };
 
-export { useDiscoveryContext, DiscoveryProvider as default };
+export { useDiscoveryContext, DiscoveryContext, DiscoveryProvider as default };

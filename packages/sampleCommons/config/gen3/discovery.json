@@ -51,15 +51,6 @@
           "enabled": true,
           "title": "Discover Datasets"
         },
-        "exportToDataLibrary": {
-          "enabled" : true,
-          "buttons" : [
-            {
-              "type" : "add-to-data-library",
-              "label" : "Add to Data Library"
-            }
-          ]
-        },
         "search": {
           "searchBar": {
             "enabled": true,
@@ -256,7 +247,8 @@
             "color": "#982568",
             "display": false
           }
-        ]
+        ],
+        "showUnknownTags": false
       }
     }
   ]

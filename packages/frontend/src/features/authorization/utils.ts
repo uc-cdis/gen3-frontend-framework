@@ -1,7 +1,11 @@
-
 import { type AuthzMapping } from '@gen3/core';
 
-export const userHasMethodForServiceOnResource = (method: string, service : string, resourcePath: string, userAuthMapping : AuthzMapping = {}) => {
+export const userHasMethodForServiceOnResource = (
+  method: string,
+  service: string,
+  resourcePath: string,
+  userAuthMapping: AuthzMapping = {},
+) => {
   const actions = userAuthMapping[resourcePath];
   // accommodate for '*' logic
   // if we need to check for a specific service/method pair for a resource,
@@ -12,5 +16,9 @@ export const userHasMethodForServiceOnResource = (method: string, service : stri
   // 2. {service: sheepdog, method: *}
   // 3. {service: *, method: update}
   // 4. {service: *, method: *}
-  return actions !== undefined && actions.some((x) => ((x.service === service || x.service === '*') && (x.method === method || x.method === '*')));
+  return actions?.some(
+    (x) =>
+      (x.service === service || x.service === '*') &&
+      (x.method === method || x.method === '*'),
+  );
 };

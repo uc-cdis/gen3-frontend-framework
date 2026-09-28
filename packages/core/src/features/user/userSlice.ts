@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { fetchFence } from '../fence/fetchFence';
 import { type Gen3FenceResponse } from '../fence/types';
-import { CoreDispatch } from '../../store';
-import { CoreState } from '../../reducers';
-import { CoreDataSelectorResponse, DataStatus } from '../../dataAccess';
+import type { CoreDispatch } from '../../store';
+import type { CoreState } from '../../reducers';
+import type { CoreDataSelectorResponse, DataStatus } from '../../dataAccess';
 import { useCoreDispatch, useCoreSelector } from '../../hooks';
 import { useEffect } from 'react';
-import { Gen3User, LoginStatus } from './types';
+import type { Gen3User, LoginStatus } from './types';
 import { getCookie } from 'cookies-next';
 import { selectCSRFToken } from './userSliceRTK';
 
@@ -145,7 +145,7 @@ export const useUserAuth = (renew = false): Gen3UserLoginResponse<Gen3User> => {
   useEffect(() => {
     if (status === 'uninitialized' || renew) {
       // TODO: need to determine what other states require dispatch
-      coreDispatch(fetchUserState());
+      void coreDispatch(fetchUserState());
     }
   }, [status, coreDispatch, renew]);
 

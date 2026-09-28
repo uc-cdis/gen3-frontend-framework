@@ -36,7 +36,7 @@ const UploadJSONButton: React.FC<UploadJSONButtonProps> = ({
             variant="outline"
             classNames={{ root: 'bg-base-max' }}
           >
-            <Icon icon={icon} height="1.5rem"></Icon>
+            <Icon icon={icon} height="1.5rem" />
           </Button>
         </Tooltip>
       )}

@@ -5,8 +5,8 @@ import {
   MRT_RowSelectionState,
   MRT_Updater,
   useMantineReactTable,
-} from 'mantine-react-table';
-import { Button, Stack, Text, Tooltip } from '@mantine/core';
+} from 'mantine-react-table-open';
+import { Button, Stack, Tooltip } from '@mantine/core';
 import { MdOutlineRemoveCircle as RemoveIcon } from 'react-icons/md';
 import AdditionalDataTable from './AdditionalDataTable';
 import { DatalistMembers } from '../types';
@@ -53,7 +53,7 @@ const DataSetContentsTable = ({
   listId,
   data,
   removeList,
-  size = 'sm',
+  size,
 }: ListsTableProps) => {
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
 

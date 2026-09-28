@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import React from 'react';
 import { CollapsableSidebar } from './CollapsableSidebar';
 import { Group, Text } from '@mantine/core';
@@ -13,7 +13,7 @@ type Story = StoryObj<typeof CollapsableSidebar>;
 
 export const Primary: Story = {
   args: {
-    in: true,
+    expanded: true,
     children: (
       <Group>
         <Text>Inside</Text>

@@ -13,7 +13,15 @@ import {
   useGetWorkspacePayModelsQuery,
   useSetCurrentPayModelMutation,
 } from '@gen3/core';
-import { useDeepCompareMemo, useDeepCompareCallback } from 'use-deep-compare';
+import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
+import {
+  FaExclamationCircle as InactiveIcon,
+  FaUser as ActiveIcon,
+} from 'react-icons/fa';
+import { PaymentNumberToString } from '../utils';
+import { ErrorCard } from '../../../components/MessageCards';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
+import { SerializedError } from '@reduxjs/toolkit';
 
 const LIMITS_LABEL_STYLE = 'text-base-lighter font-medium text-sm opacity-90';
 
@@ -23,14 +31,6 @@ interface PayModelMenuItem {
   icon: ReactElement;
   totalUsage: string;
 }
-import {
-  FaUser as ActiveIcon,
-  FaExclamationCircle as InactiveIcon,
-} from 'react-icons/fa';
-import { PaymentNumberToString } from '../utils';
-import { ErrorCard } from '../../../components/MessageCards';
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
-import { SerializedError } from '@reduxjs/toolkit';
 
 const isNoPayModelError = (error: FetchBaseQueryError | SerializedError) => {
   return (
@@ -67,7 +67,7 @@ const PaymentPanel = () => {
 
   const setPayModel = useDeepCompareCallback(
     (id: string) => {
-      setWorkspacePayModel(id); // triggers the call to the service to select the pay model
+      void setWorkspacePayModel(id); // triggers the call to the service to select the pay model
       setSelectedPayModel(id); // set the paymodel value for the select component
     },
     [setWorkspacePayModel, selectedPayModel],

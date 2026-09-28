@@ -309,7 +309,7 @@ const cohortManagerSlice = createSlice({
             [index]: {
               mode: currentCohort.filters?.[index]?.mode ?? 'and',
               root: {
-                ...(currentCohort.filters?.[index]?.root ?? {}),
+                ...currentCohort.filters?.[index]?.root,
                 [field]: filter,
               },
             },

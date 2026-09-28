@@ -32,7 +32,7 @@ const CohortActionButton = ({
 
   const clickHandler = useCallback(() => {
     if (disabled) return;
-    if (!active) handleClick();
+    if (!active) void handleClick();
     else cancel();
   }, [active, disabled, handleClick, cancel]);
 

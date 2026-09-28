@@ -1,4 +1,4 @@
-import { MRT_RowData, MRT_TableOptions } from 'mantine-react-table';
+import { MRT_RowData, MRT_TableOptions } from 'mantine-react-table-open';
 import { TableIcons } from '../../components/Tables/TableIcons';
 
 export const commonTableSettings = <

@@ -1,9 +1,9 @@
-import React, { useEffect, useState, JSX } from 'react';
+import React, { JSX, useEffect, useState } from 'react';
 import { DataStatus } from '@gen3/core';
 import { Pagination, Select } from '@mantine/core';
 import ShowingCount from './ShowingCount';
 import { HandleChangeInput, PaginationOptions } from './types';
-import { MRT_RowData } from 'mantine-react-table';
+import { MRT_RowData } from 'mantine-react-table-open';
 
 interface TablePaginationProps<TData extends MRT_RowData> {
   pagination: PaginationOptions;

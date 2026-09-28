@@ -300,10 +300,9 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                 : 'by'}
               :
             </span>
-
             {/* This switches the bin method when a user clicks on the "area", no keyboard equivalent is needed to accessibly navigate the form */}
+            {/*  oxlint-disable-next-line jsx-a11y/click-events-have-key-events */}
             <div
-              onClick={() => setBinMethod('interval')}
               className="flex mt-4 items-start text-sm"
               role="group"
               aria-labelledby="continuous-bin-modal-form-label"
@@ -386,10 +385,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
           </FunctionButton>
         </div>
         {/* This switches the bin method when a user clicks on the "area", no keyboard equivalent is needed to accessibly navigate the form */}
-        <div
-          className="flex flex-col text-sm mt-4"
-          onClick={() => setBinMethod('ranges')}
-        >
+        <div className="flex flex-col text-sm mt-4">
           <div className="flex mb-4">
             <Radio
               data-testid="button-select-custom-interval"

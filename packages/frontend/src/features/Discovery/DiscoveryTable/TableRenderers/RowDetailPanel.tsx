@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Text } from '@mantine/core';
 import HighlightSearchTerm from '../SearchHighlighting/HighlightSearchTerm';
-import { MRT_Row, MRT_RowData } from 'mantine-react-table';
+import { MRT_Row, MRT_RowData } from 'mantine-react-table-open';
 import _ from 'lodash';
 import RowDetailPanelTags from './RowDetailPanelTags';
 import { useDiscoveryContext } from '../../DiscoveryProvider';

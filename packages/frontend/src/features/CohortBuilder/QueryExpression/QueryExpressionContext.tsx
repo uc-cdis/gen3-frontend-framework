@@ -24,6 +24,7 @@ export interface QueryExpressionHooks {
 
 export interface QueryExpressionContextProps extends QueryExpressionHooks {
   displayOnly: boolean;
+  showLogicalOperators?: boolean;
   cohortName: string;
   cohortId: string | null;
   fieldsAreFlat: boolean;
@@ -33,6 +34,7 @@ export interface QueryExpressionContextProps extends QueryExpressionHooks {
 export const QueryExpressionContext =
   React.createContext<QueryExpressionContextProps>({
     displayOnly: false,
+    showLogicalOperators: false,
     fieldsAreFlat: true,
     cohortId: null,
     cohortName: 'default',

@@ -1,15 +1,21 @@
 import React from 'react';
 import { NavPageLayout } from '../../features/Navigation';
-import { Custom403PageProps } from './types';
+import type { Custom403PageProps } from './types';
 import TextContent from '../../components/Content/TextContent';
 import Image from 'next/image';
 import { Button } from '@mantine/core';
+
+import { useRouter } from 'next/router';
+import { withBasePath } from '../../utils/strings';
 
 const Custom403Page = ({
   headerProps,
   footerProps,
   config403,
 }: Custom403PageProps) => {
+
+  const { basePath } = useRouter();
+
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
@@ -23,7 +29,12 @@ const Custom403Page = ({
       <div className="w-full max-w-[500px] m-auto text-center">
         {config403?.topIcon && (
           <div className="bg-white rounded-lg inline-block p-3">
-            <Image src={config403.topIcon.src} alt={config403.topIcon.alt} width={36} height={36}/>
+            <Image
+              src={withBasePath(basePath, config403.topIcon.src)}
+              alt={config403.topIcon.alt}
+              width={36}
+              height={36}
+            />
           </div>
         )}
         {config403?.content?.map((content, index) => (
@@ -36,7 +47,9 @@ const Custom403Page = ({
             href={config403.button.href}
             target="_blank"
             className="mt-3"
-          >{config403.button.text}</Button>
+          >
+            {config403.button.text}
+          </Button>
         )}
       </div>
     </NavPageLayout>

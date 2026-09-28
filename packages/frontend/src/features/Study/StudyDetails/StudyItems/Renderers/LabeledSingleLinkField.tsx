@@ -1,5 +1,5 @@
 import { JSONValue } from '@gen3/core';
-import React, { ReactElement, useId } from 'react';
+import React, { useId } from 'react';
 import { discoveryFieldStyle } from './utils';
 import Label from './Label';
 import LinkField from './LinkField';

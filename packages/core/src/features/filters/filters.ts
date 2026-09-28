@@ -45,9 +45,12 @@ export const isOperatorWithFieldAndArrayOfOperands = (
     'field' in operation &&
     typeof operation.field === 'string' // Assuming `field` should be a string
   ) {
-    const { operator } = (operation as any).operator;
+    const { operator } = operation as OperatorWithFieldAndArrayOfOperands;
     return (
-      operator === 'in' || operator === 'exclude' || operator === 'excludeifany'
+      operator === 'in' ||
+      operator === 'includes' ||
+      operator === 'excludes' ||
+      operator === 'excludeifany'
     );
   }
   return false;

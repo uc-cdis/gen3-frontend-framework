@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import {
-  TextInput,
-  Button,
-  Group,
   Box,
-  Title,
-  Text,
-  Paper,
+  Button,
   Divider,
+  Group,
+  Paper,
   Stack,
+  Text,
+  TextInput,
+  Title,
 } from '@mantine/core';
-import { useForm, isNotEmpty, isEmail, matches } from '@mantine/form';
+import { isEmail, isNotEmpty, useForm } from '@mantine/form';
 import { DataAccessRequestUserInformation } from '../types';
 
 export interface DataAccessRequestFormParams {

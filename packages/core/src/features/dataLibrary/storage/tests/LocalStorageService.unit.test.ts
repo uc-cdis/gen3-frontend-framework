@@ -1,5 +1,6 @@
 import 'fake-indexeddb/auto';
 import { LocalStorageService } from '../LocalStorageService';
+import { nanoid } from '@reduxjs/toolkit';
 import { ListToAdd, SecondList } from './data';
 
 jest.mock('@reduxjs/toolkit', () => {
@@ -12,8 +13,15 @@ jest.mock('@reduxjs/toolkit', () => {
 });
 
 describe('LocalStorageService', () => {
-  new IDBFactory(); // use for all test below
+  new IDBFactory(); // use for all tests below
   const service = new LocalStorageService();
+
+  beforeAll(() => {
+    let counter = 0;
+    (nanoid as jest.Mock).mockImplementation(
+      () => `mocked-nanoid-${counter++}`,
+    );
+  });
 
   it('should add a list', async () => {
     const result = await service.addList(ListToAdd);
@@ -35,7 +43,7 @@ describe('LocalStorageService', () => {
     const result = await service.getList('mocked-nanoid-0');
     expect(result.message).toBe('success');
     expect(result.isError).toBeUndefined(); // Verify no error was returned
-    expect(result?.lists?.['mocked-nanoid-0'].name).toBe('test-list');
+    expect(result.lists?.['mocked-nanoid-0'].name).toBe('test-list');
   });
 
   it('should return error if list does not exist', async () => {

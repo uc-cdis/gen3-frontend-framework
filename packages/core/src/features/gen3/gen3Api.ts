@@ -5,6 +5,14 @@ import { CoreState } from '../../reducers';
 import { selectCSRFToken } from '../user/userSliceRTK';
 import { getCookie } from 'cookies-next';
 
+// function readCookie(name: string): string | undefined {
+//   const raw = document.cookie
+//     .split('; ')
+//     .find((c) => c.startsWith(`${name}=`))
+//     ?.split('=')[1];
+//   return raw ? decodeURIComponent(raw) : undefined;
+// }
+
 /**
  * Creates a base class core API for building other API endpoints on top of.
  * @param reducerPath - The root key name that the other slices will be derived from
@@ -22,8 +30,15 @@ export const gen3Api = createApi({
       if (process.env.NODE_ENV === 'development') {
         // NOTE: This cookie can only be accessed from the client side
         // in development mode. Otherwise, the cookie is set as httpOnly
-        const accessToken = getCookie('credentials_token');
-        if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
+        const credentialsToken = getCookie('credentials_token');
+        if (credentialsToken)
+          headers.set('Authorization', `Bearer ${credentialsToken}`);
+        else {
+          // fallback to a true fence login
+          //   const accessToken = readCookie('access_token');
+          //   if (accessToken)
+          //     headers.set('Authorization', `Bearer ${accessToken}`);
+        }
       }
       if (csrfToken) headers.set('X-CSRF-Token', csrfToken);
 

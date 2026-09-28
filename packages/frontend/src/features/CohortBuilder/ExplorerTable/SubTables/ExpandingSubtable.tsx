@@ -1,4 +1,4 @@
-import React, { useState, useId } from 'react';
+import React, { useId, useState } from 'react';
 import { ActionIcon, useMantineTheme } from '@mantine/core';
 import { Icon } from '@iconify-icon/react';
 import { ExpandingSubTableProps } from './types';
@@ -73,10 +73,10 @@ const ExpandingSubtable = ({ config, data }: ExpandingSubTableProps) => {
             style={{
               minHeight: `${headerHeight}px`,
             }}
-          ></div>
+          />
           <ActionIcon
             variant="transparent"
-            aria-label={`${expanded? 'Collapse' : 'Expand'} ${config.label} table`}
+            aria-label={`${expanded ? 'Collapse' : 'Expand'} ${config.label} table`}
             aria-controls={`${id}-table`}
             id={`${id}-control`}
             onClick={expand}
@@ -91,7 +91,8 @@ const ExpandingSubtable = ({ config, data }: ExpandingSubTableProps) => {
         <div
           className="w-full overflow-x-auto"
           id={`${id}-table`}
-          aria-labelledby={`${id}-control`}>
+          aria-labelledby={`${id}-control`}
+        >
           {expanded ? (
             <ExplorerTableSubtable
               columns={expandedTableColumns}

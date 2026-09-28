@@ -5,6 +5,7 @@ import HoverLink from './HoverLink';
 import NavigationBar from './NavigationBar';
 import NavigationButton from './NavigationButton';
 import NavPageLayout from './NavPageLayout';
+import FixedNavPageLayout from './FixedNavPageLayout';
 import {
   BannerLevelCategories,
   BannerProps,
@@ -36,6 +37,7 @@ export {
   NavigationBar,
   NavigationButton,
   NavPageLayout,
+  FixedNavPageLayout,
   Banner,
   isHeaderMetadata,
   IconButton,

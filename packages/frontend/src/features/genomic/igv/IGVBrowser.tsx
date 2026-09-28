@@ -12,7 +12,7 @@ const IGVBrowser = ({
   baiUrl,
   locus = 'chr5:40,200,000-40,300,000',
   track,
-  genome = 'canFam3',
+  genome,
   showDefaultTracks = true,
 }: IgvBrowserProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -21,7 +21,7 @@ const IGVBrowser = ({
   const [ivg, setIvg] = useState<any>(null);
 
   useEffect(() => {
-    (async () => {
+    void (async () => {
       if (!containerRef.current) return;
 
       // Import the ESM build (recommended by igv.js docs)

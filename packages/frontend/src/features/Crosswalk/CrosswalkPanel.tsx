@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Group, Stack, Button, Textarea, Tooltip } from '@mantine/core';
+import React, { useEffect, useState } from 'react';
+import { Button, Group, Stack, Textarea, Tooltip } from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
-import { useLazyGetCrosswalkDataQuery, CrosswalkInfo } from '@gen3/core';
+import { CrosswalkInfo, useLazyGetCrosswalkDataQuery } from '@gen3/core';
 import { type CrosswalkConfig, CrosswalkMapping } from './types';
 import CrosswalkTable from './CrosswalkTable';
 
@@ -58,7 +58,7 @@ const CrosswalkPanel = ({
   const clear = () => {
     setSourceIds('');
     setQuery('');
-    getMapping({
+    void getMapping({
       ids: [],
       toPaths: mapping.external.map((x) => ({
         id: x.id,
@@ -82,7 +82,7 @@ const CrosswalkPanel = ({
   }, [query, isError, isSuccess, data?.length]);
 
   const onSubmit = () => {
-    getMapping({
+    void getMapping({
       ids: sourceIds.split(/,|\r?\n|\r|\n/g),
       toPaths: mapping.external.map((x) => ({
         id: x.id,

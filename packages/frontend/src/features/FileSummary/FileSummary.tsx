@@ -1,6 +1,9 @@
 import React, { useMemo } from 'react';
 import { Loader } from '@mantine/core';
-import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
+import {
+  MantineReactTable,
+  useMantineReactTable,
+} from 'mantine-react-table-open';
 import { filesize } from 'filesize';
 import { useGetIndexObjectQuery } from '@gen3/core';
 import { SummaryCard } from '../../components/Summary/SummaryCard';

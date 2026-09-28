@@ -21,7 +21,6 @@ export function useRouteAccess(pathname: string): RouteAccessResult {
     data,
     error: authzResourceError,
     isFetching: isAuthzResourcesFetching,
-    isError: isAuthzResourcesError,
   } = useGetAuthzResourcesQuery();
 
   const error = authzResourceError

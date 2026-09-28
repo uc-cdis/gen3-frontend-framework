@@ -1,4 +1,4 @@
-import React, { useContext, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -52,15 +52,17 @@ const CredentialsLogin = ({ handleLogin }: CredentialsLoginProps) => {
     async (credentials: string) => {
       setIsLoading(true);
       const updateSession = sessionContext?.updateSession ?? (() => null);
-      const loginEndpoint = basePath
-        ? `/${basePath}/api/auth/credentialsLogin`
-        : '/api/auth/credentialsLogin';
+      // router.basePath is '' when unset and already leading-slashed when set
+      const loginEndpoint = `${basePath}/api/auth/credentialsLogin`;
       try {
         const parsedCredentials = JSON.parse(credentials);
         const response = await fetch(loginEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(parsedCredentials),
+          body: JSON.stringify({
+            ...parsedCredentials,
+            setAsAccessToken: true,
+          }),
         });
 
         if (!response.ok) {

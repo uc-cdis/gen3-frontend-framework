@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta } from '@storybook/nextjs';
+import type { Meta } from '@storybook/nextjs-vite';
 import AccessDescriptor from './AccessDescriptor';
 
 const meta = {
@@ -26,6 +26,11 @@ export const Default: any = {
 export const UNACCESSIBLE: any = {
   args: {
     __accessible: 2,
+  },
+};
+export const MIXED: any = {
+  args: {
+    __accessible: 6,
   },
 };
 export const UNKNOWN: any = {

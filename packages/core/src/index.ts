@@ -34,6 +34,8 @@ export * from './dataAccess';
 // Gen3 services API's
 export * from './features/aiSearch';
 export * from './features/authz';
+export * from './features/cedar';
+export * from './features/updateStudyInMDS';
 export * from './features/cohort';
 export * from './features/dataLibrary';
 export * from './features/drsResolver';
@@ -55,6 +57,7 @@ export * from './features/cart';
 export * from './features/config';
 export * from './features/cohortComparison';
 export * from './features/indexd';
+export * from './features/notifications';
 
 export {
   type CoreState,

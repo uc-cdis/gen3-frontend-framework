@@ -35,7 +35,7 @@ const RangeInputWithPrefixedRanges: React.FC<
   rangeDatatype,
   showZero = false,
   clearValues = undefined,
-  isFacetView = true,
+  isFacetView,
   setHasData = () => null,
   queryOptions,
   Chart,
@@ -65,7 +65,7 @@ const RangeInputWithPrefixedRanges: React.FC<
 
   const {
     data: rangeData,
-    isSuccess = false,
+    isSuccess,
     isFetching,
     error,
   } = hooks.useGetFacetData(field, ranges);

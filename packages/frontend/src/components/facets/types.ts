@@ -3,6 +3,7 @@ import {
   DataFetchingResult,
   EnumFilterValue,
   FacetDefinition,
+  FacetSortType as CoreFacetSortType,
   IndexAndField,
   NumericFromTo,
   Operation,
@@ -47,6 +48,7 @@ export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly queryOptions?: QueryOptions;
   readonly moveValuesToBottom?: Array<string>;
   readonly excludeValues?: Array<string>;
+  readonly defaultSort?: FacetSortType;
 
   readonly header?: {
     readonly Panel: ComponentType<{ children: ReactNode }>; // optional header component
@@ -240,12 +242,7 @@ export type NumericFacetCardProps = FacetCardProps<NumericRangeFacetHooks> & {
   readonly clearValues?: boolean;
 };
 
-// compact string representation of SortType for config file
-export type FacetSortType =
-  | 'value-asc'
-  | 'value-dsc'
-  | 'label-asc'
-  | 'label-desc';
+export type FacetSortType = CoreFacetSortType;
 
 /**
  * Sort type for enum buckets

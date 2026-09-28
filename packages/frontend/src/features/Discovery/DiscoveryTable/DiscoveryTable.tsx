@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   MantineReactTable,
   MRT_Cell,
@@ -8,7 +8,7 @@ import {
   type MRT_RowSelectionState,
   type MRT_SortingState,
   useMantineReactTable,
-} from 'mantine-react-table';
+} from 'mantine-react-table-open';
 import { Loader, LoadingOverlay, Text } from '@mantine/core';
 import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
 import { getManualSortingAndPagination, jsonPathAccessor } from '../utils';
@@ -33,6 +33,7 @@ import {
 import HighlightSearchTerm from './SearchHighlighting/HighlightSearchTerm';
 import RowDetailPanel from './TableRenderers/RowDetailPanel';
 import { IsColumnSearchable } from './SearchHighlighting/IsColumnSearchable';
+import DataAccessFilterDropdown from './DataAccessFilterDropdown';
 
 const CompareFn = (
   fieldValue: string,
@@ -60,6 +61,7 @@ const isSelectable = (
 interface DiscoveryTableProps {
   data: Array<Record<string, any>>;
   hits: number;
+  studyIdFromWindow?: string;
   dataRequestStatus: DataRequestStatus;
   pagination: MRT_PaginationState;
   sorting: MRT_SortingState;
@@ -73,6 +75,7 @@ interface DiscoveryTableProps {
 const DiscoveryTable = ({
   data,
   hits,
+  studyIdFromWindow,
   dataRequestStatus,
   setSorting,
   setPagination,
@@ -88,6 +91,17 @@ const DiscoveryTable = ({
   const { isLoading, isError, isFetching } = dataRequestStatus;
   const manualSortingAndPagination = getManualSortingAndPagination(config);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({}); //ts type available
+
+  useEffect(() => {
+    if (!studyIdFromWindow || !data) return;
+    const uidKey = config.minimalFieldMapping.uid;
+    if (Array.isArray(data)) {
+      const foundStudy = data.find(
+        (item) => item[uidKey] === studyIdFromWindow,
+      );
+      if (foundStudy) setStudyDetails(foundStudy);
+    }
+  }, [studyIdFromWindow, data]);
 
   const extractCellValue =
     (func: CellRendererFunction) =>
@@ -115,11 +129,17 @@ const DiscoveryTable = ({
   const cols = useDeepCompareMemo(() => {
     const studyColumns = config.studyColumns ?? [];
     return studyColumns.map((columnDef, idx) => {
+      const isDataAccessFilter = columnDef?.contentType === 'dataAccess';
       return {
         key: `${columnDef.field}-${idx}`,
         field: columnDef.field,
         accessorKey: columnDef.field,
-        header: columnDef.name,
+        header: (
+          <>
+            {columnDef.name}
+            {isDataAccessFilter && <DataAccessFilterDropdown />}
+          </>
+        ),
         accessorFn: jsonPathAccessor(columnDef.field),
         Cell: columnDef?.contentType
           ? extractCellValue(
@@ -127,7 +147,7 @@ const DiscoveryTable = ({
                 columnDef?.contentType,
                 columnDef?.cellRenderFunction ?? 'default',
                 {
-                  ...(columnDef?.params ?? {}),
+                  ...columnDef?.params,
                   valueIfNotAvailable: columnDef?.valueIfNotAvailable ?? '',
                 },
               ),
@@ -137,7 +157,7 @@ const DiscoveryTable = ({
                 'string',
                 columnDef?.cellRenderFunction ?? 'default',
                 {
-                  ...(columnDef?.params ?? {}),
+                  ...columnDef?.params,
                   valueIfNotAvailable: columnDef?.valueIfNotAvailable ?? '',
                 },
               ),
@@ -236,8 +256,7 @@ const DiscoveryTable = ({
   });
 
   useDeepCompareEffect(() => {
-    //fetch data based on row selection state or something
-
+    //fetch data based on row selection state
     setSelection(rowSelection ? Object.keys(rowSelection) : []);
   }, [rowSelection, setSelection]);
 
@@ -257,12 +276,7 @@ const DiscoveryTable = ({
   }
   return (
     <React.Fragment>
-      <StudyDetails
-        index={config?.minimalFieldMapping?.uid ?? 'unknown'}
-        detailView={config.detailView}
-        simpleDetailsView={config.simpleDetailsView}
-        authz={config.features.authorization}
-      />
+      <StudyDetails />
       <div className="grow w-auto inline-block overflow-x-scroll">
         <LoadingOverlay visible={dataRequestStatus.isLoading} />
         <MantineReactTable table={table} />

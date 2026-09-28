@@ -1,4 +1,4 @@
-import React, { ReactElement, JSX } from 'react';
+import React, { JSX, ReactElement } from 'react';
 import { JSONValue } from '@gen3/core';
 import { Text } from '@mantine/core';
 
@@ -47,7 +47,6 @@ export class StudyFieldRendererFactory {
     if (
       !(type in StudyFieldRendererFactory.getInstance().fieldRendererCatalog)
     ) {
-      console.log('No field renderer found for type: ', type);
       return defaultStudyFieldRenderer;
     }
     return (

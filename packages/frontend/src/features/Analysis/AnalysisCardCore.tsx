@@ -1,11 +1,12 @@
-import React from "react";
-import { Grid, Text, Image } from "@mantine/core";
-import {
-  MdPlayArrow as PlayIcon,
-} from "react-icons/md";
-import Link from "next/link";
-import NextImage from "next/image";
-import { AnalysisToolConfiguration } from "./types";
+import React from 'react';
+import { Grid, Image, Text } from '@mantine/core';
+import { useRouter } from 'next/router';
+import { MdPlayArrow as PlayIcon } from 'react-icons/md';
+import Link from 'next/link';
+import NextImage from 'next/image';
+import type { AnalysisToolConfiguration } from './types';
+
+import { withBasePath } from '../../utils';
 
 const CoreToolCard: React.FC<AnalysisToolConfiguration> = ({
   title,
@@ -14,6 +15,7 @@ const CoreToolCard: React.FC<AnalysisToolConfiguration> = ({
   href,
   appId,
 }) => {
+  const { basePath } = useRouter();
   return (
     <Link
       href={{
@@ -26,15 +28,19 @@ const CoreToolCard: React.FC<AnalysisToolConfiguration> = ({
     >
       <Grid
         classNames={{
-          root: "h-full",
+          root: 'h-full',
           inner:
-            "border-secondary-darkest border h-full w-full m-0 rounded-md p-0",
+            'border-secondary-darkest border h-full w-full m-0 rounded-md p-0',
         }}
       >
         <Grid.Col span={2} className="self-center relative">
           <Image
             component={NextImage}
-            src={`${icon}`}
+            src={
+              icon instanceof String
+                ? withBasePath(basePath, icon as string)
+                : icon
+            }
             alt={`${title} logo`}
             w={48}
             h={48}

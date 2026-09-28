@@ -1,12 +1,12 @@
 import {
-  dataLibrarySelectionReducer,
-  updateDataLibrarySelection,
-  updateDataLibraryListMemberSelection,
   clearDataLibrarySelection,
-  removeDataLibrarySelection,
+  dataLibrarySelectionReducer,
   DataLibrarySelectionState,
   ListMembers,
+  removeDataLibrarySelection,
   SelectedMembers,
+  updateDataLibraryListMemberSelection,
+  updateDataLibrarySelection,
 } from '../SelectionContext'; // Update this import path as needed
 
 describe('DataLibrarySelection', () => {
@@ -72,7 +72,7 @@ describe('DataLibrarySelection', () => {
     expect(newState).toEqual({});
   });
 
-  test('removeDataLibrarySelection should remove list when ', () => {
+  test('removeDataLibrarySelection should remove list when', () => {
     const initialStateWithList: DataLibrarySelectionState = {
       list1: {
         member1: {

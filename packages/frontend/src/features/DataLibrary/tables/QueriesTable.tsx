@@ -1,14 +1,11 @@
 import React from 'react';
 import {
   MantineReactTable,
-  MRT_RowSelectionState,
   useMantineReactTable,
-} from 'mantine-react-table';
+} from 'mantine-react-table-open';
 import { CohortItem } from '@gen3/core';
 import { Text } from '@mantine/core';
 import { commonTableSettings } from './tableSettings';
-import { getNextSize } from '../utils';
-import { MantineSizeToString } from '../../../utils/sizes';
 
 interface QueriesTableProps {
   data: Array<CohortItem>;

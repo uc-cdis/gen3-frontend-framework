@@ -1,4 +1,4 @@
-import { selectCSRFToken } from '../features/user';
+import { selectCSRFToken } from '../features/user/userSliceRTK';
 import { coreStore } from '../store';
 import { GEN3_API, GEN3_FENCE_API } from '../constants';
 import { getCookie } from 'cookies-next';

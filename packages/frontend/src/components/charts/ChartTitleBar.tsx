@@ -9,10 +9,7 @@ export interface ChartTitleBarProps {
 }
 
 const ChartTitleBar: React.FC<ChartTitleBarProps> = ({
-  divId,
   title,
-  filename,
-  jsonData,
 }: ChartTitleBarProps) => {
   return <div className="flex justify-between items-center">{title}</div>;
 };

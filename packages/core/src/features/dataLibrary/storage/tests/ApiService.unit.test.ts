@@ -6,7 +6,7 @@ import {
 } from '../APIStorageService';
 import { GEN3_API, GEN3_DATA_LIBRARY_API } from '../../../../constants';
 import { APIListData, ListToAdd, SecondList } from './data';
-import { DataLibraryAPIResponse, DatalistAsAPIItems } from '../../types';
+import type { DataLibraryAPIResponse, DatalistAsAPIItems } from '../../types';
 import { BuildLists } from '../../utils';
 
 jest.mock('@reduxjs/toolkit', () => {
@@ -33,7 +33,9 @@ const server = setupServer(
 );
 
 describe('ApiService', () => {
-  beforeAll(() => server.listen());
+  // onUnhandledRequest: 'error' catches handlers that forget to return a
+  // response - those would otherwise fall through to the real network.
+  beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
   afterEach(() => server.resetHandlers());
   afterAll(() => server.close());
 
@@ -223,13 +225,10 @@ describe('ApiService', () => {
 
     it('should handle API errors when updating a list', async () => {
       server.use(
+        // the error body has to be JSON: fetchJSONDataFromURL parses it on
+        // every non-ok response, and a parse failure surfaces as a 500.
         http.put(`${GEN3_DATA_LIBRARY_API}/invalid-id`, () => {
-          return new HttpResponse('Not found', {
-            status: 404,
-            headers: {
-              'Content-Type': 'text/plain',
-            },
-          });
+          return HttpResponse.json({ message: 'Not found' }, { status: 404 });
         }),
       );
 
@@ -258,19 +257,14 @@ describe('ApiService', () => {
     it('should handle API errors when deleting a list', async () => {
       server.use(
         http.delete(`${GEN3_DATA_LIBRARY_API}/invalid-id`, () => {
-          new HttpResponse('Not found', {
-            status: 404,
-            headers: {
-              'Content-Type': 'text/plain',
-            },
-          });
+          return HttpResponse.json({ message: 'Not found' }, { status: 404 });
         }),
       );
 
       const result = await apiService.deleteList('invalid-id');
 
       expect(result.isError).toBe(true);
-      expect(result.status).toBe(500);
+      expect(result.status).toBe(404);
       expect(result.lists).toBeUndefined();
     });
   });
@@ -294,12 +288,10 @@ describe('ApiService', () => {
     it('should handle API errors when clearing lists', async () => {
       server.use(
         http.delete(`${GEN3_DATA_LIBRARY_API}`, () => {
-          new HttpResponse('Server Error', {
-            status: 500,
-            headers: {
-              'Content-Type': 'text/plain',
-            },
-          });
+          return HttpResponse.json(
+            { message: 'Server Error' },
+            { status: 500 },
+          );
         }),
       );
 
@@ -329,12 +321,10 @@ describe('ApiService', () => {
     it('should handle API errors when setting all lists', async () => {
       server.use(
         http.post(`${GEN3_DATA_LIBRARY_API}`, () => {
-          new HttpResponse('Server Error', {
-            status: 500,
-            headers: {
-              'Content-Type': 'text/plain',
-            },
-          });
+          return HttpResponse.json(
+            { message: 'Server Error' },
+            { status: 500 },
+          );
         }),
       );
 
@@ -388,12 +378,10 @@ describe('ApiService', () => {
     it('should handle invalid response data', async () => {
       server.use(
         http.get(`${GEN3_DATA_LIBRARY_API}/list-id-1`, () => {
-          new HttpResponse('Server Error', {
-            status: 500,
-            headers: {
-              'Content-Type': 'text/plain',
-            },
-          });
+          return HttpResponse.json(
+            { message: 'Server Error' },
+            { status: 500 },
+          );
         }),
       );
 

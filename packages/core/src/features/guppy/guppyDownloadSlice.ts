@@ -34,7 +34,10 @@ export const guppyDownloadApi = gen3Api.injectEndpoints({
       }: GuppyDownloadDataParams) => {
         const queryBody: GuppyDownloadDataQueryParams = {
           filter: convertFilterSetToGqlFilter(filter),
-          ...{ type, accessibility, fields, sort },
+          type,
+          accessibility,
+          fields,
+          sort,
         };
 
         return {

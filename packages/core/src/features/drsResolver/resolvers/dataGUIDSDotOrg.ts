@@ -37,28 +37,34 @@ export const resolveDRSWithDataGUISOrg = async (
           if (response.status === 200) {
             try {
               return await response.json();
+              // oxlint-disable-next-line no-unused-vars
             } catch (error) {
               throw new ResolveDRSError('Failed to parse response as JSON');
             }
           } else {
             throw new ResolveDRSError(RESOLVE_DRS_ERROR);
           }
+          // oxlint-disable-next-line no-unused-vars
         } catch (error) {
           throw new ResolveDRSError(RESOLVE_DRS_ERROR);
         }
       }),
     );
 
-    return responses.reduce((acc, response, index) => {
-      if (response.status === 'fulfilled' && response.value.data) {
-        return {
-          ...acc,
-          [guidsForHostnameResolution[index]]: response.value.data,
-        };
-      } else {
-        throw new ResolveDRSError(RESOLVE_DRS_ERROR);
-      }
-    }, {} as Record<string, string>);
+    return responses.reduce(
+      (acc, response, index) => {
+        if (response.status === 'fulfilled' && response.value.data) {
+          return {
+            ...acc,
+            [guidsForHostnameResolution[index]]: response.value.data,
+          };
+        } else {
+          throw new ResolveDRSError(RESOLVE_DRS_ERROR);
+        }
+      },
+      {} as Record<string, string>,
+    );
+    // oxlint-disable-next-line no-unused-vars
   } catch (error) {
     throw new ResolveDRSError(RESOLVE_DRS_ERROR);
   }

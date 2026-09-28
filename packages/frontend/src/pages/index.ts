@@ -15,6 +15,7 @@ export * from './NotebookLite';
 export * from './Profile';
 export * from './Query';
 export * from './Repository';
+export * from './StudyForms';
 export * from './Submission';
 export * from './TabbedCohortBuilder';
 export * from './Theme';

@@ -20,7 +20,8 @@ const Profile = ({ profileConfig }: ProfileProps) => {
           chevronPosition="left"
           chevron={<Caret color="primary.4" size="1.75rem" />}
           defaultValue={[
-            ...['apiKeys', 'resources'],
+            'apiKeys',
+            'resources',
             ...(profileConfig?.hasExternalLogins ? ['externalLogins'] : []),
           ]}
           classNames={{

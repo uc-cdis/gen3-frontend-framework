@@ -11,8 +11,7 @@ const searchData = (
   discoveryConfig: DiscoveryIndexConfig,
 ) => {
   // do not execute search if there are no search terms
-  if (searchTerms.length === 0 || searchTerms.every((item) => item === ''))
-    return data;
+  if (searchTerms.every((item) => item === '')) return data;
   let searchOverFields;
   if (
     selectedFieldsForSearchIndexing.length > 0 ||

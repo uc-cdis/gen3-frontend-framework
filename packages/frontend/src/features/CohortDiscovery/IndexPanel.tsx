@@ -5,16 +5,17 @@ import FacetSelectionPanel from './FacetSelectionPanel';
 import { useFilterExpandedState, useToggleExpandFilter } from './hooks';
 
 import { selectCurrentCohortIndexFilters } from './CohortManagment/CohortManagerSelectors';
-import { CohortDiscoveryGroup } from './types';
+import type { CohortDiscoveryGroup } from './types';
 import {
   classifyFacets,
   getAllFieldsFromFilterConfigs,
 } from '../../components/facets';
-import { TabConfig } from '../CohortBuilder/types';
+import type { TabConfig } from '../CohortBuilder/types';
 import { ErrorCard } from '../../components/MessageCards';
 import ChartsAndFacetsPanel from './ChartsAndFacetsPanel';
 import CohortManager from './CohortManagment/CohortManager';
-import { AppState, useAppDispatch, useAppSelector } from './appApi';
+import type { AppState } from './appApi';
+import { useAppDispatch, useAppSelector } from './appApi';
 import Image from 'next/image';
 import {
   addFacetSelection,
@@ -23,7 +24,8 @@ import {
 } from './SelectedFacetsSlice';
 import { useUnsecureRoundedAggsQuery } from './queryApi';
 import CohortQueryExpression from './CohortQueryExpression';
-import { FacetDefinition } from '@gen3/core';
+import type { FacetDefinition } from '@gen3/core';
+import { useRouter } from 'next/router';
 
 const IndexPanel = ({
   dataConfig,
@@ -36,6 +38,8 @@ const IndexPanel = ({
   const [activeFieldDefinitions, setActiveFieldDefinitions] = useState<
     Array<FacetDefinition>
   >([]);
+
+  const { basePath } = useRouter();
 
   const appDispatch = useAppDispatch();
 
@@ -169,7 +173,7 @@ const IndexPanel = ({
             <Center className="h-full mx-2 bg-base-max">
               <Box className="text-center m-4">
                 <Image
-                  src={`/images/apps/${emptySelection.image}`}
+                  src={`${basePath}/images/apps/${emptySelection.image}`}
                   alt={emptySelection.imageAlt}
                   width={240}
                   height={240}

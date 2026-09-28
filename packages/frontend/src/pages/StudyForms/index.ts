@@ -1,0 +1,10 @@
+export { default as GenericRegistrationAccessRequestForm } from '../../features/DiscoveryForms/GenericRegistrationAccessRequest';
+export type { GenericRegistrationAccessRequestFormConfig } from '../../features/DiscoveryForms/GenericRegistrationAccessRequest/types';
+export { default as StudyRegistrationForm } from '../../features/DiscoveryForms/StudyRegistration';
+export type { StudyRegistrationFormConfig } from './StudyRegistration/types';
+export { default as StudyRegistrationPage } from './StudyRegistration';
+export { RequestAccessFormPageGetServerSideProps as StudyRegistrationPageGetServerSideProps } from './StudyRegistration/data';
+export { default as StudyRegistrationAccessRequestPage } from './StudyRegistrationAccessRequest';
+export { RequestAccessFormPageGetServerSideProps as StudyRegistrationAccessRequestPageGetServerSideProps } from './StudyRegistrationAccessRequest/data';
+export { default as VLMDSubmissionAccessRequestPage } from './VLMDSubmissionAccessRequest';
+export { VLMDSubmissionAccessRequestPageGetServerSideProps } from './VLMDSubmissionAccessRequest/data';

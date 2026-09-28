@@ -29,7 +29,9 @@ const MarkdownContent: React.FC<MarkdownContentProps> = ({
   content,
   className,
 }) => {
-  const markdownString = Array.isArray(content) ? content.join('  \n') : content;
+  const markdownString = Array.isArray(content)
+    ? content.join('  \n')
+    : content;
 
   return (
     <div className={className}>
@@ -38,25 +40,27 @@ const MarkdownContent: React.FC<MarkdownContentProps> = ({
         rehypePlugins={[rehypeSanitize]}
         components={{
           h1: ({ node, ...rest }) => (
+            // oxlint-disable-next-line jsx-a11y/heading-has-content
             <h1 className="text-2xl font-bold my-3" {...rest} />
           ),
           h2: ({ node, ...rest }) => (
+            // oxlint-disable-next-line jsx-a11y/heading-has-content
             <h2 className="text-xl font-semibold my-2" {...rest} />
           ),
           h3: ({ node, ...rest }) => (
+            // oxlint-disable-next-line jsx-a11y/heading-has-content
             <h3 className="text-lg font-semibold my-2" {...rest} />
           ),
-          p: ({ node, ...rest }) => <p className="text-base my-1" {...rest} />,
+          p: ({ node, ...rest }) => <p className="my-1" {...rest} />,
           ol: ({ node, ...rest }) => (
             <ol className="list-decimal list-inside my-1" {...rest} />
           ),
           ul: ({ node, ...rest }) => (
             <ul className="list-disc list-inside my-1" {...rest} />
           ),
-          li: ({ node, ...rest }) => (
-            <li className="text-base ml-2" {...rest} />
-          ),
+          li: ({ node, ...rest }) => <li className="ml-2" {...rest} />,
           a: ({ node, ...rest }) => (
+            // oxlint-disable-next-line jsx-a11y/anchor-has-content
             <a
               className="text-accent underline hover:opacity-80"
               target="_blank"

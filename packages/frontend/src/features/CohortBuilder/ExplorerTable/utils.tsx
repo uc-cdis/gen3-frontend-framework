@@ -7,8 +7,11 @@ import {
   SummaryTableColumn,
   TableColumnsAndFields,
 } from './types';
-import { type MRT_Column } from 'mantine-react-table';
-import { ExplorerTableCellRendererFactory, RenderArrayCellSimple, } from './ExplorerTableCellRenderers';
+import { type MRT_Column } from 'mantine-react-table-open';
+import {
+  ExplorerTableCellRendererFactory,
+  RenderArrayCellSimple,
+} from './ExplorerTableCellRenderers';
 import { jsonPathAccessor } from '../../../components/Tables/utils';
 import { ArrayCellRenderer } from './ArrayCellRenderer';
 

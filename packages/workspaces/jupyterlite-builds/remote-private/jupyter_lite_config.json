@@ -1,0 +1,26 @@
+{
+  "LiteBuildConfig": {
+    "apps": ["lab"],
+    "output_dir": "site"
+  },
+  "LiteServerConfig": {
+    "contents": ["./notebooks"],
+    "settings_overrides": {
+      "@jupyterlite/remote-kernel-extension:plugin": {
+        "enabled": true,
+        "gateways": [
+          {
+            "id": "default-gateway",
+            "baseUrl": "https://replace-with-gateway.example",
+            "wsUrl": "wss://replace-with-gateway.example"
+          }
+        ],
+        "auth": {
+          "mode": "token-or-password",
+          "token": "",
+          "password": ""
+        }
+      }
+    }
+  }
+}

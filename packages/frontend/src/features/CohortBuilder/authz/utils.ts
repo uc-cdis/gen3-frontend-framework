@@ -14,8 +14,7 @@ export function checkForAnySelectedUnaccessibleField(
 
   const accessibleValues = accessibleFieldObject[fieldToCheck];
   if (
-    aggsData &&
-    aggsData[fieldToCheck] &&
+    aggsData?.[fieldToCheck] &&
     'histogram' in aggsData[fieldToCheck] &&
     aggsData[fieldToCheck].histogram &&
     isHistogramData(aggsData[fieldToCheck])

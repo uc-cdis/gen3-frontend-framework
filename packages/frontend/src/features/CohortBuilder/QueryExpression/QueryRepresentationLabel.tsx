@@ -15,7 +15,7 @@ const QueryRepresentationLabel = ({
   const formatFilter = useFormatFilters();
 
   useEffect(() => {
-    formatFilter(value.toLocaleString(), field).then((v: string) => {
+    void formatFilter(value.toLocaleString(), field).then((v: string) => {
       setFormattedValue(v);
     });
   });

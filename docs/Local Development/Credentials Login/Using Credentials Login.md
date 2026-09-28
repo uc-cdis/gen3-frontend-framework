@@ -1,10 +1,21 @@
 ## Using Credentials Login
 
-For development, instead of loggin in you can also use credentials to authenicate. Theis should work for almost all protected call execpt those to create credentials.
+For development, instead of logging in, you can also use credentials to authenticate. This should work for almost all protected calls except those to create credentials.
 
-To use them, you need to first create credentials from a commos: For example  https://brh.data-commons.org/
+You need to activate it in the `login.json` configuration file, by adding `"showCredentialsLogin" : true`:
 
-1. Login into commons:
+```json
+{
+  ...
+  "image": "images/gene_side_texture.svg",
+  "showCredentialsLogin": true
+}
+
+```
+
+To use credentials to log in, you need to first create credentials from a commos: For example,  https://brh.data-commons.org/
+
+1. Log in to Commons:
 
    ![loading-ag-226](assets/LoginBRH.png)
 
@@ -12,13 +23,11 @@ To use them, you need to first create credentials from a commos: For example  ht
 
    ![](assets/BRH_create_credentials.png)
 
-3. Click create API key and select Download JSON in the Modal:
+3. Click "Create API Key" and select "Download JSON" in the Modal:
 
    ![](assets/CredentialsModal.png)
 
-Save the credentials file, for this example let call it `brh.data-commons.org.json`
-
-Note: the branch `feat/creditials_login`  should have this already in the .env file.
+Save the credentials file, for this example, let's call it `brh.data-commons.org.json`
 
 2. Run the app: `npm run dev` from the source root
 
@@ -26,13 +35,13 @@ Note: the branch `feat/creditials_login`  should have this already in the .env f
 
 ![](assets/LocalLogin_with_credentials.png)
 
-4. Click the [...] button below *Authorize with Credentials* this will bring up a File Selector dialog. Select the credentials file created above.
+4. Click the [...] button below *Authorize with Credentials*. This will bring up a File Selector dialog. Select the credentials file created above.
 
    ![](assets/CredentialsLoaded.png)
 
-5. Click the blue Authorize button and it should succeed.
+5. Click the blue Authorize button, and it should succeed.
 
-6. You should be able to goto http://localhost:3000/Profile and see something like:
+6. You should be able to go to http://localhost:3000/Profile and see something like:
    ![](assets/Profile_using_credentials.png)
 
-The access token is defined in a cookie so calls to the WTS endpoint should work. Note that this times out after 20 minutes of inactvity so you might have use the credentials login again.
+The access token is defined in a cookie, so calls to the WTS endpoint should work. Note that this times out after 20 minutes of inactivity, so you might have to use the credentials to log in again.

@@ -5,12 +5,7 @@ import { FilterSet, HistogramDataAsStringKey, StatValues } from '@gen3/core';
 import SegmentedControl from '../../../components/SegmentedControl';
 // restore later when API and FacetDictionary are implemented
 import { DownloadProgressContext } from '../../Analysis/context';
-import {
-  ChartTypes,
-  ClinicalDataFacetProps,
-  DataDimension,
-  DownloadType,
-} from '../types';
+import { ChartTypes, ClinicalDataFacetProps, DataDimension } from '../types';
 import ContinuousData from './ContinuousData';
 import CategoricalData from './CategoricalData';
 import { CONTINUOUS_FACET_TYPES, MISSING_KEY } from '../constants';
@@ -36,7 +31,6 @@ const CDaveCard: React.FC<Readonly<CDaveCardProps>> = ({
 }: CDaveCardProps) => {
   const [chartType, setChartType] = useState<ChartTypes>('histogram');
   const [downloadInProgress, setDownloadInProgress] = useState(false);
-  const [downloadType, setDownloadType] = useState<DownloadType>(null);
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>();
   const displayDataDimension = useDataDimension(facet);
 

@@ -16,13 +16,14 @@ const EnumFacet = ({
   hideIfEmpty = true,
   showSearch = true,
   showFlip = false,
-  showSettings = false, // TODO: change to true with support for combine ops is completed
+  showSettings = false,
   startShowingData = true,
   dismissCallback = undefined,
   width = undefined,
   sharedWithIndices = undefined,
   moveValuesToBottom = [],
   excludeValues = [],
+  defaultSort = 'value-dsc',
   header = {
     Panel: FacetHeader,
     Label: FacetText,
@@ -85,6 +86,7 @@ const EnumFacet = ({
           isSearching={isSearching}
           hideIfEmpty={hideIfEmpty}
           showPercent={showPercent}
+          sort={defaultSort}
           moveValuesToBottom={moveValuesToBottom}
           excludeValues={excludeValues}
         />

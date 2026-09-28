@@ -33,8 +33,8 @@ const NavigationBarButton = ({
   name,
   iconHeight = '32px',
   classNames = {},
-  noBasePath = false,
   authStatus,
+  enabledWithNoAccess = false,
 }: NavigationButtonWithAuthStatus) => {
   const classNamesDefaults = {
     root: 'flex flex-col nowrap px-3 py-2 pt-4 justify-between items-center align-center text-primary hover:text-accent opacity-80 hover:opacity-100 data-disabled:opacity-35 data-disabled:hover:text-primary data-disabled:hover:opacity-35',
@@ -48,21 +48,33 @@ const NavigationBarButton = ({
     classNames,
   );
 
-  const handleClick = () => {
-    if (authStatus !== 'authorized') {
+  let dataDisabled = authStatus !== 'authorized';
+  if (enabledWithNoAccess && authStatus === 'unauthorized') {
+    dataDisabled = false;
+  }
+
+  const handleClick = async () => {
+    if (dataDisabled) {
       // Optional: open a modal / toast instead of doing nothing
       return;
     }
-    router.push(href);
+    await router.push(href);
   };
 
-  const tooltipText =
-    authStatus !== 'authorized' ? AuthTooltips[authStatus] : tooltip;
+  let tooltipObj = AuthTooltips;
+
+  // enable old string setting to still work
+  if (typeof tooltip === 'string') {
+    tooltipObj.authorized = tooltip;
+    // new override method allowing full configuration
+  } else if (typeof tooltip === 'object') {
+    tooltipObj = { ...tooltipObj, ...tooltip };
+  }
 
   return (
     <React.Fragment>
       <Tooltip
-        label={tooltipText}
+        label={tooltipObj[authStatus]}
         disabled={!tooltip}
         multiline
         position="bottom"
@@ -71,51 +83,28 @@ const NavigationBarButton = ({
         zIndex={1000}
         w={220}
       >
-        {noBasePath ? (
-          <div
-            className={extractClassName('root', mergedClassnames)}
-            role="navigation"
-            data-disabled={authStatus !== 'authorized' ? true : undefined}
+        <div
+          role="navigation"
+          className={extractClassName('root', mergedClassnames)}
+          data-disabled={dataDisabled ? true : undefined}
+        >
+          <UnstyledButton
+            onClick={handleClick}
+            classNames={{
+              root: 'flex flex-col nowrap disabled:cursor-not-allowed',
+            }}
+            disabled={dataDisabled}
           >
-            <UnstyledButton
-              onClick={handleClick}
-              classNames={{
-                root: 'flex flex-col nowrap',
-              }}
-            >
-              <Icon
-                height={iconHeight}
-                icon={icon}
-                className={extractClassName('icon', mergedClassnames)}
-              />
-              <p className={extractClassName('label', mergedClassnames)}>
-                {name}
-              </p>
-            </UnstyledButton>
-          </div>
-        ) : (
-          <div
-            role="navigation"
-            className={extractClassName('root', mergedClassnames)}
-            data-disabled={authStatus !== 'authorized' ? true : undefined}
-          >
-            <UnstyledButton
-              onClick={handleClick}
-              classNames={{
-                root: 'flex flex-col nowrap',
-              }}
-            >
-              <Icon
-                height={iconHeight}
-                icon={icon}
-                className={extractClassName('icon', mergedClassnames)}
-              />
-              <p className={extractClassName('label', mergedClassnames)}>
-                {name}
-              </p>
-            </UnstyledButton>
-          </div>
-        )}
+            <Icon
+              height={iconHeight}
+              icon={icon}
+              className={extractClassName('icon', mergedClassnames)}
+            />
+            <p className={extractClassName('label', mergedClassnames)}>
+              {name}
+            </p>
+          </UnstyledButton>
+        </div>
       </Tooltip>
     </React.Fragment>
   );

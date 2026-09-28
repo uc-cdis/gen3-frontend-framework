@@ -147,7 +147,7 @@ const CDaveHistogram: React.FC<Readonly<HistogramProps>> = ({
                 <Menu.Item
                   onClick={async () => {
                     setDownloadInProgress(true);
-                    await handleEChartsDownload(
+                    handleEChartsDownload(
                       downloadChartRef,
                       `${downloadFileName}.png`,
                     );

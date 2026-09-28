@@ -151,7 +151,7 @@ const EnumBarChartTooltip: React.FC<EnumBarChartTooltipProps> = ({
             color: theme.colors.base[9],
           }}
         >
-          <Box></Box>
+          <Box />
         </Tooltip>
       </foreignObject>
     </g>

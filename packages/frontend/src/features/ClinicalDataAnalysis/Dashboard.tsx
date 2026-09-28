@@ -29,6 +29,7 @@ const Dashboard: React.FC<DashboardProps> = ({
 }: DashboardProps) => {
   const initialDashboardRender = useRef(true);
   const lastDashboardRender = usePrevious(initialDashboardRender);
+  // oxlint-disable-next-line no-unused-vars
   const filters = useDeepCompareMemo(
     () => cohortFilters && [cohortFilters],
     [cohortFilters],
@@ -52,7 +53,7 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   return (
     <Grid
-      gutter={24}
+      gap={24}
       grow={false}
       overflow="visible"
       classNames={{ root: 'w-full' }}

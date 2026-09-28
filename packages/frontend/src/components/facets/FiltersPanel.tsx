@@ -17,7 +17,7 @@ const FiltersPanel = <T extends FacetType = FacetType>({
 }: FiltersPanelProps<T>): JSX.Element => {
   const [ref, rect] = useResizeObserver();
   const maxHeight = useMemo(() => {
-    const calcHeight = ref?.current?.getBoundingClientRect().top;
+    const calcHeight = rect.height;
     return !calcHeight || isNaN(calcHeight) ? undefined : calcHeight;
   }, [ref]);
 

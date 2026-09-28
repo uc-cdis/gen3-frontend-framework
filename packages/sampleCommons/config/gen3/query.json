@@ -1,2 +1,6 @@
 {
+  "graphQLEndpoints": [
+    { "url": "guppy/graphql", "label": "Flat" },
+    { "url": "api/v0/submission/graphql", "label": "Graph" }
+  ]
 }

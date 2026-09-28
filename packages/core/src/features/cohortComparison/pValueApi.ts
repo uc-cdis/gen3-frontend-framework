@@ -29,7 +29,7 @@ const pValueSlice = graphQLAPI.injectEndpoints({
         },
       }),
       transformResponse: (response: PValueResponse) =>
-        response?.data?.analysis.pvalue,
+        response.data?.analysis.pvalue,
     }),
   }),
 });

@@ -12,7 +12,6 @@ The password for each page can be set in the `config/gen3/authz,json` file. The 
 ```json
 
 {
-  "enableAuthz": false,
   "routes": {
     "/DataLibrary": {
       "loginRequired": true
@@ -29,9 +28,6 @@ The password for each page can be set in the `config/gen3/authz,json` file. The 
   }
 }
 ```
-The `enableAuthz` flag enables or disables authorization for pages that require it. This flag is set to `false` by default.
-It only controls whether the user is prompted for a password.
-
 The `routes` object maps page paths to authentication and authorization settings for each page.
 Each entry in the `routes` object is a key-value pair where the key is the page path and the value is an object containing the
 authentication and authorization settings. If login is required for a page, the `loginRequired` flag is set to `true`; this is
@@ -42,6 +38,16 @@ Authorization to a page is controlled by the `authz` entry in a route entry. For
 "/Workspace": {
   "loginRequired": true,
   "authz": ["/workspace"]
+}
+```
+
+
+Additionally redirect403 can be added to redirect the user to a custom page when they do not have access to the path, for example this redirects them to a access request page
+```
+"/Workspaces": {
+  "loginRequired": true,
+  "authz": ["/pages/see-workspace"],
+  "redirect403": "/WorkspaceRequestAccess"
 }
 ```
 

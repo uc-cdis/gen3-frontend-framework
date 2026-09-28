@@ -126,7 +126,7 @@ export const ExplorerPageGetServerSideProps: GetServerSideProps<
         //  headerMetadata: cohortBuilderConfiguration.headerMetadata,
         accessControl: {
           ...DefaultAccessControlConfiguration,
-          ...(cohortBuilderConfiguration.accessControl ?? {}),
+          ...cohortBuilderConfiguration.accessControl,
         },
       },
     };
@@ -180,7 +180,7 @@ export const ExplorerPageGetServerSidePropsForConfigId: GetServerSideProps<
         // headerMetadata: { ...(cohortBuilderConfiguration?.headerMetadata ? cohortBuilderConfiguration.headerMetadata : {}) },
         accessControl: {
           ...DefaultAccessControlConfiguration,
-          ...(cohortBuilderConfiguration.accessControl ?? {}),
+          ...cohortBuilderConfiguration.accessControl,
         },
       },
     };

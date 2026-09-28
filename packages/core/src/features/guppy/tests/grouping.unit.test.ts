@@ -317,95 +317,892 @@ const data = {
 };
 
 const expected = {
-  _annotation_id: ['data_file', 'annotation'],
-  _case_id: ['data_file', 'case'],
-  _cr_series_file_count: ['case', 'imaging_study'],
-  _ct_series_file_count: ['case', 'imaging_study'],
-  _dx_series_file_count: ['case', 'imaging_study'],
-  _imaging_study_id: ['data_file', 'imaging_study'],
-  _mr_series_file_count: ['case', 'imaging_study'],
-  age_at_imaging: ['data_file', 'case', 'imaging_study'],
-  age_at_index: ['data_file', 'case', 'imaging_study'],
-  airspace_disease_grading: ['case', 'annotation', 'imaging_study'],
-  annotation_method: ['data_file', 'case', 'annotation', 'imaging_study'],
-  annotation_name: ['data_file', 'case', 'annotation', 'imaging_study'],
-  annotator_id: ['data_file', 'case', 'annotation', 'imaging_study'],
   auth_resource_path: [
-    'measurement',
-    'data_file',
-    'case',
-    'annotation',
-    'imaging_study',
+    {
+      index: 'measurement',
+      field: 'auth_resource_path',
+    },
+    {
+      index: 'data_file',
+      field: 'auth_resource_path',
+    },
+    {
+      index: 'case',
+      field: 'auth_resource_path',
+    },
+    {
+      index: 'annotation',
+      field: 'auth_resource_path',
+    },
+    {
+      index: 'imaging_study',
+      field: 'auth_resource_path',
+    },
   ],
-  body_part_examined: ['data_file', 'case', 'imaging_study'],
-  case_ids: ['measurement', 'data_file', 'annotation', 'imaging_study'],
-  class_covid19_pneumonia: ['case', 'annotation', 'imaging_study'],
-  covid19_positive: ['data_file', 'case', 'imaging_study'],
-  data_category: ['data_file', 'case', 'imaging_study'],
-  data_contributor: ['measurement', 'data_file', 'case', 'imaging_study'],
-  data_file_image_data_modification_method: ['case', 'imaging_study'],
-  data_file_image_data_modification_name: ['case', 'imaging_study'],
-  data_file_image_data_modified: ['case', 'imaging_study'],
-  data_format: ['data_file', 'case', 'imaging_study'],
-  data_type: ['data_file', 'case', 'imaging_study'],
-  data_url_doi: ['measurement', 'data_file', 'case', 'imaging_study'],
-  dataset_submitter_id: ['measurement', 'data_file', 'case', 'imaging_study'],
-  days_from_study_to_neg_covid_test: ['data_file', 'case', 'imaging_study'],
-  days_from_study_to_pos_covid_test: ['data_file', 'case', 'imaging_study'],
-  days_to_study: ['data_file', 'case', 'imaging_study'],
-  ethnicity: ['data_file', 'case', 'imaging_study'],
-  image_data_modified: ['data_file', 'case', 'imaging_study'],
-  'imaging_study_annotations._annotation_id': ['case', 'imaging_study'],
-  'imaging_study_annotations.airspace_disease_grading': [
-    'case',
-    'imaging_study',
+  case_ids: [
+    {
+      index: 'measurement',
+      field: 'case_ids',
+    },
+    {
+      index: 'data_file',
+      field: 'case_ids',
+    },
+    {
+      index: 'annotation',
+      field: 'case_ids',
+    },
+    {
+      index: 'imaging_study',
+      field: 'case_ids',
+    },
   ],
-  'imaging_study_annotations.annotation_method': ['case', 'imaging_study'],
-  'imaging_study_annotations.annotation_name': ['case', 'imaging_study'],
-  'imaging_study_annotations.annotator_id': ['case', 'imaging_study'],
-  'imaging_study_annotations.class_covid19_pneumonia': [
-    'case',
-    'imaging_study',
+  data_contributor: [
+    {
+      index: 'measurement',
+      field: 'data_contributor',
+    },
+    {
+      index: 'data_file',
+      field: 'data_contributor',
+    },
+    {
+      index: 'case',
+      field: 'data_contributor',
+    },
+    {
+      index: 'imaging_study',
+      field: 'data_contributor',
+    },
   ],
-  'imaging_study_annotations.instance_uids': ['case', 'imaging_study'],
-  'imaging_study_annotations.midrc_mRALE_score': ['case', 'imaging_study'],
-  index_event: ['data_file', 'case', 'imaging_study'],
-  instance_uids: ['data_file', 'case', 'annotation', 'imaging_study'],
-  license: ['measurement', 'data_file', 'case', 'imaging_study'],
-  loinc_code: ['data_file', 'case', 'imaging_study'],
-  loinc_contrast: ['data_file', 'case', 'imaging_study'],
-  loinc_long_common_name: ['data_file', 'case', 'imaging_study'],
-  loinc_method: ['data_file', 'case', 'imaging_study'],
-  loinc_system: ['data_file', 'case', 'imaging_study'],
-  midrc_mRALE_score: ['case', 'annotation', 'imaging_study'],
-  node_id: ['measurement', 'data_file', 'case', 'annotation', 'imaging_study'],
-  object_id: ['data_file', 'case', 'imaging_study'],
+  data_url_doi: [
+    {
+      index: 'measurement',
+      field: 'data_url_doi',
+    },
+    {
+      index: 'data_file',
+      field: 'data_url_doi',
+    },
+    {
+      index: 'case',
+      field: 'data_url_doi',
+    },
+    {
+      index: 'imaging_study',
+      field: 'data_url_doi',
+    },
+  ],
+  dataset_submitter_id: [
+    {
+      index: 'measurement',
+      field: 'dataset_submitter_id',
+    },
+    {
+      index: 'data_file',
+      field: 'dataset_submitter_id',
+    },
+    {
+      index: 'case',
+      field: 'dataset_submitter_id',
+    },
+    {
+      index: 'imaging_study',
+      field: 'dataset_submitter_id',
+    },
+  ],
+  license: [
+    {
+      index: 'measurement',
+      field: 'license',
+    },
+    {
+      index: 'data_file',
+      field: 'license',
+    },
+    {
+      index: 'case',
+      field: 'license',
+    },
+    {
+      index: 'imaging_study',
+      field: 'license',
+    },
+  ],
+  node_id: [
+    {
+      index: 'measurement',
+      field: 'node_id',
+    },
+    {
+      index: 'data_file',
+      field: 'node_id',
+    },
+    {
+      index: 'case',
+      field: 'node_id',
+    },
+    {
+      index: 'annotation',
+      field: 'node_id',
+    },
+    {
+      index: 'imaging_study',
+      field: 'node_id',
+    },
+  ],
   project_id: [
-    'measurement',
-    'data_file',
-    'case',
-    'annotation',
-    'imaging_study',
+    {
+      index: 'measurement',
+      field: 'project_id',
+    },
+    {
+      index: 'data_file',
+      field: 'project_id',
+    },
+    {
+      index: 'case',
+      field: 'project_id',
+    },
+    {
+      index: 'annotation',
+      field: 'project_id',
+    },
+    {
+      index: 'imaging_study',
+      field: 'project_id',
+    },
   ],
-  race: ['data_file', 'case', 'imaging_study'],
-  sex: ['data_file', 'case', 'imaging_study'],
-  study_description: ['data_file', 'case', 'imaging_study'],
-  study_modality: ['data_file', 'case', 'imaging_study'],
-  study_uid: ['data_file', 'case', 'imaging_study'],
-  study_year: ['data_file', 'case', 'imaging_study'],
-  study_year_shifted: ['data_file', 'imaging_study'],
   submitter_id: [
-    'measurement',
-    'data_file',
-    'case',
-    'annotation',
-    'imaging_study',
+    {
+      index: 'measurement',
+      field: 'submitter_id',
+    },
+    {
+      index: 'data_file',
+      field: 'submitter_id',
+    },
+    {
+      index: 'case',
+      field: 'submitter_id',
+    },
+    {
+      index: 'annotation',
+      field: 'submitter_id',
+    },
+    {
+      index: 'imaging_study',
+      field: 'submitter_id',
+    },
   ],
-  test_days_from_index: ['measurement', 'case'],
-  test_method: ['measurement', 'case'],
-  test_name: ['measurement', 'case'],
-  test_result_text: ['measurement', 'case'],
-  zip: ['data_file', 'case', 'imaging_study'],
+  test_days_from_index: [
+    {
+      index: 'measurement',
+      field: 'test_days_from_index',
+    },
+    {
+      index: 'case',
+      field: 'test_days_from_index',
+    },
+  ],
+  test_method: [
+    {
+      index: 'measurement',
+      field: 'test_method',
+    },
+    {
+      index: 'case',
+      field: 'test_method',
+    },
+  ],
+  test_name: [
+    {
+      index: 'measurement',
+      field: 'test_name',
+    },
+    {
+      index: 'case',
+      field: 'test_name',
+    },
+  ],
+  test_result_text: [
+    {
+      index: 'measurement',
+      field: 'test_result_text',
+    },
+    {
+      index: 'case',
+      field: 'test_result_text',
+    },
+  ],
+  _annotation_id: [
+    {
+      index: 'data_file',
+      field: '_annotation_id',
+    },
+    {
+      index: 'annotation',
+      field: '_annotation_id',
+    },
+  ],
+  _case_id: [
+    {
+      index: 'data_file',
+      field: '_case_id',
+    },
+    {
+      index: 'case',
+      field: '_case_id',
+    },
+  ],
+  _imaging_study_id: [
+    {
+      index: 'data_file',
+      field: '_imaging_study_id',
+    },
+    {
+      index: 'imaging_study',
+      field: '_imaging_study_id',
+    },
+  ],
+  age_at_imaging: [
+    {
+      index: 'data_file',
+      field: 'age_at_imaging',
+    },
+    {
+      index: 'case',
+      field: 'age_at_imaging',
+    },
+    {
+      index: 'imaging_study',
+      field: 'age_at_imaging',
+    },
+  ],
+  age_at_index: [
+    {
+      index: 'data_file',
+      field: 'age_at_index',
+    },
+    {
+      index: 'case',
+      field: 'age_at_index',
+    },
+    {
+      index: 'imaging_study',
+      field: 'age_at_index',
+    },
+  ],
+  annotation_method: [
+    {
+      index: 'data_file',
+      field: 'annotation_method',
+    },
+    {
+      index: 'case',
+      field: 'annotation_method',
+    },
+    {
+      index: 'annotation',
+      field: 'annotation_method',
+    },
+    {
+      index: 'imaging_study',
+      field: 'annotation_method',
+    },
+  ],
+  annotation_name: [
+    {
+      index: 'data_file',
+      field: 'annotation_name',
+    },
+    {
+      index: 'case',
+      field: 'annotation_name',
+    },
+    {
+      index: 'annotation',
+      field: 'annotation_name',
+    },
+    {
+      index: 'imaging_study',
+      field: 'annotation_name',
+    },
+  ],
+  annotator_id: [
+    {
+      index: 'data_file',
+      field: 'annotator_id',
+    },
+    {
+      index: 'case',
+      field: 'annotator_id',
+    },
+    {
+      index: 'annotation',
+      field: 'annotator_id',
+    },
+    {
+      index: 'imaging_study',
+      field: 'annotator_id',
+    },
+  ],
+  body_part_examined: [
+    {
+      index: 'data_file',
+      field: 'body_part_examined',
+    },
+    {
+      index: 'case',
+      field: 'body_part_examined',
+    },
+    {
+      index: 'imaging_study',
+      field: 'body_part_examined',
+    },
+  ],
+  covid19_positive: [
+    {
+      index: 'data_file',
+      field: 'covid19_positive',
+    },
+    {
+      index: 'case',
+      field: 'covid19_positive',
+    },
+    {
+      index: 'imaging_study',
+      field: 'covid19_positive',
+    },
+  ],
+  data_category: [
+    {
+      index: 'data_file',
+      field: 'data_category',
+    },
+    {
+      index: 'case',
+      field: 'data_category',
+    },
+    {
+      index: 'imaging_study',
+      field: 'data_category',
+    },
+  ],
+  data_format: [
+    {
+      index: 'data_file',
+      field: 'data_format',
+    },
+    {
+      index: 'case',
+      field: 'data_format',
+    },
+    {
+      index: 'imaging_study',
+      field: 'data_format',
+    },
+  ],
+  data_type: [
+    {
+      index: 'data_file',
+      field: 'data_type',
+    },
+    {
+      index: 'case',
+      field: 'data_type',
+    },
+    {
+      index: 'imaging_study',
+      field: 'data_type',
+    },
+  ],
+  days_from_study_to_neg_covid_test: [
+    {
+      index: 'data_file',
+      field: 'days_from_study_to_neg_covid_test',
+    },
+    {
+      index: 'case',
+      field: 'days_from_study_to_neg_covid_test',
+    },
+    {
+      index: 'imaging_study',
+      field: 'days_from_study_to_neg_covid_test',
+    },
+  ],
+  days_from_study_to_pos_covid_test: [
+    {
+      index: 'data_file',
+      field: 'days_from_study_to_pos_covid_test',
+    },
+    {
+      index: 'case',
+      field: 'days_from_study_to_pos_covid_test',
+    },
+    {
+      index: 'imaging_study',
+      field: 'days_from_study_to_pos_covid_test',
+    },
+  ],
+  days_to_study: [
+    {
+      index: 'data_file',
+      field: 'days_to_study',
+    },
+    {
+      index: 'case',
+      field: 'days_to_study',
+    },
+    {
+      index: 'imaging_study',
+      field: 'days_to_study',
+    },
+  ],
+  ethnicity: [
+    {
+      index: 'data_file',
+      field: 'ethnicity',
+    },
+    {
+      index: 'case',
+      field: 'ethnicity',
+    },
+    {
+      index: 'imaging_study',
+      field: 'ethnicity',
+    },
+  ],
+  image_data_modified: [
+    {
+      index: 'data_file',
+      field: 'image_data_modified',
+    },
+    {
+      index: 'case',
+      field: 'image_data_modified',
+    },
+    {
+      index: 'imaging_study',
+      field: 'image_data_modified',
+    },
+  ],
+  index_event: [
+    {
+      index: 'data_file',
+      field: 'index_event',
+    },
+    {
+      index: 'case',
+      field: 'index_event',
+    },
+    {
+      index: 'imaging_study',
+      field: 'index_event',
+    },
+  ],
+  instance_uids: [
+    {
+      index: 'data_file',
+      field: 'instance_uids',
+    },
+    {
+      index: 'case',
+      field: 'instance_uids',
+    },
+    {
+      index: 'annotation',
+      field: 'instance_uids',
+    },
+    {
+      index: 'imaging_study',
+      field: 'instance_uids',
+    },
+  ],
+  loinc_code: [
+    {
+      index: 'data_file',
+      field: 'loinc_code',
+    },
+    {
+      index: 'case',
+      field: 'loinc_code',
+    },
+    {
+      index: 'imaging_study',
+      field: 'loinc_code',
+    },
+  ],
+  loinc_contrast: [
+    {
+      index: 'data_file',
+      field: 'loinc_contrast',
+    },
+    {
+      index: 'case',
+      field: 'loinc_contrast',
+    },
+    {
+      index: 'imaging_study',
+      field: 'loinc_contrast',
+    },
+  ],
+  loinc_long_common_name: [
+    {
+      index: 'data_file',
+      field: 'loinc_long_common_name',
+    },
+    {
+      index: 'case',
+      field: 'loinc_long_common_name',
+    },
+    {
+      index: 'imaging_study',
+      field: 'loinc_long_common_name',
+    },
+  ],
+  loinc_method: [
+    {
+      index: 'data_file',
+      field: 'loinc_method',
+    },
+    {
+      index: 'case',
+      field: 'loinc_method',
+    },
+    {
+      index: 'imaging_study',
+      field: 'loinc_method',
+    },
+  ],
+  loinc_system: [
+    {
+      index: 'data_file',
+      field: 'loinc_system',
+    },
+    {
+      index: 'case',
+      field: 'loinc_system',
+    },
+    {
+      index: 'imaging_study',
+      field: 'loinc_system',
+    },
+  ],
+  object_id: [
+    {
+      index: 'data_file',
+      field: 'object_id',
+    },
+    {
+      index: 'case',
+      field: 'object_id',
+    },
+    {
+      index: 'imaging_study',
+      field: 'object_id',
+    },
+  ],
+  race: [
+    {
+      index: 'data_file',
+      field: 'race',
+    },
+    {
+      index: 'case',
+      field: 'race',
+    },
+    {
+      index: 'imaging_study',
+      field: 'race',
+    },
+  ],
+  sex: [
+    {
+      index: 'data_file',
+      field: 'sex',
+    },
+    {
+      index: 'case',
+      field: 'sex',
+    },
+    {
+      index: 'imaging_study',
+      field: 'sex',
+    },
+  ],
+  study_description: [
+    {
+      index: 'data_file',
+      field: 'study_description',
+    },
+    {
+      index: 'case',
+      field: 'study_description',
+    },
+    {
+      index: 'imaging_study',
+      field: 'study_description',
+    },
+  ],
+  study_modality: [
+    {
+      index: 'data_file',
+      field: 'study_modality',
+    },
+    {
+      index: 'case',
+      field: 'study_modality',
+    },
+    {
+      index: 'imaging_study',
+      field: 'study_modality',
+    },
+  ],
+  study_uid: [
+    {
+      index: 'data_file',
+      field: 'study_uid',
+    },
+    {
+      index: 'case',
+      field: 'study_uid',
+    },
+    {
+      index: 'imaging_study',
+      field: 'study_uid',
+    },
+  ],
+  study_year: [
+    {
+      index: 'data_file',
+      field: 'study_year',
+    },
+    {
+      index: 'case',
+      field: 'study_year',
+    },
+    {
+      index: 'imaging_study',
+      field: 'study_year',
+    },
+  ],
+  study_year_shifted: [
+    {
+      index: 'data_file',
+      field: 'study_year_shifted',
+    },
+    {
+      index: 'imaging_study',
+      field: 'study_year_shifted',
+    },
+  ],
+  zip: [
+    {
+      index: 'data_file',
+      field: 'zip',
+    },
+    {
+      index: 'case',
+      field: 'zip',
+    },
+    {
+      index: 'imaging_study',
+      field: 'zip',
+    },
+  ],
+  _cr_series_file_count: [
+    {
+      index: 'case',
+      field: '_cr_series_file_count',
+    },
+    {
+      index: 'imaging_study',
+      field: '_cr_series_file_count',
+    },
+  ],
+  _ct_series_file_count: [
+    {
+      index: 'case',
+      field: '_ct_series_file_count',
+    },
+    {
+      index: 'imaging_study',
+      field: '_ct_series_file_count',
+    },
+  ],
+  _dx_series_file_count: [
+    {
+      index: 'case',
+      field: '_dx_series_file_count',
+    },
+    {
+      index: 'imaging_study',
+      field: '_dx_series_file_count',
+    },
+  ],
+  _mr_series_file_count: [
+    {
+      index: 'case',
+      field: '_mr_series_file_count',
+    },
+    {
+      index: 'imaging_study',
+      field: '_mr_series_file_count',
+    },
+  ],
+  airspace_disease_grading: [
+    {
+      index: 'case',
+      field: 'airspace_disease_grading',
+    },
+    {
+      index: 'annotation',
+      field: 'airspace_disease_grading',
+    },
+    {
+      index: 'imaging_study',
+      field: 'airspace_disease_grading',
+    },
+  ],
+  class_covid19_pneumonia: [
+    {
+      index: 'case',
+      field: 'class_covid19_pneumonia',
+    },
+    {
+      index: 'annotation',
+      field: 'class_covid19_pneumonia',
+    },
+    {
+      index: 'imaging_study',
+      field: 'class_covid19_pneumonia',
+    },
+  ],
+  data_file_image_data_modification_method: [
+    {
+      index: 'case',
+      field: 'data_file_image_data_modification_method',
+    },
+    {
+      index: 'imaging_study',
+      field: 'data_file_image_data_modification_method',
+    },
+  ],
+  data_file_image_data_modification_name: [
+    {
+      index: 'case',
+      field: 'data_file_image_data_modification_name',
+    },
+    {
+      index: 'imaging_study',
+      field: 'data_file_image_data_modification_name',
+    },
+  ],
+  data_file_image_data_modified: [
+    {
+      index: 'case',
+      field: 'data_file_image_data_modified',
+    },
+    {
+      index: 'imaging_study',
+      field: 'data_file_image_data_modified',
+    },
+  ],
+  'imaging_study_annotations._annotation_id': [
+    {
+      index: 'case',
+      field: 'imaging_study_annotations._annotation_id',
+    },
+    {
+      index: 'imaging_study',
+      field: 'imaging_study_annotations._annotation_id',
+    },
+  ],
+  'imaging_study_annotations.airspace_disease_grading': [
+    {
+      index: 'case',
+      field: 'imaging_study_annotations.airspace_disease_grading',
+    },
+    {
+      index: 'imaging_study',
+      field: 'imaging_study_annotations.airspace_disease_grading',
+    },
+  ],
+  'imaging_study_annotations.annotation_method': [
+    {
+      index: 'case',
+      field: 'imaging_study_annotations.annotation_method',
+    },
+    {
+      index: 'imaging_study',
+      field: 'imaging_study_annotations.annotation_method',
+    },
+  ],
+  'imaging_study_annotations.annotation_name': [
+    {
+      index: 'case',
+      field: 'imaging_study_annotations.annotation_name',
+    },
+    {
+      index: 'imaging_study',
+      field: 'imaging_study_annotations.annotation_name',
+    },
+  ],
+  'imaging_study_annotations.annotator_id': [
+    {
+      index: 'case',
+      field: 'imaging_study_annotations.annotator_id',
+    },
+    {
+      index: 'imaging_study',
+      field: 'imaging_study_annotations.annotator_id',
+    },
+  ],
+  'imaging_study_annotations.class_covid19_pneumonia': [
+    {
+      index: 'case',
+      field: 'imaging_study_annotations.class_covid19_pneumonia',
+    },
+    {
+      index: 'imaging_study',
+      field: 'imaging_study_annotations.class_covid19_pneumonia',
+    },
+  ],
+  'imaging_study_annotations.instance_uids': [
+    {
+      index: 'case',
+      field: 'imaging_study_annotations.instance_uids',
+    },
+    {
+      index: 'imaging_study',
+      field: 'imaging_study_annotations.instance_uids',
+    },
+  ],
+  'imaging_study_annotations.midrc_mRALE_score': [
+    {
+      index: 'case',
+      field: 'imaging_study_annotations.midrc_mRALE_score',
+    },
+    {
+      index: 'imaging_study',
+      field: 'imaging_study_annotations.midrc_mRALE_score',
+    },
+  ],
+  midrc_mRALE_score: [
+    {
+      index: 'case',
+      field: 'midrc_mRALE_score',
+    },
+    {
+      index: 'annotation',
+      field: 'midrc_mRALE_score',
+    },
+    {
+      index: 'imaging_study',
+      field: 'midrc_mRALE_score',
+    },
+  ],
 };
 
 describe('test grouping by index', () => {

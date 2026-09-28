@@ -1,17 +1,26 @@
 ## Footer Configuration Guide
 
-This guide provides detailed instructions on how to configure the footer of a website using a JSON configuration file. The footer often contains logos, links, and copyright information, and this guide specifically covers the configuration for logos in the footer.
+This guide provides instructions on how to configure the footer of a website using a JSON configuration file. The footer
+often contains logos, links, and copyright information, and this guide specifically covers the configuration for logos
+in the footer.
 
 ### 1. Overview of Configuration Structure
 
-The configuration file for the footer is structured to define how logos, Text and Links are displayed on footer.
+The configuration file for the footer is structured to define how logos, text, and Links are displayed on footer.
 Here's an overview of the main configuration option:
 
-- `footerRightLogos`: A nested array that holds details about each logo to be displayed in the footer on the right side.
+- `rightSection`: A nested array that holds details about each logo to be displayed in the footer on the right side.
+- `leftSection`: A nested array that holds details about each logo to be displayed in the footer on the left side.
+- `classNames`: tailwind styling classNames for the footer, the members are:
+  - **root**: tailwind styling classNames for the root element of the footer (this include the background)
+  - **layout**: layout of the footer
+  - **version**: tailwind styling classNames for the version elements of the footer
+- hideFooter: set to true to hide the footer
+- showVersion: set to false to hide the version information
 
 ### 2. Detailed Configuration Sections
 
-#### a. Footer Right Logos (`footerRightLogos`)
+#### a. Footer Sections (`rightSection`, `leftSection`)
 
 The `rightSection` contain an array of columns. Each column contains an array of rows of footer items.
 Footer items can be:

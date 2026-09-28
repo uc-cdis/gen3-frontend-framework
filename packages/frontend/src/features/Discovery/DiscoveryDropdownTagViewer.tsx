@@ -34,11 +34,7 @@ interface MultiSelectContainerProps {
   category: categoryObject;
 }
 const MultiSelectContainer = ({ category }: MultiSelectContainerProps) => {
-  const {
-    discoveryConfig: discoveryConfig,
-    selectedTags,
-    setSelectedTags,
-  } = useDiscoveryContext();
+  const { selectedTags, setSelectedTags } = useDiscoveryContext();
 
   const containerData = category.tags.map((tag) => ({
     value: tag,

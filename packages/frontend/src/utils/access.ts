@@ -1,7 +1,3 @@
-import {
-  JSONValue,
-} from '@gen3/core';
-
 export const accessibleFieldName = '__accessible';
 
 export enum AccessLevel {

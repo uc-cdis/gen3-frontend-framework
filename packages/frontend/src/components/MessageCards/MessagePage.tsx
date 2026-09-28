@@ -6,7 +6,7 @@ interface MessagePageProps {
 const MessagePage = ({ children }: MessagePageProps) => {
   // place children in center of div that is 1/2 the visible height
   return (
-    <div className="flex justify-center items-center w-full h-vh">
+    <div className="flex justify-center items-center w-full h-full">
       {children}
     </div>
   );

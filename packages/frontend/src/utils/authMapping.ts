@@ -28,12 +28,9 @@ export const userHasMethodForServiceOnResource = (
   // 2. {service: sheepdog, method: *}
   // 3. {service: *, method: update}
   // 4. {service: *, method: *}
-  return (
-    actions !== undefined &&
-    actions.some(
-      (x) =>
-        (x.service === service || x.service === '*') &&
-        (x.method === method || x.method === '*'),
-    )
+  return actions?.some(
+    (x) =>
+      (x.service === service || x.service === '*') &&
+      (x.method === method || x.method === '*'),
   );
 };

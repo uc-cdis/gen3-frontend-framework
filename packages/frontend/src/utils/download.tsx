@@ -115,7 +115,6 @@ const download = async <T extends Record<string, any> = Record<string, any>>({
   Modal400 = Modals.GeneralErrorModal,
   Modal403 = Modals.NoAccessModal,
   customErrorMessage,
-  hideNotification = false,
 }: DownloadFunctionParams<T>): Promise<void> => {
   const cookies = new Cookies();
 

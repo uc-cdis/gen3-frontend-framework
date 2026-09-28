@@ -99,17 +99,12 @@ export const HorizontalTable = ({
 HorizontalTable.displayName = 'HorizontalTable';
 const renderValue = (
   value:
-    | string
-    | ReadonlyArray<string>
-    | boolean
-    | number
-    | JSX.Element
-    | undefined,
+    string | ReadonlyArray<string> | boolean | number | JSX.Element | undefined,
   headerName: string,
   index: number,
 ): JSX.Element => {
   if (value === undefined) {
-    return <span key={`${headerName}-${index}`}></span>;
+    return <span key={`${headerName}-${index}`} />;
   }
 
   if (Array.isArray(value) && value.length > 1) {

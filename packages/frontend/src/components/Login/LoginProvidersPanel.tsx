@@ -3,18 +3,19 @@ import {
   Box,
   Button,
   Center,
+  Flex,
   LoadingOverlay,
   Select,
-  Flex,
 } from '@mantine/core';
 import {
   type Gen3LoginProvider,
   type NameUrl,
   useGetLoginProvidersQuery,
 } from '@gen3/core';
-import { LoginSelectedProps } from './types';
+import type { LoginSelectedProps } from './types';
 import { ErrorCard } from '../MessageCards';
-import TextContent, { TextContentProps } from '../Content/TextContent';
+import type { TextContentProps } from '../Content/TextContent';
+import TextContent from '../Content/TextContent';
 
 interface LoginProviderItemProps extends LoginSelectedProps {
   readonly provider: Gen3LoginProvider;
@@ -22,9 +23,9 @@ interface LoginProviderItemProps extends LoginSelectedProps {
 
 const logninExtraText = (extra: ReadonlyArray<TextContentProps>) => {
   return extra?.map((content, index) => (
-          <TextContent {...content} key={index} />
-        ));
-}
+    <TextContent {...content} key={index} />
+  ));
+};
 
 const LoginProviderMultipleItems = ({
   provider,
@@ -36,7 +37,7 @@ const LoginProviderMultipleItems = ({
   const extra = loginProviderExtra && loginProviderExtra[provider.name];
   return (
     <div
-      className={`flex ${loginBtnHorizontal ? '!w-full justify-center flex-wrap': 'flex-col  w-full'} font-medium hover:text-accent-light hover:font-bold`}
+      className={`flex ${loginBtnHorizontal ? '!w-full justify-center flex-wrap' : 'flex-col  w-full'} font-medium hover:text-accent-light hover:font-bold`}
       key={`${provider.name}-login-item`}
     >
       {extra && logninExtraText(extra)}
@@ -46,10 +47,14 @@ const LoginProviderMultipleItems = ({
           label: item.name,
         }))}
         classNames={{
-          root: loginBtnHorizontal ? 'flex gap-5 grow flex-wrap justify-center': 'w-full',
-          label: loginBtnHorizontal ? 'flex-none text-nowrap content-center font-bold': '',
-          wrapper: loginBtnHorizontal ? 'grow': '',
-          input: loginBtnHorizontal ? 'min-w-fit rounded-r-none': '',
+          root: loginBtnHorizontal
+            ? 'flex gap-5 grow flex-wrap justify-center'
+            : 'w-full',
+          label: loginBtnHorizontal
+            ? 'flex-none text-nowrap content-center font-bold'
+            : '',
+          wrapper: loginBtnHorizontal ? 'grow' : '',
+          input: loginBtnHorizontal ? 'min-w-fit rounded-r-none' : '',
           // item: 'font-medium hover:text-accent-light hover:font-bold',
         }}
         onChange={setValue}
@@ -66,8 +71,8 @@ const LoginProviderMultipleItems = ({
         key={provider.name}
         color="accent.3"
         disabled={!value}
-        classNames={{ 
-          root: `data-disabled:bg-accent-lightest ${loginBtnHorizontal ? 'w-1/4 rounded-l-none min-w-fit' : ''}` 
+        classNames={{
+          root: `data-disabled:bg-accent-lightest ${loginBtnHorizontal ? 'w-1/4 rounded-l-none min-w-fit' : ''}`,
         }}
         onClick={() => value && handleLoginSelected(value)}
       >
@@ -83,7 +88,7 @@ const LoginProviderSingleItem = ({
   handleLoginSelected,
   loginProviderExtra,
 }: LoginProviderItemProps) => {
-  const extra = loginProviderExtra && loginProviderExtra[provider.name];
+  const extra = loginProviderExtra?.[provider.name];
   return (
     <React.Fragment>
       {extra && logninExtraText(extra)}
@@ -93,14 +98,17 @@ const LoginProviderSingleItem = ({
         color="accent.3"
         onClick={() => handleLoginSelected(provider.urls[0].url)}
       >
-        {' '}
         {provider.name}{' '}
       </Button>
     </React.Fragment>
   );
 };
 
-const LoginProvidersPanel = ({ handleLoginSelected, loginProviderExtra, loginBtnHorizontal }: LoginSelectedProps) => {
+const LoginProvidersPanel = ({
+  handleLoginSelected,
+  loginProviderExtra,
+  loginBtnHorizontal,
+}: LoginSelectedProps) => {
   const { data, isSuccess, isError, isLoading, isFetching } =
     useGetLoginProvidersQuery();
 
@@ -133,7 +141,11 @@ const LoginProvidersPanel = ({ handleLoginSelected, loginProviderExtra, loginBtn
         align="center"
         direction={loginBtnHorizontal ? 'row' : 'column'}
         wrap="wrap"
-        className={loginBtnHorizontal ? '*:w-1/4 *:min-w-fit w-full' : '*:w-1/3 w-full  *:min-w-fit'}
+        className={
+          loginBtnHorizontal
+            ? '*:w-1/4 *:min-w-fit w-full'
+            : '*:w-1/3 w-full  *:min-w-fit'
+        }
       >
         {data && data.default_provider.urls.length > 1 ? (
           <LoginProviderMultipleItems

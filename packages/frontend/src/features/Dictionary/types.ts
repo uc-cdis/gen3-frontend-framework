@@ -1,12 +1,9 @@
-import { Gen3AppConfigData } from '../../lib/content/types';
-import { JSONObject } from '@gen3/core';
 import { HeaderMetadata } from '../Navigation/types';
 
-export interface DictionaryConfig
-  extends Record<
-    string,
-    string | number | boolean | undefined | HeaderMetadata
-  > {
+export interface DictionaryConfig extends Record<
+  string,
+  string | number | boolean | undefined | HeaderMetadata
+> {
   showGraph: boolean;
   showDownloads: boolean;
   historyStorageId: string;

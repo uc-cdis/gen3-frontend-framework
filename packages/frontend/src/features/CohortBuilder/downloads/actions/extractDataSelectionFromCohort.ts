@@ -60,7 +60,7 @@ export async function extractDataSelectionFromCohort({
   accessibility = Accessibility.ALL,
   fileFields,
   libraryDataItemMapping,
-  datasetIdField = 'dataset_id',
+  datasetIdField,
   dataPath = '*',
 }: ExtractDataSelectionFromCohortParams): Promise<ExtractDataSelectionFromCohortResult> {
   if (!index || !Array.isArray(fileFields) || fileFields.length === 0) {

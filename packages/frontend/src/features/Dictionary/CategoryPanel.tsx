@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, MutableRefObject } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import CategoryHeader from './CategoryHeader';
 import { Accordion, Button, Group } from '@mantine/core';
 import CategoryAccordionLabel from './CategoryAccordionLabel';

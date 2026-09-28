@@ -9,7 +9,9 @@ import {
 } from 'react-icons/md';
 import Link from 'next/link';
 import NextImage from 'next/image';
-import { AnalysisToolConfiguration } from './types';
+import type { AnalysisToolConfiguration } from './types';
+import { withBasePath } from '../../utils/strings';
+import { useRouter } from 'next/router';
 
 type AnalysisCardCollapsibleProps = AnalysisToolConfiguration & {
   readonly descriptionVisible: boolean;
@@ -39,6 +41,7 @@ const AnalysisCardCollapsible: React.FC<AnalysisCardCollapsibleProps> = ({
 
   const inactive = caseCounts === 0 || cohortCounts.isFetching;
   const { ref: descRef, height: descHeight } = useElementSize();
+  const { basePath } = useRouter();
 
   return (
     <Card
@@ -55,7 +58,11 @@ const AnalysisCardCollapsible: React.FC<AnalysisCardCollapsibleProps> = ({
       <div className="flex justify-between mb-1">
         <Image
           component={NextImage}
-          src={`${icon}`}
+          src={
+            icon instanceof String
+              ? withBasePath(basePath, icon as string)
+              : icon
+          }
           alt={`${title} logo`}
           width={48}
           height={48}

@@ -20,7 +20,7 @@ import {
   SearchTerms,
 } from '../../types';
 import filterByAdvSearch from './filterByAdvSearch';
-import { getFilterValuesByKey, hasSearchTerms } from '../../Search/utils';
+import { hasSearchTerms } from '../../Search/utils';
 import {
   processAdvancedSearchTerms,
   processAllSummaries,

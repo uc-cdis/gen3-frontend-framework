@@ -2,10 +2,10 @@ import {
   fetchFencePresignedURL,
   FileItem,
   HTTPError,
+  HTTPUserFriendlyErrorMessages,
   isFileItem,
 } from '@gen3/core';
 import { notifications } from '@mantine/notifications';
-import { HTTPUserFriendlyErrorMessages } from '../modals/utils';
 import { DataActionFunction } from './types';
 
 const PRESIGNED_URL_TEMPLATE_VARIABLE = '{{PRESIGNED_URL}}';

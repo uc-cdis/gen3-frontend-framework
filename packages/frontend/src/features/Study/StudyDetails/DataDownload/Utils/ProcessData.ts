@@ -18,7 +18,6 @@ export const ProcessData = (sourceFieldData: sourceFieldData) => {
   const dataWithOnlyTitlesOrFileNames = sourceFieldData.filter(
     (item: FileInfo) => {
       if (!('title' in item || 'file_name' in item)) {
-        console.debug('Item without title or file_name:', item);
       }
       return 'title' in item || 'file_name' in item;
     },

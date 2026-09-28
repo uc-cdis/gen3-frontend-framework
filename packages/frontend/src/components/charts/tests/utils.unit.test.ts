@@ -21,7 +21,7 @@ describe('capitalize', () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       capitalize(undefined);
-    }).toThrowError('capitalize: original is undefined');
+    }).toThrow('capitalize: original is undefined');
   });
 
   // Should handle strings with only spaces
@@ -35,7 +35,11 @@ describe('computeRowSpan', () => {
   it('computes the correct row span', () => {
     const charts: Record<string, SummaryChart> = {
       chart1: { title: 'Chart 1', chartType: 'bar' },
-      chart2: { title: 'Chart 2', chartType: 'horizontalStacked', valueType: 'count' },
+      chart2: {
+        title: 'Chart 2',
+        chartType: 'horizontalStacked',
+        valueType: 'count',
+      },
       chart3: { title: 'Chart 3', chartType: 'fullPie', valueType: 'percent' },
     };
 
@@ -51,7 +55,11 @@ describe('computeRowSpan', () => {
   it('handles edge case where number of charts is divisible by number of columns', () => {
     const charts: Record<string, SummaryChart> = {
       chart1: { title: 'Chart 1', chartType: 'bar' },
-      chart2: { title: 'Chart 2', chartType: 'horizontalStacked', valueType: 'count' },
+      chart2: {
+        title: 'Chart 2',
+        chartType: 'horizontalStacked',
+        valueType: 'count',
+      },
     };
 
     const numCols = 2;

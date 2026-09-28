@@ -19,4 +19,6 @@ export interface DataSubmissionCard {
 export interface SubmissionConfig {
   dataSubmissionCards: DataSubmissionCard[];
   projectTable: ProjectTableConfig;
+  docLinkLocation: string;
+  docLinkText: string;
 }

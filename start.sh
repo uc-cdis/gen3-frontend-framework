@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 GEN3_FRONTEND_CONFIGURATION_ROOT=${GEN3_FRONTEND_CONFIGURATION_ROOT:-"./config"}
 

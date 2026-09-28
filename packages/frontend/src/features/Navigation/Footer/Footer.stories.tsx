@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import Footer from './Footer';
 
@@ -19,6 +19,7 @@ export const Default: Story = {
     classNames: {
       root: 'bg-base-min',
       layout: 'flex items-center justify-end',
+      version: 'text-primary-contrast-lighter',
     },
     rightSection: {
       columns: [

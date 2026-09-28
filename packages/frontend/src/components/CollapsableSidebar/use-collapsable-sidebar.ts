@@ -12,18 +12,21 @@ function getAutoWidthDuration(width: number | string) {
 }
 
 export function getElementWidth(
-  el: React.RefObject<HTMLElement | null> | { current?: { scrollWidth: number } },
+  el:
+    React.RefObject<HTMLElement | null> | { current?: { scrollWidth: number } },
 ) {
-  return el?.current ? el.current.scrollWidth : 'auto';
+  return el.current ? el.current.scrollWidth : 'auto';
 }
 
-const raf = typeof window !== 'undefined' && window.requestAnimationFrame;
+const raf =
+  typeof window !== 'undefined' ? window.requestAnimationFrame : undefined;
 
 interface UseCollapsableSidebar {
   opened: boolean;
   transitionDuration?: number;
   transitionTimingFunction?: string;
   onTransitionEnd?: () => void;
+  minWidth?: number;
 }
 
 interface GetCollapseProps {
@@ -39,24 +42,25 @@ export function useCollapsableSidebar({
   transitionTimingFunction = 'ease',
   onTransitionEnd = () => null,
   opened,
+  minWidth = 0,
 }: UseCollapsableSidebar): (props: GetCollapseProps) => Record<string, any> {
   const el = useRef<HTMLElement | null>(null);
-  const collapsedWidth = 0;
+  const collapsedWidth = minWidth;
   const collapsedStyles = {
     display: 'none',
-    width: 0,
+    width: minWidth,
     overflow: 'hidden',
   };
   const [styles, setStylesRaw] = useState<CSSProperties>(
     opened ? {} : collapsedStyles,
   );
   const setStyles = (
-    newStyles: object | ((oldStyles: object) => object),
+    newStyles: CSSProperties | ((oldStyles: CSSProperties) => CSSProperties),
   ): void => {
     flushSync(() => setStylesRaw(newStyles));
   };
 
-  const mergeStyles = (newStyles: object): void => {
+  const mergeStyles = (newStyles: CSSProperties): void => {
     setStyles((oldStyles) => ({ ...oldStyles, ...newStyles }));
   };
 

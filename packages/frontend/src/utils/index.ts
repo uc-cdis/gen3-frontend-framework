@@ -1,6 +1,7 @@
 import { type TenStringArray } from './types';
 import { getCurrentUnixTimestamp, unixTimeToString } from './time';
 import { convertPathsToTree } from './convertResourcePathsToTree';
+import { mergeDefaultTailwindClassnames } from './mergeDefaultTailwindClassnames';
 
 export * from './authMapping';
 export * from './focusStyle';
@@ -18,4 +19,5 @@ export {
   getCurrentUnixTimestamp,
   unixTimeToString,
   convertPathsToTree,
+  mergeDefaultTailwindClassnames,
 };

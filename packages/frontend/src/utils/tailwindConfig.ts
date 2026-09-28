@@ -1,6 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports */
 import plugin from 'tailwindcss/plugin';
+// Vendored copy of @tailwindcss/typography so @gen3/frontend controls the
+// postcss-selector-parser version (^6.1.4) — avoids CVE-2026-9358. See ./vendor.
+import typography from '../vendor/tailwindcss-typography/index.js';
 
 export const TailwindConfig = (themer: any) => {
   return {
@@ -95,7 +98,7 @@ export const TailwindConfig = (themer: any) => {
     },
     plugins: [
       require('@tailwindcss/forms'),
-      require('@tailwindcss/typography'),
+      typography,
       require('@tailwindcss/forms')({
         strategy: 'class',
       }),

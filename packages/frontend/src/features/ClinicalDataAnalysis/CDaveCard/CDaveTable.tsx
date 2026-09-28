@@ -30,7 +30,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
   facet,
   displayedData,
   yTotal,
-  hasCustomBins = false,
+  hasCustomBins,
   survival,
   selectedSurvivalPlots,
   setSelectedSurvivalPlots,
@@ -87,7 +87,10 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
               />
             </th>
             {survival && (
-              <th className="pl-2 bg-base-max sticky top-0 border-b-4 border-max border-t-1 z-10">
+              <th
+                className="pl-2 bg-base-max sticky top-0 border-b-4 border-max border-t-1 z-10"
+                aria-label="Survival chart"
+              >
                 <Tooltip
                   label="Change the survival plot display"
                   withArrow
@@ -148,7 +151,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                 </td>
 
                 {survival && (
-                  <td>
+                  <td aria-label="Survival chart">
                     <Tooltip
                       label={
                         key === MISSING_KEY

@@ -15,7 +15,7 @@ import {
 } from '@gen3/core';
 import { notifications } from '@mantine/notifications';
 import { useDeepCompareEffect } from 'use-deep-compare';
-import { convertSecondsToMilliseconds } from '../../utils'; // TODO add to config
+import { convertSecondsToMilliseconds } from '../../utils';
 
 enum NotificationStatus {
   Info,
@@ -45,11 +45,13 @@ const notifyUser = (
 // TODO: convert to seconds/minutes for readability
 const WorkspacePollingInterval: Record<WorkspaceStatus, number> = {
   [WorkspaceStatus.NotFound]: 0,
-  [WorkspaceStatus.Launching]: convertSecondsToMilliseconds(5),
-  [WorkspaceStatus.Terminating]: convertSecondsToMilliseconds(5),
-  [WorkspaceStatus.Running]: convertSecondsToMilliseconds(300),
+  [WorkspaceStatus.Launching]: convertSecondsToMilliseconds(1),
+  [WorkspaceStatus.Terminating]: convertSecondsToMilliseconds(1),
+  [WorkspaceStatus.Running]: convertSecondsToMilliseconds(30),
   [WorkspaceStatus.Stopped]: convertSecondsToMilliseconds(5),
   [WorkspaceStatus.Errored]: convertSecondsToMilliseconds(10),
+  [WorkspaceStatus.LaunchError]: convertSecondsToMilliseconds(10),
+  [WorkspaceStatus.TerminateError]: convertSecondsToMilliseconds(10),
   [WorkspaceStatus.StatusError]: 0,
 };
 
@@ -62,6 +64,8 @@ const PaymentPollingInterval: Record<WorkspaceStatus, number> = {
   Stopped: 0,
   Errored: 0,
   'Status Error': 0,
+  'Launching Error': 0,
+  'Terminating Error': 0,
 };
 
 const workspaceShutdownAlertLimit = 30000; // 5 minutes: 5 * 60 * 1000 TODO Figure how to configure this
@@ -71,7 +75,10 @@ const workspaceShutdownAlertLimit = 30000; // 5 minutes: 5 * 60 * 1000 TODO Figu
  *  Currently, it handles workspace, payment and idle status
  */
 
-export const useWorkspaceResourceMonitor = (monitorWorkspace: boolean) => {
+export const useWorkspaceResourceMonitor = (
+  monitorWorkspace: boolean,
+  monitorPayment: boolean = true,
+) => {
   const [pollingInterval, setPollingInterval] = useState<number>(0);
   const [paymentPollingInterval, setPaymentPollingInterval] =
     useState<number>(0);
@@ -79,22 +86,32 @@ export const useWorkspaceResourceMonitor = (monitorWorkspace: boolean) => {
     data: workspaceStatusData,
     isError: isWorkspaceStatusError,
     error: workspaceStatusError,
-  } = useGetWorkspaceStatusQuery(undefined, monitorWorkspace ? {
-    pollingInterval: pollingInterval,
-    refetchOnMountOrArgChange: 1800,
-    refetchOnFocus: true,
-  } : {
-    skip: true,
-  });
+  } = useGetWorkspaceStatusQuery(
+    undefined,
+    monitorWorkspace
+      ? {
+          pollingInterval: pollingInterval,
+          refetchOnMountOrArgChange: 1800,
+          refetchOnFocus: true,
+        }
+      : {
+          skip: true,
+        },
+  );
 
   const {
     data: paymentModelData,
     isError: isPaymentModelError,
     error: paymentModelError,
-  } = useGetWorkspacePayModelsQuery(undefined,  monitorWorkspace ?  {
-    pollingInterval: paymentPollingInterval,
-    refetchOnMountOrArgChange: true,
-  } : { skip: true });
+  } = useGetWorkspacePayModelsQuery(
+    undefined,
+    monitorWorkspace
+      ? {
+          pollingInterval: paymentPollingInterval,
+          refetchOnMountOrArgChange: true,
+        }
+      : { skip: true },
+  );
   const [terminateWorkspace] = useTerminateWorkspaceMutation();
   const requestedStatus = useCoreSelector(selectRequestedWorkspaceStatus); // trigger to start/stop workspaces
   const requestedStatusTimestamp = useCoreSelector(
@@ -111,7 +128,7 @@ export const useWorkspaceResourceMonitor = (monitorWorkspace: boolean) => {
   }, [isWorkspaceStatusError, dispatch]);
   useEffect(() => {
     if (isPaymentModelError) {
-      console.error('Payment model error: ', paymentModelError.toString());
+      console.warn('Payment model error: ', paymentModelError.toString());
     }
     if (paymentModelData?.noPayModel) {
       console.warn('No payment model defined');
@@ -127,15 +144,46 @@ export const useWorkspaceResourceMonitor = (monitorWorkspace: boolean) => {
     }
   }, [requestedStatus]);
   useEffect(() => {
-    if (workspaceStatusData?.status) {
+    if (workspaceStatusData?.status && monitorPayment) {
       setPaymentPollingInterval(
         PaymentPollingInterval[workspaceStatusData.status],
       );
     }
-  }, [workspaceStatusData?.status]);
+  }, [monitorPayment, workspaceStatusData]);
 
   useDeepCompareEffect(() => {
+    if (!monitorWorkspace) return; // no need to monitor workspace
     if (!workspaceStatusData) return;
+
+    // Stopped means the pod is in a failed state — auto-terminate it
+    if (workspaceStatusData.status === WorkspaceStatus.Stopped) {
+      void (async () => {
+        try {
+          await terminateWorkspace().unwrap();
+        } catch (error) {
+          const errorMessage =
+            (error as Error).message || 'Unknown error occurred';
+          console.error(
+            'Workspace termination of stopped pod failed: ',
+            errorMessage,
+          );
+          notifyUser(
+            'Workspace Error',
+            `Failed to terminate stopped workspace: ${errorMessage}`,
+            NotificationStatus.Error,
+          );
+        }
+      })();
+      dispatch(setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate));
+      dispatch(setActiveWorkspaceStatus(WorkspaceStatus.Terminating));
+      setPollingInterval(WorkspacePollingInterval[WorkspaceStatus.Terminating]);
+      notifyUser(
+        'Workspace Stopped',
+        'Workspace entered a failed state and is being terminated',
+        NotificationStatus.Error,
+      );
+      return;
+    }
 
     // Check if the workspace is running.
     // If so: need to check workspace idle if set
@@ -159,7 +207,7 @@ export const useWorkspaceResourceMonitor = (monitorWorkspace: boolean) => {
         if (remainingWorkspaceKernelLife <= 0) {
           // kernel has died due to inactivity
           // so terminate
-          (async () => {
+          void (async () => {
             try {
               await terminateWorkspace().unwrap();
             } catch (error) {
@@ -214,7 +262,7 @@ export const useWorkspaceResourceMonitor = (monitorWorkspace: boolean) => {
       // either starting up
       // or finally terminated.
       if (requestedStatus === RequestedWorkspaceStatus.Launch) {
-        // if the workspace becomes idle to too long after a Launch request switch to
+        // if the workspace becomes idle too long after a Launch request, switch to
         // Unset and NotFound.
         return;
       } else {
@@ -229,6 +277,24 @@ export const useWorkspaceResourceMonitor = (monitorWorkspace: boolean) => {
       return;
     }
 
+    if (workspaceStatusData.status === WorkspaceStatus.Terminating) {
+      if (requestedStatus === RequestedWorkspaceStatus.Terminate) {
+        //  reuested terminaltion so return
+        return;
+      } else {
+        //something else terminated this pod
+        // both requested status and workspace pod status are the same, so stop all polling
+        setPollingInterval(
+          WorkspacePollingInterval[WorkspaceStatus.Terminating],
+        );
+        dispatch(setActiveWorkspaceStatus(WorkspaceStatus.Terminating));
+        dispatch(
+          setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate),
+        );
+      }
+      return;
+    }
+
     // if here, update active workspace status and polling interval
     dispatch(setActiveWorkspaceStatus(workspaceStatusData.status));
     setPollingInterval(WorkspacePollingInterval[workspaceStatusData.status]);
@@ -239,7 +305,7 @@ export const useWorkspaceResourceMonitor = (monitorWorkspace: boolean) => {
       requestedStatus === RequestedWorkspaceStatus.Launch &&
       isTimeGreaterThan(requestedStatusTimestamp, 8)
     ) {
-      terminateWorkspace();
+      void terminateWorkspace();
       dispatch(setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate));
       notifyUser(
         'Workspace Startup',
@@ -247,5 +313,11 @@ export const useWorkspaceResourceMonitor = (monitorWorkspace: boolean) => {
         NotificationStatus.Error,
       );
     }
-  }, [requestedStatus, requestedStatusTimestamp, terminateWorkspace, dispatch, workspaceStatusData]);
+  }, [
+    requestedStatus,
+    requestedStatusTimestamp,
+    terminateWorkspace,
+    dispatch,
+    workspaceStatusData,
+  ]);
 };

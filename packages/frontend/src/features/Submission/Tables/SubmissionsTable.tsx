@@ -1,10 +1,13 @@
 import React, { useMemo } from 'react';
-import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
+import {
+  MantineReactTable,
+  useMantineReactTable,
+} from 'mantine-react-table-open';
 import { filesize } from 'filesize';
 import {
-  useGetSubmissionsQuery,
-  SubmissionInfo,
   SubmissionDocument,
+  SubmissionInfo,
+  useGetSubmissionsQuery,
 } from '@gen3/core';
 import { Loader, Text } from '@mantine/core';
 

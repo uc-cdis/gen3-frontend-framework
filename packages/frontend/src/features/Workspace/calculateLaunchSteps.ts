@@ -1,10 +1,9 @@
 import {
   PodConditionType,
-  WorkspaceContainerState,
-  WorkspaceStatusResponse,
   PodStatus,
+  WorkspaceContainerState,
   WorkspacePodCondition,
-  WorkspaceStatus,
+  WorkspaceStatusResponse,
 } from '@gen3/core';
 import { WorkspaceLaunchStatus } from './types';
 

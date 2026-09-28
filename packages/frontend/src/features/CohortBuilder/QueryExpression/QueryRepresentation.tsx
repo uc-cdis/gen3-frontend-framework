@@ -12,6 +12,7 @@ import {
   handleOperation,
   Includes,
   Intersection,
+  isIncludes,
   LessThan,
   LessThanOrEquals,
   Missing,
@@ -33,6 +34,7 @@ import QueryRepresentationLabel from './QueryRepresentationLabel';
 import { QueryExpressionsExpandedContext } from './QueryExpressionsExpandedContext';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { QueryExpressionContext } from './QueryExpressionContext';
+import LogicalOperatorLabel from './LogicalOperatorLabel';
 
 const RemoveButton = ({ value }: { value: string }) => (
   <ActionIcon
@@ -122,7 +124,28 @@ interface IncludeExcludeQueryElementProps extends Pick<
   index: string;
   path?: string;
   displayOnly?: boolean;
+  combineMode?: 'and' | 'or';
 }
+
+export const buildSetOperation = (
+  field: string,
+  operator: SetOperation['operator'],
+  operands: ReadonlyArray<string | number>,
+  combineMode: 'and' | 'or',
+): Operation =>
+  combineMode === 'and'
+    ? {
+        operator: 'and',
+        operands: operands.map(
+          (value) =>
+            ({
+              operator,
+              field,
+              operands: [value],
+            }) as SetOperation,
+        ),
+      }
+    : ({ operator, field, operands } as SetOperation);
 
 const IncludeExcludeQueryElement = ({
   index,
@@ -131,6 +154,7 @@ const IncludeExcludeQueryElement = ({
   operator,
   operands,
   displayOnly = false,
+  combineMode = 'or',
 }: IncludeExcludeQueryElementProps) => {
   const [queryExpressionsExpanded, setQueryExpressionsExpanded] = useContext(
     QueryExpressionsExpandedContext,
@@ -142,6 +166,7 @@ const IncludeExcludeQueryElement = ({
     useUpdateFilters,
     shouldShowSummary,
     fieldsAreFlat,
+    showLogicalOperators,
   } = useContext(QueryExpressionContext);
 
   const removeCohortFilter = useRemoveFilter();
@@ -244,57 +269,64 @@ const IncludeExcludeQueryElement = ({
               {operandsArray.map((x: string | number, i) => {
                 const value = x.toString();
                 return (
-                  <Badge
-                    key={`query-rep-${field}-${value}-${i}`}
-                    data-testid={`query-rep-${field}-${value}-${i}`}
-                    variant="filled"
-                    color="accent.5"
-                    size="md"
-                    className={`normal-case items-center max-w-[162px] cursor-pointer hover:bg-accent-darker pl-2 ${displayOnly ? 'pr-3' : 'pr-0'}`}
-                    rightSection={
-                      !displayOnly && <RemoveButton value={value} />
-                    }
-                    onClick={() => {
-                      if (displayOnly) return;
-                      const newOperands = operandsArray.filter((o) => o !== x);
-
-                      if (currentCohortId && newOperands.length === 0) {
-                        setQueryExpressionsExpanded({
-                          type: 'clear',
-                          cohortId: currentCohortId,
-                          field: fieldToUpdate,
-                        });
-
-                        removeCohortFilter(index, fieldToUpdate);
-                      } else {
-                        updateCohortFilter(
-                          index,
-                          fieldToUpdate,
-                          fieldsAreFlat
-                            ? {
-                                operator: operator,
-                                field: field,
-                                operands: newOperands,
-                              }
-                            : buildNestedFilterForOperation(fieldToUpdate, {
-                                operator: operator,
-                                field: field,
-                                operands: newOperands,
-                              }),
-                        );
+                  <React.Fragment key={`query-rep-${field}-${value}-${i}`}>
+                    {showLogicalOperators && i > 0 && (
+                      <LogicalOperatorLabel operator={combineMode} />
+                    )}
+                    <Badge
+                      data-testid={`query-rep-${field}-${value}-${i}`}
+                      variant="filled"
+                      color="accent.5"
+                      size="md"
+                      className={`normal-case items-center max-w-[162px] cursor-pointer hover:bg-accent-darker pl-2 ${displayOnly ? 'pr-3' : 'pr-0'}`}
+                      rightSection={
+                        !displayOnly && <RemoveButton value={value} />
                       }
-                    }}
-                  >
-                    <OverflowTooltippedLabel
-                      label={value}
-                      className="flex-grow text-md font-content"
+                      onClick={() => {
+                        if (displayOnly) return;
+                        const newOperands = operandsArray.filter(
+                          (o) => o !== x,
+                        );
+
+                        if (currentCohortId && newOperands.length === 0) {
+                          setQueryExpressionsExpanded({
+                            type: 'clear',
+                            cohortId: currentCohortId,
+                            field: fieldToUpdate,
+                          });
+
+                          removeCohortFilter(index, fieldToUpdate);
+                        } else {
+                          const updatedOperation = buildSetOperation(
+                            field,
+                            operator,
+                            newOperands,
+                            combineMode,
+                          );
+                          updateCohortFilter(
+                            index,
+                            fieldToUpdate,
+                            fieldsAreFlat
+                              ? updatedOperation
+                              : buildNestedFilterForOperation(
+                                  fieldToUpdate,
+                                  updatedOperation,
+                                ),
+                          );
+                        }
+                      }}
                     >
-                      <QueryRepresentationLabel
-                        value={value.toString()}
-                        field={field}
-                      />
-                    </OverflowTooltippedLabel>
-                  </Badge>
+                      <OverflowTooltippedLabel
+                        label={value}
+                        className="flex-grow text-md font-content"
+                      >
+                        <QueryRepresentationLabel
+                          value={value.toString()}
+                          field={field}
+                        />
+                      </OverflowTooltippedLabel>
+                    </Badge>
+                  </React.Fragment>
                 );
               })}
             </Group>
@@ -643,6 +675,35 @@ class CohortFilterToComponent implements OperationHandler<ReactElement> {
         />
       );
     }
+
+    const enumOperands = f.operands.filter(isIncludes);
+    const field = enumOperands[0]?.field;
+    if (
+      enumOperands.length === f.operands.length &&
+      field &&
+      enumOperands.every((operand) => operand.field === field)
+    ) {
+      return (
+        <QueryElement
+          key={field}
+          field={field}
+          index={this.index}
+          path={this.path}
+          displayOnly={this.displayOnly}
+        >
+          <IncludeExcludeQueryElement
+            field={field}
+            operator={enumOperands[0].operator}
+            operands={enumOperands.flatMap((operand) => operand.operands)}
+            combineMode="and"
+            index={this.index}
+            path={this.path}
+            displayOnly={this.displayOnly}
+          />
+        </QueryElement>
+      );
+    }
+
     // TODO: handle deeper nesting
     return null as unknown as ReactElement;
   };

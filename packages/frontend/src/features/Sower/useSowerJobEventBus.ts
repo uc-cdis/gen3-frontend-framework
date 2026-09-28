@@ -50,7 +50,7 @@ const useSowerJobEventBus = () => {
   };
 
   useEffect(() => {
-    trigger(Array.from(pollers));
+    void trigger(Array.from(pollers));
   }, [pollers]);
 
   useEffect(() => {

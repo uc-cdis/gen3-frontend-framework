@@ -3,6 +3,8 @@ import { errors as joseErrors } from 'jose';
 import { isFetchError } from '@gen3/core/server';
 
 const HTTP_INTERNAL_ERROR = 500;
+const HTTP_NOT_AUTHORIZED = 401;
+
 /**
  * An object that contains predefined error messages for handling JWT-related issues.
  *
@@ -49,7 +51,7 @@ export const getWebTokenErrorResponse = (
   }
 
   if (error instanceof joseErrors.JWTExpired) {
-    res.status(HTTP_INTERNAL_ERROR).json({ message: ERRORS.TOKEN_EXPIRED });
+    res.status(HTTP_NOT_AUTHORIZED).json({ message: ERRORS.TOKEN_EXPIRED });
     return res;
   }
   if (error instanceof joseErrors.JWTInvalid) {

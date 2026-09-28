@@ -56,3 +56,24 @@ export const getHighResolutionTimestamp = (): number => {
 export const getTimestamp = () => {
   return new Date(Date.now()).toLocaleString();
 };
+
+/**
+ * Formats a given number of minutes into a human-readable uptime string.
+ *
+ * @param {number | null | undefined} minutes - The total number of minutes to format.
+ *   - If `null` or `undefined`, a placeholder string ('—') is returned.
+ *   - If less than 60, the output is formatted as `{m}m` (e.g., "45m").
+ *   - If greater than or equal to 60, the output is formatted as:
+ *     - `{h}h` when there are no remaining minutes (e.g., "2h").
+ *     - `{h}h {m}m` when there are remaining minutes (e.g., "2h 30m").
+ *
+ * @returns {string} A formatted string representing the uptime in hours and minutes
+ * or a placeholder if the input is null or undefined.
+ */
+export const formatUptimeInMinutes = (minutes: number | null | undefined): string => {
+  if (minutes == null) return '—';
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  if (h === 0) return `${m}m`;
+  return m > 0 ? `${h}h ${m}m` : `${h}h`;
+};

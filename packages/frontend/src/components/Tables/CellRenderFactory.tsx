@@ -1,4 +1,4 @@
-import { MRT_Cell } from 'mantine-react-table';
+import { MRT_Cell } from 'mantine-react-table-open';
 import React, { ReactElement } from 'react';
 import { Text } from '@mantine/core';
 import { JSONObject } from '@gen3/core';

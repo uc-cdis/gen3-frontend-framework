@@ -1,7 +1,10 @@
 import { ActionButtonWithArgsFunction } from '../../types';
 import { downloadToFileAction } from './downloadToFile';
 import { downloadToManifestAction } from './downloadManifest';
-import { addCohortDataFilesToDataLibraryAsDataset, exportCohortToWorkspace, } from './addCohortToDataLibrary';
+import {
+  addCohortDataFilesToDataLibraryAsDataset,
+  exportCohortToWorkspace,
+} from './addCohortToDataLibrary';
 
 // create a factory for the action creators
 
@@ -14,7 +17,6 @@ const registeredButtonActions: Record<string, ActionCreatorFactoryItem> = {};
 
 export const NullButtonAction: ActionButtonWithArgsFunction = (
   _params,
-  done,
 ): Promise<void> => {
   return new Promise<void>((done) => {
     if (done) done();

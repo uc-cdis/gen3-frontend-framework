@@ -1,14 +1,17 @@
 import React from 'react';
 import { NavPageLayout } from '../../features/Navigation';
-import { Custom404PageProps } from './types';
+import type { Custom404PageProps } from './types';
 import TextContent from '../../components/Content/TextContent';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { withBasePath } from '../../utils/strings';
 
 const Custom404Page = ({
   headerProps,
   footerProps,
   config404,
 }: Custom404PageProps) => {
+  const { basePath } = useRouter();
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
@@ -22,7 +25,12 @@ const Custom404Page = ({
       <div className="w-full max-w-[500px] m-auto text-center">
         {config404?.topIcon && (
           <div className="bg-white rounded-lg inline-block p-3">
-            <Image src={config404.topIcon.src} alt={config404.topIcon.alt} width={36} height={36}/>
+            <Image
+              src={withBasePath(basePath, config404.topIcon.src)}
+              alt={config404.topIcon.alt}
+              width={36}
+              height={36}
+            />
           </div>
         )}
         {config404?.content?.map((content, index) => (

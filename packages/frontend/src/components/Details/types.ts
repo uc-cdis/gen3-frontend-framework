@@ -1,5 +1,5 @@
 import { RendererFunction } from '../../utils/RendererFactory';
-import { MRT_Row } from 'mantine-react-table';
+import { MRT_Row } from 'mantine-react-table-open';
 
 export interface DetailsPanelComponentProps extends Record<string, unknown> {
   id?: string;

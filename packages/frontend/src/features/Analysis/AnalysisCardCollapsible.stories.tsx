@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import AnalysisCardCollapsible from './AnalysisCardCollapsible';
 
@@ -16,8 +16,8 @@ const meta = {
   parameters: {
     nextjs: {
       appDirectory: true,
-    }
-  }
+    },
+  },
 } satisfies Meta<typeof AnalysisCardCollapsible>;
 
 export default meta;
@@ -32,7 +32,7 @@ export const Default: Story = {
     description:
       'Visualize most frequently mutated genes and somatic mutations.',
     icon: '/images/apps/MutationFrequency.svg',
-    appId: "mutation_freq",
+    appId: 'mutation_freq',
     hasDemo: false,
     href: '/',
     loginRequired: false,

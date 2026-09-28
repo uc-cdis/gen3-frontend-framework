@@ -22,7 +22,9 @@ interface ProtectedContentProps {
  */
 const ProtectedContentUI = ({ children, referer }: ProtectedContentProps) => {
   const router = useRouter();
-  const [stableStatus, setStableStatus] = useState<JWTSessionStatus | undefined>();
+  const [stableStatus, setStableStatus] = useState<
+    JWTSessionStatus | undefined
+  >();
 
   let redirect = referer;
   if (!referer && typeof window !== 'undefined') {
@@ -32,7 +34,7 @@ const ProtectedContentUI = ({ children, referer }: ProtectedContentProps) => {
 
   const onUnauthenticated = () => {
     if (typeof window !== 'undefined') {
-      router.push({
+      void router.push({
         pathname: '/Login',
         query: { referer: redirect },
       });
