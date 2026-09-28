@@ -8,7 +8,7 @@ import {
   useCoreSelector,
   useLazyGetSowerOutputQuery,
 } from '@gen3/core';
-import { bindSowerOutputJob } from './actions/sowerActions';
+import { bindSowerOutputJob } from './actions/sowerActionUtils';
 
 /**
  * Watches the sower job list for completed jobs that have a sendJobAction pending.

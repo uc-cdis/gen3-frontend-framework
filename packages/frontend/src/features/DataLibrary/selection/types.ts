@@ -33,6 +33,7 @@ export interface DataLibraryActionConfig {
   leftIcon?: string;
   buttonLabel: string;
   actionName: string;
+  actionFunction?: string; // deprecated
   parameters?: Record<string, unknown>;
   itemRules?: ItemRule[];
   groupRules?: GroupRule[];

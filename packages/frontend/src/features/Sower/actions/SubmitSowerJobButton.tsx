@@ -48,6 +48,14 @@ interface SubmitSowerJobButtonProps {
    *    disables the target button and menu
    */
   disabled?: boolean;
+  /**
+   * size of the button, matches Mantine.dev's ButtonProps.size
+   */
+  size?: ButtonProps['size'];
+  /*
+   * variant of maintine buttom
+   */
+  variant?: ButtonProps['variant'];
 }
 
 const SubmitSowerJobButton = forwardRef<
@@ -98,11 +106,12 @@ const SubmitSowerJobButton = forwardRef<
         console.warn(`No output function found for ${outputAction?.name}`);
       }
 
+      // success/failure is reported via isSuccess/isError in the effect above
       await submitJob({
         name: label,
         dispatchJob: jobBody,
         outputAction: outputAction,
-      }).unwrap();
+      });
     };
 
     return (

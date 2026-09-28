@@ -10,6 +10,7 @@ interface ListActionButtonProps {
   rightIcon?: ButtonIcon;
   leftIcon?: ButtonIcon;
   tooltip?: string;
+  size?: string;
 }
 
 // Wrapper around SubmitSowerJobButton for ListBased Sower Jobs
@@ -21,6 +22,7 @@ const ListSowerActionButton = ({
   tooltip,
   rightIcon,
   label,
+  size = 'xs',
 }: ListActionButtonProps) => {
   // Build the action object for the SubmitSowerJobButton
   const actions: CreateAndExportOutputConfig = {
@@ -39,6 +41,8 @@ const ListSowerActionButton = ({
       rightIcon={buildIcon(rightIcon)}
       tooltipText={tooltip}
       label={label}
+      size="xs"
+      variant="outline"
     />
   );
 };

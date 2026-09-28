@@ -32,37 +32,52 @@ export const sowerJobApi = gen3Api.injectEndpoints({
       DispatchJobResponse,
       NamedDispatchJobWithAction
     >({
-      query: (params) => ({
-        url: `${GEN3_SOWER_API}/dispatch`,
-        method: 'POST',
-        body: params.dispatchJob,
-        validateStatus: (response) => {
-          if ('originalStatus' in response)
-            return response.status === 200 && response.originalStatus === 200;
-          return response.status === 200;
-        },
-      }),
-      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
-        const { data } = await queryFulfilled;
-        const timestamp = Date.now();
-        const payload: JobWithActions = {
-          uid: data.uid,
-          actions: {
-            dispatchJob: _arg.dispatchJob,
-            outputAction: _arg.outputAction,
+      queryFn: async (params, _queryApi, _extraOptions, fetchWithBQ) => {
+        const result = await fetchWithBQ({
+          url: `${GEN3_SOWER_API}/dispatch`,
+          method: 'POST',
+          body: params.dispatchJob,
+          validateStatus: (response) => {
+            if ('originalStatus' in response)
+              return response.status === 200 && response.originalStatus === 200;
+            return response.status === 200;
           },
-          name: _arg.name,
-          created: timestamp,
-          updated: timestamp,
-          status: SowerJobStatus.Running,
-          stage: SowerJobStage.JobDispatched,
-        };
-        dispatch(addSowerJob(payload));
+        });
+        if (result.error) {
+          return { error: result.error };
+        }
+        const data = result.data as DispatchJobResponse | null;
+        // sower can return a 200 with an empty body; treat that as a failed dispatch
+        if (!data?.uid) {
+          return {
+            error: {
+              status: 'CUSTOM_ERROR',
+              error: 'Sower dispatch did not return a job uid',
+            },
+          };
+        }
+        return { data };
       },
-      transformErrorResponse(response) {
-        if ('originalStatus' in response)
-          return { error: response.originalStatus };
-        return { error: response };
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          const timestamp = Date.now();
+          const payload: JobWithActions = {
+            uid: data.uid,
+            actions: {
+              dispatchJob: arg.dispatchJob,
+              outputAction: arg.outputAction,
+            },
+            name: arg.name,
+            created: timestamp,
+            updated: timestamp,
+            status: SowerJobStatus.Running,
+            stage: SowerJobStage.JobDispatched,
+          };
+          dispatch(addSowerJob(payload));
+        } catch {
+          // dispatch failed; the error is surfaced through the mutation result
+        }
       },
     }),
     getSowerJobStatus: builder.query<DispatchJobResponse, string>({
