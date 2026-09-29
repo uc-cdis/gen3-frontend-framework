@@ -12,6 +12,7 @@ import type { TopBarItems, TopBarProps } from './types';
 import { isTopBarLinkButton } from './types';
 import { modals } from '@mantine/modals';
 import { useIsUserLoggedIn } from '@gen3/core';
+import NavigationIndicator from './NavigationIndicator';
 
 const processTopBarItems = (
   items: TopBarItems[],
@@ -63,22 +64,24 @@ const processTopBarItems = (
           {Custom ? (
             Custom
           ) : (
-            <IconButton
-              name={item.name}
-              iconSize={item.iconSize}
-              leftIcon={item.leftIcon}
-              rightIcon={item.rightIcon}
-              classNames={mergedClassnames}
-              tooltip={item.tooltip}
-              clickHandler={() =>
-                item?.modal &&
-                modals.openContextModal({
-                  modal: item.modal,
-                  innerProps: {},
-                  size: '90vw',
-                })
-              }
-            />
+            <NavigationIndicator>
+              <IconButton
+                name={item.name}
+                iconSize={item.iconSize}
+                leftIcon={item.leftIcon}
+                rightIcon={item.rightIcon}
+                classNames={mergedClassnames}
+                tooltip={item.tooltip}
+                clickHandler={() =>
+                  item?.modal &&
+                  modals.openContextModal({
+                    modal: item.modal,
+                    innerProps: {},
+                    size: '90vw',
+                  })
+                }
+              />
+            </NavigationIndicator>
           )}
           <Divider
             size="md"

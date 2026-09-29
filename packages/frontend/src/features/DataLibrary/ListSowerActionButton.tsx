@@ -32,6 +32,12 @@ const ListSowerActionButton = ({
         listId,
       },
     },
+    outputAction: {
+      name: 'notification',
+      parameters: {
+        message: 'The job has completed',
+      },
+    },
   };
   // Render the SubmitSowerJobButton with the provided props
   return (
@@ -41,7 +47,7 @@ const ListSowerActionButton = ({
       rightIcon={buildIcon(rightIcon)}
       tooltipText={tooltip}
       label={label}
-      size="xs"
+      size={size}
       variant="outline"
     />
   );
