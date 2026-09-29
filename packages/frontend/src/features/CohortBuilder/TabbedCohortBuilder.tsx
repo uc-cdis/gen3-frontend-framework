@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Stack } from '@mantine/core';
-import {
-  Accessibility,
+import type {
   CombineMode,
   CoreState,
-  extractEnumFilterValue,
   FacetDefinition,
   FacetType,
-  isIntersection,
   NumericFromTo,
+} from '@gen3/core';
+import {
+  Accessibility,
+  extractEnumFilterValue,
+  isIntersection,
   selectCurrentCohortId,
   selectIndexFilters,
   useCoreSelector,
@@ -19,10 +21,10 @@ import {
   usePrevious,
 } from '@gen3/core';
 import FacetTabs from '../../components/facets/FacetTabs';
+import type { FacetHooks } from '../../components/facets';
 import {
   classifyFacets,
   extractRangeValues,
-  FacetHooks,
   processBucketData,
   processDefinedRangeData,
   processRangeData,
@@ -31,7 +33,7 @@ import {
   useUpdateFilters,
   useUpdateFiltersFlat,
 } from '../../components/facets';
-import { QueryOptions } from '../../components/facets/types';
+import type { QueryOptions } from '../../components/facets/types';
 import {
   useDeepCompareCallback,
   useDeepCompareEffect,
@@ -48,7 +50,7 @@ import {
   useSetCohortFilterCombineState,
   useToggleExpandFilter,
 } from './hooks';
-import { StylingOverrideWithMergeControl } from '../../types';
+import type { StylingOverrideWithMergeControl } from '../../types';
 
 export interface CohortBuilderTabCategoryConfig {
   readonly label: string;

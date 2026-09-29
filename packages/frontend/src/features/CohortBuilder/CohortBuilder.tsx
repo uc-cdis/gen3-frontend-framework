@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
-import { CohortBuilderProps, CohortPanelConfiguration } from './types';
+import type { CohortBuilderProps, CohortPanelConfiguration } from './types';
 import { Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
 import {
