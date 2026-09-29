@@ -22,12 +22,7 @@ const JobOverviewCard = ({
 }: JobOverviewCardProps) => {
   const { bg, text: textColor } = colorClasses[color] ?? { bg: '', text: '' };
   return (
-    <Paper
-      shadow="md"
-      radius="lg"
-      p="md"
-      className="w-full flex flex-row gap-4"
-    >
+    <Paper radius="md" p="md" className="w-full flex flex-row gap-4 border-2">
       <div
         className="w-16 h-16 flex justify-center items-center rounded-md"
         style={backgroundStyles[color]}

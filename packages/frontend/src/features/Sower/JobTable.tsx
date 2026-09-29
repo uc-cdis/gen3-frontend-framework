@@ -7,7 +7,7 @@ import {
   useMantineReactTable,
 } from 'mantine-react-table-open';
 import { PiDotsThreeOutlineFill as DotIcon } from 'react-icons/pi';
-import type { JobWithActions } from '@gen3/core';
+import type { JobWithActions, SowerJobStatus } from '@gen3/core';
 import { useLazyGetSowerOutputQuery } from '@gen3/core';
 import { backgroundStyles } from './colors';
 
@@ -25,19 +25,19 @@ interface ColorConfig {
 const STATUS_TO_COLOR: Record<string, ColorConfig> = {
   Running: {
     mantine: 'utility.1',
-    text: 'text-utility-success',
+    text: 'var(--mantine-color-utility-contrast-1)',
     bg: 'bg-utility-success',
     border: 'border-utility-success',
   },
   Failed: {
     mantine: 'utility.3',
-    text: 'utility-error',
+    text: 'var(--mantine-color-utility-contrast-3)',
     bg: 'bg-utility-error',
     border: 'border-utility-error',
   },
   Completed: {
     mantine: 'utility.1',
-    text: 'utility-success',
+    text: 'var(--mantine-color-utility-contrast-1)',
     bg: 'bg-utility-success',
     border: 'border-utility-success',
   },
@@ -51,7 +51,7 @@ const dateFormat = new Intl.DateTimeFormat('en-us', {
 });
 
 const JobTable = ({ data }: JobTableProps) => {
-  const [filterValue, setFilterValue] = useState('Running');
+  const [filterValue, setFilterValue] = useState<SowerJobStatus>('All');
   const [getOutput, outputResponse] = useLazyGetSowerOutputQuery();
   const filteredData = useMemo(
     () =>
@@ -81,7 +81,9 @@ const JobTable = ({ data }: JobTableProps) => {
             <Badge
               variant="dot"
               color={color?.mantine}
-              styles={{ root: backgroundStyles[color.bg] }}
+              styles={{
+                root: backgroundStyles[color.bg],
+              }}
               radius="sm"
             >
               {row.original.status}
@@ -97,7 +99,7 @@ const JobTable = ({ data }: JobTableProps) => {
       },
       {
         id: 'options',
-        header: '',
+        header: 'Actions',
         Cell: ({ row }: MRT_Cell<JobWithActions>) => (
           <>
             {row.original.status === 'Completed' ? (
@@ -144,6 +146,11 @@ const JobTable = ({ data }: JobTableProps) => {
                   circle
                   color={STATUS_TO_COLOR['Running'].mantine}
                   variant="light"
+                  styles={{
+                    label: {
+                      color: STATUS_TO_COLOR['Running'].text,
+                    },
+                  }}
                 >
                   {groupedData?.Running?.length || 0}
                 </Badge>
@@ -159,8 +166,33 @@ const JobTable = ({ data }: JobTableProps) => {
                   circle
                   color={STATUS_TO_COLOR['Completed'].mantine}
                   variant="light"
+                  styles={{
+                    label: {
+                      color: STATUS_TO_COLOR['Completed'].text,
+                    },
+                  }}
                 >
                   {groupedData?.Completed?.length || 0}
+                </Badge>
+              </div>
+            ),
+          },
+          {
+            value: 'Failed',
+            label: (
+              <div className="flex gap-2">
+                <span>Failed</span>
+                <Badge
+                  circle
+                  color={STATUS_TO_COLOR['Failed'].mantine}
+                  variant="light"
+                  styles={{
+                    label: {
+                      color: STATUS_TO_COLOR['Failed'].text,
+                    },
+                  }}
+                >
+                  {groupedData?.Failed?.length || 0}
                 </Badge>
               </div>
             ),
