@@ -220,6 +220,7 @@ export const classifyFacets = (
                 maximum:
                   facetDef?.range?.maximum ??
                   Math.floor(Number(value[0].key[1])),
+                step: facetDef?.range?.step ?? 10,
               } // prefer config-defined range (if any)
             : type === 'range' // if computed type is range use that
               ? {

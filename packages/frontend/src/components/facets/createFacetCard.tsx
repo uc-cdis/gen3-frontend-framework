@@ -1,5 +1,5 @@
 import React from 'react';
-import {
+import type {
   EnumChartProps,
   EnumFacetDataHooks,
   FacetHooks,
@@ -13,7 +13,7 @@ import RangeFacet from './RangeFacet';
 import ToggleFacet from './ToggleFacet';
 import MultiSelectValueFacet from './MultiSelectValueFacet';
 import ExactValueFacet from './ExactValueFacet';
-import { FacetDefinition } from '@gen3/core';
+import type { FacetDefinition } from '@gen3/core';
 import UploadFacet from './UploadFacet';
 import NumericRangeFacet from './NumericRangeFacet';
 

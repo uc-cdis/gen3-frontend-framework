@@ -77,6 +77,7 @@ export interface CohortPanelConfiguration {
   buttons?: ReadonlyArray<DownloadButtonConfig>; // row of action buttons
   loginForDownload?: boolean; // login required for download
   sharedFiltersMap?: SharedFieldMapping;
+  fieldsAreFlat?: boolean; // set to true to flatten the fields query
 }
 
 export interface SharedFieldConfiguration {

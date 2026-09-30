@@ -123,6 +123,31 @@ To see the other tabs for a shared filters, hover over the share icon:
 
 ![Shared filters tooltip](./images/Explorer/Explorer_shared_filters_tooltip.png)
 
+### Flatten Fields
+
+A query of the form root.subroot.field, by default is expanded into root.subroot and root.subroot.subfield.
+
+```
+root {
+  { subroot:
+     {  field }
+  }
+```
+
+This can be disabled by setting the `flattenFields` option to `true`. In this case the field will be queried
+as `root.subroot.field`.
+
+To enable this set `flattenFields` to `true`. in the explore config for an index:
+
+```json
+  {
+  "tabTitle": "Subjects",
+  "flattenFields": true,
+  "charts": {
+  }
+}
+
+```
 
 ### Charts
 The charts section configures data visualizations for the explorer page. Each chart is defined by its `chartType` and `title`.
@@ -328,8 +353,7 @@ The configuration has the following members:
 * fields - fields to use for columns
 * columns - (Optional) table columns field to match fields above title to override what's displayed
 
-
-## Selection Facet
+### Selection Facet
 
 A new facet UI is available instead of the enumerated facet, which can be used when the number of facet keys becomes
 quite large. To enable it, in the filters->tabs section of the config file:
@@ -366,6 +390,40 @@ quite large. To enable it, in the filters->tabs section of the config file:
 add a ```fieldsConfig``` entry. The format is _field_ name then _type_. In the example above the```gender``` field is
 switch to use ```multiselect```. Note that ```multiselect``` is the only type supported. The selection is a dropdown that
 is also searchable.
+
+### Range Facets
+
+There are a number of Continuous Range Facets that can handle a variey of contiuous values. These include:
+
+* **age**: in days or years can switch between age in days or years
+* **age_in_years**: years only age
+* **years**: years in decades
+* **year**
+* **percent**: 0 - 100%
+* **numeric_range**: generic_numeric range
+
+![Age of Enrollment](./images/Explorer/RangeFacet.png)
+
+These range facets require setting the minimum, maximum, and step values, in the facet definition section of the
+configuration file.
+For example the `age_in_years` is set with:
+
+```json
+"fieldsConfig": {
+  "age_at_enrollment": {
+    "type": "age_in_years",
+    "range": {
+      "maximum": 32507,
+      "minimum": 0,
+      "step": 10
+    }
+  }
+}
+}
+```
+
+Note that age in years needs to be specified in day units. The above setup 10 pre-defined ranges from in
+increments of 10 years from age 0 to 89.
 
 ### Default Facet Sorting
 
