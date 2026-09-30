@@ -6,7 +6,7 @@ import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwind
 import { TooltipStyle } from './style';
 
 import { useRouter } from 'next/router';
-import { LinkAuthStatus, NavigationButtonWithAuthStatus } from './types';
+import type { LinkAuthStatus, NavigationButtonWithAuthStatus } from './types';
 
 const AuthTooltips: Record<LinkAuthStatus, string> = {
   loginRequired: 'Login required to access this page',
@@ -60,8 +60,10 @@ const NavigationBarButton = ({
       return;
     }
     if (noBasePath) {
-      const targetUrl = `${window.location.origin}${href}`;
-      await router.push(targetUrl);
+      // href points to another app (e.g. a microfrontend) outside this Next.js basePath.
+      // router.push treats same-origin URLs as internal and re-adds basePath,
+      // so bypass the router and do a full browser navigation instead.
+      window.location.assign(href);
     } else {
       await router.push(href);
     }

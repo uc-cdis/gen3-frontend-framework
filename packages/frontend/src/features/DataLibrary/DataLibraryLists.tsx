@@ -1,5 +1,5 @@
 import React from 'react';
-import { Accordion, Center, LoadingOverlay } from '@mantine/core';
+import { Accordion, Center, Loader, LoadingOverlay } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { useDataLibrary } from '@gen3/core';
@@ -9,7 +9,7 @@ import SelectedItemsModal from './modals/SelectedItemsModal';
 import { DatalistAccordionItem } from './DatalistAccordionItem';
 import type { DataLibraryConfig } from './types';
 import { ErrorCard } from '../../components/MessageCards';
-import { useIsAuthenticated } from '../../lib/session/session';
+import { useSession } from '../../lib/session/session';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import type {
   DataLibraryActionConfig,
@@ -44,6 +44,9 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
   listActions,
   size,
 }) => {
+  const { status: sessionStatus, pending: sessionPending } = useSession();
+  const isAuthenticated = sessionStatus === 'issued';
+
   const {
     dataLibrary,
     isLoading,
@@ -52,9 +55,11 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
     addListToDataLibrary,
     updateListInDataLibrary,
     deleteListFromDataLibrary,
-  } = useDataLibrary({ storageMode });
-
-  const { isAuthenticated } = useIsAuthenticated();
+  } = useDataLibrary({
+    storageMode,
+    // wait for the session so the first request doesn't 401 before login is known
+    enabled: !requiresLogin || isAuthenticated,
+  });
   const [selectedItemsOpen, { open, close }] = useDisclosure(false);
   const { gatherSelectedItems } = useDataLibrarySelection();
 
@@ -76,16 +81,31 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
     }
   }, [dataLibraryError]);
 
+  // Until the session resolves we can't tell "not logged in" from "not authorized",
+  // so show a loader rather than a message that is about to change.
+  if (requiresLogin && sessionPending && !isAuthenticated) {
+    return (
+      <div className="flex justify-center w-full mt-10">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (requiresLogin && !isAuthenticated) {
+    return (
+      <div className="flex flex-col w-full ml-2">
+        <Center>
+          <ErrorCard message="Data Library requires login. Please log in to continue." />
+        </Center>
+      </div>
+    );
+  }
+
   // Handle 401 error with UI rendering
   if (dataLibraryError?.isError && dataLibraryError?.status === 401) {
-    let message = 'You are not authorized to access the library.';
-    if (requiresLogin) {
-      if (!isAuthenticated)
-        message = 'Data Library requires login. Please log in to continue.';
-      else
-        message =
-          'You are not authorized to access the library. Please contact your site administrator.';
-    }
+    const message = requiresLogin
+      ? 'You are not authorized to access the library. Please contact your site administrator.'
+      : 'You are not authorized to access the library.';
 
     return (
       <div className="flex flex-col w-full ml-2">

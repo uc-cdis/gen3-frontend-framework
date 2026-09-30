@@ -8,18 +8,20 @@ export interface NavigationNotifierProps {
 
 const NavigationNotifier = ({ children }: NavigationNotifierProps) => {
   const jobs = useCoreSelector(selectSowerJobsList);
-  const visible = jobs.some((job) => job.status === 'Running');
+  const runningJobs = jobs.filter((job) => job.status === 'Running');
 
   return (
     <Indicator
       inline
-      position="middle-end"
+      label={runningJobs.length}
+      maxValue={99}
+      position="top-end"
       color="utility.1"
       size={22}
       withBorder
       processing
       offset={16}
-      disabled={!visible}
+      disabled={runningJobs.length === 0}
     >
       {children}
     </Indicator>

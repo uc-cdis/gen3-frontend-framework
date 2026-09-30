@@ -1,9 +1,10 @@
 import React from 'react';
 import { processLabel, truncateString } from '../utils';
-import { ChartProps } from '../types';
-import ReactECharts, { ReactEChartsProps } from './ReactECharts';
-import { HistogramData, HistogramDataArray } from '@gen3/core';
-import { CallbackDataParams } from 'echarts/types/dist/shared';
+import type { ChartProps } from '../types';
+import type { ReactEChartsProps } from './ReactECharts';
+import ReactECharts from './ReactECharts';
+import type { HistogramData, HistogramDataArray } from '@gen3/core';
+import type { CallbackDataParams } from 'echarts/types/dist/shared';
 import { isArray } from 'lodash';
 import { useDeepCompareMemo } from 'use-deep-compare';
 
@@ -17,10 +18,7 @@ interface BarChartData {
   };
 }
 
-const ExtractDataCount = (
-  d: HistogramData,
-  _: number | undefined = undefined,
-): number => d.count;
+const ExtractDataCount = (d: HistogramData, _?: number): number => d.count;
 const ExtractDataPercent = (d: HistogramData, total?: number): number =>
   total
     ? Math.round(((d.count / total) * 100.0 + Number.EPSILON) * 100) / 100
