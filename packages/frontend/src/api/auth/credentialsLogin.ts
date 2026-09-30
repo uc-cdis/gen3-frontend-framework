@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { serialize } from 'cookie';
 import { decodeJwt, importSPKI, jwtVerify } from 'jose';
-import { fetchFence } from '@gen3/core';
+import { fetchFence } from '@gen3/core/server';
 import { getWebTokenErrorResponse } from './errorHandler';
 import { fetchJWTKey } from '../../lib/auth/utils';
 

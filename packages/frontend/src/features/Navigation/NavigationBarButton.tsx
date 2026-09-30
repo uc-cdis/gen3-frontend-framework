@@ -35,6 +35,7 @@ const NavigationBarButton = ({
   classNames = {},
   authStatus,
   enabledWithNoAccess = false,
+  noBasePath = false,
 }: NavigationButtonWithAuthStatus) => {
   const classNamesDefaults = {
     root: 'flex flex-col nowrap px-3 py-2 pt-4 justify-between items-center align-center text-primary hover:text-accent opacity-80 hover:opacity-100 data-disabled:opacity-35 data-disabled:hover:text-primary data-disabled:hover:opacity-35',
@@ -58,7 +59,12 @@ const NavigationBarButton = ({
       // Optional: open a modal / toast instead of doing nothing
       return;
     }
-    await router.push(href);
+    if (noBasePath) {
+      const targetUrl = `${window.location.origin}${href}`;
+      await router.push(targetUrl);
+    } else {
+      await router.push(href);
+    }
   };
 
   let tooltipObj = AuthTooltips;

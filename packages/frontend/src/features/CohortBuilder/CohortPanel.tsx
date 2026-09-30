@@ -1,5 +1,5 @@
 import type { JSX } from 'react';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { partial } from 'lodash';
 import type {
   AggregationsData,
@@ -175,6 +175,7 @@ export const CohortPanel = ({
   const {
     data,
     isSuccess,
+    isFetching: isAggsQueryFetching,
     isError: isAggsQueryError,
   } = useGetAggsQuery({
     type: index,
@@ -294,6 +295,7 @@ export const CohortPanel = ({
         enumFilters: filters,
         combineMode: combineMode,
         isSuccess: isSuccess,
+        isFetching: isAggsQueryFetching,
       };
     },
     [cohortFilters.root, data, isSuccess],
@@ -305,6 +307,7 @@ export const CohortPanel = ({
         data: processRangeData(data?.[field]),
         filters: extractRangeValues(cohortFilters.root[field]),
         isSuccess: isSuccess,
+        isFetching: isAggsQueryFetching,
       };
     },
     [data, cohortFilters.root, isSuccess],
@@ -356,25 +359,26 @@ export const CohortPanel = ({
   // Set up the hooks for the facet components to use based on the required index
 
   // Set up the hooks for the facet components to use based on the required index
-  const facetDataHooks: Record<FacetType, any> = useDeepCompareMemo(() => {
-    return {
-      // TODO: see if there a better way to do this
-      enum: EnumHookInstances,
-      exact: EnumHookInstances,
-      multiselect: EnumHookInstances,
-      range: RangeHookInstances,
-      age: ContinuousHookInstances,
-      age_in_years: ContinuousHookInstances,
-      numeric_range: RangeHookInstances,
-      year: ContinuousHookInstances,
-      years: ContinuousHookInstances,
-      days: ContinuousHookInstances,
-      percent: ContinuousHookInstances,
-      datetime: RangeHookInstances,
-      toggle: EnumHookInstances,
-      upload: EnumHookInstances,
-    };
-  }, [getEnumFacetData, getRangeFacetData, index]);
+  const facetDataHooks: Record<FacetType, FacetHooks> =
+    useDeepCompareMemo(() => {
+      return {
+        // TODO: see if there a better way to do this
+        enum: EnumHookInstances,
+        exact: EnumHookInstances,
+        multiselect: EnumHookInstances,
+        range: RangeHookInstances,
+        age: ContinuousHookInstances,
+        age_in_years: ContinuousHookInstances,
+        numeric_range: RangeHookInstances,
+        year: ContinuousHookInstances,
+        years: ContinuousHookInstances,
+        days: ContinuousHookInstances,
+        percent: ContinuousHookInstances,
+        datetime: RangeHookInstances,
+        toggle: EnumHookInstances,
+        upload: EnumHookInstances,
+      };
+    }, [getEnumFacetData, getRangeFacetData, index]);
 
   // Set the facet definitions based on the data only the first time the data is loaded
   useDeepCompareEffect(() => {
