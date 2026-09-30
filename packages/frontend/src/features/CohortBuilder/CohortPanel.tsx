@@ -355,6 +355,7 @@ export const CohortPanel = ({
 
   // Set up the hooks for the facet components to use based on the required index
 
+  // Set up the hooks for the facet components to use based on the required index
   const facetDataHooks: Record<FacetType, any> = useDeepCompareMemo(() => {
     return {
       // TODO: see if there a better way to do this
