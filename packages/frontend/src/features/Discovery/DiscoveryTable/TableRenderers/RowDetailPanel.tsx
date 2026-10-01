@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Text } from '@mantine/core';
 import HighlightSearchTerm from '../SearchHighlighting/HighlightSearchTerm';
-import { MRT_Row, MRT_RowData } from 'mantine-react-table-open';
+import type { MRT_Row, MRT_RowData } from 'mantine-react-table-open';
 import _ from 'lodash';
 import RowDetailPanelTags from './RowDetailPanelTags';
 import { useDiscoveryContext } from '../../DiscoveryProvider';
@@ -13,6 +13,7 @@ interface RowDetailPanelProps {
 
 const RowDetailPanel = ({ row, searchTerm }: RowDetailPanelProps) => {
   const { discoveryConfig: config } = useDiscoveryContext();
+  console.log('RowDetailPanel', row.original);
   if (config.studyPreviewField) {
     const studyPreviewData = _.get(
       row.original,

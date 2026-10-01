@@ -1,6 +1,6 @@
 import React from 'react';
 import { Badge } from '@mantine/core';
-import { TagData } from '../../../Study';
+import type { TagData } from '../../../Study';
 import { getTagInfo } from '../../../Study/utils';
 import { useDiscoveryContext } from '../../DiscoveryProvider';
 
@@ -14,10 +14,13 @@ const RowDetailPanelTags = ({ rowTags }: RowDetailPanelProps) => {
     selectedTags,
     setSelectedTags,
   } = useDiscoveryContext();
+
+  console.log('RowDetailPanelTags', rowTags, config.tags);
   return (
     <div className="flex mt-2">
       {rowTags?.map((tag: TagData, i: number) => {
         const { color, display, label } = getTagInfo(tag, config.tags);
+
         if (!display) return null;
         const active = Object.keys(selectedTags).includes(tag.name);
 

@@ -91,16 +91,14 @@
               "menuText": "Available"
             },
             "unaccessible": {
-              "enabled": false,
+              "enabled": true,
               "menuText": "Not Accessible"
             },
-            "pending": {
-              "enabled": false,
-              "menuText": "Pending"
+            "waiting": {
+              "enabled": false
             },
             "notAvailable": {
-              "enabled": false,
-              "menuText": "Not Available"
+              "enabled": false
             }
           }
         }
@@ -118,7 +116,8 @@
         }
       ],
       "tagSelector": {
-        "title": "Tags by category"
+        "title": "Tags by category",
+        "showTagCategoryNames": true
       },
       "studyColumns": [
         {
@@ -170,6 +169,13 @@
           "errorIfNotAvailable": false,
           "valueIfNotAvailable": "API",
           "contentType": "string"
+        },
+        {
+          "name": "Data Availability",
+          "field": "authz",
+          "errorIfNotAvailable": false,
+          "valueIfNotAvailable": "API",
+          "contentType": "dataAccess"
         }
       ],
       "studyPreviewField": {
@@ -268,12 +274,12 @@
           {
             "name": "Program",
             "color": "rgba(129, 211, 248, 1)",
-            "display": false
+            "display": true
           },
           {
             "name": "Study Registration",
             "color": "rgba(236, 128, 141, 1)",
-            "display": false
+            "display": true
           },
           {
             "name": "Data Type",
@@ -283,7 +289,7 @@
           {
             "name": "primary_site",
             "color": "rgba(112, 182, 3, 1)",
-            "display": false
+            "display": true
           },
           {
             "name": "disease_type",

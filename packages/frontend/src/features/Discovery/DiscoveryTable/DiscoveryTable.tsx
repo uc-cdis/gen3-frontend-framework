@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import type { MRT_Cell, MRT_Row, MRT_RowData } from 'mantine-react-table-open';
 import {
   MantineReactTable,
-  MRT_Cell,
   type MRT_PaginationState,
-  MRT_Row,
-  MRT_RowData,
   type MRT_RowSelectionState,
   type MRT_SortingState,
   useMantineReactTable,
@@ -16,15 +14,15 @@ import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory
 import { useDiscoveryContext } from '../DiscoveryProvider';
 import { useStudyContext } from '../../Study/StudyProvider';
 import StudyDetails from '../../Study/StudyDetails/StudyDetails';
-import { CellRendererFunction } from './TableRenderers/types';
-import { JSONObject } from '@gen3/core';
+import type { CellRendererFunction } from './TableRenderers/types';
+import type { JSONObject } from '@gen3/core';
 import { TableIcons } from '../../../components/Tables/TableIcons';
-import {
+import type {
   OnChangeFn,
   PaginationState,
   SortingState,
 } from '@tanstack/table-core';
-import {
+import type {
   DataRequestStatus,
   DiscoveryIndexConfig,
   RowSelectCompareFunctions,

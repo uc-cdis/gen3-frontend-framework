@@ -1,7 +1,8 @@
-import React, { ReactElement } from 'react';
+import type { ReactElement } from 'react';
+import React from 'react';
 import { Text } from '@mantine/core';
-import { JSONObject } from '@gen3/core';
-import { CellRendererFunction } from './types';
+import type { JSONObject } from '@gen3/core';
+import type { CellRendererFunction } from './types';
 import { toString } from 'lodash';
 
 const defaultCellRenderer: CellRendererFunction = (
