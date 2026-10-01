@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChartProps } from './types';
+import type { ChartProps } from './types';
 import ChartRendererFactory from './ChartRendererFactory';
 
 /** createChart selects which type of chart element to create depending on the

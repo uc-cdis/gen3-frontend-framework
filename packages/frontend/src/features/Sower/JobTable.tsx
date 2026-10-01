@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Badge, Menu, SegmentedControl } from '@mantine/core';
 import {
   MantineReactTable,
@@ -8,7 +8,11 @@ import {
 } from 'mantine-react-table-open';
 import { PiDotsThreeOutlineFill as DotIcon } from 'react-icons/pi';
 import type { JobWithActions, SowerJobStatus } from '@gen3/core';
-import { useLazyGetSowerOutputQuery } from '@gen3/core';
+import {
+  removeSowerJob,
+  useCoreDispatch,
+  useLazyGetSowerOutputQuery,
+} from '@gen3/core';
 import { backgroundStyles } from './colors';
 
 export interface JobTableProps {
@@ -60,6 +64,7 @@ const JobTable = ({ data }: JobTableProps) => {
         : (data || []).filter((row) => row.status === filterValue),
     [filterValue, data],
   );
+  const dispatch = useCoreDispatch();
   const groupedData = data ? Object.groupBy(data, (row) => row.status) : {};
 
   useEffect(() => {
@@ -67,6 +72,13 @@ const JobTable = ({ data }: JobTableProps) => {
       window.open(outputResponse.data.output, '_blank');
     }
   }, [outputResponse]);
+
+  const removeJob = useCallback(
+    (id: string) => {
+      dispatch(removeSowerJob(id));
+    },
+    [dispatch],
+  );
 
   const columns = useMemo(
     () => [
@@ -102,7 +114,7 @@ const JobTable = ({ data }: JobTableProps) => {
         header: 'Actions',
         Cell: ({ row }: MRT_Cell<JobWithActions>) => (
           <>
-            {row.original.status === 'Completed' ? (
+            {row.original.status === 'Running' ? null : (
               <Menu>
                 <Menu.Target>
                   <button>
@@ -110,17 +122,22 @@ const JobTable = ({ data }: JobTableProps) => {
                   </button>
                 </Menu.Target>
                 <Menu.Dropdown>
-                  <Menu.Item onClick={() => getOutput(row.original.uid)}>
-                    {'Download'}
+                  {row.original.status === 'Completed' ? (
+                    <Menu.Item onClick={() => getOutput(row.original.uid)}>
+                      {'Download'}
+                    </Menu.Item>
+                  ) : null}
+                  <Menu.Item onClick={() => removeJob(row.original.uid)}>
+                    {'Remove'}
                   </Menu.Item>
                 </Menu.Dropdown>
               </Menu>
-            ) : null}
+            )}
           </>
         ),
       },
     ],
-    [getOutput],
+    [getOutput, removeJob],
   );
 
   const table = useMantineReactTable({

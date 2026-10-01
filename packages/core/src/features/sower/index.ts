@@ -33,6 +33,7 @@ import {
 import {
   addSowerJob,
   removeSowerJob,
+  removeSowerJobsUpdatedBefore,
   sowerJobListSelectors,
   updateSowerJob,
   updateSowerJobStage,
@@ -68,6 +69,7 @@ export {
   useLazyGetMultipleSowerJobStatusQuery,
   addSowerJob,
   removeSowerJob,
+  removeSowerJobsUpdatedBefore,
   updateSowerJobStatus,
   updateSowerJobStage,
   updateSowerJob,

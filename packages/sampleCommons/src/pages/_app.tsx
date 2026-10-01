@@ -1,14 +1,15 @@
 import whyDidYouRender from '@welldone-software/why-did-you-render';
-import type { AppProps, AppContext, AppInitialProps } from 'next/app';
+import type { AppContext, AppInitialProps, AppProps } from 'next/app';
 import App from 'next/app';
-import React, { useState, useEffect, useRef, Suspense } from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { MantineProvider, mergeThemeOverrides } from '@mantine/core';
 
 import type {
+  Fonts,
   RegisteredIcons,
   SessionConfiguration,
   TenStringArray,
-  Fonts} from '@gen3/frontend';
+} from '@gen3/frontend';
 import {
   type AuthorizedRoutesConfig,
   createMantineTheme,
@@ -17,11 +18,11 @@ import {
   type ModalsConfig,
   registerBaseSowerActions,
   registerCohortBuilderDefaultPreviewRenderers,
-  registerCohortSowerActions,
   registerCohortDiscoveryApp,
+  registerCohortSowerActions,
   registerExplorerDefaultCellRenderers,
-  registerMetadataSchemaApp,
   registerIGVApp,
+  registerMetadataSchemaApp,
 } from '@gen3/frontend/app';
 import { registerDefaultRemoteSupport, setDRSHostnames } from '@gen3/core';
 import { registerCohortTableCustomCellRenderers } from '@/lib/CohortBuilder/CustomCellRenderers';
@@ -97,7 +98,6 @@ const Gen3App = ({
       isFirstRender.current = false;
       const gen3ThemeDynamic = createMantineTheme(fonts, colors);
       const mergedTheme = mergeThemeOverrides(gen3ThemeDynamic);
-      setMantineTheme(mergedTheme);
       setMantineTheme(mergedTheme);
       console.log('Gen3 App initialized');
     }

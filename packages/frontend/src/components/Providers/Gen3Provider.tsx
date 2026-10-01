@@ -14,6 +14,7 @@ import { gen3Modals, Gen3ModalsProvider, type ModalsConfig } from '../Modals';
 import type { AuthorizedRoutesConfig } from '../../lib/authz/type';
 import ProtectedRoutesProvider from '../AuthorizedRoutes/ProtectedRoutesProvider';
 import { SowerProvider } from '../../features/Sower/SowerContext';
+import type { SowerConfiguration } from '../../features/Sower/types';
 import { CookiesProvider } from 'react-cookie';
 
 interface Gen3ProviderProps {
@@ -22,6 +23,7 @@ interface Gen3ProviderProps {
   modalsConfig: ModalsConfig;
   contextModals?: Record<string, FC<ContextModalProps<any>>>;
   protectedRoutesConfig?: AuthorizedRoutesConfig;
+  sowerConfig?: SowerConfiguration;
   children?: ReactNode | undefined;
   defaultNotificationPosition?:
     | 'top-left'
@@ -155,6 +157,7 @@ const Gen3Provider = ({
   modalsConfig,
   contextModals = {},
   protectedRoutesConfig,
+  sowerConfig,
   defaultNotificationPosition = 'top-center',
   children,
 }: Gen3ProviderProps) => {
@@ -168,7 +171,7 @@ const Gen3Provider = ({
         <ModalsProvider modals={{ ...contextModals, ...gen3Modals }}>
           <Notifications position={defaultNotificationPosition} />
           <SessionProvider {...sessionConfig}>
-            <SowerProvider>
+            <SowerProvider config={sowerConfig}>
               <ProtectedRoutesProvider
                 config={
                   protectedRoutesConfig ?? {

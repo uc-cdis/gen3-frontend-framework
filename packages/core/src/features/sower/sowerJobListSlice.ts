@@ -3,12 +3,8 @@ import {
   createSlice,
   type PayloadAction,
 } from '@reduxjs/toolkit';
-import type {
-  JobId,
-  JobWithActions,
-  SowerJobStage,
-  SowerJobStatus,
-} from './types';
+import type { JobId, JobWithActions, SowerJobStage } from './types';
+import { SowerJobStatus } from './types';
 import type { CoreState } from '../../reducers';
 
 interface UpdateSowerJobStatus {
@@ -81,6 +77,23 @@ const sowerJobsListSlice = createSlice({
         },
       });
     },
+    /**
+     * Removes jobs last updated before the given timestamp (ms since epoch).
+     * Running jobs are kept regardless of age: they are still being polled and
+     * may yet produce output.
+     */
+    removeSowerJobsUpdatedBefore: (state, action: PayloadAction<number>) => {
+      const cutoff = action.payload;
+      const expiredIds = Object.values(state.entities)
+        .filter(
+          (job) =>
+            job.status !== SowerJobStatus.Running && job.updated < cutoff,
+        )
+        .map((job) => job.uid);
+      if (expiredIds.length > 0) {
+        sowerJobListAdapter.removeMany(state, expiredIds);
+      }
+    },
     updateSowerJob: (state, action: PayloadAction<UpdateSowerJobCompleted>) => {
       const { jobId, stage, status, outputGUID } = action.payload;
       sowerJobListAdapter.updateOne(state, {
@@ -99,6 +112,7 @@ const sowerJobsListSlice = createSlice({
 export const {
   addSowerJob,
   removeSowerJob,
+  removeSowerJobsUpdatedBefore,
   updateSowerJobStatus,
   updateSowerJobStage,
   updateSowerJob,

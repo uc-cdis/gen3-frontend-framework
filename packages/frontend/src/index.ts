@@ -79,7 +79,10 @@ import SubmissionPage from './pages/Submission/SubmissionPage';
 import { SubmissionPageGetServerSideProps } from './pages/Submission/data';
 
 import WorkspacePage from './pages/Workspace/WorkspacePage';
-import { WorkspaceNoAccessPage, WorkspaceRequestAccessPage } from './pages/Workspace/index';
+import {
+  WorkspaceNoAccessPage,
+  WorkspaceRequestAccessPage,
+} from './pages/Workspace/index';
 import {
   WorkspaceNoAccessPageServerSideProps,
   WorkspacePageGetServerSideProps,
@@ -140,11 +143,14 @@ import {
 import type { AuthorizedRoutesConfig, RouteConfig } from './lib/authz/type';
 import { DefaultAuthorizedRoutesConfig } from './lib/authz/type';
 import OverflowTooltippedLabel from './components/OverflowTooltippedLabel';
-import type {
-  NavigationRailItem,
-} from './components/NavigationRail';
+import type { NavigationRailItem } from './components/NavigationRail';
 import NavigationRail from './components/NavigationRail';
 import { ACTIVITY_CHANNEL } from './lib/session/constants';
+
+import {
+  registerBaseSowerActions,
+  type SowerConfiguration,
+} from './features/Sower';
 
 export * from './components/Profile';
 export * from './components/Login';
@@ -271,4 +277,7 @@ export {
   analysisApiCohortDiscovery,
   // Defaults
   DefaultAuthorizedRoutesConfig,
+  // Sower Actions
+  registerBaseSowerActions,
+  type SowerConfiguration,
 };

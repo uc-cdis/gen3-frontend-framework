@@ -7,7 +7,15 @@ import { guppyAPISliceMiddleware } from './features/guppy/guppyApi';
 import { userAuthApiMiddleware } from './features/user/userSliceRTK';
 import { coreStoreListenerMiddleware } from './listeners';
 import type { PersistConfig, PersistState } from 'redux-persist';
-import { FLUSH, PAUSE, PERSIST, persistReducer, PURGE, REGISTER, REHYDRATE, } from 'redux-persist';
+import {
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  persistReducer,
+  PURGE,
+  REGISTER,
+  REHYDRATE,
+} from 'redux-persist';
 
 import type { Action, Reducer } from 'redux';
 import storage from './storage-persist';
@@ -29,7 +37,7 @@ declare module 'redux-persist' {
 
 const persistConfig = {
   key: `${GEN3_COMMONS_NAME}-root`, // stored by domain name but name added for development using localhost which will share store across multiple configurations
-  version: 1,
+  version: 2,
   storage,
   whitelist: [
     'cohorts',
@@ -37,6 +45,7 @@ const persistConfig = {
     'cart',
     'workspaceKernels',
     'tieredWorkspace',
+    // sower.sowerJobsList is nested, so it is persisted in features/sower/reducers.ts
   ],
 };
 

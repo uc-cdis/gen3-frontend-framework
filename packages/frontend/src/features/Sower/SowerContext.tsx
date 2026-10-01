@@ -12,8 +12,10 @@ import {
   useLazyGetSowerJobListQuery,
 } from '@gen3/core';
 import useJobOutputAction from './useJobOutputAction';
+import useSowerJobExpiration from './useSowerJobExpiration';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { notifications } from '@mantine/notifications';
+import type { SowerConfiguration } from './types';
 
 /**
  * Polls the status of all Running jobs tracked in the sower slice and
@@ -141,9 +143,12 @@ const useSowerFailureNotifications = () => {
 
 export const SowerProvider = ({
   children,
+  config = {},
 }: {
   children: ReactNode;
+  config?: SowerConfiguration;
 }): ReactElement => {
+  useSowerJobExpiration(config);
   useSowerPolling();
   useSowerHydration();
   useJobOutputAction();
