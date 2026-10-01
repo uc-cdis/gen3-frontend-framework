@@ -13,8 +13,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     credentials: {
-      api_key:
-        'DFKLDFJDFJDLKFJDLKFJDLKFJDLFKJWREERKWEWDSFJDLKFJWIREJFLDJFKLJWERWJEWLEJWLEJWLEJWLKEJWLEJWLKE',
+      api_key: 'LKFJWIREJFLDJFKLJWERWJEWLEJWLEJWLEJWLKEJWLEJWLKE', // pragma: allowlist secret
       key_id: 'test-api-key',
     },
     opened: true,
