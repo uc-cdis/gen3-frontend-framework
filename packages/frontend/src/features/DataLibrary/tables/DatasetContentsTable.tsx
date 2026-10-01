@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
-import {
-  MantineReactTable,
+import type {
   MRT_RowSelectionState,
   MRT_Updater,
+} from 'mantine-react-table-open';
+import {
+  MantineReactTable,
   useMantineReactTable,
 } from 'mantine-react-table-open';
 import { Button, Stack, Tooltip } from '@mantine/core';
 import { MdOutlineRemoveCircle as RemoveIcon } from 'react-icons/md';
 import AdditionalDataTable from './AdditionalDataTable';
-import { DatalistMembers } from '../types';
+import type { DatalistMembers } from '../types';
 import { commonTableSettings } from './tableSettings';
 import {
   getNumberOfDataSetItemsSelected,
@@ -21,7 +23,7 @@ import EmptyList from '../EmptyList';
 import QueryDetails from '../QueryDetails';
 
 /**
- *  Component that manages a List items, which are composed of Dataset and/or Cohorts
+ *  Component that manages a List item, which are composed of Dataset and/or Cohorts
  */
 const columns = [
   {

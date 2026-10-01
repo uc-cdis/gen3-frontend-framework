@@ -11,13 +11,21 @@ import { LoginButton } from './LoginButton';
 import type { TopBarItems, TopBarProps } from './types';
 import { isTopBarLinkButton } from './types';
 import { modals } from '@mantine/modals';
+import { useIsUserLoggedIn } from '@gen3/core';
+import NavigationIndicator from './NavigationIndicator';
 
 const processTopBarItems = (
   items: TopBarItems[],
+  isLoggedIn: boolean,
   classNames: StylingOverrideWithMergeControl,
   dividerClassname: string,
 ): ReactElement[] => {
   return items.reduce((acc: ReactElement[], item: TopBarItems) => {
+    // check to see if item requires login
+    if (item.requireLogin && !isLoggedIn) {
+      return acc;
+    }
+
     const mergedClassnames = item?.classNames
       ? mergeDefaultTailwindClassnames(classNames, item.classNames)
       : classNames;
@@ -41,6 +49,7 @@ const processTopBarItems = (
                 leftIcon={item.leftIcon}
                 rightIcon={item.rightIcon}
                 classNames={mergedClassnames}
+                tooltip={item.tooltip}
               />
             )}
           </a>
@@ -55,21 +64,24 @@ const processTopBarItems = (
           {Custom ? (
             Custom
           ) : (
-            <IconButton
-              name={item.name}
-              iconSize={item.iconSize}
-              leftIcon={item.leftIcon}
-              rightIcon={item.rightIcon}
-              classNames={mergedClassnames}
-              clickHandler={() =>
-                item?.modal &&
-                modals.openContextModal({
-                  modal: item.modal,
-                  innerProps: {},
-                  size: 'xl',
-                })
-              }
-            />
+            <NavigationIndicator>
+              <IconButton
+                name={item.name}
+                iconSize={item.iconSize}
+                leftIcon={item.leftIcon}
+                rightIcon={item.rightIcon}
+                classNames={mergedClassnames}
+                tooltip={item.tooltip}
+                clickHandler={() =>
+                  item?.modal &&
+                  modals.openContextModal({
+                    modal: item.modal,
+                    innerProps: {},
+                    size: '90vw',
+                  })
+                }
+              />
+            </NavigationIndicator>
           )}
           <Divider
             size="md"
@@ -105,6 +117,8 @@ const TopBar = ({
     rightIcon: 'text-secondary-contrast-lighter pl-1',
   };
 
+  const isLoggedIn = useIsUserLoggedIn();
+
   const mergedClassnames = mergeDefaultTailwindClassnames(
     classNamesDefaults,
     classNames,
@@ -125,6 +139,7 @@ const TopBar = ({
         >
           {processTopBarItems(
             items,
+            isLoggedIn,
             mergedItemClassnames,
             extractClassName('divider', mergedClassnames),
           )}

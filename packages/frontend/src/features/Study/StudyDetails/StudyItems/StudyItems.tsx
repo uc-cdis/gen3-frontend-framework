@@ -1,26 +1,27 @@
-import React, { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 import { isArray } from 'lodash';
 import { JSONPath } from 'jsonpath-plus';
-import { StudyDetailsField, StudyTabTagField } from '../../types';
+import type { StudyDetailsField, StudyTabTagField } from '../../types';
+import type { FieldRendererFunctionMap } from './RendererFactory';
 import {
-  FieldRendererFunctionMap,
   StudyDetailsRenderer,
   StudyFieldRendererFactory,
 } from './RendererFactory';
-import { fieldNameToLabel, JSONValue } from '@gen3/core';
+import type { JSONValue } from '@gen3/core';
+import { fieldNameToLabel } from '@gen3/core';
+import BlockTextField from './Renderers/BlockTextField';
+import RenderDetailTags from './Renderers/RenderDetailTags';
 import {
-  BlockTextField,
-  LabeledSingleLinkField,
-  LabeledNumberField,
-  LabeledMultipleLinkField,
-  LabeledMultipleTextField,
-  LabeledSingleTextField,
-  LabeledParagraph,
-  UnlabeledMultipleLinkField,
-  LabeledYearOfBirthRestricted,
   AccessDescriptor,
   DataDownloadListField,
-  RenderDetailTags,
+  LabeledMultipleLinkField,
+  LabeledMultipleTextField,
+  LabeledNumberField,
+  LabeledParagraph,
+  LabeledSingleLinkField,
+  LabeledSingleTextField,
+  LabeledYearOfBirthRestricted,
+  UnlabeledMultipleLinkField,
 } from './Renderers';
 
 const formatResourceValuesWhenNestedArray = (

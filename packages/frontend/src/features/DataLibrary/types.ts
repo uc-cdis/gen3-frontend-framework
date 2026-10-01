@@ -1,8 +1,8 @@
 import {
   AdditionalDataItem,
   CohortItem,
-  FileItem,
   DataLibraryStoreMode,
+  FileItem,
 } from '@gen3/core';
 import { DataLibraryActionsConfig } from './selection/types';
 
@@ -29,14 +29,17 @@ export interface TableColumnsConfig {
   label: string;
   accessor: string;
   width?: string | number;
+  hidden?: boolean;
 }
 
 export interface DataLibraryConfig {
   storageMode: DataLibraryStoreMode;
   requiresLogin?: boolean;
   size?: string;
-  actions: DataLibraryActionsConfig;
+  actions: DataLibraryActionsConfig; // action to apply when checking out
+  listActions?: DataLibraryActionsConfig; // action to apply to a list
   fileTable?: {
+    // TODO: add support for custome file table columns
     columns: TableColumnsConfig[];
   };
   selectionTable?: {
@@ -51,15 +54,13 @@ export interface ValidCohortItem extends CohortItem {
   errors?: string[];
 }
 
-export interface ValidFileItemWithParentDatasetNameAndID
-  extends FileItemWithParentDatasetNameAndID {
+export interface ValidFileItemWithParentDatasetNameAndID extends FileItemWithParentDatasetNameAndID {
   valid?: boolean;
   errors?: string[];
 }
 
 export type ValidatedSelectedItem =
-  | ValidCohortItem
-  | ValidFileItemWithParentDatasetNameAndID;
+  ValidCohortItem | ValidFileItemWithParentDatasetNameAndID;
 
 /**
  * Type guard for ValidFileItemWithParentDatasetNameAndID

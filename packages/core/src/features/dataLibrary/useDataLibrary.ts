@@ -1,19 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
-import {
+import type {
   DataLibrary,
-  DataLibraryStoreMode,
   Datalist,
   DataListUpdate,
   DatasetOrCohort,
   LibraryListItemsGroupedByDataset,
 } from './types';
+import { DataLibraryStoreMode } from './types';
 import {
   convertDatasetOrCohortToLibraryListItemsAPI,
   flattenDataList,
 } from './utils';
 import { DataLibraryStorageService } from './storage/DataLibraryStorageService';
-import { StorageOperationResults } from '../../types';
+import type { StorageOperationResults } from '../../types';
 
 const EMPTY_LIST: Datalist = {
   items: {},
@@ -30,6 +30,12 @@ const EMPTY_LIST: Datalist = {
 
 interface UseDataLibraryOptions {
   storageMode: DataLibraryStoreMode;
+  /**
+   * When false, the lists are not fetched. Use it to wait for the user session to
+   * resolve so an early request doesn't 401 before the session is established.
+   * The lists are fetched once it becomes true. Defaults to true.
+   */
+  enabled?: boolean;
 }
 
 interface UseDataLibraryResult {
@@ -64,6 +70,7 @@ const useDataLibrary = (
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
   const [error, setError] = useState<StorageOperationResults | null>(null);
   const [lists, setLists] = useState<DataLibrary>({});
+  const [hasFetched, setHasFetched] = useState(false);
 
   // Refs
   const hasInitializedRef = useRef(false);
@@ -134,10 +141,15 @@ const useDataLibrary = (
     [lists],
   );
 
+  const enabled = options.enabled ?? true;
+  // Report loading from the moment fetching is enabled, not only once the effect
+  // below has run, so callers never render an empty library before the first fetch.
+  const isLoadingLists = isLoading || (enabled && !hasFetched);
+
   // Lifecycle effects
   useEffect(() => {
     const initialize = async () => {
-      if (hasInitializedRef.current) return;
+      if (!enabled || hasInitializedRef.current) return;
 
       setError(null);
       setIsLoading(true);
@@ -145,11 +157,12 @@ const useDataLibrary = (
       await refreshLists();
 
       setIsLoading(false);
+      setHasFetched(true);
       hasInitializedRef.current = true;
     };
 
     void initialize();
-  }, [refreshLists]);
+  }, [enabled, refreshLists]);
 
   // CRUD operations
   const addListToDataLibrary = useCallback(
@@ -217,7 +230,7 @@ const useDataLibrary = (
   const results = useDeepCompareMemo(
     () => ({
       dataLibrary: lists,
-      isLoading,
+      isLoading: isLoadingLists,
       isUpdating,
       error,
       addListToDataLibrary,
@@ -233,7 +246,7 @@ const useDataLibrary = (
       deleteListFromDataLibrary,
       error,
       getDatalist,
-      isLoading,
+      isLoadingLists,
       isUpdating,
       lists,
       setAllListsInDataLibrary,

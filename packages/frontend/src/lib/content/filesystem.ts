@@ -19,12 +19,18 @@ export class FilesystemContent implements ContentSourceInterface {
   public async get<T extends Record<string, any>>(
     filepath: string,
   ): Promise<T> {
+    const fullPath = path.join(this.rootPath, filepath);
+    let raw: string;
     try {
-      return await JSON.parse(
-        fs.readFileSync(path.join(this.rootPath, filepath)).toString('utf8'),
-      );
+      raw = fs.readFileSync(fullPath).toString('utf8');
     } catch {
-      throw new Error(`Cannot process ${path.join(this.rootPath, filepath)} `);
+      throw new Error(`Cannot read ${fullPath}`);
+    }
+    try {
+      return JSON.parse(raw);
+    } catch (err) {
+      const syntaxMsg = err instanceof SyntaxError ? `: ${err.message}` : '';
+      throw new Error(`Cannot parse JSON in ${fullPath}${syntaxMsg}`);
     }
   }
   public async getAll<T extends Record<string, any>>(

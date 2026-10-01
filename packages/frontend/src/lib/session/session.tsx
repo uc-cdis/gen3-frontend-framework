@@ -35,7 +35,7 @@ const ACTIVITY_THROTTLE_TIMEOUT = 7000;
 // Verbose session/refresh/inactivity console logging, off by default. Every
 // call site below is guarded by this flag with an `if` rather than a wrapper
 // function, so when it is disabled the log payload — object literals, date
-// formatting — is never constructed, not just never printed.
+// formatting — is never constructed
 const SESSION_DEBUG_LOGGING = process.env.NEXT_PUBLIC_SESSION_DEBUG === 'true';
 
 // Coming back to the page re-derives the refresh schedule from the real token.

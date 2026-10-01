@@ -4,7 +4,7 @@ import { Accordion, Button, Group } from '@mantine/core';
 import CategoryAccordionLabel from './CategoryAccordionLabel';
 import PropertiesTable from './PropertiesTable';
 import { useDictionaryContext } from './DictionaryProvider';
-import { DictionaryCategory } from './types';
+import type { DictionaryCategory } from './types';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { MdDownload as DownloadIcon } from 'react-icons/md';
 import { ACCORDION_TRANSITION_DURATION } from './constants';
@@ -39,7 +39,7 @@ const CategoryPanel = ({
   // page.
   useEffect(() => {
     const scrollToItem = (id: string) => {
-      if (!itemRefs.current || itemRefs.current[id] == null) return;
+      if (itemRefs.current?.[id] == null) return;
       const elm = itemRefs.current[id];
       if (elm !== null) {
         scrollToSelection(elm);
@@ -59,7 +59,7 @@ const CategoryPanel = ({
   }, [scrollToSelection, selectedId, selectedItems, value]);
 
   useDeepCompareEffect(() => {
-    if (category == selectedItems.node)
+    if (category === selectedItems.node)
       // set value only if this is the same root category
       setValue(`${selectedItems.node}-${selectedItems.category}`);
     else setValue(null);
@@ -105,9 +105,21 @@ const CategoryPanel = ({
                   />
                 </Accordion.Control>
                 {config?.showDownloads ? (
-                  <Group wrap="nowrap" className="ml-auto">
-                    <Button leftSection={<DownloadIcon />}>TSV</Button>
-                    <Button leftSection={<DownloadIcon />}>JSON</Button>
+                  <Group wrap="nowrap" className="ml-auto mr-2">
+                    <Button
+                      size="xs"
+                      radius="sm"
+                      leftSection={<DownloadIcon />}
+                    >
+                      TSV
+                    </Button>
+                    <Button
+                      size="xs"
+                      radius="sm"
+                      leftSection={<DownloadIcon />}
+                    >
+                      JSON
+                    </Button>
                   </Group>
                 ) : null}
               </Group>

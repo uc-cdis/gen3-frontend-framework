@@ -95,7 +95,12 @@ const config: StorybookConfig = {
       { find: 'next/router', replacement: 'next-router-mock' },
     ];
 
-    const merged = mergeConfig(config, { plugins: [svgr()] });
+    const merged = mergeConfig(config, {
+      plugins: [svgr()],
+      optimizeDeps: {
+        exclude: ['styled-jsx'],
+      },
+    });
 
     merged.resolve ??= {};
     const frameworkAliases = Array.isArray(merged.resolve.alias)

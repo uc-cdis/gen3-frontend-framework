@@ -5,8 +5,6 @@ For example, "Cases", "Images", "Data Files".
 
 ## Configuration
 
-
-
 The configuration for the explorer is stored an array of objects. Each object in the array represents a tab in the explorer. The following is an example of a tab configuration:
 
 ```json
@@ -438,9 +436,9 @@ facet, set `defaultSort` in that field's `fieldsConfig` entry within the relevan
     "tabs": [
       {
         "title": "Subjects",
-        "fields": ["gender"],
+        "fields": ["bmi"],
         "fieldsConfig": {
-          "gender": {
+          "bmi": {
             "defaultSort": "label-asc"
           }
         }
@@ -488,6 +486,20 @@ field's `fieldsConfig` entry:
 The selector is disabled by default, and facets without this setting retain the
 existing Match any behavior. Match all is most useful for multivalued fields; on
 a single-valued field, distinct values cannot normally match simultaneously.
+
+### Configuring Facet Name and Description
+
+To override the Facet label and description (or to add a description), you will need to add to the `fieldsConfig`:
+
+```json
+ "fieldsConfig": {
+  "exposure": {
+    "label": "Exposure Type",
+    "description": "Type of exposure"
+  }
+}
+}
+```
 
 ### Logical Operators in the Query Expression
 

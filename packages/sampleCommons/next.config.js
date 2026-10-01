@@ -137,6 +137,7 @@ const nextConfig = {
           source: '/guppy/:path*',
           destination: `${GEN3_TARGET}/guppy/:path*`,
         },
+        { source: '/job/:path*', destination: `${GEN3_TARGET}/job/:path*` },
         { source: '/mds/:path*', destination: `${GEN3_TARGET}/mds/:path*` },
         {
           source: '/ai-search/:path*',
@@ -163,7 +164,7 @@ const nextConfig = {
           source: '/library/lists/:path*',
           destination: `${GEN3_TARGET}/library/lists/:path*`,
         },
-        { source: '/job/:path*', destination: `${GEN3_TARGET}/job/:path*` },
+
         {
           source: '/manifests/:path*',
           destination: `${GEN3_TARGET}/manifests/:path*`,

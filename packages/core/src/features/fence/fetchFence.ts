@@ -17,6 +17,9 @@ import { buildFetchError } from './utils';
  *                                          or rejects with an error if the request fails.
  * @throws {Error} Throws an error if the fetch request fails or the response is not successful.
  */
+
+const SESSION_DEBUG_LOGGING = process.env.NEXT_PUBLIC_SESSION_DEBUG === 'true';
+
 export const fetchFence = async <T>(
   {
     endpoint,
@@ -29,6 +32,11 @@ export const fetchFence = async <T>(
 ): Promise<Gen3FenceResponse<T>> => {
   const base = useService ? GEN3_FENCE_SERVICE : GEN3_FENCE_API;
   const url = `${base.replace(/\/$/, '')}/${endpoint.replace(/^\//, '')}`;
+
+  if (SESSION_DEBUG_LOGGING) {
+    // oxlint-disable-next-line no-console
+    console.log(`fetchFence Fetching from ${url} with method ${method}`);
+  }
 
   const res = await fetch(url, {
     method,

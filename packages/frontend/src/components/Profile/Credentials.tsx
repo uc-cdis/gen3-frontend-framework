@@ -11,7 +11,7 @@ import {
 } from '@gen3/core';
 import { Button, LoadingOverlay } from '@mantine/core';
 import { CreateCredentialsAPIKeyModal } from '../Modals';
-import { APICredentials } from './types';
+import type { APICredentials } from './types';
 
 import CredentialsTable from './CredentialsTable';
 

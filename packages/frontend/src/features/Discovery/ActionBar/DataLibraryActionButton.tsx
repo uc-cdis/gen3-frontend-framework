@@ -1,5 +1,7 @@
-import React, { ReactNode } from 'react';
-import { Button, ButtonProps, Tooltip, Loader } from '@mantine/core';
+import type { ReactNode } from 'react';
+import React from 'react';
+import type { ButtonProps } from '@mantine/core';
+import { Button, Loader, Tooltip } from '@mantine/core';
 import { FiDownload as DownloadIcon } from 'react-icons/fi';
 import { useIsUserLoggedIn } from '@gen3/core';
 
@@ -15,20 +17,18 @@ export interface ExportActionButtonProps {
   ref?: React.RefObject<HTMLButtonElement>;
 }
 
-const DataLibraryActionButton = (
-  {
-    ref,
-    label = undefined,
-    icon = undefined,
-    disabled = false,
-    tooltip = undefined,
-    onClick = () => null,
-    active = false,
-    showIcon = true,
-    loginRequired = false,
-    ...buttonProps
-  }: ExportActionButtonProps & ButtonProps
-) => {
+const DataLibraryActionButton = ({
+  ref,
+  label = undefined,
+  icon = undefined,
+  disabled = false,
+  tooltip = undefined,
+  onClick = () => null,
+  active = false,
+  showIcon = true,
+  loginRequired = false,
+  ...buttonProps
+}: ExportActionButtonProps & ButtonProps) => {
   // TODO Test what idp was used to login and restrict actions to that idp or all or none
   const requiresLogin = !useIsUserLoggedIn() && loginRequired;
 

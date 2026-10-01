@@ -1,26 +1,29 @@
 import whyDidYouRender from '@welldone-software/why-did-you-render';
-import type { AppProps, AppContext, AppInitialProps } from 'next/app';
+import type { AppContext, AppInitialProps, AppProps } from 'next/app';
 import App from 'next/app';
-import React, { useState, useEffect, useRef, Suspense } from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { MantineProvider, mergeThemeOverrides } from '@mantine/core';
 
 import type {
+  Fonts,
   RegisteredIcons,
   SessionConfiguration,
   TenStringArray,
-  Fonts} from '@gen3/frontend';
+} from '@gen3/frontend';
 import {
   type AuthorizedRoutesConfig,
   createMantineTheme,
   DefaultAuthorizedRoutesConfig,
   Gen3Provider,
   type ModalsConfig,
+  registerBaseSowerActions,
   registerCohortBuilderDefaultPreviewRenderers,
   registerCohortDiscoveryApp,
+  registerCohortSowerActions,
   registerExplorerDefaultCellRenderers,
+  registerIGVApp,
   registerMetadataSchemaApp,
-  registerIGVApp
-} from '@gen3/frontend';
+} from '@gen3/frontend/app';
 import { registerDefaultRemoteSupport, setDRSHostnames } from '@gen3/core';
 import { registerCohortTableCustomCellRenderers } from '@/lib/CohortBuilder/CustomCellRenderers';
 import { registerCustomExplorerDetailsPanels } from '@/lib/CohortBuilder/FileDetailsPanel';
@@ -88,12 +91,13 @@ const Gen3App = ({
       registerIGVApp();
       registerExplorerDefaultCellRenderers();
       registerCohortBuilderDefaultPreviewRenderers();
+      registerBaseSowerActions();
+      registerCohortSowerActions();
       registerCohortTableCustomCellRenderers();
       registerCustomExplorerDetailsPanels();
       isFirstRender.current = false;
       const gen3ThemeDynamic = createMantineTheme(fonts, colors);
       const mergedTheme = mergeThemeOverrides(gen3ThemeDynamic);
-      setMantineTheme(mergedTheme);
       setMantineTheme(mergedTheme);
       console.log('Gen3 App initialized');
     }

@@ -134,12 +134,19 @@ export const useManageSession = (
         pending: true,
       }));
     } else if (userStatus === 'pending') {
-      setSession((prev) => ({
-        ...prev,
-        pending: true,
-        status: 'not present',
-        userStatus: 'pending',
-      }));
+      setSession((prev) =>
+        // A /user refetch (token refresh, tab refocus) is revalidation, not a
+        // logout: keep an established session so consumers don't flip back to
+        // "not logged in" / loading on every refresh.
+        prev.status === 'issued'
+          ? prev
+          : {
+              ...prev,
+              pending: true,
+              status: 'not present',
+              userStatus: 'pending',
+            },
+      );
     } else {
       // last case 'unauthenticated'
       setSession((prev) => ({

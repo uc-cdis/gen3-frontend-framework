@@ -3,10 +3,7 @@ import NavigationBarButton from '../NavigationBarButton';
 import React from 'react';
 import { LinkAuthStatus, NavigationProps } from '../types';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
-import { useSession } from '../../../lib/session/session';
-import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
-import { useProtectedRoutesContext } from '../../../components/AuthorizedRoutes/ProtectedRoutesProvider';
-import { useGetAuthzResourcesQuery } from '@gen3/core';
+import { useNavigationAuthState } from '../hooks';
 
 type LeftSidePanelProps = Pick<
   NavigationProps,
@@ -27,22 +24,9 @@ const LeftSidePanel = ({
     classNames,
   );
 
-  const { status, pending } = useSession(false); // no redirect side-effects here
-  const loggedIn = useDeepCompareMemo(() => status === 'issued', [status]);
-  const routesConfig = useProtectedRoutesContext();
-  const {
-    data: resources,
-    error: authzResourceError,
-    isFetching: isAuthzResourcesFetching,
-    isError: isAuthzResourcesError,
-    refetch,
-  } = useGetAuthzResourcesQuery();
+  const { loggedIn, pending, resources, routesConfig } =
+    useNavigationAuthState();
 
-  useDeepCompareEffect(() => {
-    if (loggedIn && !isAuthzResourcesFetching && !isAuthzResourcesError) {
-      void refetch();
-    }
-  }, [loggedIn, isAuthzResourcesFetching, isAuthzResourcesError, refetch]);
   return (
     <div
       className={`flex flex-col justify-start items-center align-middle ${extractClassName(
@@ -53,10 +37,10 @@ const LeftSidePanel = ({
       {items.map((x, index) => {
         const linkAuthStatus = checkRouteAccess(
           x.href,
-          resources?.resources ?? [],
+          resources,
           routesConfig,
           loggedIn,
-          pending || isAuthzResourcesFetching,
+          pending,
         );
         if (
           hideUnauthorizedLinks &&

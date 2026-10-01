@@ -1,11 +1,10 @@
-import {
-  Accessibility,
+import type {
   DatasetOrCohort,
-  downloadJSONDataFromGuppy,
   FilterSet,
   GuppyDownloadDataParams,
   JSONObject,
 } from '@gen3/core';
+import { Accessibility, downloadJSONDataFromGuppy } from '@gen3/core';
 import {
   createDatasets,
   processFilesForDataLibrary,
@@ -46,7 +45,7 @@ const toErrorMessage = (err: unknown): string => {
  * - a full JSONPath like "$.*" or "$.data.items"
  * and normalizes to a valid JSONPath string.
  */
-const normalizeJsonPath = (dataPath: string): string => {
+const normalizeJsonPath = (dataPath?: string): string => {
   const trimmed = (dataPath ?? '').trim();
   if (!trimmed) return '$.*';
   if (trimmed.startsWith('$')) return trimmed;

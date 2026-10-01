@@ -1,13 +1,12 @@
 import { gen3Api } from '../gen3';
 import { GEN3_SOWER_API } from '../../constants';
-import { JobStatus } from './types';
-import { setSowerJobDatetime } from './sowerJobDatetime';
-import { GQLFilter } from '../filters';
-
-export interface DispatchJobParams {
-  action: string;
-  input: { filter : GQLFilter };
-}
+import type {
+  JobStatus,
+  JobWithActions,
+  NamedDispatchJobWithAction,
+} from './types';
+import { SowerJobStage, SowerJobStatus } from './types';
+import { addSowerJob } from './sowerJobListSlice';
 
 export interface DispatchJobResponse {
   uid: string;
@@ -29,25 +28,71 @@ export const sowerJobApi = gen3Api.injectEndpoints({
     getSowerJobList: builder.query<JobListResponse, void>({
       query: () => `${GEN3_SOWER_API}/list`,
     }),
-    submitSowerJob: builder.mutation<DispatchJobResponse, DispatchJobParams>({
-      query: (params) => ({
-        url: `${GEN3_SOWER_API}/dispatch`,
-        method: 'POST',
-        body: params,
-      }),
-      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
-        const { data } = await queryFulfilled;
-        dispatch(setSowerJobDatetime(data.uid));
+    submitSowerJob: builder.mutation<
+      DispatchJobResponse,
+      NamedDispatchJobWithAction
+    >({
+      queryFn: async (params, _queryApi, _extraOptions, fetchWithBQ) => {
+        const result = await fetchWithBQ({
+          url: `${GEN3_SOWER_API}/dispatch`,
+          method: 'POST',
+          body: params.dispatchJob,
+          validateStatus: (response) => {
+            if ('originalStatus' in response)
+              return response.status === 200 && response.originalStatus === 200;
+            return response.status === 200;
+          },
+        });
+        if (result.error) {
+          return { error: result.error };
+        }
+        const data = result.data as DispatchJobResponse | null;
+        // sower can return a 200 with an empty body; treat that as a failed dispatch
+        if (!data?.uid) {
+          return {
+            error: {
+              status: 'CUSTOM_ERROR',
+              error: 'Sower dispatch did not return a job uid',
+            },
+          };
+        }
+        return { data };
+      },
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          const timestamp = Date.now();
+          const payload: JobWithActions = {
+            uid: data.uid,
+            actions: {
+              dispatchJob: arg.dispatchJob,
+              outputAction: arg.outputAction,
+            },
+            name: arg.name,
+            created: timestamp,
+            updated: timestamp,
+            status: SowerJobStatus.Running,
+            stage: SowerJobStage.JobDispatched,
+          };
+          dispatch(addSowerJob(payload));
+        } catch {
+          // dispatch failed; the error is surfaced through the mutation result
+        }
       },
     }),
     getSowerJobStatus: builder.query<DispatchJobResponse, string>({
       query: (uid) => `${GEN3_SOWER_API}/status?UID=${uid}`,
     }),
-    getMultipleSowerJobStatus: builder.query<Record<string, DispatchJobResponse>, string[]>({
+    getMultipleSowerJobStatus: builder.query<
+      Record<string, DispatchJobResponse>,
+      string[]
+    >({
       queryFn: async (arg, _queryApi, _extraOptions, fetchWithBQ) => {
         const statuses: Record<string, DispatchJobResponse> = {};
         for (const uid of arg) {
-          const result = await fetchWithBQ(`${GEN3_SOWER_API}/status?UID=${uid}`);
+          const result = await fetchWithBQ(
+            `${GEN3_SOWER_API}/status?UID=${uid}`,
+          );
           if (result.error) {
             return { error: result.error };
           } else {

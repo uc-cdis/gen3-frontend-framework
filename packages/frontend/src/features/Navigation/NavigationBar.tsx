@@ -9,13 +9,7 @@ import NavigationLogo from './NavigationLogo';
 import NavigationBarButton from './NavigationBarButton';
 import { checkRouteAccess, extractClassName } from './utils';
 import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
-import { useProtectedRoutesContext } from '../../components/AuthorizedRoutes/ProtectedRoutesProvider';
-import {
-  type LoginStatus,
-  selectUserAuthStatus,
-  useCoreSelector,
-  useGetAuthzResourcesQuery,
-} from '@gen3/core';
+import { useNavigationAuthState } from './hooks';
 
 interface NavigationBarItemProps {
   item: NavigationButtonProps;
@@ -41,7 +35,6 @@ const NavigationBarItem = ({
         mergedClassnames,
       )}`}
     >
-      {/*<LoadingOverlay visible={authStatus === LinkAuthStatus.Pending} />*/}
       <NavigationBarButton
         tooltip={item.tooltip}
         icon={item.icon}
@@ -73,37 +66,6 @@ const DEFAULT_CLASSNAMES = {
     'pl-1 mr-6 bg-base-max text-base-contrast opacity-80 hover:opacity-100',
 };
 
-const useAuthorizationState = () => {
-  const loginStatus: LoginStatus = useCoreSelector((state) =>
-    selectUserAuthStatus(state),
-  );
-
-  const loggedIn = loginStatus === 'authenticated';
-  const routesConfig = useProtectedRoutesContext();
-
-  const {
-    data: resources,
-    isFetching: isAuthzResourcesFetching,
-    isSuccess: isAuthzResourcesSuccess,
-    refetch,
-  } = useGetAuthzResourcesQuery();
-
-  useEffect(() => {
-    if (loginStatus && loginStatus !== 'pending') {
-      void refetch();
-    }
-  }, [loginStatus, refetch]);
-
-  return {
-    loggedIn,
-    pending: loginStatus === 'pending',
-    resources: resources?.resources ?? [],
-    routesConfig,
-    isAuthzResourcesFetching,
-    isAuthzResourcesSuccess,
-  };
-};
-
 const NavigationBar = ({
   logo = undefined,
   items = [],
@@ -116,7 +78,7 @@ const NavigationBar = ({
   );
 
   const { loggedIn, pending, resources, routesConfig } =
-    useAuthorizationState();
+    useNavigationAuthState();
 
   const router = useRouter();
   const [current, setCurrent] = useState(router.pathname);

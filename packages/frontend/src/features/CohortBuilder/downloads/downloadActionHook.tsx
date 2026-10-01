@@ -124,8 +124,9 @@ const useGuppyActionButton = ({
   }, []);
 
   const handleClick = useCallback(async () => {
-    // Optional: prevent multiple concurrent requests
-    if (active) return;
+    if (active) {
+      return;
+    }
 
     const controller = new AbortController();
     controllerRef.current = controller;

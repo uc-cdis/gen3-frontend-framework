@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { useSession } from '../../lib/session/session';
 import { Box, Overlay, Stack, Text } from '@mantine/core';
-import type { JWTSessionStatus } from '@gen3/core';
 import { IconLock } from '@tabler/icons-react';
 
 interface ProtectedOverlayProps {
@@ -25,21 +24,8 @@ export function ProtectedOverlay({
   blur = 4,
   disabled = false,
 }: ProtectedOverlayProps) {
-  const [stableStatus, setStableStatus] = useState<
-    JWTSessionStatus | undefined
-  >();
-
-  // Require auth; when unauthenticated, we trigger delayed redirect
-  const { status, pending } = useSession(true, () => {}); // do not re-direct to login
-
-  useEffect(() => {
-    if (!pending && stableStatus !== status) {
-      // only update stableStatus if session is not pending
-      // this prevents flickering of the status
-      setStableStatus(status);
-    }
-  }, [status, pending, stableStatus]);
-  const isLoggedIn = stableStatus === 'issued';
+  const { status } = useSession(true, () => {}); // do not re-direct to login
+  const isLoggedIn = status === 'issued';
 
   if (disabled || isLoggedIn) {
     return <>{children}</>;
