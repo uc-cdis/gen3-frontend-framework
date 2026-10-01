@@ -115,7 +115,6 @@ patch_file() {
 # Format: "name|git_url|subdir"  (subdir is optional)
 REPOS=(
   "cdislogging|https://github.com/uc-cdis/cdislogging.git"
-  "python-json-logger|https://github.com/nhairs/python-json-logger.git"
   "fastavro|https://github.com/fastavro/fastavro.git"
   "drsclient|https://github.com/uc-cdis/drsclient.git"
   "indexd|https://github.com/uc-cdis/indexd.git|indexclient"
@@ -323,6 +322,7 @@ download_extras() {
     "marshmallow-enum"
     "mypy-extensions"
     "python-dateutil"
+    "python-json-logger"
     "typing-inspect"
     "xmltodict>=0.13.0,<0.14.0"
     "zipp"
