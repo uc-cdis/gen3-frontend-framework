@@ -22,7 +22,7 @@ interface FilesTableProps {
   size?: string;
 }
 
-const columns: MRT_ColumnDef<FileItem, any>[] = [
+const columns: MRT_ColumnDef<FileItem>[] = [
   {
     accessorKey: 'name',
     header: 'Name',

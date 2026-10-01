@@ -1,9 +1,11 @@
-import type { MRT_TableOptions } from 'mantine-react-table-open';
+import type { MRT_RowData, MRT_TableOptions } from 'mantine-react-table-open';
 import { TableIcons } from '../../../components/Tables/TableIcons';
 
-export const commonTableSettings = (
+export const commonTableSettings = <
+  T extends MRT_RowData = Record<string, any>,
+>(
   size: string = 'sm',
-): Partial<MRT_TableOptions<any>> => {
+): Partial<Omit<MRT_TableOptions<T>, 'columns' | 'data'>> => {
   return {
     enableColumnResizing: false,
     icons: TableIcons,
