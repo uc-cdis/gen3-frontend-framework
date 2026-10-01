@@ -38,7 +38,7 @@ const NavigationBarButton = ({
   noBasePath = false,
 }: NavigationButtonWithAuthStatus) => {
   const classNamesDefaults = {
-    root: 'flex flex-col nowrap px-3 py-2 pt-4 justify-between items-center align-center text-primary hover:text-accent opacity-80 hover:opacity-100 data-disabled:opacity-35 data-disabled:hover:text-primary data-disabled:hover:opacity-35',
+    root: 'flex flex-col nowrap px-3 py-2 pt-4 justify-between items-center align-center text-primary-darker hover:text-accent opacity-80 hover:opacity-100 data-disabled:opacity-35 data-disabled:hover:text-primary data-disabled:hover:opacity-35',
     label: 'pt-1.5 body-typo font-heading text-sm text-nowrap',
     icon: 'data-disabled:opacity-50',
     ...TooltipStyle,
