@@ -15,7 +15,6 @@ const RowDetailPanelTags = ({ rowTags }: RowDetailPanelProps) => {
     setSelectedTags,
   } = useDiscoveryContext();
 
-  console.log('RowDetailPanelTags', rowTags, config.tags);
   return (
     <div className="flex mt-2">
       {rowTags?.map((tag: TagData, i: number) => {

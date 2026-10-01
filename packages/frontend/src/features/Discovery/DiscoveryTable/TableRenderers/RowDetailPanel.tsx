@@ -13,7 +13,6 @@ interface RowDetailPanelProps {
 
 const RowDetailPanel = ({ row, searchTerm }: RowDetailPanelProps) => {
   const { discoveryConfig: config } = useDiscoveryContext();
-  console.log('RowDetailPanel', row.original);
   if (config.studyPreviewField) {
     const studyPreviewData = _.get(
       row.original,

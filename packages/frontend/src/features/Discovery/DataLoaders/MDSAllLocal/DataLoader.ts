@@ -1,18 +1,21 @@
 import { useCallback, useEffect, useState } from 'react';
 import { JSONPath } from 'jsonpath-plus';
-import {
+import type {
   AggregationsData,
   CoreState,
   JSONObject,
   MetadataPaginationParams,
+} from '@gen3/core';
+import {
   selectAuthzMappingData,
   useCoreSelector,
   useGetAggMDSQuery,
   useGetMDSQuery,
 } from '@gen3/core';
 import { useMiniSearch } from 'react-minisearch';
-import MiniSearch, { Suggestion } from 'minisearch';
-import {
+import type { Suggestion } from 'minisearch';
+import MiniSearch from 'minisearch';
+import type {
   AdvancedSearchFilters,
   DiscoverDataHookResponse,
   DiscoveryDataLoaderProps,
@@ -22,15 +25,16 @@ import {
 import filterByAdvSearch from './filterByAdvSearch';
 import { hasSearchTerms } from '../../Search/utils';
 import {
+  addCommonsToTags,
   processAdvancedSearchTerms,
   processAllSummaries,
   processAuthorizations,
   processChartData,
 } from '../utils';
-import { SummaryStatisticsConfig } from '../../Statistics';
-import { SummaryStatistics } from '../../Statistics/types';
+import type { SummaryStatisticsConfig } from '../../Statistics';
+import type { SummaryStatistics } from '../../Statistics/types';
 import { useDeepCompareEffect } from 'use-deep-compare';
-import { GetDataProps, GetDataResponse, MetadataDataHook } from '../types';
+import type { GetDataProps, GetDataResponse, MetadataDataHook } from '../types';
 import { getManualSortingAndPagination } from '../../utils';
 
 // TODO remove after debugging
@@ -126,7 +130,7 @@ const useGetMDSData = ({
       const studyData = Object.values(data.data).reduce(
         (acc: JSONObject[], cur: JSONObject) => {
           return cur[studyField]
-            ? [...acc, cur[studyField] as JSONObject]
+            ? [...acc, addCommonsToTags(cur[studyField] as JSONObject)]
             : acc;
         },
         [],
@@ -186,13 +190,16 @@ const useGetAggMDSData = ({
   );
   useEffect(() => {
     if (data && isSuccess) {
+      const withCommonsTags = data.data.map((x) => addCommonsToTags(x));
+
+      console.log(withCommonsTags.slice(0, 4));
       if (discoveryConfig?.features?.authorization.enabled) {
         setMDSData(
-          processAuthorizations(data.data, discoveryConfig, {
+          processAuthorizations(withCommonsTags, discoveryConfig, {
             default: authMapping,
           }),
         );
-      } else setMDSData(data.data);
+      } else setMDSData(withCommonsTags);
     }
   }, [authMapping, data, discoveryConfig, isSuccess, studyField]);
 

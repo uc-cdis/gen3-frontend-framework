@@ -90,7 +90,6 @@ const SinglePageStudyDetailsPanel = ({
             </div>
           );
         })}
-        ;
       </>
     );
   }
@@ -116,6 +115,6 @@ const SinglePageStudyDetailsPanel = ({
       )}
     </div>
   );
-};;;;;;
+};
 
 export default SinglePageStudyDetailsPanel;

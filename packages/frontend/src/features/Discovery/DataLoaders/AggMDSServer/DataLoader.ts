@@ -1,11 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import {
-  JSONObject,
-  MetadataPaginationParams,
-  useGetAggMDSQuery,
-} from '@gen3/core';
-import {
+import type { JSONObject, MetadataPaginationParams } from '@gen3/core';
+import { useGetAggMDSQuery } from '@gen3/core';
+import type {
   AdvancedSearchFilters,
   DiscoverDataHookResponse,
   DiscoveryDataLoaderProps,

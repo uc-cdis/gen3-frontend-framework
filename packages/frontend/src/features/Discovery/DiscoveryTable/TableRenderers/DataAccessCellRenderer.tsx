@@ -1,5 +1,5 @@
 import React from 'react';
-import { CellRenderFunctionProps } from './types';
+import type { CellRenderFunctionProps } from './types';
 import { AccessLevel } from '../../../../utils';
 import { Divider, Group, Text, Tooltip } from '@mantine/core';
 import {
@@ -34,6 +34,7 @@ export const DataAccessCellRenderer = ({
   const { discoveryConfig: config } = useDiscoveryContext();
   const authzField = config.minimalFieldMapping?.authzField || 'authz';
   let value = cell?.getValue<number>();
+  // oxlint-disable-next-line typescript/no-unnecessary-condition
   const authorization = (row?.original?.[authzField] as string) || undefined;
   const dataObjectField =
     config.features.exportFromDiscovery?.exportDataFields.dataObjectField;
@@ -43,6 +44,10 @@ export const DataAccessCellRenderer = ({
     dataObjectField && row?.original?.[dataObjectField]
       ? row?.original?.[dataObjectField]
       : 0;
+
+  console.log('numFileObjects', numFileObjects);
+  console.log('accessLevel', accessLevel);
+  console.log('authorization', authorization);
 
   // Fallback approach for when accessLevel is not defined by Proxy API
   if (numFileObjects === 0 && accessLevel === undefined) {

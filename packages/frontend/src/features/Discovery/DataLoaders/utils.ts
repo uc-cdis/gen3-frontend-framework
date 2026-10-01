@@ -3,12 +3,14 @@ import sum from 'lodash/sum';
 import { JSONPath } from 'jsonpath-plus';
 import {
   type AggregationsData,
+  isObject,
+  JSONArray,
   type JSONObject,
   type ResourceAuthzMapping,
 } from '@gen3/core';
-import { SummaryStatisticsConfig } from '../Statistics';
-import { SummaryStatistics } from '../Statistics/types';
-import {
+import type { SummaryStatisticsConfig } from '../Statistics';
+import type { SummaryStatistics } from '../Statistics/types';
+import type {
   AdvancedSearchFilters,
   DiscoveryIndexConfig,
   KeyValueSearchFilter,
@@ -17,6 +19,7 @@ import { AccessLevel } from '../../../utils';
 import { userHasMethodForServiceOnResource } from '../../authorization/utils';
 import { METADATA_ITEM_AUTHORIZATION_FIELD } from '../constants';
 import { getFilterValuesByKey } from '../Search/utils';
+import type { TagData } from '../../Study/types';
 
 /**
  * Parses a single value into a number
@@ -275,4 +278,35 @@ export const processAdvancedSearchTerms = (
       ),
     };
   });
+};
+
+// isTagsArray type guard
+export const isTagDataArray = (value: any): value is TagData[] => {
+  return (
+    Array.isArray(value) &&
+    value.every(
+      (item: unknown) => isObject(item) && 'name' in item && 'category' in item,
+    )
+  );
+};
+
+/**
+ *  A hack to add data commons to tags if it exists
+ * @param item
+ */
+export const addCommonsToTags = (item: JSONObject): JSONObject => {
+  if (item.tags && isTagDataArray(item.tags) && 'commons' in item) {
+    // return a copy: item may be frozen (e.g. RTK Query cache data)
+    return {
+      ...item,
+      tags: [
+        ...item.tags,
+        {
+          name: item.commons as string,
+          category: 'Commons',
+        },
+      ] as unknown as JSONArray,
+    };
+  }
+  return item;
 };

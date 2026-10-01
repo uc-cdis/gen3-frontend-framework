@@ -174,7 +174,7 @@
           "name": "Data Availability",
           "field": "authz",
           "errorIfNotAvailable": false,
-          "valueIfNotAvailable": "API",
+          "valueIfNotAvailable": "a/a",
           "contentType": "dataAccess"
         }
       ],
@@ -250,6 +250,7 @@
                 "name": "Description",
                 "field": "study_description",
                 "contentType": "paragraphs",
+
                 "includeName": true,
                 "includeIfNotAvailable": true,
                 "valueIfNotAvailable": "No description has been provided for this study."
@@ -267,7 +268,6 @@
         "tagCategories": [
           {
             "name": "Commons",
-            "displayName": "Data Commons",
             "color": "rgba(129, 211, 248, 1)",
             "display": true
           },
