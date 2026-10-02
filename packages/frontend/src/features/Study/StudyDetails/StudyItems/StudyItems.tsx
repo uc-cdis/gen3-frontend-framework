@@ -23,7 +23,6 @@ import {
   LabeledYearOfBirthRestricted,
   UnlabeledMultipleLinkField,
 } from './Renderers';
-import RenderFormattedParagraph from './Renderers/FormatedParagraph';
 
 const formatResourceValuesWhenNestedArray = (
   resourceFieldValue: string[],
@@ -143,7 +142,6 @@ const DefaultGen3StudyDetailsFieldsRenderers: Record<
   number: { default: LabeledNumberField },
   paragraphs: {
     default: LabeledParagraph,
-    formatted: RenderFormattedParagraph,
   },
 };
 

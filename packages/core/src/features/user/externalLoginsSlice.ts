@@ -1,6 +1,7 @@
 import { gen3Api } from '../gen3';
 import type { ExternalProvider } from './types';
 import { GEN3_WTS_API } from '../../constants';
+import type { ResourceAuthzMapping } from '../authz';
 
 export interface ExternalProviderResponse {
   providers: ExternalProvider[];
@@ -26,6 +27,14 @@ export const externalLoginApi = gen3Api.injectEndpoints({
         return true; // if success then connected is true
       },
     }),
+    getAggregateWTSResourceAuthzMapping: builder.query<
+      ResourceAuthzMapping,
+      void
+    >({
+      query: () => ({
+        url: `${GEN3_WTS_API}/aggregate/authz/mapping`,
+      }),
+    }),
   }),
 });
 
@@ -34,4 +43,9 @@ export const {
   useLazyGetExternalLoginsQuery,
   useLazyIsExternalConnectedQuery,
   useIsExternalConnectedQuery,
+  useGetAggregateWTSResourceAuthzMappingQuery,
+  useLazyGetAggregateWTSResourceAuthzMappingQuery,
 } = externalLoginApi;
+
+export const selectMeshAuthzMapping =
+  externalLoginApi.endpoints.getAggregateWTSResourceAuthzMapping.select();

@@ -115,10 +115,43 @@ export const processAllSummaries = (
   }, [] as SummaryStatistics);
 };
 
+/**
+ * Processes a dataset to determine the access level of each study based on user authorization configurations.
+ * This function relies on the availability of configuration settings and user authorization mapping to mark
+ * studies as accessible or inaccessible for the current user.
+ *
+ * @param {Array<JSONObject>} data - An array of study objects to be processed, typically representing metadata.
+ * Each study object in the dataset is examined to determine its accessibility.
+ *
+ * @param {DiscoveryIndexConfig} config - Configuration object for the Discovery page which includes:
+ * - `features.authorization`: Contains the options related to authorization features.
+ *   - `enabled`: (`boolean`) Whether authorization is enabled for the discovery page.
+ *   - `supportedValues`: Object defining supported access levels and their states (e.g., accessible, unaccessible).
+ *   - `isMesh`: (`boolean`) Whether the application uses a mesh structure for authorization mappings.
+ * - `minimalFieldMapping`: Defines key mappings for specific required fields in the dataset.
+ *   - `authzField`: (`string`) Field name in each study that holds the required authorization information.
+ *   - `dataAvailabilityField`: (`string`) Field name in each study providing the data availability status.
+ *
+ * @param {ResourceAuthzMapping} userAuthMapping - Object mapping resources (e.g., subdomains or commons URLs) to
+ * user-specific authorization details. Each resource maps to an object containing permissions for various services.
+ *
+ * @throws {Error} If authorization is enabled but no user authorization mapping (`userAuthMapping`) is provided,
+ * an error is thrown with guidance for enabling the necessary Arborist settings in the portal configuration.
+ *
+ * @returns {Array<JSONObject>} A new array of study objects where each object includes an additional field
+ * marking the study's accessibility status (`METADATA_ITEM_AUTHORIZATION_FIELD`), with possible access levels:
+ * - `AccessLevel.ACCESSIBLE`: The study is deemed accessible to the user.
+ * - `AccessLevel.UNACCESSIBLE`: The study is explicitly inaccessible.
+ * - `AccessLevel.MIXED`: The study has mixed availability.
+ * - `AccessLevel.NOT_AVAILABLE`: The study is unavailable to the user.
+ * - `AccessLevel.WAITING`: Authorization for the study is in a waiting state.
+ * - `AccessLevel.OTHER`: The study falls into an undefined or unsupported state.
+ */
 export const processAuthorizations = (
   data: Array<JSONObject>,
   config: DiscoveryIndexConfig,
   userAuthMapping: ResourceAuthzMapping,
+  meshAuthMapping: ResourceAuthzMapping,
 ): Array<JSONObject> => {
   const { enabled } = config.features.authorization;
 
@@ -137,6 +170,8 @@ export const processAuthorizations = (
   // mark studies as accessible or inaccessible to user
   const { authzField, dataAvailabilityField } = config.minimalFieldMapping;
   const { supportedValues, isMesh } = config.features.authorization;
+
+  console.log('Process authz');
 
   const studiesWithAccessibleField = data.map((study) => {
     let accessible: AccessLevel = AccessLevel.NOT_AVAILABLE;
@@ -162,7 +197,7 @@ export const processAuthorizations = (
           commonsURL = new URL(commonsURL).hostname;
         }
         authMapping =
-          userAuthMapping[commonsURL || hostnameWithSubdomain] || {};
+          meshAuthMapping[commonsURL || hostnameWithSubdomain] || {};
       } else {
         authMapping = Object.values(userAuthMapping)[0];
       }

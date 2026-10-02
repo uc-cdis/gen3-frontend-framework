@@ -1,11 +1,13 @@
 import React, { useMemo } from 'react';
 import { useCookies } from 'react-cookie';
+import { Loader } from '@mantine/core';
 import { openContextModal } from '@mantine/modals';
 import {
   type CoreState,
   Modals,
   selectCurrentModal,
   useCoreSelector,
+  useGetAggregateWTSResourceAuthzMappingQuery,
   useGetAuthzMappingsQuery,
   useGetCSRFQuery,
 } from '@gen3/core';
@@ -42,8 +44,15 @@ const Gen3ModalsProvider = ({
   config,
   children,
 }: Gen3StandardModalsProviderProps) => {
-  const { isError } = useGetCSRFQuery(undefined, { refetchOnFocus: true });
-  useGetAuthzMappingsQuery();
+  // TODO: This is the wrong place to put these queries
+  const { isError: isCSRFError, isLoading: isCSRFLoading } = useGetCSRFQuery(
+    undefined,
+    { refetchOnFocus: true },
+  );
+  const { isError: isAuthzError, isLoading: isAuthzLoading } =
+    useGetAuthzMappingsQuery();
+  const { isError: isAggregateWTSError, isLoading: isAggregateWTSLoading } =
+    useGetAggregateWTSResourceAuthzMappingQuery();
 
   const { showModal, markSeen } = useFirstTimeUse();
 
@@ -85,10 +94,26 @@ const Gen3ModalsProvider = ({
     isAuthenticated,
   ]);
 
-  if (isError) {
+  if (isCSRFLoading || isAuthzLoading || isAggregateWTSLoading) {
+    return (
+      <div className="flex justify-center w-full mt-10">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (isCSRFError) {
     return (
       <div className="w-full m-20">
         Error Getting status check from commons.
+      </div>
+    );
+  }
+
+  if (isAuthzError || isAggregateWTSError) {
+    return (
+      <div className="w-full m-20">
+        Error Getting authorization mappings from commons.
       </div>
     );
   }

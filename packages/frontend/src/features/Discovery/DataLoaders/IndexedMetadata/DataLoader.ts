@@ -1,17 +1,25 @@
 import { useEffect, useState } from 'react';
-import { GetDataProps, GetDataResponse } from '../types';
+import type { GetDataProps, GetDataResponse } from '../types';
 import { processAuthorizations } from '../utils';
+import type { CoreState } from '@gen3/core';
 import {
-  useCoreSelector,
-  useGetIndexAggMDSQuery,
-  selectAuthzMappingData,
-  CoreState,
-  type JSONObject,
   type IndexedMetadataFilters,
+  type JSONObject,
+  type ResourceAuthzMapping,
+  selectAuthzMappingData,
+  useCoreSelector,
+  useGetAggregateWTSResourceAuthzMappingQuery,
+  useGetIndexAggMDSQuery,
 } from '@gen3/core';
-import { DiscoveryDataLoaderProps, DiscoveryIndexConfig } from '../../types';
+import type {
+  DiscoveryDataLoaderProps,
+  DiscoveryIndexConfig,
+} from '../../types';
 import { isArrayOfString } from '../../../../utils/isType';
 import { useLoadAllData } from '../MDSAllLocal/DataLoader';
+import { useDeepCompareEffect } from 'use-deep-compare';
+
+const EMPTY_MESH_AUTHZ: ResourceAuthzMapping = {};
 
 const extractIndexArrayFromConfig = (
   config?: DiscoveryIndexConfig,
@@ -75,31 +83,61 @@ const useGetIndexedMDSData = ({
     selectAuthzMappingData(state),
   );
 
-  useEffect(() => {
-    if (data && isSuccess) {
+  const isMesh = !!discoveryConfig?.features?.authorization?.isMesh;
+  const {
+    data: meshData,
+    isSuccess: isMeshAuthzSuccess,
+    isError: isMeshAuthzError,
+    isFetching: isMeshAuthzFetching,
+    isLoading: isMeshAuthzLoading,
+  } = useGetAggregateWTSResourceAuthzMappingQuery(undefined, {
+    skip: !isMesh,
+  });
+
+  // non-mesh commons never run the query, so they use the empty mapping right away;
+  // mesh commons wait for the query to succeed; a failure sets isError below
+  const meshAuthzMapping = isMesh && meshData ? meshData : EMPTY_MESH_AUTHZ;
+  const isMeshAuthzResolved =
+    !isMesh || (isMeshAuthzSuccess && !isMeshAuthzFetching);
+
+  useDeepCompareEffect(() => {
+    if (data && isSuccess && isMeshAuthzResolved) {
       const studyData = data.data;
       if (discoveryConfig?.features?.authorization.enabled) {
         setMDSData(
-          processAuthorizations(studyData, discoveryConfig, {
-            default: authMapping,
-          }),
+          processAuthorizations(
+            studyData,
+            discoveryConfig,
+            {
+              default: authMapping,
+            },
+            meshAuthzMapping,
+          ),
         );
       } else setMDSData(studyData);
     } else setMDSData([]);
-  }, [authMapping, data, discoveryConfig, isSuccess, studyField]);
+  }, [
+    authMapping,
+    data,
+    discoveryConfig,
+    isSuccess,
+    isMeshAuthzResolved,
+    studyField,
+    meshAuthzMapping,
+  ]);
 
   useEffect(() => {
-    if (queryIsError) {
+    if (queryIsError || (isMesh && isMeshAuthzError)) {
       setIsError(true);
     }
-  }, [queryIsError]);
+  }, [queryIsError, isMesh, isMeshAuthzError]);
 
   return {
     mdsData,
     isUninitialized,
-    isFetching,
-    isLoading,
-    isSuccess,
+    isFetching: isFetching || (isMesh && isMeshAuthzFetching),
+    isLoading: isLoading || (isMesh && isMeshAuthzLoading),
+    isSuccess: isSuccess && isMeshAuthzResolved,
     isError,
   };
 };

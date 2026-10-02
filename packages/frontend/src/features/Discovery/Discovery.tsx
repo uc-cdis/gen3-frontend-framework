@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Select, Tabs } from '@mantine/core';
-import { DiscoveryConfig, DiscoveryIndexConfig } from './types';
+import type { DiscoveryConfig, DiscoveryIndexConfig } from './types';
 import DiscoveryIndexPanel from './DiscoveryIndexPanel';
 import MessagePanel from '../../components/MessagePanel';
 import DiscoveryProvider from './DiscoveryProvider';

@@ -84,6 +84,7 @@
         },
         "authorization": {
           "enabled": true,
+          "isMesh": true,
           "columnTooltip": "Filter by data access. Accessible indicates you are authorized to access. Not accessible indicates you are not authorized to access.",
           "supportedValues": {
             "accessible": {
@@ -172,9 +173,9 @@
         },
         {
           "name": "Data Availability",
-          "field": "authz",
+          "field": "__accessible",
           "errorIfNotAvailable": false,
-          "valueIfNotAvailable": "a/a",
+          "valueIfNotAvailable": "n/a",
           "contentType": "dataAccess"
         }
       ],
