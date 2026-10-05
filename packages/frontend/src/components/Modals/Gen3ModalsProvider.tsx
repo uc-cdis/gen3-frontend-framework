@@ -43,7 +43,7 @@ const Gen3ModalsProvider = ({
   children,
 }: Gen3StandardModalsProviderProps) => {
   const { isError } = useGetCSRFQuery(undefined, { refetchOnFocus: true });
-  useGetAuthzMappingsQuery();
+  useGetAuthzMappingsQuery(undefined, { refetchOnMountOrArgChange: true });
 
   const { showModal, markSeen } = useFirstTimeUse();
 
