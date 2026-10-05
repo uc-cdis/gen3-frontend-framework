@@ -71,6 +71,11 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   const showLoginToSubmitVLMDButton =
     showSubmitButton && isStudyRegistered && requiresLogin;
 
+  const variableMetadataFieldName = config.variableMetadataFieldName;
+  const variableMetadata = variableMetadataFieldName
+    ? (studyDetails[variableMetadataFieldName] as Record<string, unknown> | undefined)
+    : undefined;
+
   const studyNavQuery = {
     studyUID,
     studyName,
@@ -95,8 +100,25 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   };
 
   const handleSubmitVLMDClick = () => {
+    const existingDDNames = Object.keys(
+      (variableMetadata?.data_dictionaries as Record<string, unknown>) || {},
+    ).join(',');
+    const existingCDENames = Object.keys(
+      (variableMetadata?.common_data_elements as Record<string, unknown>) || {},
+    ).join(',');
+    const disableCDESubmissionForm = String(
+      Boolean(studyDetails.use_cde_from_redcap),
+    );
     void router.push(
-      { pathname: '/vlmd-submission', query: studyNavQuery },
+      {
+        pathname: '/vlmd-submission',
+        query: {
+          ...studyNavQuery,
+          existingDDNames,
+          existingCDENames,
+          disableCDESubmissionForm,
+        },
+      },
       '/vlmd-submission',
     );
   };

@@ -209,6 +209,17 @@ export interface DiscoveryIndexConfig {
     aiSearch?: boolean;
     pageTitle: DiscoveryPageTitle;
     exportFromDiscovery?: ExportFromDiscoveryActions;
+    exportToWorkspace?: {
+      enabled?: boolean;
+      enableDownloadStudyMetadata?: boolean;
+      enableDownloadManifest?: boolean;
+      enableDownloadZip?: boolean;
+      enableDownloadVariableMetadata?: boolean;
+      verifyExternalLogins?: boolean;
+      manifestFieldName?: string;
+      downloadManifestButtonText?: string;
+      documentationLinks?: Record<string, string>;
+    };
     search?: SearchConfig;
     authorization: DataAuthorization;
     dataLoader?: DataLoader;
@@ -222,6 +233,7 @@ export interface DiscoveryIndexConfig {
   simpleDetailsView?: StudyPageConfig;
   detailView: StudyDetailView;
   minimalFieldMapping: MinimalFieldMapping;
+  variableMetadataFieldName?: string;
 }
 
 export interface DiscoveryConfig extends Gen3AppConfigData {
