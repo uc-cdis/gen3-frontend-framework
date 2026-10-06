@@ -209,17 +209,6 @@ export interface DiscoveryIndexConfig {
     aiSearch?: boolean;
     pageTitle: DiscoveryPageTitle;
     exportFromDiscovery?: ExportFromDiscoveryActions;
-    exportToWorkspace?: {
-      enabled?: boolean;
-      enableDownloadStudyMetadata?: boolean;
-      enableDownloadManifest?: boolean;
-      enableDownloadZip?: boolean;
-      enableDownloadVariableMetadata?: boolean;
-      verifyExternalLogins?: boolean;
-      manifestFieldName?: string;
-      downloadManifestButtonText?: string;
-      documentationLinks?: Record<string, string>;
-    };
     search?: SearchConfig;
     authorization: DataAuthorization;
     dataLoader?: DataLoader;
