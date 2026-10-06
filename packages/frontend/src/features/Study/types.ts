@@ -41,6 +41,7 @@ export interface StudyColumn {
   params?: JSONObject;
   errorIfNotAvailable?: boolean;
   valueIfNotAvailable?: string | number;
+  sortable?: boolean; // default is true if not set
 }
 
 export type StudyColumnContentTypes =

@@ -1,4 +1,5 @@
-import { AccessLevel } from '@gen3/frontend/utils';
+import { AccessLevel } from '../../../../utils/access';
+
 /**
  * Filters a list of studies based on an array of allowed accessibility levels.
  * * @param studies - The array of study objects

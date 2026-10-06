@@ -236,7 +236,7 @@ const RenderNumberCell: CellRendererFunction = (
   let stringValue = '';
   // check if content is an array of all numbers
   if (isArray(content) && content.every((item) => typeof item === 'number')) {
-    stringValue = content.map((v) => (v ? v.toLocaleString() : '')).join('; ');
+    stringValue = content.map((v) => v.toLocaleString()).join('; ');
   } else {
     stringValue = content.toLocaleString();
   }

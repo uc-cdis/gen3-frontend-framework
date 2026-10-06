@@ -1,10 +1,10 @@
 import uniq from 'lodash/uniq';
 import sum from 'lodash/sum';
 import { JSONPath } from 'jsonpath-plus';
+import type { JSONArray } from '@gen3/core';
 import {
   type AggregationsData,
   isObject,
-  JSONArray,
   type JSONObject,
   type ResourceAuthzMapping,
 } from '@gen3/core';
@@ -170,9 +170,6 @@ export const processAuthorizations = (
   // mark studies as accessible or inaccessible to user
   const { authzField, dataAvailabilityField } = config.minimalFieldMapping;
   const { supportedValues, isMesh } = config.features.authorization;
-
-  console.log('Process authz');
-
   const studiesWithAccessibleField = data.map((study) => {
     let accessible: AccessLevel = AccessLevel.NOT_AVAILABLE;
     if (

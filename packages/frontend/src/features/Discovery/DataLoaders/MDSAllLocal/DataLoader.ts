@@ -9,9 +9,9 @@ import type {
 import {
   type ResourceAuthzMapping,
   selectAuthzMappingData,
+  selectMeshAuthzMapping,
   useCoreSelector,
   useGetAggMDSQuery,
-  useGetAggregateWTSResourceAuthzMappingQuery,
   useGetMDSQuery,
 } from '@gen3/core';
 import { useMiniSearch } from 'react-minisearch';
@@ -24,7 +24,7 @@ import type {
   KeyValueSearchFilter,
   SearchTerms,
 } from '../../types';
-import filterByAdvSearch from './filterByAdvSearch';
+import filterByAdvSearch from './../processData/filterByAdvSearch';
 import { hasSearchTerms } from '../../Search/utils';
 import {
   addCommonsToTags,
@@ -38,6 +38,7 @@ import type { SummaryStatistics } from '../../Statistics/types';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import type { GetDataProps, GetDataResponse, MetadataDataHook } from '../types';
 import { getManualSortingAndPagination } from '../../utils';
+import filterByAccessLevels from '../processData/filterByAccessLevels';
 
 const EMPTY_MESH_AUTHZ: ResourceAuthzMapping = {};
 
@@ -130,21 +131,16 @@ const useGetMDSData = ({
   );
 
   const isMesh = !!discoveryConfig?.features?.authorization?.isMesh;
-  const {
-    data: meshData,
-    isSuccess: isMeshAuthzSuccess,
-    isError: isMeshAuthzError,
-    isFetching: isMeshAuthzFetching,
-    isLoading: isMeshAuthzLoading,
-  } = useGetAggregateWTSResourceAuthzMappingQuery(undefined, {
-    skip: !isMesh,
-  });
+  // the mapping is fetched once at app level (Gen3ModalsProvider), so read it from the store
+  const meshAuthz = useCoreSelector((state: CoreState) =>
+    selectMeshAuthzMapping(state),
+  );
 
-  // non-mesh commons never run the query, so they use the empty mapping right away;
+  // non-mesh commons use the empty mapping right away;
   // mesh commons wait for the query to succeed; a failure sets isError below
-  const meshAuthzMapping = isMesh && meshData ? meshData : EMPTY_MESH_AUTHZ;
-  const isMeshAuthzResolved =
-    !isMesh || (isMeshAuthzSuccess && !isMeshAuthzFetching);
+  const meshAuthzMapping =
+    isMesh && meshAuthz.data ? meshAuthz.data : EMPTY_MESH_AUTHZ;
+  const isMeshAuthzResolved = !isMesh || meshAuthz.isSuccess;
 
   useDeepCompareEffect(() => {
     if (data && isSuccess && isMeshAuthzResolved) {
@@ -181,16 +177,17 @@ const useGetMDSData = ({
   ]);
 
   useEffect(() => {
-    if (queryIsError || (isMesh && isMeshAuthzError)) {
+    if (queryIsError || (isMesh && meshAuthz.isError)) {
       setIsError(true);
     }
-  }, [queryIsError, isMesh, isMeshAuthzError]);
+  }, [queryIsError, isMesh, meshAuthz.isError]);
 
   return {
     mdsData,
     isUninitialized,
-    isFetching: isFetching || (isMesh && isMeshAuthzFetching),
-    isLoading: isLoading || (isMesh && isMeshAuthzLoading),
+    isFetching: isFetching || (isMesh && meshAuthz.isLoading),
+    isLoading:
+      isLoading || (isMesh && !isMeshAuthzResolved && !meshAuthz.isError),
     isSuccess: isSuccess && isMeshAuthzResolved,
     isError,
   };
@@ -224,21 +221,16 @@ const useGetAggMDSData = ({
   );
 
   const isMesh = !!discoveryConfig?.features?.authorization?.isMesh;
-  const {
-    data: meshData,
-    isSuccess: isMeshAuthzSuccess,
-    isError: isMeshAuthzError,
-    isFetching: isMeshAuthzFetching,
-    isLoading: isMeshAuthzLoading,
-  } = useGetAggregateWTSResourceAuthzMappingQuery(undefined, {
-    skip: !isMesh,
-  });
+  // the mapping is fetched once at app level (Gen3ModalsProvider), so read it from the store
+  const meshAuthz = useCoreSelector((state: CoreState) =>
+    selectMeshAuthzMapping(state),
+  );
 
-  // non-mesh commons never run the query, so they use the empty mapping right away;
+  // non-mesh commons use the empty mapping right away;
   // mesh commons wait for the query to succeed; a failure sets isError below
-  const meshAuthzMapping = isMesh && meshData ? meshData : EMPTY_MESH_AUTHZ;
-  const isMeshAuthzResolved =
-    !isMesh || (isMeshAuthzSuccess && !isMeshAuthzFetching);
+  const meshAuthzMapping =
+    isMesh && meshAuthz.data ? meshAuthz.data : EMPTY_MESH_AUTHZ;
+  const isMeshAuthzResolved = !isMesh || meshAuthz.isSuccess;
 
   useDeepCompareEffect(() => {
     if (data && isSuccess && isMeshAuthzResolved) {
@@ -268,16 +260,17 @@ const useGetAggMDSData = ({
   ]);
 
   useEffect(() => {
-    if (queryIsError || (isMesh && isMeshAuthzError)) {
+    if (queryIsError || (isMesh && meshAuthz.isError)) {
       setIsError(true);
     }
-  }, [queryIsError, isMesh, isMeshAuthzError]);
+  }, [queryIsError, isMesh, meshAuthz.isError]);
 
   return {
     mdsData,
     isUninitialized,
-    isFetching: isFetching || (isMesh && isMeshAuthzFetching),
-    isLoading: isLoading || (isMesh && isMeshAuthzLoading),
+    isFetching: isFetching || (isMesh && meshAuthz.isLoading),
+    isLoading:
+      isLoading || (isMesh && !isMeshAuthzResolved && !meshAuthz.isError),
     isSuccess: isSuccess && isMeshAuthzResolved,
     isError,
   };
@@ -477,6 +470,7 @@ export const useLoadAllData = ({
   maxStudies = 10000,
   studyField = 'gen3_discovery',
   dataHook,
+  selectedAccessLevels,
 }: DiscoveryDataLoaderProps & {
   dataHook: MetadataDataHook;
 }): DiscoverDataHookResponse => {
@@ -524,9 +518,14 @@ export const useLoadAllData = ({
     isSuccess,
   });
 
+  const accessLevelFiltered = filterByAccessLevels(
+    searchedData,
+    selectedAccessLevels,
+  );
+
   // TODO: determine if this is even needed
   const { paginatedData } = usePagination({
-    data: searchedData,
+    data: accessLevelFiltered,
     pagination,
   });
 
@@ -551,7 +550,7 @@ export const useLoadAllData = ({
   ]);
 
   return {
-    data: manualSortingAndPagination ? paginatedData : searchedData,
+    data: manualSortingAndPagination ? paginatedData : accessLevelFiltered,
     hits: searchedData.length ?? -1,
     clearSearch: clearSearchTerms,
     suggestions: suggestions,

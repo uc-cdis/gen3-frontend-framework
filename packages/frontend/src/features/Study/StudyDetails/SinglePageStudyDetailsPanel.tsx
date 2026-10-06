@@ -62,7 +62,7 @@ const SinglePageStudyDetailsPanel = ({
                   : 'w-1/2'
               }`}
             >
-              <div className="flex flex-col">
+              <div className="flex flex-col gap-y-0">
                 {fieldToShow?.groupName ? (
                   <div className="text-lg font-bold">
                     {fieldToShow.groupName}
@@ -77,7 +77,7 @@ const SinglePageStudyDetailsPanel = ({
                     return (
                       <div
                         key={`item-${field.field}`}
-                        className={`flex w-full bg-base-lightest my-1 justify-between rounded-md py-1.5 px-1 text-sm ${
+                        className={`flex w-full bg-base-lightest my-1 justify-between rounded-sm py-1.5 px-1 text-sm ${
                           field?.classNames?.['root'] ?? ''
                         }`}
                       >

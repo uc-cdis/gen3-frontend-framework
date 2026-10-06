@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import type { MRT_Cell, MRT_Row, MRT_RowData } from 'mantine-react-table-open';
+import type {
+  MRT_Cell,
+  MRT_ColumnDef,
+  MRT_Row,
+  MRT_RowData,
+  MRT_SortingFn,
+  MRT_SortingFns,
+} from 'mantine-react-table-open';
 import {
   MantineReactTable,
   type MRT_PaginationState,
@@ -7,7 +14,7 @@ import {
   type MRT_SortingState,
   useMantineReactTable,
 } from 'mantine-react-table-open';
-import { Loader, LoadingOverlay, Text } from '@mantine/core';
+import { Loader, LoadingOverlay, MenuItem, Text } from '@mantine/core';
 import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
 import { getManualSortingAndPagination, jsonPathAccessor } from '../utils';
 import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory';
@@ -32,6 +39,7 @@ import HighlightSearchTerm from './SearchHighlighting/HighlightSearchTerm';
 import RowDetailPanel from './TableRenderers/RowDetailPanel';
 import { IsColumnSearchable } from './SearchHighlighting/IsColumnSearchable';
 import DataAccessFilterDropdown from './DataAccessFilterDropdown';
+import { createNumericSort, defaultStringSort } from './sorting';
 
 const CompareFn = (
   fieldValue: string,
@@ -44,6 +52,14 @@ const CompareFn = (
     case 'arrayNotEmpty':
       return Array.isArray(fieldValue) && fieldValue.length > 0;
   }
+};
+
+const getSortingFunction = <TData extends MRT_RowData>(
+  type?: string,
+): keyof typeof MRT_SortingFns | MRT_SortingFn<TData> => {
+  if (!type) return defaultStringSort();
+  if (type === 'number') return createNumericSort();
+  return defaultStringSort();
 };
 
 const isSelectable = (
@@ -89,6 +105,7 @@ const DiscoveryTable = ({
   const { isLoading, isError, isFetching } = dataRequestStatus;
   const manualSortingAndPagination = getManualSortingAndPagination(config);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({}); //ts type available
+  const [columnFilters, setColumnFilters] = useState([]);
 
   useEffect(() => {
     if (!studyIdFromWindow || !data) return;
@@ -124,21 +141,40 @@ const DiscoveryTable = ({
         : func({ value: cell.getValue() as never, cell, row });
     };
 
+  // TODO: Note when adding serverside sorting, filtering, and pagination this config will need to be updated
   const cols = useDeepCompareMemo(() => {
     const studyColumns = config.studyColumns ?? [];
     return studyColumns.map((columnDef, idx) => {
+      const sortingFn = getSortingFunction(columnDef?.contentType);
       const isDataAccessFilter = columnDef?.contentType === 'dataAccess';
       return {
         key: `${columnDef.field}-${idx}`,
         field: columnDef.field,
         accessorKey: columnDef.field,
-        header: (
+        header: columnDef.name,
+        Header: (
           <>
             {columnDef.name}
             {isDataAccessFilter && <DataAccessFilterDropdown />}
           </>
         ),
         accessorFn: jsonPathAccessor(columnDef.field),
+        enableSorting: columnDef.sortable ?? true,
+        renderColumnFilterModeMenuItems: ({ column, onSelectFilterMode }) => [
+          <MenuItem
+            key="startsWith"
+            onClick={() => onSelectFilterMode('startsWith')}
+          >
+            Start With
+          </MenuItem>,
+          <MenuItem
+            key="endsWith"
+            onClick={() => onSelectFilterMode('yourCustomFilterFn')}
+          >
+            Your Custom Filter Fn
+          </MenuItem>,
+        ],
+        sortingFn: sortingFn,
         Cell: columnDef?.contentType
           ? extractCellValue(
               DiscoveryTableCellRenderer(
@@ -160,7 +196,7 @@ const DiscoveryTable = ({
                 },
               ),
             ),
-      };
+      } as MRT_ColumnDef<any>;
     });
   }, [config.studyColumns, searchTerm, selectedFieldsForSearchIndexing]);
 
@@ -188,10 +224,11 @@ const DiscoveryTable = ({
     rowCount: hits,
     icons: TableIcons,
     enableTopToolbar: false,
-    enableColumnFilters: false,
+    enableColumnFilters: true,
     enableColumnActions: false,
     enableStickyHeader: true,
     enableStickyFooter: true,
+    columnFilterDisplayMode: 'popover',
     getRowId: (originalRow) =>
       config?.minimalFieldMapping?.uid &&
       config.minimalFieldMapping.uid in originalRow

@@ -2,7 +2,10 @@
   "metadataConfig": [
     {
       "tableConfig": {
-        "selectableRows": true,
+        "selectableRowConfiguration": {
+          "field": "__manifest",
+          "comparer": "arrayNotEmpty"
+        },
         "expandableRows": true
       },
       "features": {
@@ -57,10 +60,11 @@
             "collapsibleButtonText": "Data Commons"
           }
         },
+
         "exportFromDiscovery": {
           "enabled": "true",
           "exportDataFields": {
-            "dataObjectFieldName": "__manifest"
+            "dataObjectField": "__manifest"
           },
           "buttons": [
             {
@@ -141,13 +145,13 @@
           "name": "Number of Subjects",
           "field": "_subjects_count",
           "errorIfNotAvailable": false,
-          "valueIfNotAvailable": "n/a",
+          "valueIfNotAvailable": "0",
           "contentType": "number",
           "width": "98px"
         },
         {
           "name": "ID Number",
-          "field": "project_id",
+          "field": "study_id",
           "errorIfNotAvailable": false,
           "valueIfNotAvailable": "n/a",
           "width": "152px",
@@ -176,7 +180,8 @@
           "field": "__accessible",
           "errorIfNotAvailable": false,
           "valueIfNotAvailable": "n/a",
-          "contentType": "dataAccess"
+          "contentType": "dataAccess",
+          "sortable": false
         }
       ],
       "studyPreviewField": {
@@ -201,7 +206,9 @@
               {
                 "name": "Number of Subjects",
                 "field": "_subjects_count",
-                "contentType": "number"
+                "contentType": "number",
+                "includeIfNotAvailable": true,
+                "valueIfNotAvailable": "0"
               },
               {
                 "name": "Full Name",
@@ -214,7 +221,7 @@
                 "contentType": "text",
                 "includeName": true,
                 "includeIfNotAvailable": true,
-                "valueIfNotAvailable": "N/A"
+                "valueIfNotAvailable": "n/a"
               },
               {
                 "name": "dbGaP Accession Number",
@@ -261,9 +268,10 @@
         ]
       },
       "minimalFieldMapping": {
-        "tagsListFieldName": "tags",
+        "tagsListField": "tags",
         "authzField": "authz",
-        "uid": "_unique_id"
+        "uid": "_unique_id",
+        "dataObjectField": "__manifest"
       },
       "tags": {
         "tagCategories": [

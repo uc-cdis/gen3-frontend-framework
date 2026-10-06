@@ -7,8 +7,8 @@ import {
   type JSONObject,
   type ResourceAuthzMapping,
   selectAuthzMappingData,
+  selectMeshAuthzMapping,
   useCoreSelector,
-  useGetAggregateWTSResourceAuthzMappingQuery,
   useGetIndexAggMDSQuery,
 } from '@gen3/core';
 import type {
@@ -84,21 +84,16 @@ const useGetIndexedMDSData = ({
   );
 
   const isMesh = !!discoveryConfig?.features?.authorization?.isMesh;
-  const {
-    data: meshData,
-    isSuccess: isMeshAuthzSuccess,
-    isError: isMeshAuthzError,
-    isFetching: isMeshAuthzFetching,
-    isLoading: isMeshAuthzLoading,
-  } = useGetAggregateWTSResourceAuthzMappingQuery(undefined, {
-    skip: !isMesh,
-  });
+  // the mapping is fetched once at app level (Gen3ModalsProvider), so read it from the store
+  const meshAuthz = useCoreSelector((state: CoreState) =>
+    selectMeshAuthzMapping(state),
+  );
 
-  // non-mesh commons never run the query, so they use the empty mapping right away;
+  // non-mesh commons use the empty mapping right away;
   // mesh commons wait for the query to succeed; a failure sets isError below
-  const meshAuthzMapping = isMesh && meshData ? meshData : EMPTY_MESH_AUTHZ;
-  const isMeshAuthzResolved =
-    !isMesh || (isMeshAuthzSuccess && !isMeshAuthzFetching);
+  const meshAuthzMapping =
+    isMesh && meshAuthz.data ? meshAuthz.data : EMPTY_MESH_AUTHZ;
+  const isMeshAuthzResolved = !isMesh || meshAuthz.isSuccess;
 
   useDeepCompareEffect(() => {
     if (data && isSuccess && isMeshAuthzResolved) {
@@ -127,16 +122,17 @@ const useGetIndexedMDSData = ({
   ]);
 
   useEffect(() => {
-    if (queryIsError || (isMesh && isMeshAuthzError)) {
+    if (queryIsError || (isMesh && meshAuthz.isError)) {
       setIsError(true);
     }
-  }, [queryIsError, isMesh, isMeshAuthzError]);
+  }, [queryIsError, isMesh, meshAuthz.isError]);
 
   return {
     mdsData,
     isUninitialized,
-    isFetching: isFetching || (isMesh && isMeshAuthzFetching),
-    isLoading: isLoading || (isMesh && isMeshAuthzLoading),
+    isFetching: isFetching || (isMesh && meshAuthz.isLoading),
+    isLoading:
+      isLoading || (isMesh && !isMeshAuthzResolved && !meshAuthz.isError),
     isSuccess: isSuccess && isMeshAuthzResolved,
     isError,
   };
@@ -150,6 +146,7 @@ export const useLoadAllIndexedAggMDSData = ({
   guidType = 'discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
+  selectedAccessLevels,
 }: DiscoveryDataLoaderProps) =>
   useLoadAllData({
     pagination,

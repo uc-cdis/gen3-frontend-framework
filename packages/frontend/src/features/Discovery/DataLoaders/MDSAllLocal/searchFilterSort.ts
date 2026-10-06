@@ -1,8 +1,13 @@
-import filterByTags from './filterByTags';
-import filterByAdvSearch from './filterByAdvSearch';
-import { DiscoveryIndexConfig, SearchTerms, AccessFilters } from '../../types';
-import { AccessSortDirection, AdvancedSearchTerms } from '../../Search/types';
-import { JSONObject } from '@gen3/core';
+import filterByTags from '../processData/filterByTags';
+import filterByAdvSearch from '../processData/filterByAdvSearch';
+import type {
+  AccessFilters,
+  DiscoveryIndexConfig,
+  SearchTerms,
+} from '../../types';
+import type { AdvancedSearchTerms } from '../../Search/types';
+import { AccessSortDirection } from '../../Search/types';
+import type { JSONObject } from '@gen3/core';
 
 interface ParametersForDoSearchFilterSort {
   studies: JSONObject[];
@@ -39,14 +44,11 @@ const searchFilterSort = (
   }
   filteredResources = filterByTags(
     filteredResources,
-    searchTerms.selectedTags,
+    searchTerms.selectedTags ?? {},
     config,
   );
 
-  if (
-    config.features.advSearchFilters &&
-    config.features.advSearchFilters.enabled
-  ) {
+  if (config.features.advSearchFilters?.enabled) {
     filteredResources = filterByAdvSearch(
       filteredResources,
       filterState,

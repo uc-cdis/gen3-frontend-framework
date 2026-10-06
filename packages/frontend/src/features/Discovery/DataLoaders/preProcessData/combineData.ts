@@ -1,9 +1,7 @@
 // Adapted from:
-// data-portal/src/Discovery/Utils/MDSUtils/MDSUtils.jsx
-// data-portal/src/Discovery/Utils/aggMDSUtils/aggMDSUtils.jsx
 
-import _ from 'lodash';
-import { JSONObject } from '@gen3/core';
+import { union } from 'lodash';
+import type { JSONObject } from '@gen3/core';
 
 const STUDY_DATA_FIELD = 'gen3_discovery';
 
@@ -105,7 +103,7 @@ const combineData = (
 ) => {
   const processedAggregateData = processMDSAggregateData(mdsAggregateData);
   const processedMetadataData = processMDSMetadataData(mdsMetadataData);
-  const result = _.union(processedMetadataData, processedAggregateData);
+  const result = union(processedMetadataData, processedAggregateData);
   return result;
 };
 

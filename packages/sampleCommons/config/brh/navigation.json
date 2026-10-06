@@ -31,12 +31,6 @@
         "tooltip": "Analysis Tools"
       },
       {
-        "name": "Notebooks",
-        "href": "/NotebookLite",
-        "icon": "gen3:notebook",
-        "tooltip": "Notebooks for basic analysis"
-      },
-      {
         "icon": "gen3:profile",
         "href": "/Profile",
         "name": "Profile",

@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import {
+import type {
   categoryObject,
   DiscoverDataHookResponse,
   DiscoveryDataLoaderProps,
 } from '../../types';
 import { useDeepCompareEffect } from 'use-deep-compare';
-import { JSONObject } from '@gen3/core';
+import type { JSONObject } from '@gen3/core';
 import { processAdvancedSearchTerms, processAllSummaries } from '../utils';
 
 interface ProxyData {

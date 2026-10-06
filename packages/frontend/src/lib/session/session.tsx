@@ -320,7 +320,7 @@ export const SessionProvider = ({
     isSuccess: isGetCSRFSuccess,
     isError: isGetCSRFError,
     isFetching: isFetchingCSRF,
-  } = useGetCSRFQuery();
+  } = useGetCSRFQuery(undefined, { refetchOnFocus: true });
   useWorkspaceResourceMonitor(monitorWorkspace); // monitor workspaces if any are running or configured
 
   const [getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details

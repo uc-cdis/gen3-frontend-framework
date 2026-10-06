@@ -7,12 +7,17 @@ export interface ExternalProviderResponse {
   providers: ExternalProvider[];
 }
 
+const TAGS = ['ExternalLogin'];
+export const wtsTags = gen3Api.enhanceEndpoints({
+  addTagTypes: TAGS,
+});
+
 /**
  *  @description Creates a externalLoginApi for listing the configured identity providers
  *  in workspace token service. Includes user token expiration time.
  *  @see https://github.com/uc-cdis/workspace-token-service/tree/master
  */
-export const externalLoginApi = gen3Api.injectEndpoints({
+export const externalLoginApi = wtsTags.injectEndpoints({
   endpoints: (builder) => ({
     getExternalLogins: builder.query<ExternalProviderResponse, void>({
       query: () => ({
