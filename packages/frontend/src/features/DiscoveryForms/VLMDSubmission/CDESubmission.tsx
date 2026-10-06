@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { ReactElement } from 'react';
+import { AiOutlineQuestionCircle } from 'react-icons/ai';
 import {
   Alert,
   Anchor,
@@ -43,6 +44,13 @@ const CDESubmission = ({
     useState<FormSubmissionStatus | null>(null);
   const [cdeInfoFromMDS, setCDEInfoFromMDS] = useState<CDEInfo[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const alertRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (submissionStatus && alertRef.current) {
+      alertRef.current.focus();
+    }
+  }, [submissionStatus]);
 
   const initialStudyGrant =
     studyName || studyNumber
@@ -158,7 +166,7 @@ const CDESubmission = ({
   if (submissionStatus?.status === 'success') {
     return (
       <Stack>
-        <Alert color="green" title="Your CDE selections have been submitted!">
+        <Alert ref={alertRef} tabIndex={-1} color="green" title="Your CDE selections have been submitted!">
           Thank you for your submission!{' '}
           <Anchor href="/discovery">Go to Discovery Page</Anchor>
         </Alert>
@@ -169,7 +177,7 @@ const CDESubmission = ({
   if (submissionStatus?.status === 'error') {
     return (
       <Stack>
-        <Alert color="red" title="A problem occurred during submission">
+        <Alert ref={alertRef} tabIndex={-1} color="red" title="A problem occurred during submission">
           {submissionStatus.text}
         </Alert>
         <Button
@@ -193,7 +201,7 @@ const CDESubmission = ({
 
   return (
     <Stack>
-      <Divider label="HEAL CDEs" labelPosition="center" />
+      <Divider label={<Text size="sm" fw={700} c="dark">HEAL CDEs</Text>} labelPosition="center" />
       {disableCDESubmissionForm ? (
         <Text size="sm" ta="center">
           We have received your CDE selections from the HEAL CDE team. If you
@@ -235,10 +243,9 @@ const CDESubmission = ({
       />
 
       <div>
-        <Text size="sm" fw={500} mb="xs">
-          Core CDEs
-        </Text>
         <Checkbox.Group
+          label="Core CDEs"
+          labelProps={{ pb: 'xs' }}
           value={form.values.coreCDEs}
           onChange={handleCoreCDEChange}
         >
@@ -268,8 +275,13 @@ const CDESubmission = ({
 
       <Divider
         label={
-          <Tooltip label="This information will be used to contact you regarding your submission status. It is not stored on the HEAL Data Platform.">
-            <Text size="sm">Administration ⓘ</Text>
+          <Tooltip
+            label="This information will be used to contact you regarding your submission status. It is not stored on the HEAL Data Platform."
+            events={{ hover: true, focus: true, touch: false }}
+          >
+            <Text size="sm" fw={700} c="dark" style={{ display: 'flex', alignItems: 'center', gap: 4 }} tabIndex={0}>
+              Administration <AiOutlineQuestionCircle aria-hidden="true" />
+            </Text>
           </Tooltip>
         }
         labelPosition="center"

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { ReactElement } from 'react';
+import { AiOutlineQuestionCircle } from 'react-icons/ai';
 import {
   Alert,
   Anchor,
@@ -52,6 +53,13 @@ const DataDictionarySubmission = ({
   const [uploading, setUploading] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [duplicateName, setDuplicateName] = useState<string | undefined>();
+  const alertRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (submissionStatus && alertRef.current) {
+      alertRef.current.focus();
+    }
+  }, [submissionStatus]);
 
   const initialStudyGrant =
     studyName || studyNumber
@@ -170,7 +178,7 @@ const DataDictionarySubmission = ({
   if (submissionStatus?.status === 'success') {
     return (
       <Stack>
-        <Alert color="green" title="Your Data Dictionary has been submitted!">
+        <Alert ref={alertRef} tabIndex={-1} color="green" title="Your Data Dictionary has been submitted!">
           Thank you for your submission! You will be notified via e-mail when
           processing is completed.{' '}
           <Anchor href="/discovery">Go to Discovery Page</Anchor>
@@ -182,7 +190,7 @@ const DataDictionarySubmission = ({
   if (submissionStatus?.status === 'info') {
     return (
       <Stack>
-        <Alert color="blue" title="Submitting data dictionary">
+        <Alert ref={alertRef} tabIndex={-1} color="blue" title="Submitting data dictionary">
           Please do not close this page or navigate away.
           <Text size="sm" mt="xs">{submissionStatus.text}</Text>
         </Alert>
@@ -194,7 +202,7 @@ const DataDictionarySubmission = ({
   if (submissionStatus?.status === 'error') {
     return (
       <Stack>
-        <Alert color="red" title="A problem occurred during submission">
+        <Alert ref={alertRef} tabIndex={-1} color="red" title="A problem occurred during submission">
           {submissionStatus.text}
         </Alert>
         <Button
@@ -232,7 +240,7 @@ const DataDictionarySubmission = ({
       </Modal>
 
       <Stack>
-        <Divider label="Data Dictionary Submission" labelPosition="center" />
+        <Divider label={<Text size="sm" fw={700} c="dark">Data Dictionary Submission</Text>} labelPosition="center" />
         <Text size="sm" ta="center">
           Data dictionaries must conform to the HEAL variable-level metadata (VLMD) schema.{' '}
           <Anchor href="https://heal.github.io/platform-documentation/vlmd/vlmd_tools/" target="_blank" rel="noreferrer">
@@ -284,8 +292,13 @@ const DataDictionarySubmission = ({
 
         <Divider
           label={
-            <Tooltip label="This information will be used to contact you regarding your submission status. It is not stored on the HEAL Data Platform.">
-              <Text size="sm">Administration ⓘ</Text>
+            <Tooltip
+              label="This information will be used to contact you regarding your submission status. It is not stored on the HEAL Data Platform."
+              events={{ hover: true, focus: true, touch: false }}
+            >
+              <Text size="sm" fw={700} c="dark" style={{ display: 'flex', alignItems: 'center', gap: 4 }} tabIndex={0}>
+                Administration <AiOutlineQuestionCircle aria-hidden="true" />
+              </Text>
             </Tooltip>
           }
           labelPosition="center"
@@ -308,19 +321,21 @@ const DataDictionarySubmission = ({
           {...form.getInputProps('email')}
         />
 
-        {!userHasAccessToSubmit ? (
-          <Tooltip label="You don't have permission to submit a data dictionary">
-            <Button disabled>Submit data dictionary</Button>
-          </Tooltip>
-        ) : (
-          <Button
-            onClick={handleSubmitClick}
-            loading={uploading}
-            disabled={uploading}
-          >
-            Submit data dictionary
-          </Button>
-        )}
+        <Group>
+          {!userHasAccessToSubmit ? (
+            <Tooltip label="You don't have permission to submit a data dictionary">
+              <Button disabled>Submit data dictionary</Button>
+            </Tooltip>
+          ) : (
+            <Button
+              onClick={handleSubmitClick}
+              loading={uploading}
+              disabled={uploading}
+            >
+              Submit data dictionary
+            </Button>
+          )}
+        </Group>
       </Stack>
     </>
   );
