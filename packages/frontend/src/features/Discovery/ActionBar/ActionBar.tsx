@@ -4,6 +4,7 @@ import { ExportActionButtonProps } from './types';
 import DownloadManifestButton from './DownloadManifestButton';
 import AddToDataLibrary from './AddToDataLibrary';
 import { DataLibraryStoreMode } from '@gen3/core';
+import { Text } from '@mantine/core';
 
 const createActionButton = ({
   buttonConfig,
@@ -47,6 +48,11 @@ const ActionBar: React.FC<ActionBarProps> = ({
 }) => {
   return (
     <div className="flex items-center justify-end py-1 px-2 mb-1 w-full gap-x-1.5 ">
+      <Text fw={600}>
+        {selectedResources.length === 0
+          ? 'No resources selected'
+          : `${selectedResources.length} selected`}
+      </Text>
       {buttons?.map((button) => {
         return createActionButton({
           buttonConfig: button,

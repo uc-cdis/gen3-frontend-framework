@@ -88,8 +88,9 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
         keywords: debouncedSearchBarTerms,
       },
       advancedSearchTerms: advancedSearchTerms,
+      selectedTags: selectedTags,
     };
-  }, [debouncedSearchBarTerms, advancedSearchTerms]);
+  }, [debouncedSearchBarTerms, advancedSearchTerms, selectedTags]);
 
   const [selectedFieldsForSearchIndexing, setSelectedFieldsForSearchIndexing] =
     useState([] as string[]);

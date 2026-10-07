@@ -2,7 +2,6 @@ import React from 'react';
 import type { CellRenderFunctionProps } from './types';
 import { AccessLevel } from '../../../../utils';
 import { Divider, Group, Text, Tooltip } from '@mantine/core';
-import { AiOutlineDash as NotAvailableIcon } from 'react-icons/ai';
 import { getAccessLevelFromNumber } from '../../utils';
 import { isArray } from 'lodash';
 import { useDiscoveryContext } from '../../DiscoveryProvider';
@@ -45,7 +44,8 @@ export const DataAccessCellRenderer = ({
   if (numFileObjects === 0 && accessLevel === undefined) {
     return (
       <Tooltip label={buildTooltip('No data attached to this study')}>
-        <NotAvailableIcon
+        <Icon
+          icon="gen3:dash-outlined"
           className="text-utility-error"
           width="1.5rem"
           height="1.5rem"
@@ -56,7 +56,8 @@ export const DataAccessCellRenderer = ({
   if (!accessLevel) {
     return (
       <Tooltip label={buildTooltip('Unable to determine access level')}>
-        <NotAvailableIcon
+        <Icon
+          icon="gen3:dash-outlined"
           className="text-utility-error"
           width="1.5rem"
           height="1.5rem"
@@ -114,7 +115,8 @@ export const DataAccessCellRenderer = ({
   if (accessLevel === AccessLevel.NOT_AVAILABLE) {
     return (
       <Tooltip label={buildTooltip('No data is shared')}>
-        <NotAvailableIcon
+        <Icon
+          icon="gen3:dash-outlined"
           className="text-utility-error"
           width="1.5rem"
           height="1.5rem"
@@ -134,14 +136,12 @@ export const DataAccessCellRenderer = ({
           authorizationInfo as string,
         )}
       >
-        <div>
-          <Icon
-            icon="gen3:lock-open"
-            className="text-utility-success"
-            width="1.5rem"
-            height="1.5rem"
-          />
-        </div>
+        <Icon
+          icon="gen3:lock-open"
+          className="text-utility-success"
+          width="1.5rem"
+          height="1.5rem"
+        />
       </Tooltip>
     );
   }

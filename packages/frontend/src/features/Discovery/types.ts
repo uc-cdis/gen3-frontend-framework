@@ -62,6 +62,8 @@ export interface DataRequestStatus {
 export interface DiscoverDataHookResponse {
   data: Array<JSONObject>;
   hits: number;
+  /** number of studies dropped because they have no uid field */
+  missingIdCount?: number;
   advancedSearchFilterValues: ReadonlyArray<KeyValueSearchFilter>;
   dataRequestStatus: DataRequestStatus;
   summaryStatistics: SummaryStatistics; // counts and sums
@@ -132,6 +134,7 @@ interface DiscoveryTableConfig {
   selectableRowConfiguration?: SelectableRowConfiguration;
   expandableRows?: boolean;
   expandingRowRenderFunction?: string;
+  size?: string;
 }
 
 interface DiscoveryPageTitle {

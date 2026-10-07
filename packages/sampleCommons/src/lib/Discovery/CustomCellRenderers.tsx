@@ -52,11 +52,9 @@ const WrappedStringCell = (
 
   const content = value as string | string[];
   return (
-    <div className="w-40">
-      <span className="break-words whitespace-break-spaces text-md">
-        {isArray(content) ? content.join(', ') : content}
-      </span>
-    </div>
+    <Text textWrap="pretty">
+      {isArray(content) ? content.join(', ') : content}
+    </Text>
   );
 };
 

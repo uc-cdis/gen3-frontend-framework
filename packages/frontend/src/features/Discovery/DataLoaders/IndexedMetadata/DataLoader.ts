@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { GetDataProps, GetDataResponse } from '../types';
 import { processAuthorizations } from '../utils';
 import type { CoreState } from '@gen3/core';
@@ -18,6 +18,7 @@ import type {
 import { isArrayOfString } from '../../../../utils/isType';
 import { useLoadAllData } from '../MDSAllLocal/DataLoader';
 import { useDeepCompareEffect } from 'use-deep-compare';
+import { useStudiesWithIds } from '../useStudiesWithIds';
 
 const EMPTY_MESH_AUTHZ: ResourceAuthzMapping = {};
 
@@ -60,7 +61,6 @@ const useGetIndexedMDSData = ({
   discoveryConfig,
 }: Partial<GetDataProps>): GetDataResponse => {
   const [mdsData, setMDSData] = useState<Array<JSONObject>>([]);
-  const [isError, setIsError] = useState(false);
 
   const indexKeys = extractIndexArrayFromConfig(discoveryConfig);
   const {
@@ -79,6 +79,12 @@ const useGetIndexedMDSData = ({
     filterEmpty: extractFilterEmptyFromConfig(discoveryConfig),
   });
 
+  const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
+  const { studiesWithIds, missingIdCount } = useStudiesWithIds(
+    data?.data,
+    uidField,
+  );
+
   const authMapping = useCoreSelector((state: CoreState) =>
     selectAuthzMappingData(state),
   );
@@ -90,14 +96,14 @@ const useGetIndexedMDSData = ({
   );
 
   // non-mesh commons use the empty mapping right away;
-  // mesh commons wait for the query to succeed; a failure sets isError below
+  // mesh commons wait for the query to succeed; a failure sets isError
   const meshAuthzMapping =
     isMesh && meshAuthz.data ? meshAuthz.data : EMPTY_MESH_AUTHZ;
   const isMeshAuthzResolved = !isMesh || meshAuthz.isSuccess;
 
   useDeepCompareEffect(() => {
     if (data && isSuccess && isMeshAuthzResolved) {
-      const studyData = data.data;
+      const studyData = studiesWithIds;
       if (discoveryConfig?.features?.authorization.enabled) {
         setMDSData(
           processAuthorizations(
@@ -114,21 +120,19 @@ const useGetIndexedMDSData = ({
   }, [
     authMapping,
     data,
+    studiesWithIds,
     discoveryConfig,
     isSuccess,
     isMeshAuthzResolved,
-    studyField,
     meshAuthzMapping,
   ]);
 
-  useEffect(() => {
-    if (queryIsError || (isMesh && meshAuthz.isError)) {
-      setIsError(true);
-    }
-  }, [queryIsError, isMesh, meshAuthz.isError]);
+  // derived, not stored: stays in sync with the queries and clears on a successful refetch
+  const isError = queryIsError || (isMesh && meshAuthz.isError);
 
   return {
     mdsData,
+    missingIdCount,
     isUninitialized,
     isFetching: isFetching || (isMesh && meshAuthz.isLoading),
     isLoading:
@@ -157,4 +161,5 @@ export const useLoadAllIndexedAggMDSData = ({
     maxStudies,
     studyField,
     dataHook: useGetIndexedMDSData,
+    selectedAccessLevels,
   });

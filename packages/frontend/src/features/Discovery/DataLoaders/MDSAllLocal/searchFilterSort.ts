@@ -42,6 +42,7 @@ const searchFilterSort = (
   ) {
     filteredResources = jsSearch.search(searchTerms.keyword.keywords.join(' '));
   }
+
   filteredResources = filterByTags(
     filteredResources,
     searchTerms.selectedTags ?? {},

@@ -14,7 +14,7 @@ import {
   type MRT_SortingState,
   useMantineReactTable,
 } from 'mantine-react-table-open';
-import { Loader, LoadingOverlay, MenuItem, Text } from '@mantine/core';
+import { Loader, LoadingOverlay, Text } from '@mantine/core';
 import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
 import { getManualSortingAndPagination, jsonPathAccessor } from '../utils';
 import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory';
@@ -105,7 +105,7 @@ const DiscoveryTable = ({
   const { isLoading, isError, isFetching } = dataRequestStatus;
   const manualSortingAndPagination = getManualSortingAndPagination(config);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({}); //ts type available
-  const [columnFilters, setColumnFilters] = useState([]);
+  const size = discoveryConfig.tableConfig.size || 'sm';
 
   useEffect(() => {
     if (!studyIdFromWindow || !data) return;
@@ -160,20 +160,6 @@ const DiscoveryTable = ({
         ),
         accessorFn: jsonPathAccessor(columnDef.field),
         enableSorting: columnDef.sortable ?? true,
-        renderColumnFilterModeMenuItems: ({ column, onSelectFilterMode }) => [
-          <MenuItem
-            key="startsWith"
-            onClick={() => onSelectFilterMode('startsWith')}
-          >
-            Start With
-          </MenuItem>,
-          <MenuItem
-            key="endsWith"
-            onClick={() => onSelectFilterMode('yourCustomFilterFn')}
-          >
-            Your Custom Filter Fn
-          </MenuItem>,
-        ],
         sortingFn: sortingFn,
         Cell: columnDef?.contentType
           ? extractCellValue(
@@ -182,6 +168,7 @@ const DiscoveryTable = ({
                 columnDef?.cellRenderFunction ?? 'default',
                 {
                   ...columnDef?.params,
+                  size: size,
                   valueIfNotAvailable: columnDef?.valueIfNotAvailable ?? '',
                 },
               ),
@@ -192,6 +179,7 @@ const DiscoveryTable = ({
                 columnDef?.cellRenderFunction ?? 'default',
                 {
                   ...columnDef?.params,
+                  size: size,
                   valueIfNotAvailable: columnDef?.valueIfNotAvailable ?? '',
                 },
               ),
@@ -224,11 +212,10 @@ const DiscoveryTable = ({
     rowCount: hits,
     icons: TableIcons,
     enableTopToolbar: false,
-    enableColumnFilters: true,
+    enableColumnFilters: false,
     enableColumnActions: false,
     enableStickyHeader: true,
     enableStickyFooter: true,
-    columnFilterDisplayMode: 'popover',
     getRowId: (originalRow) =>
       config?.minimalFieldMapping?.uid &&
       config.minimalFieldMapping.uid in originalRow
@@ -239,6 +226,7 @@ const DiscoveryTable = ({
     ),
     onRowSelectionChange: setRowSelection,
     state: {
+      density: 'xs',
       rowSelection,
       isLoading,
       ...(manualSortingAndPagination
@@ -254,10 +242,12 @@ const DiscoveryTable = ({
         'mrt-row-expand': false,
       },
     },
-    layoutMode: 'semantic',
+    layoutMode: 'grid',
     mantineDetailPanelProps: {
       style: {
         boxShadow: '0 -2px 0px 0px var(--table-border-color) inset',
+        width: '100%',
+        fontSize: `var(--mantine-font-size-${size})`,
       },
     },
     mantineTableHeadCellProps: {
@@ -267,10 +257,13 @@ const DiscoveryTable = ({
         textAlign: 'center',
         padding: 'var(--mantine-spacing-md)',
         fontWeight: 600,
-        fontSize: 'var(--mantine-font-size-sm)',
+        fontSize: `var(--mantine-font-size-${size})`,
         textTransform: 'uppercase',
       },
     },
+    mantineSelectCheckboxProps: ({ row }) => ({
+      title: 'Click to select item for download or open in workspace',
+    }),
     mantineTableBodyRowProps: ({ row }) => ({
       onClick: () => {
         setStudyDetails(() => {
@@ -279,13 +272,21 @@ const DiscoveryTable = ({
       },
       style: {
         borderWidth: 0,
-        fontSize: 'var(--mantine-font-size-sm)',
+        fontSize: `var(--mantine-font-size-${size})`,
       },
     }),
     mantineTableProps: {
       style: {
         backgroundColor: 'var(--mantine-color-base-1)',
         '--mrt-striped-row-background-color': 'var(--mantine-color-base-3)',
+        width: '100%',
+        fontSize: `var(--mantine-font-size-${size})`,
+      },
+    },
+    mantineTableBodyCellProps: {
+      style: {
+        fontSize: `var(--mantine-font-size-${size})`,
+        wrap: 'break-word',
       },
     },
   });
@@ -305,7 +306,7 @@ const DiscoveryTable = ({
   if (dataRequestStatus.isError) {
     return (
       <div className="flex w-full py-24 h-100 relative justify-center">
-        <Text size={'xl'}>Error loading discovery data</Text>
+        <Text size="xl">Error loading discovery data</Text>
       </div>
     );
   }

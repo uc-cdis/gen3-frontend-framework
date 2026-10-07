@@ -138,7 +138,6 @@
           "field": "full_name",
           "errorIfNotAvailable": false,
           "valueIfNotAvailable": "n/a",
-          "width": "400px",
           "contentType": "string"
         },
         {
@@ -164,6 +163,7 @@
           "valueIfNotAvailable": "n/a",
           "contentType": "link",
           "cellRenderFunction": "withURL",
+          "width": "100px",
           "params": {
             "hrefValueFromField": "commons_url"
           }
@@ -173,7 +173,8 @@
           "field": "data_access_method",
           "errorIfNotAvailable": false,
           "valueIfNotAvailable": "API",
-          "contentType": "string"
+          "contentType": "string",
+          "width": "100px"
         },
         {
           "name": "Data Availability",
@@ -181,6 +182,7 @@
           "errorIfNotAvailable": false,
           "valueIfNotAvailable": "n/a",
           "contentType": "dataAccess",
+          "width": "100px",
           "sortable": false
         }
       ],

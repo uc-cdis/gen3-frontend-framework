@@ -37,7 +37,7 @@ const StudyDetails = () => {
         setPermalink(defaultPermaLinkValue);
       }
     }
-    if (opened === false) {
+    if (!opened) {
       // if drawer has been shut, reset study details
       setStudyDetails({});
     }
@@ -47,7 +47,7 @@ const StudyDetails = () => {
     if (hasStudyDetails) {
       open();
     }
-  }, [studyDetails, open]);
+  }, [hasStudyDetails, open]);
 
   return (
     <Drawer.Root opened={opened} onClose={close} size="50%" position="right">
