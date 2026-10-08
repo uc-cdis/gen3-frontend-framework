@@ -63,7 +63,7 @@ const nextConfig = {
     incomingRequests: true,
     --- */
   },
-  webpack: (config, { dev }) => {
+  webpack: (config) => {
     config.infrastructureLogging = {
       level: 'error',
     };
