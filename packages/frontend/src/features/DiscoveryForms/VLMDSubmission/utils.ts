@@ -58,10 +58,11 @@ export const generatePresignedURL = async (
   };
   if (bucketName) body.bucket = bucketName;
 
-  const accessToken =
+  const rawToken =
     process.env.NODE_ENV === 'development'
-      ? getCookie('credentials_token')
+      ? await getCookie('credentials_token')
       : undefined;
+  const accessToken = typeof rawToken === 'string' ? rawToken : undefined;
 
   const res = await fetch(`${GEN3_FENCE_API}/data/upload`, {
     method: 'POST',
