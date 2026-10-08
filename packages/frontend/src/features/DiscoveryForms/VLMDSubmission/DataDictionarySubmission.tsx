@@ -205,15 +205,17 @@ const DataDictionarySubmission = ({
         <Alert ref={alertRef} tabIndex={-1} color="red" title="A problem occurred during submission">
           {submissionStatus.text}
         </Alert>
-        <Button
-          variant="outline"
-          onClick={() => {
-            setUploading(false);
-            setSubmissionStatus(null);
-          }}
-        >
-          Try Again
-        </Button>
+        <Group>
+          <Button
+            variant="outline"
+            onClick={() => {
+              setUploading(false);
+              setSubmissionStatus(null);
+            }}
+          >
+            Try Again
+          </Button>
+        </Group>
       </Stack>
     );
   }

@@ -1,4 +1,5 @@
 import { GEN3_FENCE_API, GEN3_MDS_API } from '@gen3/core';
+import { getCookie } from 'cookies-next';
 import type { CDEInfo } from './types';
 import { toString } from 'lodash';
 
@@ -57,10 +58,18 @@ export const generatePresignedURL = async (
   };
   if (bucketName) body.bucket = bucketName;
 
+  const accessToken =
+    process.env.NODE_ENV === 'development'
+      ? getCookie('credentials_token')
+      : undefined;
+
   const res = await fetch(`${GEN3_FENCE_API}/data/upload`, {
     method: 'POST',
     credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+    },
     body: JSON.stringify(body),
   });
   if (res.status !== 201)
@@ -97,7 +106,8 @@ export const uploadToS3 = (
         if (e.lengthComputable) onProgress((e.loaded / file.size) * 100);
       };
     }
-    xhr.open('PUT', s3URL);
+    xhr.open('POST', `/api/vlmdS3Upload?presignedUrl=${encodeURIComponent(s3URL)}`);
+    xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
     xhr.send(file);
   });
 
