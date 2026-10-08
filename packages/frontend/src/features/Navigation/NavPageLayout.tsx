@@ -4,7 +4,7 @@ import Footer from './Footer/Footer';
 import Header from './Header';
 import { NavPageLayoutProps } from './types';
 import LeftSidePanel from './Vertical/LeftSidePanel';
-import { AuthzMappingsGate } from '../../lib/authz/AuthzMappingsProvider';
+import { AuthzMappingsGate } from '../../components/Providers/AuthzMappingsProvider';
 
 const NavPageLayout = ({
   headerProps,

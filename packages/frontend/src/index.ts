@@ -145,7 +145,7 @@ import { DefaultAuthorizedRoutesConfig } from './lib/authz/type';
 import {
   AuthzMappingsGate,
   useAuthzMappingsStatus,
-} from './lib/authz/AuthzMappingsProvider';
+} from './components/Providers/AuthzMappingsProvider';
 import OverflowTooltippedLabel from './components/OverflowTooltippedLabel';
 import type { NavigationRailItem } from './components/NavigationRail';
 import NavigationRail from './components/NavigationRail';

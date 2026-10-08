@@ -15,8 +15,6 @@ import {
   useGetMDSQuery,
 } from '@gen3/core';
 import { useMiniSearch } from 'react-minisearch';
-import type { Suggestion } from 'minisearch';
-import MiniSearch from 'minisearch';
 import type {
   AdvancedSearchFilters,
   DiscoverDataHookResponse,
@@ -58,6 +56,13 @@ const NO_SELECTED_TAGS: SelectedTags = {};
 
 // TODO remove after debugging
 // import { reactWhatChanged as RWC } from 'react-what-changed';
+
+// Lowercase and remove punctuation/symbols; returning null makes MiniSearch
+// discard terms that are nothing but punctuation.
+const stripPunctuation = (term: string): string | null => {
+  const cleaned = term.toLowerCase().replace(/[\p{P}\p{S}]/gu, '');
+  return cleaned.length > 0 ? cleaned : null;
+};
 
 const buildMiniSearchKeywordQuery = (terms: SearchTerms) => {
   const keywords = terms.keyword.keywords?.filter((x) => x.length > 0) ?? [];
@@ -333,11 +338,11 @@ const useSearchMetadata = ({
     fields: searchOverFields,
     storeFields: [uidField],
     idField: uidField,
-    tokenize: (string, _fieldName) => string.split(' '),
+    tokenize: (string, _fieldName) => string.split(/[\s\p{P}\p{S}]+/u),
     extractField: extractValue,
-    //  processTerm: (term) => suffixes(term, 3),
+    processTerm: stripPunctuation,
     searchOptions: {
-      processTerm: MiniSearch.getDefault('processTerm'),
+      processTerm: stripPunctuation,
     },
   });
 
@@ -381,13 +386,13 @@ const useSearchMetadata = ({
 
     setSearchedData(filterAdvancedSearchResults(filterKeywordSearchResults()));
 
-    setSuggestions(() => {
-      return (
-        miniSearchSuggestions?.map(
-          (suggestion: Suggestion) => suggestion.suggestion,
-        ) ?? []
-      );
+    const terms = new Set<string>();
+    miniSearchSuggestions?.slice(0, 100).forEach((suggestion) => {
+      suggestion.terms.forEach((term) => {
+        terms.add(term);
+      });
     });
+    setSuggestions([...terms]);
   }, [
     discoveryConfig,
     mdsData,

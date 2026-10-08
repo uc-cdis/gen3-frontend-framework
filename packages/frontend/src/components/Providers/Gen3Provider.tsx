@@ -13,7 +13,7 @@ import type { SessionConfiguration } from '../../lib/session/types';
 import { gen3Modals, Gen3ModalsProvider, type ModalsConfig } from '../Modals';
 import type { AuthorizedRoutesConfig } from '../../lib/authz/type';
 import ProtectedRoutesProvider from '../AuthorizedRoutes/ProtectedRoutesProvider';
-import AuthzMappingsProvider from '../../lib/authz/AuthzMappingsProvider';
+import AuthzMappingsProvider from './AuthzMappingsProvider';
 import { SowerProvider } from '../../features/Sower/SowerContext';
 import type { SowerConfiguration } from '../../features/Sower/types';
 import { CookiesProvider } from 'react-cookie';

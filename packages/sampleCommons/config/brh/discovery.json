@@ -70,11 +70,13 @@
           "buttons": [
             {
               "type": "manifest",
-              "label": "Manifest"
+              "label": "Manifest",
+              "requiresLogin": true
             },
             {
               "type": "exportToWorkspace",
-              "label": "Open in Workspace"
+              "label": "Open in Workspace",
+              "requiresLogin": true
             }
           ]
         },
@@ -165,7 +167,6 @@
           "valueIfNotAvailable": "n/a",
           "contentType": "link",
           "cellRenderFunction": "withURL",
-          "width": "100px",
           "params": {
             "hrefValueFromField": "commons_url"
           }
@@ -183,7 +184,6 @@
           "errorIfNotAvailable": false,
           "valueIfNotAvailable": "n/a",
           "contentType": "dataAccess",
-
           "sortable": true
         }
       ],
@@ -291,7 +291,7 @@
           {
             "name": "Study Registration",
             "color": "rgba(236, 128, 141, 1)",
-            "display": true
+            "display": false
           },
           {
             "name": "Data Type",
@@ -306,17 +306,17 @@
           {
             "name": "disease_type",
             "color": "rgba(112, 182, 3, 1)",
-            "display": false
+            "display": true
           },
           {
             "name": "data_type",
             "color": "rgba(112, 182, 3, 1)",
-            "display": false
+            "display": true
           },
           {
             "name": "clinical_study_type",
             "color": "rgba(112, 182, 3, 1)",
-            "display": false
+            "display": true
           }
         ]
       }

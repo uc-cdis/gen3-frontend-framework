@@ -15,7 +15,7 @@ import {
   useGetAggregateWTSResourceAuthzMappingQuery,
   useGetAuthzMappingsQuery,
 } from '@gen3/core';
-import ErrorCard from '../../components/MessageCards/ErrorCard';
+import ErrorCard from '../MessageCards/ErrorCard';
 
 interface AuthzMappingsStatus {
   /** first load: no mapping has been received yet */
@@ -115,7 +115,7 @@ export const AuthzMappingsGate = ({
   if (isLoading) {
     return (
       <div className="flex grow justify-center items-center">
-        <Loader />
+        <Loader type="dots" />
       </div>
     );
   }
