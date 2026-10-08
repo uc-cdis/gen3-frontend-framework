@@ -115,6 +115,7 @@ const RenderYearOfBirthRestricted: CellRendererFunction = (
     ? params?.transform
     : undefined;
   const size = (params?.size as string) || 'sm';
+  const restrictedYear = (params?.yearCutoff as number) || 1935;
   const valueIfNotAvailable = params?.valueIfNotAvailable || '';
   const content = value as string | string[];
   if (content === undefined || content === null) {
@@ -129,18 +130,18 @@ const RenderYearOfBirthRestricted: CellRendererFunction = (
   if (
     typeof content === 'string' &&
     !Number.isNaN(Number(content)) &&
-    Number(content) < 1935
+    Number(content) < restrictedYear // TODO: This NEEDS TO be a computed constant
   ) {
-    displayContent = '1935';
+    displayContent = restrictedYear.toLocaleString();
   } else if (isArray(content)) {
     displayContent = content
       .map((item) => {
         if (
           typeof item === 'string' &&
           !Number.isNaN(Number(item)) &&
-          Number(item) < 1935
+          Number(item) < restrictedYear
         ) {
-          return '1935';
+          return restrictedYear.toLocaleString();
         }
         return item;
       })
@@ -220,14 +221,14 @@ const RenderStringCell: CellRendererFunction = (
   if (content === undefined || content === null) {
     return (
       <Text textWrap="wrap" size={size}>
-        {`${valueIfNotAvailable}`}{' '}
+        {`${valueIfNotAvailable}`}
       </Text>
     );
   }
   if (content === '') {
     return (
       <Text textWrap="wrap" size={size}>
-        {`${valueIfNotAvailable}`}{' '}
+        {`${valueIfNotAvailable}`}
       </Text>
     );
   }

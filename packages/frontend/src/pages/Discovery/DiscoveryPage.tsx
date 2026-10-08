@@ -1,7 +1,8 @@
-import React, { JSX } from 'react';
+import type { JSX } from 'react';
+import React from 'react';
 import { NavPageLayout } from '../../features/Navigation';
 import Discovery from '../../features/Discovery/Discovery';
-import { DiscoveryPageProps } from './types';
+import type { DiscoveryPageProps } from './types';
 import { registerDiscoveryDefaultCellRenderers } from '../../features/Discovery';
 import { Center } from '@mantine/core';
 
@@ -12,7 +13,7 @@ const DiscoveryPage = ({
   footerProps,
   discoveryConfig,
 }: DiscoveryPageProps): JSX.Element => {
-  if (discoveryConfig === undefined) {
+  if (!discoveryConfig) {
     return (
       <Center maw={400} h={100} mx="auto">
         <div>Discovery config is not defined. Page disabled</div>

@@ -1,10 +1,11 @@
 import React from 'react';
-import { ExportFromDiscoveryActions } from '../types';
-import { ExportActionButtonProps } from './types';
+import type { ExportFromDiscoveryActions } from '../types';
+import type { ExportActionButtonProps } from './types';
 import DownloadManifestButton from './DownloadManifestButton';
 import AddToDataLibrary from './AddToDataLibrary';
 import { DataLibraryStoreMode } from '@gen3/core';
 import { Text } from '@mantine/core';
+import ExportToWorkspaceButton from './ExportToWorkspaceButton';
 
 const createActionButton = ({
   buttonConfig,
@@ -30,6 +31,14 @@ const createActionButton = ({
         key={buttonConfig.type}
         verifyExternalLogins={verifyExternalLogins}
         dataLibraryStoreMode={dataLibraryStoreMode}
+      />
+    ),
+    exportToWorkspace: (
+      <ExportToWorkspaceButton
+        buttonConfig={buttonConfig}
+        selectedResources={selectedResources}
+        exportDataFields={exportDataFields}
+        key={buttonConfig.type}
       />
     ),
   }[buttonConfig.type as string];

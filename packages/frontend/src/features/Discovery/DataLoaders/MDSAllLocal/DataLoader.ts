@@ -41,7 +41,7 @@ import type { GetDataProps, GetDataResponse, MetadataDataHook } from '../types';
 import { getManualSortingAndPagination } from '../../utils';
 import { useStudiesWithIds } from '../useStudiesWithIds';
 import filterByAccessLevels from '../processData/filterByAccessLevels';
-import { filterByTags } from '../processData';
+import { filterByTags, processTagCategoryData } from '../processData';
 
 const EMPTY_MESH_AUTHZ: ResourceAuthzMapping = {};
 
@@ -515,6 +515,8 @@ export const useLoadAllData = ({
   const manualSortingAndPagination =
     getManualSortingAndPagination(discoveryConfig);
 
+  const tagCategoryData = processTagCategoryData(mdsData, discoveryConfig);
+
   const { advancedSearchFilterValues } = useGetAdvancedSearchFilterValues({
     data: mdsData,
     advancedSearchFilters:
@@ -583,6 +585,7 @@ export const useLoadAllData = ({
     advancedSearchFilterValues,
     summaryStatistics,
     charts: chartData,
+    tagCategoryData: tagCategoryData,
     dataRequestStatus: {
       isUninitialized,
       isFetching,

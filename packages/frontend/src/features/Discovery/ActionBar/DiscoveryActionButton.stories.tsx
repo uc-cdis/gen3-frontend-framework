@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import DataLibraryActionButton from './DataLibraryActionButton';
+import DiscoveryActionButton from './DiscoveryActionButton';
 
 const meta = {
-  component: DataLibraryActionButton,
+  component: DiscoveryActionButton,
   parameters: {
     deepControls: { enabled: true },
   },
-} satisfies Meta<typeof DataLibraryActionButton>;
+} satisfies Meta<typeof DiscoveryActionButton>;
 
 export default meta;
 

@@ -4,14 +4,19 @@ import { Text } from '@mantine/core';
 import type { JSONObject } from '@gen3/core';
 import type { CellRendererFunction } from './types';
 import { toString } from 'lodash';
+import { isTextTransform } from '@gen3/frontend';
 
 const defaultCellRenderer: CellRendererFunction = (
   value,
   params?: JSONObject,
 ): ReactElement => {
+  const size = (params?.size as string) || 'sm';
+  const ttValue = isTextTransform(params?.transform)
+    ? params?.transform
+    : undefined;
   if (value === undefined || value === null || toString(value) === '') {
     return (
-      <Text>
+      <Text size={size} tt={ttValue}>
         {`${
           params && params?.valueIfNotAvailable
             ? params?.valueIfNotAvailable
@@ -20,7 +25,11 @@ const defaultCellRenderer: CellRendererFunction = (
       </Text>
     );
   }
-  return <Text>{toString(value)}</Text>;
+  return (
+    <Text tt={ttValue} size={size}>
+      {toString(value)}
+    </Text>
+  );
 };
 
 export interface CellRendererFunctionCatalogEntry {

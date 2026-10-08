@@ -37,7 +37,7 @@ export interface SelectedTags {
   [key: string]: boolean;
 }
 
-export interface categoryObject {
+export interface CategoryObject {
   categoryDisplayName: string;
   tags: string[];
   color: string;
@@ -70,7 +70,7 @@ export interface DiscoverDataHookResponse {
   charts: AggregationsData; // bucket counts for charts
   suggestions: Array<string>;
   clearSearch?: () => void;
-  tagCategoryData?: categoryObject[] | undefined;
+  tagCategoryData?: CategoryObject[] | undefined;
 }
 
 export type DiscoveryTableDataHook = (
@@ -156,10 +156,12 @@ export type ActionButtonType =
   | 'download'
   | 'link'
   | 'externalLink'
+  | 'exportToWorkspace'
   | 'addToDataLibrary';
 
 export interface ExportSelectionActionButton extends ActionButtonConfig {
   type: ActionButtonType;
+  params?: Record<string, unknown>;
 }
 
 export interface SearchBar {
@@ -173,6 +175,7 @@ export interface SearchBar {
 interface TagSearchDropdown {
   enabled?: boolean;
   collapsibleButtonText?: string;
+  categoryTypes?: string[];
 }
 
 export interface SearchConfig {

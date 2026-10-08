@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type {
-  categoryObject,
+  CategoryObject,
   DiscoverDataHookResponse,
   DiscoveryDataLoaderProps,
 } from '../../types';
@@ -12,7 +12,7 @@ interface ProxyData {
   displayedData: JSONObject[];
   hits: number;
   suggestions: string[];
-  tagCategoryData: categoryObject[];
+  tagCategoryData: CategoryObject[];
 }
 
 export const useAggMetaMDSProxy = ({

@@ -57,7 +57,8 @@
           },
           "tagSearchDropdown": {
             "enabled": true,
-            "collapsibleButtonText": "Data Commons"
+            "collapsibleButtonText": "Data Commons",
+            "categoryTypes": ["Commons"]
           }
         },
 
@@ -72,7 +73,8 @@
               "label": "Manifest"
             },
             {
-              "type": "addToDataLibrary"
+              "type": "exportToWorkspace",
+              "label": "Open in Workspace"
             }
           ]
         },
@@ -173,8 +175,7 @@
           "field": "data_access_method",
           "errorIfNotAvailable": false,
           "valueIfNotAvailable": "API",
-          "contentType": "string",
-          "width": "100px"
+          "contentType": "string"
         },
         {
           "name": "Data Availability",
@@ -182,8 +183,8 @@
           "errorIfNotAvailable": false,
           "valueIfNotAvailable": "n/a",
           "contentType": "dataAccess",
-          "width": "100px",
-          "sortable": false
+
+          "sortable": true
         }
       ],
       "studyPreviewField": {
