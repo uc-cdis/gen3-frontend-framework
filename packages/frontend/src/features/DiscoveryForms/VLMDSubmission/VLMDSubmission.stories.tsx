@@ -28,7 +28,7 @@ const baseConfig = {
 
 const baseArgs = {
   studyUID: 'HDP00210',
-  studyNumber: 'R01DA999999',
+  studyProjectNumber: 'R01DA999999',
   studyName: 'Understanding Pain Mechanisms in Chronic Back Pain',
   studyRegistrationAuthZ: '/study/9613939',
   config: baseConfig,

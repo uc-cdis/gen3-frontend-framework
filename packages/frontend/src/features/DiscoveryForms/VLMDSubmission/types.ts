@@ -13,7 +13,7 @@ export interface VLMDSubmissionConfig {
 
 export interface VLMDSubmissionProps {
   studyUID?: string;
-  studyNumber?: string;
+  studyProjectNumber?: string;
   studyName?: string;
   studyRegistrationAuthZ?: string;
   userHasAccessToSubmit: boolean;

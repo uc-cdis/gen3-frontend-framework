@@ -41,14 +41,15 @@ interface DDFormValues {
 
 const DataDictionarySubmission = ({
   studyUID,
-  studyNumber,
+  studyProjectNumber,
   studyName,
   studyRegistrationAuthZ,
   userHasAccessToSubmit,
   config,
   existingDataDictionaryNames = [],
 }: VLMDSubmissionProps): ReactElement => {
-  const [submissionStatus, setSubmissionStatus] = useState<FormSubmissionStatus | null>(null);
+  const [submissionStatus, setSubmissionStatus] =
+    useState<FormSubmissionStatus | null>(null);
   const [uploadProgress, setUploadProgress] = useState(100);
   const [uploading, setUploading] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
@@ -62,8 +63,8 @@ const DataDictionarySubmission = ({
   }, [submissionStatus]);
 
   const initialStudyGrant =
-    studyName || studyNumber
-      ? `${studyName ?? 'N/A'} - ${studyNumber ?? 'N/A'}`
+    studyName || studyProjectNumber
+      ? `${studyName ?? 'N/A'} - ${studyProjectNumber ?? 'N/A'}`
       : '';
 
   const form = useForm<DDFormValues>({
@@ -104,23 +105,32 @@ const DataDictionarySubmission = ({
 
     try {
       setSubmissionStatus({ status: 'info', text: 'Preparing for upload…' });
-      const { url, guid } = await generatePresignedURL(
+      const { url, guid: rawGuid } = await generatePresignedURL(
         values.file.name,
         studyRegistrationAuthZ,
         config.dataDictionarySubmissionBucket,
       );
+      const FENCE_GUID_PREFIX = 'PREFIX/';
+      const guid = rawGuid.startsWith(FENCE_GUID_PREFIX)
+        ? rawGuid.slice(FENCE_GUID_PREFIX.length)
+        : rawGuid;
 
-      setSubmissionStatus({ status: 'info', text: 'Uploading data dictionary…' });
+      setSubmissionStatus({
+        status: 'info',
+        text: 'Uploading data dictionary…',
+      });
       await uploadToS3(url, values.file, (pct) => setUploadProgress(pct));
 
       setSubmissionStatus({ status: 'info', text: 'Finishing upload…' });
 
-      const hostname = typeof window !== 'undefined' ? window.location.hostname : '';
-      const subject = `Data dictionary submission for ${studyNumber ?? ''} ${studyName ?? ''}`.trim();
+      const hostname =
+        typeof window !== 'undefined' ? window.location.hostname : '';
+      const subject =
+        `Data dictionary submission for ${studyProjectNumber ?? ''} ${studyName ?? ''}`.trim();
       const fullName = `${values.firstName} ${values.lastName}`;
       const cliCmd = `argo submit -n argo --watch HEAL-Workflows/vlmd_submission_workflows/vlmd_submission_wrapper.yaml -p data_dict_guid=${guid} -p dictionary_name="${values.ddName}" -p study_id=${studyUID ?? ''}`;
       const contents = [
-        `Grant Number: ${studyNumber ?? ''}`,
+        `Grant Number: ${studyProjectNumber ?? ''}`,
         `Study Name: ${studyName ?? ''}`,
         `Environment: ${hostname}`,
         `Study UID: ${studyUID ?? ''}`,
@@ -134,9 +144,10 @@ const DataDictionarySubmission = ({
       ].join('\n');
 
       try {
-        const zendeskAction = getRemoteSupportServiceRegistry().getSupportService(
-          config.remoteSupportService.service,
-        );
+        const zendeskAction =
+          getRemoteSupportServiceRegistry().getSupportService(
+            config.remoteSupportService.service,
+          );
         await zendeskAction(
           { subject, fullName, email: values.email, contents },
           config.remoteSupportService.configuration,
@@ -178,9 +189,15 @@ const DataDictionarySubmission = ({
   if (submissionStatus?.status === 'success') {
     return (
       <Stack>
-        <Alert ref={alertRef} tabIndex={-1} color="green" title="Your Data Dictionary has been submitted!">
+        <Alert
+          ref={alertRef}
+          tabIndex={-1}
+          color="green"
+          title="Your Data Dictionary has been submitted!"
+        >
           Thank you for your submission! You will be notified via e-mail when
-          processing is completed.{' '}
+          processing is completed.
+          <br />
           <Anchor href="/discovery">Go to Discovery Page</Anchor>
         </Alert>
       </Stack>
@@ -190,9 +207,16 @@ const DataDictionarySubmission = ({
   if (submissionStatus?.status === 'info') {
     return (
       <Stack>
-        <Alert ref={alertRef} tabIndex={-1} color="blue" title="Submitting data dictionary">
+        <Alert
+          ref={alertRef}
+          tabIndex={-1}
+          color="blue"
+          title="Submitting data dictionary"
+        >
           Please do not close this page or navigate away.
-          <Text size="sm" mt="xs">{submissionStatus.text}</Text>
+          <Text size="sm" mt="xs">
+            {submissionStatus.text}
+          </Text>
         </Alert>
         <Progress value={uploadProgress} animated />
       </Stack>
@@ -202,7 +226,12 @@ const DataDictionarySubmission = ({
   if (submissionStatus?.status === 'error') {
     return (
       <Stack>
-        <Alert ref={alertRef} tabIndex={-1} color="red" title="A problem occurred during submission">
+        <Alert
+          ref={alertRef}
+          tabIndex={-1}
+          color="red"
+          title="A problem occurred during submission"
+        >
           {submissionStatus.text}
         </Alert>
         <Group>
@@ -230,11 +259,20 @@ const DataDictionarySubmission = ({
       >
         <Text>
           A data dictionary named{' '}
-          <Text span fw={700}>&quot;{duplicateName}&quot;</Text> is already
-          associated with this study and will be overwritten. Are you sure?
+          <Text span fw={700}>
+            &quot;{duplicateName}&quot;
+          </Text>{' '}
+          is already associated with this study and will be overwritten. Are you
+          sure?
         </Text>
         <Group justify="flex-end" mt="md">
-          <Button variant="outline" onClick={() => { setUploading(false); setConfirmModalOpen(false); }}>
+          <Button
+            variant="outline"
+            onClick={() => {
+              setUploading(false);
+              setConfirmModalOpen(false);
+            }}
+          >
             No
           </Button>
           <Button onClick={handleConfirmOverwrite}>Yes</Button>
@@ -242,19 +280,39 @@ const DataDictionarySubmission = ({
       </Modal>
 
       <Stack>
-        <Divider label={<Text size="sm" fw={700} c="dark">Data Dictionary Submission</Text>} labelPosition="center" />
+        <Divider
+          label={
+            <Text size="sm" fw={700} c="dark">
+              Data Dictionary Submission
+            </Text>
+          }
+          labelPosition="center"
+        />
         <Text size="sm" ta="center">
-          Data dictionaries must conform to the HEAL variable-level metadata (VLMD) schema.{' '}
-          <Anchor href="https://heal.github.io/platform-documentation/vlmd/vlmd_tools/" target="_blank" rel="noreferrer">
+          Data dictionaries must conform to the HEAL variable-level metadata
+          (VLMD) schema.{' '}
+          <Anchor
+            href="https://heal.github.io/platform-documentation/vlmd/vlmd_tools/"
+            target="_blank"
+            rel="noreferrer"
+          >
             View instructions
           </Anchor>{' '}
           for creating HEAL-compliant VLMD. Examples are available{' '}
-          <Anchor href="https://github.com/HEAL/heal-metadata-schemas/tree/main/variable-level-metadata-schema/examples" target="_blank" rel="noreferrer">
+          <Anchor
+            href="https://github.com/HEAL/heal-metadata-schemas/tree/main/variable-level-metadata-schema/examples"
+            target="_blank"
+            rel="noreferrer"
+          >
             here
-          </Anchor>.
+          </Anchor>
+          .
         </Text>
         <Text size="xs" c="dimmed">
-          <Text span c="red">*</Text> Indicates required fields
+          <Text span c="red">
+            *
+          </Text>{' '}
+          Indicates required fields
         </Text>
 
         <Textarea
@@ -282,13 +340,19 @@ const DataDictionarySubmission = ({
 
         {existingDataDictionaryNames.length > 0 && (
           <Stack gap="xs">
-            <Text size="sm">This study is already linked to data dictionaries:</Text>
+            <Text size="sm">
+              This study is already linked to data dictionaries:
+            </Text>
             <Group gap="xs">
               {existingDataDictionaryNames.map((name) => (
-                <Badge key={name} variant="outline">{name}</Badge>
+                <Badge key={name} variant="outline">
+                  {name}
+                </Badge>
               ))}
             </Group>
-            <Text size="sm" c="dimmed">Using an existing name will overwrite it.</Text>
+            <Text size="sm" c="dimmed">
+              Using an existing name will overwrite it.
+            </Text>
           </Stack>
         )}
 
@@ -298,7 +362,13 @@ const DataDictionarySubmission = ({
               label="This information will be used to contact you regarding your submission status. It is not stored on the HEAL Data Platform."
               events={{ hover: true, focus: true, touch: false }}
             >
-              <Text size="sm" fw={700} c="dark" style={{ display: 'flex', alignItems: 'center', gap: 4 }} tabIndex={0}>
+              <Text
+                size="sm"
+                fw={700}
+                c="dark"
+                style={{ display: 'flex', alignItems: 'center', gap: 4 }}
+                tabIndex={0}
+              >
                 Administration <AiOutlineQuestionCircle aria-hidden="true" />
               </Text>
             </Tooltip>
@@ -322,7 +392,6 @@ const DataDictionarySubmission = ({
           required
           {...form.getInputProps('email')}
         />
-
         <Group>
           {!userHasAccessToSubmit ? (
             <Tooltip label="You don't have permission to submit a data dictionary">

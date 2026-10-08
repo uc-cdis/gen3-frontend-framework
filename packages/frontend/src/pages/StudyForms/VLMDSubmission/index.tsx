@@ -25,7 +25,7 @@ const VLMDSubmissionPage = ({
   const router = useRouter();
   const {
     studyUID,
-    studyNumber,
+    studyProjectNumber,
     studyName,
     studyRegistrationAuthZ,
     disableCDESubmissionForm,
@@ -71,7 +71,7 @@ const VLMDSubmissionPage = ({
           <div className="max-w-4xl mx-auto">
             <VLMDSubmissionTabbedPanel
               studyUID={typeof studyUID === 'string' ? studyUID : undefined}
-              studyNumber={typeof studyNumber === 'string' ? studyNumber : undefined}
+              studyProjectNumber={typeof studyProjectNumber === 'string' ? studyProjectNumber : undefined}
               studyName={typeof studyName === 'string' ? studyName : undefined}
               studyRegistrationAuthZ={authZ || undefined}
               userHasAccessToSubmit={userHasAccessToSubmit}

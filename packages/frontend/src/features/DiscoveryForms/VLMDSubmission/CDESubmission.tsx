@@ -33,7 +33,7 @@ interface CDEFormValues {
 
 const CDESubmission = ({
   studyUID,
-  studyNumber,
+  studyProjectNumber,
   studyName,
   userHasAccessToSubmit,
   disableCDESubmissionForm,
@@ -53,8 +53,8 @@ const CDESubmission = ({
   }, [submissionStatus]);
 
   const initialStudyGrant =
-    studyName || studyNumber
-      ? `${studyName ?? 'N/A'} - ${studyNumber ?? 'N/A'}`
+    studyName || studyProjectNumber
+      ? `${studyName ?? 'N/A'} - ${studyProjectNumber ?? 'N/A'}`
       : '';
 
   const form = useForm<CDEFormValues>({
@@ -134,10 +134,10 @@ const CDESubmission = ({
       const hostname =
         typeof window !== 'undefined' ? window.location.hostname : '';
       const subject =
-        `CDE submission for ${studyNumber ?? ''} ${studyName ?? ''}`.trim();
+        `CDE submission for ${studyProjectNumber ?? ''} ${studyName ?? ''}`.trim();
       const fullName = `${values.firstName} ${values.lastName}`;
       const contents = [
-        `Grant Number: ${studyNumber ?? ''}`,
+        `Grant Number: ${studyProjectNumber ?? ''}`,
         `Study Name: ${studyName ?? ''}`,
         `Environment: ${hostname}`,
         `Study UID: ${studyUID ?? ''}`,
