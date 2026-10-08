@@ -100,16 +100,23 @@ const AuthzMappingsProvider = ({
   );
 };
 
+interface AuthzMappingsGateProps {
+  /** when true, render children even if the authz mappings failed to load */
+  suppressErrors?: boolean;
+}
+
 /**
  * Renders a loader or error in place of children until the authz mappings
  * are first loaded. On later refetches (e.g. after a login change) children
  * stay mounted under a LoadingOverlay so page state is kept. The overlay is
  * positioned against the nearest positioned ancestor, which is the layout's
- * relative <main>. Used for the main content area of the page layouts.
+ * relative <main>. Set suppressErrors to render children on error instead of
+ * the error card. Used for the main content area of the page layouts.
  */
 export const AuthzMappingsGate = ({
   children,
-}: PropsWithChildren): ReactElement => {
+  suppressErrors = false,
+}: PropsWithChildren<AuthzMappingsGateProps>): ReactElement => {
   const { isLoading, isFetching, isError } = useAuthzMappingsStatus();
 
   if (isLoading) {
@@ -120,7 +127,7 @@ export const AuthzMappingsGate = ({
     );
   }
 
-  if (isError) {
+  if (isError && !suppressErrors) {
     return (
       <div className="w-full m-20">
         <ErrorCard message="Error getting authorization mappings from commons." />
