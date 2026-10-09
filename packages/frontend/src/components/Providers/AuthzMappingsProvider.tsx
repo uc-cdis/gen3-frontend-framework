@@ -88,7 +88,7 @@ const AuthzMappingsProvider = ({
       lastLoginStatus.current !== loginStatus
     ) {
       void refetchAuthz();
-      void refetchMeshAuthz();
+      if (enableWTS) void refetchMeshAuthz();
     }
     lastLoginStatus.current = loginStatus;
   }, [loginStatus, refetchAuthz, refetchMeshAuthz]);
@@ -121,7 +121,7 @@ interface AuthzMappingsGateProps {
  */
 export const AuthzMappingsGate = ({
   children,
-  suppressErrors = false,
+  suppressErrors = true,
 }: PropsWithChildren<AuthzMappingsGateProps>): ReactElement => {
   const { isLoading, isFetching, isError } = useAuthzMappingsStatus();
 
