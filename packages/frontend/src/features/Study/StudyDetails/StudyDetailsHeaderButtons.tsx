@@ -6,6 +6,7 @@ import {
   selectAuthzMappingData,
   selectUserDetails,
   useCoreSelector,
+  useGetAuthzMappingsQuery,
   userHasMethodForServiceOnResource,
 } from '@gen3/core';
 import { useDiscoveryContext } from '../../Discovery/DiscoveryProvider';
@@ -38,6 +39,8 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   const studyProjectNumber = studyDetails.project_number;
   const showSubmitButton = config.detailView?.showSubmitButton;
 
+  const { isLoading: authzLoading } = useGetAuthzMappingsQuery();
+
   const userAuthMapping = useCoreSelector((state: CoreState) =>
     selectAuthzMappingData(state),
   );
@@ -60,16 +63,23 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
     showSubmitButton &&
     isStudyRegistered &&
     !requiresLogin &&
+    !authzLoading &&
     userHasStudyRegistrationAccess;
 
   const showRequestVLMDAccessButton =
     showSubmitButton &&
     isStudyRegistered &&
     !requiresLogin &&
+    !authzLoading &&
     !userHasStudyRegistrationAccess;
 
   const showLoginToSubmitVLMDButton =
     showSubmitButton && isStudyRegistered && requiresLogin;
+
+  const variableMetadataFieldName = config.variableMetadataFieldName;
+  const variableMetadata = variableMetadataFieldName
+    ? (studyDetails[variableMetadataFieldName] as Record<string, unknown> | undefined)
+    : undefined;
 
   const studyNavQuery = {
     studyUID,
@@ -95,8 +105,25 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   };
 
   const handleSubmitVLMDClick = () => {
+    const existingDDNames = Object.keys(
+      (variableMetadata?.data_dictionaries as Record<string, unknown>) || {},
+    ).join(',');
+    const existingCDENames = Object.keys(
+      (variableMetadata?.common_data_elements as Record<string, unknown>) || {},
+    ).join(',');
+    const disableCDESubmissionForm = String(
+      Boolean(studyDetails.use_cde_from_redcap),
+    );
     void router.push(
-      { pathname: '/vlmd-submission', query: studyNavQuery },
+      {
+        pathname: '/vlmd-submission',
+        query: {
+          ...studyNavQuery,
+          existingDDNames,
+          existingCDENames,
+          disableCDESubmissionForm,
+        },
+      },
       '/vlmd-submission',
     );
   };

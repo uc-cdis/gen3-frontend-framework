@@ -1,3 +1,4 @@
+import type { NextApiRequest, NextApiResponse } from 'next';
 import type { JSONObject } from '@gen3/core/server';
 import { GEN3_MDS_API } from '@gen3/core/server';
 import {
@@ -21,8 +22,8 @@ const mdsMetadataApi = `${GEN3_MDS_API}/metadata?data=True&_guid_type=unregister
 // Main Function to Orchestrate Steps
 const processData = async (
   data: Array<JSONObject>,
-  reqBody: any,
-  cookies: any,
+  reqBody: NextApiRequest['body'],
+  cookies: string | undefined,
 ) => {
   const {
     pagination,
@@ -70,11 +71,11 @@ const processData = async (
   };
 };
 
-export default async function handler(req: any, res: any) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const cookies = req.headers.cookie || '';
   const currentTime = Date.now();
   // Check if cached data is still valid
-  if (cachedData && currentTime - cacheTime < CACHE_DURATION) {
+  if (cachedData.length > 0 && currentTime - cacheTime < CACHE_DURATION) {
     const processedData = await processData(cachedData, req.body, cookies);
     res.status(200).json(processedData);
   } else {
@@ -87,9 +88,7 @@ export default async function handler(req: any, res: any) {
       // Check if both responses are OK
       if (!mdsAggregateResponse.ok || !mdsMetadataResponse.ok) {
         throw new Error(
-          `One of the responses was not ok:
-        mdsAggregateResponse:${mdsAggregateResponse},
-        mdsMetadataResponse ${mdsMetadataResponse}`,
+          `One of the responses was not ok: mdsAggregateResponse ${mdsAggregateResponse.status} ${mdsAggregateResponse.statusText}, mdsMetadataResponse ${mdsMetadataResponse.status} ${mdsMetadataResponse.statusText}`,
         );
       }
       // Parse the JSON data from both responses

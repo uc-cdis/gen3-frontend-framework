@@ -19,4 +19,5 @@ export * from './StudyForms';
 export * from './Submission';
 export * from './TabbedCohortBuilder';
 export * from './Theme';
+export * from './StudyForms';
 export * from './Workspace';
