@@ -4,7 +4,7 @@ import { Text } from '@mantine/core';
 import type { JSONObject } from '@gen3/core';
 import type { CellRendererFunction } from './types';
 import { toString } from 'lodash';
-import { isTextTransform } from '@gen3/frontend';
+import { isTextTransform } from '../../../../utils/isType';
 
 const defaultCellRenderer: CellRendererFunction = (
   value,
