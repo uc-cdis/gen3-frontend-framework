@@ -92,7 +92,8 @@ const CDESubmission = ({
         }
       })
       .catch((err) => console.error('Failed to load CDE info from MDS:', err));
-  }, [existingCDENames, existingCDENames.length, form]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [existingCDENames.length]);
 
   const handleCoreCDEChange = (newCore: string[]) => {
     const nonCore = form.values.selectedCDEs.filter(
@@ -167,8 +168,9 @@ const CDESubmission = ({
     return (
       <Stack>
         <Alert ref={alertRef} tabIndex={-1} color="green" title="Your CDE selections have been submitted!">
-          Thank you for your submission!{' '}
-          <Anchor href="/discovery">Go to Discovery Page</Anchor>
+          Thank you for your submission!
+          <br />
+          <Anchor href="/Discovery">Go to Discovery Page</Anchor>
         </Alert>
       </Stack>
     );
@@ -180,15 +182,17 @@ const CDESubmission = ({
         <Alert ref={alertRef} tabIndex={-1} color="red" title="A problem occurred during submission">
           {submissionStatus.text}
         </Alert>
-        <Button
-          variant="outline"
-          onClick={() => {
-            setSubmitting(false);
-            setSubmissionStatus(null);
-          }}
-        >
-          Try Again
-        </Button>
+        <Group>
+          <Button
+            variant="outline"
+            onClick={() => {
+              setSubmitting(false);
+              setSubmissionStatus(null);
+            }}
+          >
+            Try Again
+          </Button>
+        </Group>
       </Stack>
     );
   }

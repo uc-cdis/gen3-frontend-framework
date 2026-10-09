@@ -205,11 +205,20 @@ export const updateCDEMetadataInMDS = async (
   // unused param kept for potential filter updates
   void selectedCoreCDEs;
 
+  const rawToken =
+    process.env.NODE_ENV === 'development'
+      ? await getCookie('credentials_token')
+      : undefined;
+  const accessToken = typeof rawToken === 'string' ? rawToken : undefined;
+
   const updateURL = `${GEN3_MDS_API}/metadata/${metadataID}?overwrite=true`;
   const updateRes = await fetch(updateURL, {
     method: 'POST',
     credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+    },
     body: JSON.stringify(metadataToUpdate),
   });
   if (!updateRes.ok)

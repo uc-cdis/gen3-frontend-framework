@@ -6,6 +6,7 @@ import {
   selectAuthzMappingData,
   selectUserDetails,
   useCoreSelector,
+  useGetAuthzMappingsQuery,
   userHasMethodForServiceOnResource,
 } from '@gen3/core';
 import { useDiscoveryContext } from '../../Discovery/DiscoveryProvider';
@@ -38,6 +39,8 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   const studyProjectNumber = studyDetails.project_number;
   const showSubmitButton = config.detailView.showSubmitButton;
 
+  const { isLoading: authzLoading } = useGetAuthzMappingsQuery();
+
   const userAuthMapping = useCoreSelector((state: CoreState) =>
     selectAuthzMappingData(state),
   );
@@ -60,12 +63,14 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
     showSubmitButton &&
     isStudyRegistered &&
     !requiresLogin &&
+    !authzLoading &&
     userHasStudyRegistrationAccess;
 
   const showRequestVLMDAccessButton =
     showSubmitButton &&
     isStudyRegistered &&
     !requiresLogin &&
+    !authzLoading &&
     !userHasStudyRegistrationAccess;
 
   const showLoginToSubmitVLMDButton =

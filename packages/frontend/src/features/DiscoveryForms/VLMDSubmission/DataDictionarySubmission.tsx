@@ -198,7 +198,7 @@ const DataDictionarySubmission = ({
           Thank you for your submission! You will be notified via e-mail when
           processing is completed.
           <br />
-          <Anchor href="/discovery">Go to Discovery Page</Anchor>
+          <Anchor href="/Discovery">Go to Discovery Page</Anchor>
         </Alert>
       </Stack>
     );

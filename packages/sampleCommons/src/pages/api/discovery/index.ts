@@ -12,10 +12,10 @@ import filterByAccessLevels from '@/utils/api/discovery/processData/filterByAcce
 let cachedData: Array<JSONObject> = [];
 let cacheTime = 0;
 const CACHE_DURATION = 0.25 * 60 * 60 * 1000; // 15 minutes in milliseconds
-const mdsAggregateApi =
-  'https://healdata.org/mds/aggregate/metadata?data=True&limit=2000&offset=0';
-const mdsMetadataApi =
-  'https://healdata.org/mds/metadata?data=True&_guid_type=unregistered_discovery_metadata&limit=2000&offset=0';
+const GEN3_TARGET =
+  process.env.NEXT_PUBLIC_GEN3_API_TARGET || 'https://healdata.org';
+const mdsAggregateApi = `${GEN3_TARGET}/mds/aggregate/metadata?data=True&limit=2000&offset=0`;
+const mdsMetadataApi = `${GEN3_TARGET}/mds/metadata?data=True&_guid_type=unregistered_discovery_metadata&limit=2000&offset=0`;
 
 // Main Function to Orchestrate Steps
 const processData = async (
