@@ -50,7 +50,7 @@ export const createCSSVariables = (colors: Record<string, string>) => {
   });
 };
 
-// Define theme for mantine v7
+// Define theme for mantine v9
 export const createMantineTheme = (
   fonts: Fonts,
   colors: Record<string, TenStringArray>,
@@ -149,7 +149,7 @@ export const createMantineTheme = (
 
 /**
  * Gen3Provider wraps around the entire app and provides general configurations
- * for the whole website like color scheme, icons, fonts, and sessionConfigs like
+ * for the whole website like a color scheme, icons, fonts, and sessionConfigs like
  * inactivity limits for session timeouts.
  */
 const Gen3Provider = ({
@@ -172,7 +172,7 @@ const Gen3Provider = ({
         <ModalsProvider modals={{ ...contextModals, ...gen3Modals }}>
           <Notifications position={defaultNotificationPosition} />
           <SessionProvider {...sessionConfig}>
-            <AuthzMappingsProvider>
+            <AuthzMappingsProvider enableWTS={sessionConfig.enableWTS}>
               <SowerProvider config={sowerConfig}>
                 <ProtectedRoutesProvider
                   config={

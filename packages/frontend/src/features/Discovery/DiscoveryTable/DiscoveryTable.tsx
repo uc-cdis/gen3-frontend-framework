@@ -116,7 +116,12 @@ const DiscoveryTable = ({
       );
       if (foundStudy) setStudyDetails(foundStudy);
     }
-  }, [studyIdFromWindow, data]);
+  }, [
+    studyIdFromWindow,
+    data,
+    setStudyDetails,
+    config.minimalFieldMapping.uid,
+  ]);
 
   const extractCellValue =
     (func: CellRendererFunction) =>
@@ -161,7 +166,7 @@ const DiscoveryTable = ({
         accessorFn: jsonPathAccessor(columnDef.field),
         enableSorting: columnDef.sortable ?? true,
         sortingFn: sortingFn,
-        Cell: columnDef?.contentType
+        Cell: columnDef.contentType
           ? extractCellValue(
               DiscoveryTableCellRenderer(
                 columnDef?.contentType,
@@ -176,11 +181,11 @@ const DiscoveryTable = ({
           : extractCellValue(
               DiscoveryTableCellRenderer(
                 'string',
-                columnDef?.cellRenderFunction ?? 'default',
+                columnDef.cellRenderFunction ?? 'default',
                 {
-                  ...columnDef?.params,
+                  ...columnDef.params,
                   size: size,
-                  valueIfNotAvailable: columnDef?.valueIfNotAvailable ?? '',
+                  valueIfNotAvailable: columnDef.valueIfNotAvailable ?? '',
                 },
               ),
             ),
@@ -237,7 +242,7 @@ const DiscoveryTable = ({
         : {}),
       showProgressBars: isFetching,
       showAlertBanner: isError,
-      expanded: config.tableConfig?.expandableRows === true ? true : undefined,
+      expanded: config.tableConfig.expandableRows === true ? true : undefined,
       columnVisibility: {
         'mrt-row-expand': false,
       },

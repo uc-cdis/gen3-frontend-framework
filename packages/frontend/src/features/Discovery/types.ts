@@ -228,7 +228,7 @@ export interface DiscoveryIndexConfig {
   studyColumns: StudyColumn[];
   studyPreviewField?: StudyDetailsField;
   simpleDetailsView?: StudyPageConfig;
-  detailView: StudyDetailView;
+  detailView?: StudyDetailView;
   minimalFieldMapping: MinimalFieldMapping;
 }
 

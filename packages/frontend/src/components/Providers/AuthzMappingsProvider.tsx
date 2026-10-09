@@ -38,6 +38,10 @@ export const useAuthzMappingsStatus = (): AuthzMappingsStatus =>
 const isSettledLoginStatus = (status: LoginStatus): boolean =>
   status === 'authenticated' || status === 'unauthenticated';
 
+interface AuthzMappingProviderProps {
+  enableWTS?: boolean;
+}
+
 /**
  * Fetches the arborist authz mapping and the aggregate WTS (mesh) authz mapping
  * so that components can read them from the store via selectAuthzMappingData /
@@ -52,7 +56,8 @@ const isSettledLoginStatus = (status: LoginStatus): boolean =>
  */
 const AuthzMappingsProvider = ({
   children,
-}: PropsWithChildren): ReactElement => {
+  enableWTS = false,
+}: PropsWithChildren<AuthzMappingProviderProps>): ReactElement => {
   const loginStatus = useCoreSelector((state: CoreState) =>
     selectUserAuthStatus(state),
   );
@@ -67,7 +72,9 @@ const AuthzMappingsProvider = ({
     isLoading: isMeshAuthzLoading,
     isFetching: isMeshAuthzFetching,
     refetch: refetchMeshAuthz,
-  } = useGetAggregateWTSResourceAuthzMappingQuery();
+  } = useGetAggregateWTSResourceAuthzMappingQuery(undefined, {
+    skip: !enableWTS,
+  });
 
   // last settled login status; the status passes through 'pending' each time
   // user details are re-fetched, which is not a login state change
@@ -80,8 +87,8 @@ const AuthzMappingsProvider = ({
       lastLoginStatus.current !== null &&
       lastLoginStatus.current !== loginStatus
     ) {
-      refetchAuthz();
-      refetchMeshAuthz();
+      void refetchAuthz();
+      void refetchMeshAuthz();
     }
     lastLoginStatus.current = loginStatus;
   }, [loginStatus, refetchAuthz, refetchMeshAuthz]);
@@ -101,8 +108,7 @@ const AuthzMappingsProvider = ({
 };
 
 interface AuthzMappingsGateProps {
-  /** when true, render children even if the authz mappings failed to load */
-  suppressErrors?: boolean;
+  suppressErrors?: boolean; //
 }
 
 /**

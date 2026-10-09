@@ -1,5 +1,5 @@
-import { JSONObject, JSONValue } from '@gen3/core';
-import { accessibleFieldName, AccessLevel } from '../../utils';
+import type { JSONObject, JSONValue } from '@gen3/core';
+import type { accessibleFieldName, AccessLevel } from '../../utils';
 
 export interface StudyDetailsField {
   name: string;
@@ -31,6 +31,7 @@ export interface StudyPageConfig {
   downloadLinkFields?: DownloadLinkFields;
   classNames?: Record<string, string>;
   fieldsToShow: Array<StudyPageGroup>; // render multiple groups of fields
+  routeToStudyURL?: boolean;
 }
 
 export interface StudyColumn {
@@ -85,6 +86,7 @@ export interface StudyDetailView {
   headerField: string;
   subHeaderField: string;
   tabs: StudyDetailTab[];
+  routeToStudyURL?: boolean;
 }
 
 export interface TagData {
@@ -98,7 +100,7 @@ export interface TagInfo {
 }
 
 export const isTagInfo = (obj: any): obj is TagInfo => {
-  return obj && obj.name && obj.category;
+  return obj?.name && obj.category;
 };
 
 export const isTagInfoArray = (obj: any): obj is TagInfo[] => {
