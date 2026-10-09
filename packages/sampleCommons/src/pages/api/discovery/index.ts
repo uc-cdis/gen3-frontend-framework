@@ -21,8 +21,8 @@ const mdsMetadataApi = `${GEN3_TARGET}/mds/metadata?data=True&_guid_type=unregis
 // Main Function to Orchestrate Steps
 const processData = async (
   data: Array<JSONObject>,
-  reqBody: any,
-  cookies: any,
+  reqBody: NextApiRequest['body'],
+  cookies: string | undefined,
 ) => {
   const {
     pagination,
