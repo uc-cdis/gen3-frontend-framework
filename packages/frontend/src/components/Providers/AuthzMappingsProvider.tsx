@@ -91,7 +91,7 @@ const AuthzMappingsProvider = ({
       if (enableWTS) void refetchMeshAuthz();
     }
     lastLoginStatus.current = loginStatus;
-  }, [loginStatus, refetchAuthz, refetchMeshAuthz]);
+  }, [loginStatus, enableWTS, refetchAuthz, refetchMeshAuthz]);
 
   const isLoading = isAuthzLoading || isMeshAuthzLoading;
   const isFetching = isAuthzFetching || isMeshAuthzFetching;
