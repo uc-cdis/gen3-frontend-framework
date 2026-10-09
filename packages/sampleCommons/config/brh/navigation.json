@@ -58,7 +58,7 @@
     ],
     "loginButtonVisibility": "visible",
     "classNames": {
-      "divider": "border-base-dark my-2"
+      "divider": "border-accent-dark"
     },
     "itemClassnames": {
       "login": "font-content hover:border-base-max",
