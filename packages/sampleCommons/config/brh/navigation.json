@@ -3,12 +3,13 @@
     "classNames": {
       "root": "pl-1 bg-base-max text-primary opacity-100 hover:opacity-100",
       "item": "py-2 px-4 hover:bg-base-lightest hover:text-base-contrast",
-      "navigationPanel": "bg-base-max text-primary-darker"
+      "navigationPanel": "bg-base-max text-primary-darker",
+      "icon": "data-disabled:opacity-50"
     },
     "logo": {
       "src": "/images/brh/logo.png",
-      "height": 256,
-      "width": 320,
+      "width": 300,
+      "height": 66,
       "href": "/Discovery"
     },
     "items": [
@@ -25,16 +26,10 @@
         "tooltip": "Gen3 workspaces are secure data analysis environments in the cloud that can access data from one or more data resources."
       },
       {
-        "name": "Analysis",
+        "name": "Example Analysis",
         "href": "/Analysis",
         "icon": "gen3:analysis",
         "tooltip": "Analysis Tools"
-      },
-      {
-        "name": "Notebooks",
-        "href": "/NotebookLite",
-        "icon": "gen3:notebook",
-        "tooltip": "Notebooks for basic analysis"
       },
       {
         "icon": "gen3:profile",
@@ -63,7 +58,7 @@
     ],
     "loginButtonVisibility": "visible",
     "classNames": {
-      "divider": "border-base-dark my-2"
+      "divider": "border-accent-dark"
     },
     "itemClassnames": {
       "login": "font-content hover:border-base-max",

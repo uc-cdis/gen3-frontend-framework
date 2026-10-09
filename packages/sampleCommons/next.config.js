@@ -63,7 +63,7 @@ const nextConfig = {
     incomingRequests: true,
     --- */
   },
-  webpack: (config, { dev }) => {
+  webpack: (config) => {
     config.infrastructureLogging = {
       level: 'error',
     };
@@ -165,6 +165,13 @@ const nextConfig = {
           destination: `${GEN3_TARGET}/library/lists/:path*`,
         },
 
+        // The manifest service redirects `/manifests` to `/manifests/` using
+        // its own absolute host, which the browser then blocks with CORS.
+        // Send the trailing slash upstream so the redirect never happens.
+        {
+          source: '/manifests',
+          destination: `${GEN3_TARGET}/manifests/`,
+        },
         {
           source: '/manifests/:path*',
           destination: `${GEN3_TARGET}/manifests/:path*`,

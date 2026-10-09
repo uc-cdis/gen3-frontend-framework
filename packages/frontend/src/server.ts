@@ -5,6 +5,7 @@ import { fetchJWTKey, getAccessToken } from './lib/auth/utils';
 import sessionToken from './api/auth/sessionToken';
 import sessionLogout from './api/auth/sessionLogout';
 import credentialsLogin from './api/auth/credentialsLogin';
+import { default as discoveryMDSProxy } from './lib/Discovery/discoveryMDSProxy';
 
 export {
   type RouteConfig,
@@ -16,4 +17,5 @@ export {
   sessionToken,
   sessionLogout,
   credentialsLogin,
+  discoveryMDSProxy,
 };

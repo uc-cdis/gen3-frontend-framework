@@ -142,6 +142,10 @@ import {
 
 import type { AuthorizedRoutesConfig, RouteConfig } from './lib/authz/type';
 import { DefaultAuthorizedRoutesConfig } from './lib/authz/type';
+import {
+  AuthzMappingsGate,
+  useAuthzMappingsStatus,
+} from './components/Providers/AuthzMappingsProvider';
 import OverflowTooltippedLabel from './components/OverflowTooltippedLabel';
 import type { NavigationRailItem } from './components/NavigationRail';
 import NavigationRail from './components/NavigationRail';
@@ -277,6 +281,8 @@ export {
   analysisApiCohortDiscovery,
   // Defaults
   DefaultAuthorizedRoutesConfig,
+  AuthzMappingsGate,
+  useAuthzMappingsStatus,
   // Sower Actions
   registerBaseSowerActions,
   type SowerConfiguration,

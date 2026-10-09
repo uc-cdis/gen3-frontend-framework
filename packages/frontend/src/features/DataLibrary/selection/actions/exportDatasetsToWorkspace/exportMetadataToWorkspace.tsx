@@ -1,11 +1,11 @@
 import React from 'react';
-import { DataActionFunction } from '../../types';
+import type { DataActionFunction } from '../../types';
 import { extractDatasetIds, selectionToManifest } from '../../utils';
+import type { HttpMethod } from '@gen3/core';
 import {
   fetchJSONDataFromURL,
   GEN3_MANIFEST_API,
   getFederatedLoginStatus,
-  HttpMethod,
   queryMultipleMDSRecords,
 } from '@gen3/core';
 import { Stack } from '@mantine/core';
@@ -139,7 +139,7 @@ export const exportMetadataToWorkspace: DataActionFunction = async (
     onDone?.();
   } catch (error: unknown) {
     if (error instanceof Error) {
-      if (error.name == 'AbortError') {
+      if (error.name === 'AbortError') {
         onAbort?.();
       }
     } else onError?.(new Error('unknown error'));

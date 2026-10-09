@@ -217,7 +217,6 @@ function List<TData extends MRT_RowData>({
           }
         })
         .map((column, index) => {
-          console.log('Cordering', column.id, 'vis', column.getIsVisible());
           return !noColumnOrdering.includes(column.id) ? (
             <DraggableColumnItem
               key={column.id}

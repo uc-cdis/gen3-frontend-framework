@@ -1,5 +1,5 @@
 import React from 'react';
-import DataLibraryActionButton from './DataLibraryActionButton';
+import DiscoveryActionButton from './DiscoveryActionButton';
 import { ExportActionButtonProps } from './types';
 import { FiDownload as DownloadIcon } from 'react-icons/fi';
 
@@ -9,7 +9,7 @@ const DownloadAsZipButton = ({
   exportDataFields,
 }: ExportActionButtonProps) => {
   return (
-    <DataLibraryActionButton
+    <DiscoveryActionButton
       label="Download Zip"
       icon={<DownloadIcon />}
       tooltip="Download Zip"

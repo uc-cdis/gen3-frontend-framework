@@ -184,7 +184,6 @@ export const CheckoutFilesTable = ({
     columns.map((column: any) => column.accessorKey), //must start out with a populated columnOrder
   );
 
-  console.log('columnOrder', columnOrder);
   const tableRows = useDeepCompareMemo(
     () => createRowsFromItems(items),
     [items],

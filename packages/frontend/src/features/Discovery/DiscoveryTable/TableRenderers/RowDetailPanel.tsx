@@ -1,8 +1,8 @@
 import React from 'react';
-import { Box, Text } from '@mantine/core';
+import { Text } from '@mantine/core';
 import HighlightSearchTerm from '../SearchHighlighting/HighlightSearchTerm';
-import { MRT_Row, MRT_RowData } from 'mantine-react-table-open';
-import _ from 'lodash';
+import type { MRT_Row, MRT_RowData } from 'mantine-react-table-open';
+import { get } from 'lodash';
 import RowDetailPanelTags from './RowDetailPanelTags';
 import { useDiscoveryContext } from '../../DiscoveryProvider';
 
@@ -14,19 +14,15 @@ interface RowDetailPanelProps {
 const RowDetailPanel = ({ row, searchTerm }: RowDetailPanelProps) => {
   const { discoveryConfig: config } = useDiscoveryContext();
   if (config.studyPreviewField) {
-    const studyPreviewData = _.get(
-      row.original,
-      config.studyPreviewField.field,
-    );
+    const studyPreviewData = get(row.original, config.studyPreviewField.field);
     return (
-      <>
-        <Box display={'flex'} w={'100%'}>
-          <Text size="xs" lineClamp={2}>
-            {HighlightSearchTerm(studyPreviewData, searchTerm)}
-          </Text>
-        </Box>
+      <div className="flex flex-col w-full">
+        <Text size="xs" lineClamp={2} classNames={{ root: 'max-w-[90vw]' }}>
+          {HighlightSearchTerm(studyPreviewData, searchTerm)}
+        </Text>
+
         <RowDetailPanelTags rowTags={row.original.tags} />
-      </>
+      </div>
     );
   } else {
     return undefined;

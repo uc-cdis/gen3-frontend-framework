@@ -25,8 +25,11 @@ import {
 } from './userSliceRTK';
 
 import {
+  selectMeshAuthzMapping,
+  useGetAggregateWTSResourceAuthzMappingQuery,
   useGetExternalLoginsQuery,
   useIsExternalConnectedQuery,
+  useLazyGetAggregateWTSResourceAuthzMappingQuery,
   useLazyGetExternalLoginsQuery,
   useLazyIsExternalConnectedQuery,
 } from './externalLoginsSlice';
@@ -63,9 +66,12 @@ export {
   useLazyFetchUserDetailsQuery,
   useLazyGetExternalLoginsQuery,
   useLazyIsExternalConnectedQuery,
+  useGetAggregateWTSResourceAuthzMappingQuery,
+  useLazyGetAggregateWTSResourceAuthzMappingQuery,
   useIsExternalConnectedQuery,
   selectUserDetails,
   selectUserAuthStatus,
+  selectMeshAuthzMapping,
   useGetCSRFQuery,
   useLazyGetCSRFQuery,
   selectCSRFToken,

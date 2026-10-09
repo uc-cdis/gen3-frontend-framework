@@ -1,49 +1,12 @@
 import React from 'react';
-import DataLibraryActionButton from './DataLibraryActionButton';
+import DiscoveryActionButton from './DiscoveryActionButton';
 import FileSaver from 'file-saver';
-import { GEN3_DOMAIN } from '@gen3/core';
-import { ExportActionButtonProps, ExportActionProps } from './types';
-import { FiDownload as DownloadIcon } from 'react-icons/fi';
+import type { ExportActionButtonProps, ExportActionProps } from './types';
 import { notifications } from '@mantine/notifications';
 import { useIsAuthenticated } from '../../../lib/session/session';
 import { MANIFEST_FILENAME } from '../../../types/constants';
-
-/**
- * Determines the disabled state and the reason for disabling based on authentication status,
- * selection count, and requirement for login.
- *
- * @param {boolean} isAuthenticated - Indicates whether the user is authenticated.
- * @param {number} numSelected - The number of items selected for the operation.
- * @param {boolean} requiresLogin - Specifies whether login is required to perform the operation.
- * @returns {Object} An object containing the following properties:
- *   - {boolean} disabled - True if the action should be disabled, false otherwise.
- *   - {string} [disabledReason] - The reason why the action is disabled (if applicable).
- */
-const getDisabledState = (
-  isAuthenticated: boolean,
-  numSelected: number,
-  requiresLogin: boolean,
-) => {
-  const LOGIN_REQUIRED_MSG = 'You must be logged in to download a manifest';
-  const NO_SELECTION_MSG =
-    'You must select at least one study to download a manifest';
-
-  if (requiresLogin && !isAuthenticated) {
-    return {
-      disabled: true,
-      disabledReason: LOGIN_REQUIRED_MSG,
-    };
-  }
-
-  if (numSelected === 0) {
-    return {
-      disabled: true,
-      disabledReason: NO_SELECTION_MSG,
-    };
-  }
-
-  return { disabled: false }; // Default enabled state.
-};
+import { combineManifests, getDisabledState } from './utils';
+import { Icon } from '@iconify-icon/react';
 
 const handleDownloadManifestClick = <
   T extends Record<string, any> = Record<string, any>,
@@ -62,27 +25,9 @@ const handleDownloadManifestClick = <
   }
 
   // combine manifests from all selected studies
-  const manifest: Array<T> = [];
+  const manifest = combineManifests<T>(selectedResources, dataObjectField);
 
-  selectedResources.forEach((study) => {
-    if (study[dataObjectField]) {
-      const studyDataObject = study[dataObjectField];
-      if ('commons_url' in study && !GEN3_DOMAIN?.includes(study.commons_url)) {
-        // PlanX addition to allow hostname based DRS in manifest download clients
-        // like FUSE
-        manifest.push(
-          ...studyDataObject.map((x: Record<string, unknown>) => ({
-            ...x,
-            commons_url: 'commons_url' in x ? x.commons_url : study.commons_url,
-          })),
-        );
-      } else {
-        manifest.push(...studyDataObject);
-      }
-    }
-  });
   // download the manifest
-
   if (manifest.length === 0) {
     notifications.show({
       title: 'Export warning',
@@ -106,13 +51,15 @@ const DownloadManifestButton = ({
   const { disabled, disabledReason } = getDisabledState(
     isAuthenticated,
     selectedResources.length,
-    buttonConfig?.requiresLogin ?? false,
+    buttonConfig.requiresLogin ?? false,
+    'manifest',
   );
+
   return (
-    <DataLibraryActionButton
+    <DiscoveryActionButton
       data-testid="download-manifest-button"
       label={buttonConfig?.label ?? 'Download Manifest'}
-      icon={<DownloadIcon />}
+      icon={<Icon icon="gen3:download" width="1.25rem" height="1.25rem" />}
       disabled={disabled}
       tooltip={
         disabledReason ??

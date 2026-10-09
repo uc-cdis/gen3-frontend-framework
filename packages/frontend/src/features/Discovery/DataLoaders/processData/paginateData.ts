@@ -1,4 +1,4 @@
-import { JSONObject } from '@gen3/core';
+import { JSONObject } from '@gen3/core/server';
 
 const paginateData = (
   data: Array<JSONObject>,

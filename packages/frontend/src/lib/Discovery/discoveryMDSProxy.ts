@@ -1,21 +1,22 @@
-import { JSONObject } from '@gen3/core';
-import filterByTags from '@/utils/api/discovery/processData/filterByTags';
-import paginateData from '@/utils/api/discovery/processData/paginateData';
-import searchData from '@/utils/api/discovery/processData/searchData';
-import sortData from '@/utils/api/discovery/processData/sortData';
-import filterByAdvSearch from '@/utils/api/discovery/processData/filterByAdvSearch';
-import combineData from '@/utils/api/discovery/preProcessData/combineData';
-import processTagCategoryData from '@/utils/api/discovery/processData/processTagCategoryData';
-import addAccessLevelsMetaData from '@/utils/api/discovery/preProcessData/addAccessLevelsMetaData';
-import filterByAccessLevels from '@/utils/api/discovery/processData/filterByAccessLevels';
+import type { JSONObject } from '@gen3/core/server';
+import { GEN3_MDS_API } from '@gen3/core/server';
+import {
+  filterByAccessLevels,
+  filterByAdvSearch,
+  filterByTags,
+  paginateData,
+  processTagCategoryData,
+  searchData,
+  sortData,
+} from '../../features/Discovery/DataLoaders/processData';
+import { combineData } from '../../features/Discovery/DataLoaders/preProcessData';
+import addAccessLevelsMetaData from './addAccessLevelsMetaData';
 
 let cachedData: Array<JSONObject> = [];
 let cacheTime = 0;
 const CACHE_DURATION = 0.25 * 60 * 60 * 1000; // 15 minutes in milliseconds
-const mdsAggregateApi =
-  'https://healdata.org/mds/aggregate/metadata?data=True&limit=2000&offset=0';
-const mdsMetadataApi =
-  'https://healdata.org/mds/metadata?data=True&_guid_type=unregistered_discovery_metadata&limit=2000&offset=0';
+const mdsAggregateApi = `${GEN3_MDS_API}/aggregate/metadata?data=True&limit=2000&offset=0`;
+const mdsMetadataApi = `${GEN3_MDS_API}/metadata?data=True&_guid_type=unregistered_discovery_metadata&limit=2000&offset=0`;
 
 // Main Function to Orchestrate Steps
 const processData = async (

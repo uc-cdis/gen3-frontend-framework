@@ -1,24 +1,26 @@
+import type { DataLibraryStoreMode, JSONObject } from '@gen3/core';
 import {
   type AggregationsData,
-  DataLibraryStoreMode,
   type ExportDatasetFields,
-  JSONObject,
   type MetadataPaginationParams,
 } from '@gen3/core';
 
-import { SummaryStatistics, SummaryStatisticsConfig } from './Statistics/types';
-import { AdvancedSearchTerms, SearchCombination } from './Search/types';
-import { CollapsableChartsPanelConfiguration } from '../../components/charts/types';
-import {
+import type {
+  SummaryStatistics,
+  SummaryStatisticsConfig,
+} from './Statistics/types';
+import type { AdvancedSearchTerms, SearchCombination } from './Search/types';
+import type { CollapsableChartsPanelConfiguration } from '../../components/charts/types';
+import type {
   StudyColumn,
   StudyDetailsField,
   StudyDetailView,
   StudyPageConfig,
   TagsConfig,
 } from '../Study/types';
-import { DataAuthorization } from '../../utils';
-import { Gen3AppConfigData } from '../../lib/content/types';
-import { SearchMode } from './constants';
+import type { DataAuthorization } from '../../utils';
+import type { Gen3AppConfigData } from '../../lib/content/types';
+import type { SearchMode } from './constants';
 
 interface KeywordSearch {
   keywords?: string[];
@@ -28,14 +30,14 @@ interface KeywordSearch {
 export interface SearchTerms {
   keyword: KeywordSearch;
   advancedSearchTerms: AdvancedSearchTerms;
-  selectedTags?: Record<string, boolean>;
+  selectedTags?: SelectedTags;
 }
 
-export interface selectedTags {
+export interface SelectedTags {
   [key: string]: boolean;
 }
 
-export interface categoryObject {
+export interface CategoryObject {
   categoryDisplayName: string;
   tags: string[];
   color: string;
@@ -60,13 +62,15 @@ export interface DataRequestStatus {
 export interface DiscoverDataHookResponse {
   data: Array<JSONObject>;
   hits: number;
+  /** number of studies dropped because they have no uid field */
+  missingIdCount?: number;
   advancedSearchFilterValues: ReadonlyArray<KeyValueSearchFilter>;
   dataRequestStatus: DataRequestStatus;
   summaryStatistics: SummaryStatistics; // counts and sums
   charts: AggregationsData; // bucket counts for charts
   suggestions: Array<string>;
   clearSearch?: () => void;
-  tagCategoryData?: categoryObject[] | undefined;
+  tagCategoryData?: CategoryObject[] | undefined;
 }
 
 export type DiscoveryTableDataHook = (
@@ -93,7 +97,7 @@ export interface SearchKV {
 }
 
 export const isSearchKV = (obj: any): obj is SearchKV => {
-  return obj && obj.key && obj.value;
+  return obj?.key && obj.value;
 };
 
 export const isSearchKVArray = (obj: any): obj is SearchKV[] => {
@@ -112,8 +116,8 @@ export type DiscoveryContentTypes =
 
 export interface MinimalFieldMapping {
   authzField: string;
-  tagsListFieldName: string;
-  dataAvailabilityField: string;
+  tagsListField: string;
+  dataAvailabilityField?: string;
   uid: string;
 }
 
@@ -130,6 +134,7 @@ interface DiscoveryTableConfig {
   selectableRowConfiguration?: SelectableRowConfiguration;
   expandableRows?: boolean;
   expandingRowRenderFunction?: string;
+  size?: string;
 }
 
 interface DiscoveryPageTitle {
@@ -151,10 +156,12 @@ export type ActionButtonType =
   | 'download'
   | 'link'
   | 'externalLink'
+  | 'exportToWorkspace'
   | 'addToDataLibrary';
 
 export interface ExportSelectionActionButton extends ActionButtonConfig {
   type: ActionButtonType;
+  params?: Record<string, unknown>;
 }
 
 export interface SearchBar {
@@ -168,6 +175,7 @@ export interface SearchBar {
 interface TagSearchDropdown {
   enabled?: boolean;
   collapsibleButtonText?: string;
+  categoryTypes?: string[];
 }
 
 export interface SearchConfig {
@@ -220,7 +228,7 @@ export interface DiscoveryIndexConfig {
   studyColumns: StudyColumn[];
   studyPreviewField?: StudyDetailsField;
   simpleDetailsView?: StudyPageConfig;
-  detailView: StudyDetailView;
+  detailView?: StudyDetailView;
   minimalFieldMapping: MinimalFieldMapping;
 }
 

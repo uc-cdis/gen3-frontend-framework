@@ -114,13 +114,15 @@ const RenderYearOfBirthRestricted: CellRendererFunction = (
   const ttValue = isTextTransform(params?.transform)
     ? params?.transform
     : undefined;
+  const size = (params?.size as string) || 'sm';
+  const restrictedYear = (params?.yearCutoff as number) || 1935;
   const valueIfNotAvailable = params?.valueIfNotAvailable || '';
   const content = value as string | string[];
   if (content === undefined || content === null) {
-    return <Text>{`${valueIfNotAvailable}`} </Text>;
+    return <Text size={size}>{`${valueIfNotAvailable}`} </Text>;
   }
-  if (content == '') {
-    return <Text>{`${valueIfNotAvailable}`} </Text>;
+  if (content === '') {
+    return <Text size={size}>{`${valueIfNotAvailable}`} </Text>;
   }
 
   // Check if the content is a string and represents a year less than 1935
@@ -128,18 +130,18 @@ const RenderYearOfBirthRestricted: CellRendererFunction = (
   if (
     typeof content === 'string' &&
     !Number.isNaN(Number(content)) &&
-    Number(content) < 1935
+    Number(content) < restrictedYear // TODO: This NEEDS TO be a computed constant
   ) {
-    displayContent = '1935';
+    displayContent = restrictedYear.toLocaleString();
   } else if (isArray(content)) {
     displayContent = content
       .map((item) => {
         if (
           typeof item === 'string' &&
           !Number.isNaN(Number(item)) &&
-          Number(item) < 1935
+          Number(item) < restrictedYear
         ) {
-          return '1935';
+          return restrictedYear.toLocaleString();
         }
         return item;
       })
@@ -148,7 +150,11 @@ const RenderYearOfBirthRestricted: CellRendererFunction = (
     displayContent = content;
   }
 
-  return <Text tt={ttValue}>{displayContent}</Text>;
+  return (
+    <Text tt={ttValue} size={size}>
+      {displayContent}
+    </Text>
+  );
 };
 
 // given a field name, extract the value from the row using the type guards above
@@ -158,10 +164,11 @@ export const RenderLinkWithURL: CellRendererFunction = (
 
   params?: JSONObject,
 ) => {
+  const size = (params?.size as string) || 'sm';
   const content = toString(value);
   if (!content) {
     return (
-      <Text>{`${
+      <Text size={size}>{`${
         getParamsValueAsString(params, 'valueIfNotAvailable') ?? ''
       }`}</Text>
     );
@@ -181,7 +188,7 @@ export const RenderLinkWithURL: CellRendererFunction = (
         target="_blank"
         rel="noreferrer"
       >
-        <Text c="utility.0" tt={ttValue}>
+        <Text c="utility.0" tt={ttValue} size={size}>
           {content}
         </Text>
       </a>
@@ -194,7 +201,7 @@ export const RenderLinkWithURL: CellRendererFunction = (
       target="_blank"
       rel="noreferrer"
     >
-      <Text c="utility.0" tt={ttValue}>
+      <Text c="utility.0" tt={ttValue} size={size}>
         {content}
       </Text>
     </a>
@@ -208,16 +215,27 @@ const RenderStringCell: CellRendererFunction = (
   const ttValue = isTextTransform(params?.transform)
     ? params?.transform
     : undefined;
+  const size = (params?.size as string) || 'sm';
   const valueIfNotAvailable = params?.valueIfNotAvailable || '';
   const content = value as string | string[];
   if (content === undefined || content === null) {
-    return <Text>{`${valueIfNotAvailable}`} </Text>;
+    return (
+      <Text textWrap="wrap" size={size}>
+        {`${valueIfNotAvailable}`}
+      </Text>
+    );
   }
-  if (content == '') {
-    return <Text>{`${valueIfNotAvailable}`} </Text>;
+  if (content === '') {
+    return (
+      <Text textWrap="wrap" size={size}>
+        {`${valueIfNotAvailable}`}
+      </Text>
+    );
   }
   return (
-    <Text tt={ttValue}>{isArray(content) ? content.join(', ') : content}</Text>
+    <Text textWrap="wrap" tt={ttValue} size={size}>
+      {isArray(content) ? content.join(', ') : content}
+    </Text>
   );
 };
 
@@ -228,20 +246,20 @@ const RenderNumberCell: CellRendererFunction = (
   const isContentEmpty = value === undefined || value === null;
   const paramsValueIfNotAvailable = params?.valueIfNotAvailable || '';
   const content = value as number | number[];
-
+  const size = (params?.size as string) || 'sm';
   if (isContentEmpty) {
-    return <Text>{`${paramsValueIfNotAvailable}`}</Text>;
+    return <Text size={size}>{`${paramsValueIfNotAvailable}`}</Text>;
   }
 
   let stringValue = '';
   // check if content is an array of all numbers
   if (isArray(content) && content.every((item) => typeof item === 'number')) {
-    stringValue = content.map((v) => (v ? v.toLocaleString() : '')).join('; ');
+    stringValue = content.map((v) => v.toLocaleString()).join('; ');
   } else {
     stringValue = content.toLocaleString();
   }
 
-  return <Text>{stringValue}</Text>;
+  return <Text size={size}>{stringValue}</Text>;
 };
 
 const RenderParagraphsCell: CellRendererFunction = ({

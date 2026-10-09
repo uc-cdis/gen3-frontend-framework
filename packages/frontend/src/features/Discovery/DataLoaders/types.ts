@@ -16,6 +16,8 @@ export interface GetDataProps {
 
 export interface GetDataResponse {
   mdsData: JSONObject[];
+  /** number of studies dropped because they have no uid field */
+  missingIdCount?: number;
   isUninitialized: boolean;
   isFetching: boolean;
   isLoading: boolean;

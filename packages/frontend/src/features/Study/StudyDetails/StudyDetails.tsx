@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Drawer } from '@mantine/core';
 import StudyDetailsPanel from './StudyDetailsPanel';
@@ -11,7 +11,7 @@ import { useDiscoveryContext } from '../../Discovery/DiscoveryProvider';
 
 const StudyDetails = () => {
   const { discoveryConfig: config } = useDiscoveryContext();
-  const index = config?.minimalFieldMapping?.uid ?? 'unknown';
+  const index = config.minimalFieldMapping.uid ?? 'unknown';
   const detailView = config.detailView;
   const simpleDetailsView = config.simpleDetailsView;
   const authz = config.features.authorization;
@@ -23,34 +23,58 @@ const StudyDetails = () => {
   const defaultPath = 'Discovery';
   const defaultPermaLinkValue = `${origin}/${defaultPath}/notfound`;
   const [permalink, setPermalink] = useState(defaultPermaLinkValue);
-  const pushUrl = (path: string) =>
-    router.push(path, undefined, { shallow: true });
+  const pushUrl = useCallback(
+    (path: string) => router.push(path, undefined, { shallow: true }),
+    [router],
+  );
   const studyId = toString(studyDetails[index]);
+  const shouldRouteToStudy =
+    (detailView?.routeToStudyURL || simpleDetailsView?.routeToStudyURL) ??
+    false;
 
   useEffect(() => {
     if (studyId) {
       if (opened) {
-        void pushUrl(`/${defaultPath}/${encodeURI(studyId)}`);
+        if (shouldRouteToStudy) {
+          void pushUrl(`/${defaultPath}/${encodeURI(studyId)}`);
+        }
         setPermalink(`${origin}/${defaultPath}/${encodeURI(studyId)}`);
       } else {
-        void pushUrl(`/${defaultPath}`);
+        if (shouldRouteToStudy) {
+          void pushUrl(`/${defaultPath}`);
+        }
         setPermalink(defaultPermaLinkValue);
       }
     }
-    if (opened === false) {
-      // if drawer has been shut, reset study details
-      setStudyDetails({});
-    }
-  }, [opened]);
+  }, [
+    opened,
+    studyId,
+    origin,
+    pushUrl,
+    shouldRouteToStudy,
+    defaultPermaLinkValue,
+  ]);
+
+  const handleClose = () => {
+    close();
+  };
 
   useEffect(() => {
     if (hasStudyDetails) {
       open();
     }
-  }, [studyDetails, open]);
+  }, [hasStudyDetails, open]);
 
   return (
-    <Drawer.Root opened={opened} onClose={close} size="50%" position="right">
+    <Drawer.Root
+      opened={opened}
+      onClose={handleClose}
+      size="50%"
+      position="right"
+      // reset study details only after the close transition finishes,
+      // so the content stays mounted while the drawer slides out
+      transitionProps={{ onExited: () => setStudyDetails({}) }}
+    >
       <Drawer.Overlay opacity={0.5} blur={4} />
       {hasStudyDetails && (
         <Drawer.Content className="pl-2">

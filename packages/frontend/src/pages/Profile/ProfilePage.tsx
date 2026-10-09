@@ -7,7 +7,12 @@ interface Props extends NavPageLayoutProps {
   profileConfig: ProfileConfig;
 }
 
-const ProfilePage = ({ headerProps, footerProps, profileConfig }: Props) => {
+const ProfilePage = ({
+  headerProps,
+  footerProps,
+  headerMetadata,
+  profileConfig,
+}: Props) => {
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
@@ -15,6 +20,7 @@ const ProfilePage = ({ headerProps, footerProps, profileConfig }: Props) => {
         title: 'Gen3 Profile Page',
         content: 'Profile page',
         key: 'gen3-profile-page',
+        ...(headerMetadata ? headerMetadata : {}),
         ...(profileConfig?.headerMetadata ? profileConfig.headerMetadata : {}),
       }}
     >

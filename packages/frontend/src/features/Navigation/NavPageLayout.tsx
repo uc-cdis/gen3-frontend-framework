@@ -4,6 +4,7 @@ import Footer from './Footer/Footer';
 import Header from './Header';
 import { NavPageLayoutProps } from './types';
 import LeftSidePanel from './Vertical/LeftSidePanel';
+import { AuthzMappingsGate } from '../../components/Providers/AuthzMappingsProvider';
 
 const NavPageLayout = ({
   headerProps,
@@ -45,10 +46,14 @@ const NavPageLayout = ({
             items={headerProps.navigation.items}
             classNames={headerProps.navigation.classNames}
           />
-          <main className={mainContentStyle}>{children}</main>
+          <main className={mainContentStyle}>
+            <AuthzMappingsGate>{children}</AuthzMappingsGate>
+          </main>
         </div>
       ) : (
-        <main className={mainContentStyle}>{children}</main>
+        <main className={mainContentStyle}>
+          <AuthzMappingsGate>{children}</AuthzMappingsGate>
+        </main>
       )}
       {CustomFooterComponent ? (
         <CustomFooterComponent {...footerProps} />

@@ -28,7 +28,8 @@
     "build": "npm run compile && npm run types && npm run rollup",
     "build:clean": "npm run clean && npm run build",
     "build:watch": "npm run compile --stream && npm run rollup -- --watch",
-    "dev": "echo no dev tasks"
+    "dev": "echo no dev tasks",
+    "check:server": "depcruise src/server.ts --config .dependency-cruiser.cjs"
   },
   "exports": {
     ".": {
@@ -100,6 +101,7 @@
   },
   "devDependencies": {
     "@iconify/types": "^2.0.0",
+    "dependency-cruiser": "^18.5.0",
     "swr": "^2.2.5"
   },
   "peerDependencies": {

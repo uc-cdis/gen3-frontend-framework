@@ -1,10 +1,6 @@
-import { DataActionFunction } from '../../types';
-import {
-  fetchJSONDataFromURL,
-  GEN3_MANIFEST_API,
-  HttpMethod,
-  ManifestItem,
-} from '@gen3/core';
+import type { DataActionFunction } from '../../types';
+import type { HttpMethod, ManifestItem } from '@gen3/core';
+import { fetchJSONDataFromURL, GEN3_MANIFEST_API } from '@gen3/core';
 import { isValidFileItemWithParentDatasetNameAndID } from '../../../types';
 
 interface ExportDataListToWorkspaceParameters {
@@ -68,7 +64,7 @@ export const exportDataListToWorkspace: DataActionFunction = async (
     onDone?.();
   } catch (error: unknown) {
     if (error instanceof Error) {
-      if (error.name == 'AbortError') {
+      if (error.name === 'AbortError') {
         onAbort?.();
       }
       onError?.(error);
