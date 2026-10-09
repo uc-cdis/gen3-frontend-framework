@@ -164,7 +164,6 @@ const nextConfig = {
           source: '/library/lists/:path*',
           destination: `${GEN3_TARGET}/library/lists/:path*`,
         },
-
         // The manifest service redirects `/manifests` to `/manifests/` using
         // its own absolute host, which the browser then blocks with CORS.
         // Send the trailing slash upstream so the redirect never happens.
