@@ -11,7 +11,8 @@ The configuration options are as follows:
     "inactiveTimeLimit": 20,
     "logoutInactiveUsers": true,
     "monitorWorkspace": false,
-    "expireWarningMinutes": 0
+    "expireWarningMinutes": 0,
+    "useWTS": true
   }
 }
 ```
@@ -25,6 +26,9 @@ Where
   do not limit inactivity
 - **logoutInactiveUsers**: `true|false` enable/disable if inactive users are logged out
 - **monitorWorkspace**: Whether to poll running/configured hatchery based workspaces
-- **expireWarningMinutes**: How far ahead of the inactivity logout to warn users
+- **expireWarningMinutes**: `minutes`  Number of minutes ahead of the inactivity logout to warn users. Default is `0`
+  which means do not warn.
+- **useWTS**: `true|false` (optional) enable/disable using Windows Terminal Services for session management. The default
+  is false, you only need to set this to true if you are using Windows Terminal Services.
 
-**Note all times are in minutes**
+**Note: all times are in minutes**

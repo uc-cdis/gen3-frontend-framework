@@ -11,6 +11,7 @@ registerDiscoveryDefaultCellRenderers();
 const DiscoveryPage = ({
   headerProps,
   footerProps,
+  headerMetadata,
   discoveryConfig,
 }: DiscoveryPageProps): JSX.Element => {
   if (!discoveryConfig) {
@@ -25,10 +26,11 @@ const DiscoveryPage = ({
     <NavPageLayout
       {...{ headerProps, footerProps }}
       headerMetadata={{
-        title: 'Gen3 Discovery Page',
+        title: 'Gen3 Discovery Page', // default headers
         content: 'Discovery Data',
         key: 'gen3-discovery-page',
-        ...(discoveryConfig?.headerMetadata
+        ...(headerMetadata ? headerMetadata : {}), // global headers
+        ...(discoveryConfig?.headerMetadata // page specific headers
           ? discoveryConfig.headerMetadata
           : {}),
       }}
