@@ -1,19 +1,20 @@
 import React from 'react';
 import {
-  GEN3_COMMONS_NAME,
-  selectGen3AppByName,
   useCoreSelector,
+  selectGen3AppByName,
+  GEN3_COMMONS_NAME,
 } from '@gen3/core';
-import { GetServerSideProps } from 'next';
-import { NextRouter, useRouter } from 'next/dist/client/router';
+import type { GetServerSideProps } from 'next';
+import type { NextRouter} from 'next/dist/client/router';
+import { useRouter } from 'next/dist/client/router';
 
-import { ContentSource } from '@gen3/frontend/lib/content';
-
-import { getNavPageLayoutPropsFromConfig } from '@gen3/frontend/lib/common/staticProps';
+import type {
+  NavPageLayoutProps} from '@gen3/frontend';
 import {
   NavPageLayout,
-  type NavPageLayoutProps,
-} from '@gen3/frontend/features/Navigation';
+  getNavPageLayoutPropsFromConfig,
+  ContentSource,
+} from '@gen3/frontend';
 
 interface AppConfig extends NavPageLayoutProps {
   config?: Record<string, any>;
@@ -23,18 +24,12 @@ const AppsPage = ({ headerProps, footerProps, config }: AppConfig) => {
   const router = useRouter();
   const appName = getAppName(router);
 
-  console.log('starting app', appName);
-
   const Gen3App = useCoreSelector(
     () => selectGen3AppByName(appName), // TODO update ById to ByName
   ) as React.ElementType;
 
-  if (!Gen3App)
-    return (
-      <div className="text-utility-warning font-bold m-10 border-base-darkest">
-        App not found
-      </div>
-    );
+  // oxlint-disable-next-line no-console
+  console.log("loading app", appName, 'app', Gen3App);
 
   return (
     <NavPageLayout
@@ -64,12 +59,13 @@ export const getServerSideProps: GetServerSideProps<
 > = async (context) => {
   const appName = context.query.appName as string;
 
-  console.log('loading', appName);
+  console.log("loading app", appName);
 
   try {
     const config: any = await ContentSource.getContentDatabase().get(
       `${GEN3_COMMONS_NAME}/apps/${appName}.json`,
     );
+
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
@@ -77,6 +73,7 @@ export const getServerSideProps: GetServerSideProps<
       },
     };
   } catch (err) {
+    console.error(err);
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),

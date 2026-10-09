@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import CompactDictionaryPanel from './CompactDictionaryPanel';
 import { SchemaNode } from '../../lib/ragContext';
 import { GEN3_SUBMISSION_API } from '@gen3/core';

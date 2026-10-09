@@ -4,11 +4,11 @@
   * ~~tooltips for each panel button~~
 * ~~Full screen toggle~~
   ~~* Container Error Panel~~
-* Match wireframe
-  * landing page
+  ~~* Match wireframe~~
+  ~~* landing page~~
     ~~* Terminate Kernels~~
-* Active Kernel? Note sure is this needed
-* Correct Runtime
+  ~~* Active Kernel? Note sure is this needed~~
+  ~~* Correct Runtime~~
 * Persistence of Active Kernels
 * Billing Placeholder
 * Gateway/Kernel Status
@@ -20,22 +20,22 @@
   * ~~kernel runtime in minutes~~
 * ~~Stop Container Button~~
   * ~~hide when not running~~
-* Select Kernel
+    ~~* Select Kernel~~
 * ~~Show upgrade panel in Free Tier~~
 * ~~Hide kernel controls in Free Tier~~
-* Update Polling
-  * make polling configurable
-* Workspace Status in Navigation
-* Prevent Tier access when not logged in/authorized
-* Test deployment
-    * Kernels
-    * Proxys
-* Fix service config/definition
-  * Hatchery URL
-  * Jupyter lite source
-* move to NPM
+  ~~* Update Polling~~
+  ~~* make polling configurable~~
+  ~~* Workspace Status in Navigation~~
+  ~~* Prevent Tier access when not logged in/authorized~~
+  ~~* Test deployment~~
+  ~~* Kernels~~
+  ~~* Proxys~~
+  ~~* Fix service config/definition~~
+  * ~~Hatchery URL~~
+  * ~~Jupyter lite source~~
+* ~~move to NPM~~
 * ~~create public stub for npm package~~
-* Development Environment Support
+  ~~* Development Environment Support~~
 
 # Backlog
 
@@ -44,38 +44,42 @@
 
 ## Load images
 
-## pull images if needed
+### pull images if needed
 
 ```bash
 docker pull --platform linux/amd64 quay.io/cdis/gen3-vectis:qa-jegv2
-docker pull --platform linux/amd64 quay.io/cdis/gen3-vectis:qa-goproxy
+#docker pull --platform linux/amd64 quay.io/cdis/gen3-vectis:qa-goproxy
 #docker pull --platform linux/amd64 quay.io/cdis/multihead-workspace-proxy:feat_init
 #docker pull --platform linux/amd64 quay.io/cdis/gen3-vectis:gen3-vectisv6
 ```
-kind load docker-image quay.io/cdis/gen3-vectis:qa-jegv2 --name kind-multi-node kind load docker-image
-quay.io/cdis/gen3-vectis:qa-goproxy --name kind-multi-node #kind load docker-image
-quay.io/cdis/multihead-workspace-proxy:feat_init --name kind-multi-node #kind load docker-image
-quay.io/cdis/gen3-vectis:gen3-vectisv6 --name kind-multi-node
 
-# load local frontend image
+```bash
+kind load docker-image quay.io/cdis/gen3-vectis:qa-jegv2 --name kind-multi-node
+#quay.io/cdis/gen3-vectis:qa-goproxy --name kind-multi-node
+#quay.io/cdis/multihead-workspace-proxy:feat_init --name kind-multi-node
+#quay.io/cdis/gen3-vectis:gen3-vectisv6 --name kind-multi-node
+````
+
+### load local frontend image
 
 ```
 kind load docker-image gen3:fef --name kind-multi-node
 ```
-## Apply CA patch
+
+### Apply CA patch
 
 ```
 ./setup-kind-gen3.sh --patch-ca hatchery
 ./setup-kind-gen3.sh --patch-ca revproxy
 ```
 
-## need to label kind with to enable the hatchery pods to start
+### need to label kind with to enable the hatchery pods to start
 
 ```
 kubectl label node kind-multi-node-control-plane role=jupyter
 ```
 
-# set up fence with 'credentials' scope
+### set up fence with 'credentials' scope
 
 ```bash
 fence-create client-create --client gen3dev2 --urls http://localhost:3000/api/auth/callback --username craigrbarnes@uchicago.edu   --allowed-scopes openid user data credentials --grant-types authorization_code refresh_token

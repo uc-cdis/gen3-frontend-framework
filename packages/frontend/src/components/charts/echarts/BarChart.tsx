@@ -1,15 +1,13 @@
 import React, { useCallback, useMemo, useRef } from 'react';
 import { ActionIcon, Menu, Tooltip } from '@mantine/core';
 import { processLabel, truncateString } from '../utils';
-import { ChartProps } from '../types';
-import ReactECharts, {
-  ReactEChartsHandle,
-  ReactEChartsProps,
-} from './ReactECharts';
-import { HistogramDataArray } from '@gen3/core';
+import type { ChartProps } from '../types';
+import type { ReactEChartsHandle, ReactEChartsProps } from './ReactECharts';
+import ReactECharts from './ReactECharts';
+import type { HistogramDataArray } from '@gen3/core';
 import type { EChartsOption } from 'echarts';
 import { graphic } from 'echarts';
-import { CallbackDataParams } from 'echarts/types/dist/shared';
+import type { CallbackDataParams } from 'echarts/types/dist/shared';
 import { isArray } from 'lodash';
 import { filterMissing } from './utils';
 
@@ -70,8 +68,8 @@ const processAxis = (
   facetData: HistogramDataArray,
   maxBins = 100,
   truncateLength = 35,
-  xAxisLabel: string | undefined = undefined,
-  yAxisLabel: string | undefined = undefined,
+  xAxisLabel?: string,
+  yAxisLabel?: string,
   showXAxisTicks = true,
   showYAxisTicks = true,
   xLabelRotation = 0,
@@ -125,9 +123,9 @@ const BarChart = ({
   labelTruncation = 35,
   showXTicks = false,
   showYTicks = true,
-  xLabel = undefined,
-  yLabel = undefined,
-  color = undefined,
+  xLabel,
+  yLabel,
+  color,
   xLabelRotation = 0,
   enableDownload = false,
   downloadFileName = 'bar-chart',

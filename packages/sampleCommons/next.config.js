@@ -63,7 +63,7 @@ const nextConfig = {
     incomingRequests: true,
     --- */
   },
-  webpack: (config, { dev }) => {
+  webpack: (config) => {
     config.infrastructureLogging = {
       level: 'error',
     };
@@ -72,9 +72,7 @@ const nextConfig = {
 
     config.resolve.alias = {
       ...config.resolve.alias,
-
       '@gen3/core$': path.resolve(__dirname, '../core/src/index.ts'),
-
       // Specific sub-path aliases (these bypass barrel files)
       '@gen3/frontend/app': path.resolve(
         __dirname,
@@ -88,10 +86,7 @@ const nextConfig = {
         __dirname,
         '../frontend/src/exports/content.ts',
       ),
-      '@gen3/workspaces$': path.resolve(
-        __dirname,
-        '../workspaces/src/index.ts',
-      ),
+      '@gen3/workspaces': path.resolve(__dirname, '../workspaces/src/index.ts'),
       '@gen3/workspaces/server': path.resolve(
         __dirname,
         '../workspaces/src/server.ts',
@@ -142,6 +137,7 @@ const nextConfig = {
           source: '/guppy/:path*',
           destination: `${GEN3_TARGET}/guppy/:path*`,
         },
+        { source: '/job/:path*', destination: `${GEN3_TARGET}/job/:path*` },
         { source: '/mds/:path*', destination: `${GEN3_TARGET}/mds/:path*` },
         {
           source: '/ai-search/:path*',
@@ -168,7 +164,13 @@ const nextConfig = {
           source: '/library/lists/:path*',
           destination: `${GEN3_TARGET}/library/lists/:path*`,
         },
-        { source: '/job/:path*', destination: `${GEN3_TARGET}/job/:path*` },
+        // The manifest service redirects `/manifests` to `/manifests/` using
+        // its own absolute host, which the browser then blocks with CORS.
+        // Send the trailing slash upstream so the redirect never happens.
+        {
+          source: '/manifests',
+          destination: `${GEN3_TARGET}/manifests/`,
+        },
         {
           source: '/manifests/:path*',
           destination: `${GEN3_TARGET}/manifests/:path*`,

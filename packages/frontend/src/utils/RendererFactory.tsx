@@ -97,8 +97,8 @@ export class RenderFactoryTypedInstance<
         }
         return true;
       } catch (error) {
-        console.error(
-          `Error registering renderer ${functionName} for type ${type}: ${error}`,
+        console.warn(
+          `Warning registering renderer ${functionName} for type ${type}: ${error}`,
         );
         return false;
       }

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta } from '@storybook/nextjs';
+import type { Meta } from '@storybook/nextjs-vite';
 import AccessDescriptor from './AccessDescriptor';
 
 const meta = {

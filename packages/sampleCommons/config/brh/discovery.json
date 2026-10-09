@@ -2,7 +2,10 @@
   "metadataConfig": [
     {
       "tableConfig": {
-        "selectableRows": true,
+        "selectableRowConfiguration": {
+          "field": "__manifest",
+          "comparer": "arrayNotEmpty"
+        },
         "expandableRows": true
       },
       "features": {
@@ -54,21 +57,26 @@
           },
           "tagSearchDropdown": {
             "enabled": true,
-            "collapsibleButtonText": "Data Commons"
+            "collapsibleButtonText": "Data Commons",
+            "categoryTypes": ["Commons"]
           }
         },
+
         "exportFromDiscovery": {
           "enabled": "true",
           "exportDataFields": {
-            "dataObjectFieldName": "__manifest"
+            "dataObjectField": "__manifest"
           },
           "buttons": [
             {
               "type": "manifest",
-              "label": "Manifest"
+              "label": "Manifest",
+              "requiresLogin": true
             },
             {
-              "type": "addToDataLibrary"
+              "type": "exportToWorkspace",
+              "label": "Open in Workspace",
+              "requiresLogin": true
             }
           ]
         },
@@ -84,6 +92,7 @@
         },
         "authorization": {
           "enabled": true,
+          "isMesh": true,
           "columnTooltip": "Filter by data access. Accessible indicates you are authorized to access. Not accessible indicates you are not authorized to access.",
           "supportedValues": {
             "accessible": {
@@ -91,16 +100,14 @@
               "menuText": "Available"
             },
             "unaccessible": {
-              "enabled": false,
+              "enabled": true,
               "menuText": "Not Accessible"
             },
-            "pending": {
-              "enabled": false,
-              "menuText": "Pending"
+            "waiting": {
+              "enabled": false
             },
             "notAvailable": {
-              "enabled": false,
-              "menuText": "Not Available"
+              "enabled": false
             }
           }
         }
@@ -118,7 +125,8 @@
         }
       ],
       "tagSelector": {
-        "title": "Tags by category"
+        "title": "Tags by category",
+        "showTagCategoryNames": true
       },
       "studyColumns": [
         {
@@ -134,20 +142,19 @@
           "field": "full_name",
           "errorIfNotAvailable": false,
           "valueIfNotAvailable": "n/a",
-          "width": "400px",
           "contentType": "string"
         },
         {
           "name": "Number of Subjects",
           "field": "_subjects_count",
           "errorIfNotAvailable": false,
-          "valueIfNotAvailable": "n/a",
+          "valueIfNotAvailable": "0",
           "contentType": "number",
           "width": "98px"
         },
         {
           "name": "ID Number",
-          "field": "project_id",
+          "field": "study_id",
           "errorIfNotAvailable": false,
           "valueIfNotAvailable": "n/a",
           "width": "152px",
@@ -170,6 +177,14 @@
           "errorIfNotAvailable": false,
           "valueIfNotAvailable": "API",
           "contentType": "string"
+        },
+        {
+          "name": "Data Availability",
+          "field": "__accessible",
+          "errorIfNotAvailable": false,
+          "valueIfNotAvailable": "n/a",
+          "contentType": "dataAccess",
+          "sortable": true
         }
       ],
       "studyPreviewField": {
@@ -194,7 +209,9 @@
               {
                 "name": "Number of Subjects",
                 "field": "_subjects_count",
-                "contentType": "number"
+                "contentType": "number",
+                "includeIfNotAvailable": true,
+                "valueIfNotAvailable": "0"
               },
               {
                 "name": "Full Name",
@@ -207,7 +224,7 @@
                 "contentType": "text",
                 "includeName": true,
                 "includeIfNotAvailable": true,
-                "valueIfNotAvailable": "N/A"
+                "valueIfNotAvailable": "n/a"
               },
               {
                 "name": "dbGaP Accession Number",
@@ -244,6 +261,7 @@
                 "name": "Description",
                 "field": "study_description",
                 "contentType": "paragraphs",
+
                 "includeName": true,
                 "includeIfNotAvailable": true,
                 "valueIfNotAvailable": "No description has been provided for this study."
@@ -253,22 +271,22 @@
         ]
       },
       "minimalFieldMapping": {
-        "tagsListFieldName": "tags",
+        "tagsListField": "tags",
         "authzField": "authz",
-        "uid": "_unique_id"
+        "uid": "_unique_id",
+        "dataObjectField": "__manifest"
       },
       "tags": {
         "tagCategories": [
           {
             "name": "Commons",
-            "displayName": "Data Commons",
             "color": "rgba(129, 211, 248, 1)",
             "display": true
           },
           {
             "name": "Program",
             "color": "rgba(129, 211, 248, 1)",
-            "display": false
+            "display": true
           },
           {
             "name": "Study Registration",
@@ -283,22 +301,22 @@
           {
             "name": "primary_site",
             "color": "rgba(112, 182, 3, 1)",
-            "display": false
+            "display": true
           },
           {
             "name": "disease_type",
             "color": "rgba(112, 182, 3, 1)",
-            "display": false
+            "display": true
           },
           {
             "name": "data_type",
             "color": "rgba(112, 182, 3, 1)",
-            "display": false
+            "display": true
           },
           {
             "name": "clinical_study_type",
             "color": "rgba(112, 182, 3, 1)",
-            "display": false
+            "display": true
           }
         ]
       }

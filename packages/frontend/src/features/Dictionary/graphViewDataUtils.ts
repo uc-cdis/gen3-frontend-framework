@@ -398,8 +398,8 @@ const placeNodesOnGraph = (
 ) => {
   let currentX = 0;
   let currentY = 0;
-  const xSpacing = 300;
-  const ySpacing = 100;
+  const xSpacing = 80;
+  const ySpacing = 40;
 
   const positions: {
     //TODO set this to proper type
@@ -408,6 +408,7 @@ const placeNodesOnGraph = (
     symbol?: string;
     symbolSize?: number;
     itemStyle?: object;
+    category?: string;
     x: number;
     y: number;
   }[] = [];
@@ -422,6 +423,7 @@ const placeNodesOnGraph = (
       positions.push({
         id: id,
         name: dictionary[id].title,
+        category: dictionary[id].category,
         x: currentX,
         y: currentY,
       });
@@ -444,14 +446,14 @@ const placeNodesOnGraph = (
         //name: `${id}-point-r`,
         symbolSize: 0,
         symbol: 'none',
-        x: currentX + longestName * 30 + xSpacing / 2,
+        x: currentX + longestName * 8 + xSpacing / 2,
         y: currentY,
       });
       currentY += ySpacing;
     });
     // stepped pattern
     currentY = ySpacing * (leftToRightIndex + 1);
-    currentX += longestName * 30 + xSpacing;
+    currentX += longestName * 8 + xSpacing;
   });
 
   return positions;
@@ -459,35 +461,33 @@ const placeNodesOnGraph = (
 interface linksForGraphProps {
   source: string;
   target: string;
+  required?: boolean;
 }
 
 const linksForGraph = (edges: nodeLinkListProps[]) => {
-  /*return edges.map((edge) => {
-    return {
-      source: edge.source.id,
-      target: edge.target.id,
-    };
-  });*/
   const tempLinks: linksForGraphProps[] = [];
   edges.forEach((edge) => {
+    const required = edge.required === true;
     tempLinks.push({
       source: edge.source.id,
       target: `${edge.source.id}-point-l`,
+      required,
     });
     tempLinks.push({
       source: `${edge.source.id}-point-l`,
       target: `${edge.target.id}-point-r`,
+      required,
     });
     tempLinks.push({
       source: `${edge.target.id}-point-r`,
       target: edge.target.id,
+      required,
     });
   });
   return tempLinks;
 };
 
 export const formatDataForGraph = (dictionary: DataDictionary) => {
-  //TODO cash all this unchanging data
   const { nodes, edges } = createNodesAndEdges(
     {
       dictionary: dictionary,
@@ -501,8 +501,16 @@ export const formatDataForGraph = (dictionary: DataDictionary) => {
 
   const graphLinks = linksForGraph(edges);
 
+  // Raw edges for direct Bézier curve rendering (source=child, target=parent)
+  const rawEdges = edges.map((e) => ({
+    source: e.source.id,
+    target: e.target.id,
+    required: !!e.required,
+  }));
+
   return {
     data: graphData,
     links: graphLinks,
+    rawEdges,
   };
 };

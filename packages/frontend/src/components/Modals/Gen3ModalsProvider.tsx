@@ -6,8 +6,6 @@ import {
   Modals,
   selectCurrentModal,
   useCoreSelector,
-  useGetAuthzMappingsQuery,
-  useGetCSRFQuery,
 } from '@gen3/core';
 import { SessionExpiredModal } from './SessionExpiredModal';
 import { ModalsConfig } from './types';
@@ -42,9 +40,6 @@ const Gen3ModalsProvider = ({
   config,
   children,
 }: Gen3StandardModalsProviderProps) => {
-  const { isError } = useGetCSRFQuery(undefined, { refetchOnFocus: true });
-  useGetAuthzMappingsQuery(undefined, { refetchOnMountOrArgChange: true });
-
   const { showModal, markSeen } = useFirstTimeUse();
 
   const [cookie] = useCookies(['Gen3-first-time-use']);
@@ -84,14 +79,6 @@ const Gen3ModalsProvider = ({
     modalsConfig.systemUseModal.enabled,
     isAuthenticated,
   ]);
-
-  if (isError) {
-    return (
-      <div className="w-full m-20">
-        Error Getting status check from commons.
-      </div>
-    );
-  }
 
   return (
     <div className="bg-base-max">

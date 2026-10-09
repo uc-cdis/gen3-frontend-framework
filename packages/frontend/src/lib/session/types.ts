@@ -13,6 +13,19 @@ export interface AuthTokenData {
   expiresInMs?: number;
   status: JWTSessionStatus;
   userContext?: Record<string, string>;
+
+  /**
+   * Fence's own session cookie (`fence`) — an RS256 JWT signed by the same key
+   * as `access_token`, but on Fence's own SESSION_TIMEOUT/SESSION_LIFETIME
+   * schedule, independent of the access token's lifetime. Present only when
+   * Fence set that cookie and it decoded and verified cleanly; absent
+   * otherwise (older Fence deployments, credentials-login dev mode, a bad
+   * signature), in which case scheduling falls back to `expires` alone.
+   */
+  fenceStatus?: JWTSessionStatus;
+  fenceIssued?: number;
+  fenceExpires?: number;
+  fenceExpiresInMs?: number;
 }
 
 export interface Session extends AuthTokenData {
@@ -88,6 +101,11 @@ export interface SessionConfiguration {
    * and frontend calls get 401s.
    */
   renewAccessTokenEarlyMilliseconds?: number;
+
+  /**
+   * Enable getting authz resources from WorkspaceToken Service
+   */
+  enableWTS?: boolean;
 }
 
 export interface SessionProviderProps extends SessionConfiguration {

@@ -42,10 +42,21 @@ in the datacommons application, without the overhead of publishing new
 Gen3.2 NPMs.
 
 ### Updating changes to a single package
+
 ```bash
 cd packages/core, packages/frontend,packages/workspaces, or packages/tools
+```
+
+then
+```bash
 npm run build:clean
 yalc publish --push
+```
+
+or
+
+```bash
+npm run build:clean && yalc publish --push
 ```
 which will update the local copy of the Gen3.2 packages and any linked applications.
 
@@ -67,5 +78,6 @@ yalc remove @gen3/frontend @gen3/core @gen3/toolsff @gen3/workspaces
 ```
 
 ### Un-publishing the local copy of the Gen3.2 packages
-You will need to un-publish the local copy of the Gen3.2 packages with
+
+You will need to unpublish the local copy of the Gen3.2 packages with
 `yalc installations clean @gen3/frontend @gen3/core @gen3/toolsff @gen3/workspaces`

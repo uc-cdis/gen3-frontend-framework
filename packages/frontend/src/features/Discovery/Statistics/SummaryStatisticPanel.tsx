@@ -3,22 +3,18 @@ import { SummaryStatistics } from './types';
 import StatisticRendererFactory from './StatisticsRendererFactory';
 
 const BuildSummaryStatisticPanel = (summaries: SummaryStatistics = []) => {
-  return summaries.map((summary) => {
-    const { name, field, type } = summary;
-    if (name && field && type) {
-      // TODO replace 'default' with a real value
-      const element = StatisticRendererFactory().getRenderer(
-        'string',
-        'default',
-      );
-
-      return element({
-        value: summary.value ?? 'N/A',
-        label: name,
-        key: `stats-item-${name}-${field}`,
-      });
-    }
-  });
+  // TODO replace 'default' with a real value
+  const element = StatisticRendererFactory().getRenderer('string', 'default');
+  return summaries
+    .filter(({ name, field, type }) => name && field && type)
+    .map((summary) => (
+      <React.Fragment key={`stats-item-${summary.name}-${summary.field}`}>
+        {element({
+          value: summary.value ?? 'N/A',
+          label: summary.name,
+        })}
+      </React.Fragment>
+    ));
 };
 
 interface SummaryStatisticPanelProps {

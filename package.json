@@ -1,6 +1,6 @@
 {
   "name": "gen3-frontend-framework",
-  "version": "0.12.56",
+  "version": "0.12.83",
   "description": "The Gen3 Frontend Framework mono repo for Gen 3.2 development",
   "private": true,
   "workspaces": [
@@ -47,6 +47,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
+    "@vitest/browser-playwright": "^4.1.11",
     "classnames": "^2.3.1",
     "dayjs": "^1.11.19",
     "glob": "^13.0.6",
@@ -66,7 +67,7 @@
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-terser": "^1.0.0",
     "@rollup/plugin-typescript": "^12.3.0",
-    "@storybook/nextjs": "^10.5.8",
+    "@storybook/nextjs-vite": "^10.6.0",
     "@swc/cli": "^0.8.1",
     "@swc/core": "^1.15.46",
     "@testing-library/jest-dom": "^5.16.5",
@@ -84,7 +85,7 @@
     "jest-environment-jsdom": "^30.4.1",
     "lerna": "^10.0.1",
     "msw": "^2.7.3",
-    "nx": "^23.1.0",
+    "nx": "^23.2.1",
     "oxlint": "^1.76.0",
     "oxlint-tsgolint": "^7.0.2001",
     "postcss-import": "^16.1.0",
@@ -104,7 +105,8 @@
     "terser-webpack-plugin": "^5.3.10",
     "ts-jest": "^29.4.12",
     "ts-json-schema-generator": "^2.3.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vite-plugin-svgr": "^5.2.0"
   },
   "overrides": {
     "js-yaml": "^4.3.1",
@@ -132,9 +134,7 @@
         "pacote": "^21.1.5"
       },
       "pacote": "^21.1.5",
-      "nx": {
-        "brace-expansion": "^5.0.8"
-      }
+      "nx": "^23.2.1"
     },
     "@tailwindcss/typography": {
       "postcss-selector-parser": "^6.1.4"
@@ -144,8 +144,8 @@
       "undici": "^6.21.1",
       "axios": "^1.8.2"
     },
-    "brace-expansion@^1.0.0": "^1.1.16",
-    "brace-expansion@^5.0.0": "^5.0.8",
+    "brace-expansion@^1.0.0": "^1.1.20",
+    "brace-expansion@^5.0.0": "^5.0.11",
     "nyc": "^18.0.0",
     "flat-cache": "^4.0.1",
     "test-exclude": "^8.0.0",
@@ -159,7 +159,6 @@
   },
   "allowScripts": {
     "unrs-resolver": true,
-    "esbuild": true,
     "core-js-pure": true,
     "msw": true,
     "sharp": true,
@@ -168,6 +167,7 @@
     "nx": true,
     "uuid@8.3.2": true,
     "uuid@11.1.1": true,
-    "@parcel/watcher@2.6.0": true
+    "@parcel/watcher@2.6.0": true,
+    "esbuild@0.28.2": true
   }
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   isTimeGreaterThan,
+  normalizeRtkError,
   RequestedWorkspaceStatus,
   selectRequestedWorkspaceStatus,
   selectRequestedWorkspaceStatusTimestamp,
@@ -105,7 +106,7 @@ export const useWorkspaceResourceMonitor = (
     error: paymentModelError,
   } = useGetWorkspacePayModelsQuery(
     undefined,
-    monitorWorkspace
+    monitorWorkspace && monitorPayment
       ? {
           pollingInterval: paymentPollingInterval,
           refetchOnMountOrArgChange: true,
@@ -128,7 +129,10 @@ export const useWorkspaceResourceMonitor = (
   }, [isWorkspaceStatusError, dispatch]);
   useEffect(() => {
     if (isPaymentModelError) {
-      console.warn('Payment model error: ', paymentModelError.toString());
+      const { status, message } = normalizeRtkError(paymentModelError);
+      console.warn(
+        `Payment model error${status ? ` (${status})` : ''}: ${message}`,
+      );
     }
     if (paymentModelData?.noPayModel) {
       console.warn('No payment model defined');

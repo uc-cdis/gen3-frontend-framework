@@ -1,14 +1,18 @@
-import React, { JSX, useCallback, useEffect, useMemo, useState } from 'react';
+import type { JSX } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { partial } from 'lodash';
-import {
-  Accessibility,
+import type {
   AggregationsData,
-  clearCohortFilters,
   CombineMode,
   CoreState,
-  extractEnumFilterValue,
   FacetDefinition,
   FacetType,
+  NumericFromTo,
+} from '@gen3/core';
+import {
+  Accessibility,
+  clearCohortFilters,
+  extractEnumFilterValue,
   isIntersection,
   selectAllCohortFiltersCollapsed,
   selectCurrentCohortId,
@@ -17,9 +21,9 @@ import {
   toggleCohortBuilderAllFilters,
   useCoreDispatch,
   useCoreSelector,
+  useCustomRangeQuery,
   useGetAggsQuery,
   useGetCountsQuery,
-  useSubmitSowerJobMutation,
 } from '@gen3/core';
 import { type CohortPanelConfiguration } from './types';
 import {
@@ -31,15 +35,16 @@ import { ErrorCard } from '../../components/MessageCards';
 import { useMediaQuery } from '@mantine/hooks';
 import {
   classifyFacets,
-  EnumFacetDataHooks,
   extractRangeValues,
-  FacetDataHooks,
+  type FacetHooks,
   getAllFieldsFromFilterConfigs,
   processBucketData,
+  processDefinedRangeData,
   processRangeData,
   removeIntersectionFromEnum,
   useGetFacetFilters,
   useUpdateFilters,
+  useUpdateFiltersFlat,
 } from '../../components/facets';
 import {
   useClearFilters,
@@ -62,7 +67,6 @@ import {
 } from './hooks';
 import DropdownPanel from '../../components/facets/Panels/DropdownPanel';
 import QueryExpression from './QueryExpression';
-import useSowerJobEventBus from '../Sower/useSowerJobEventBus';
 
 const EmptyData = {};
 
@@ -102,13 +106,14 @@ export const CohortPanel = ({
   guppyConfig,
   filters,
   charts = {},
-  chartsSection = undefined,
+  chartsSection,
   table,
   tabTitle,
   dropdowns,
   buttons,
   loginForDownload,
   showAccessLevel = false,
+  fieldsAreFlat = false,
 }: CohortPanelConfigurationWithAccessLevel): JSX.Element => {
   const isSm = useMediaQuery('(min-width: 639px)');
   const isMd = useMediaQuery('(min-width: 1373px)');
@@ -170,6 +175,7 @@ export const CohortPanel = ({
   const {
     data,
     isSuccess,
+    isFetching: isAggsQueryFetching,
     isError: isAggsQueryError,
   } = useGetAggsQuery({
     type: index,
@@ -204,6 +210,35 @@ export const CohortPanel = ({
       skip: chartKeys.length === 0,
     },
   );
+
+  // for any facets that are continuous, we need to query each one
+  const useContinuousFacet = (
+    field: string,
+    ranges: ReadonlyArray<NumericFromTo>,
+  ) => {
+    const { data, isSuccess, isFetching, isError } = useCustomRangeQuery({
+      field,
+      ranges: ranges as Array<NumericFromTo>,
+      filters: cohortFilters,
+      index,
+      indexPrefix: indexPrefix,
+      accessibility: accessLevel,
+      isNested: !fieldsAreFlat,
+      asTextHistogram: true,
+      rangeBaseName: 'range',
+    });
+
+    // Transform data to match the format expected by NumericRangeFacet
+    // This depends on what processRangeData expects
+    return {
+      data: data
+        ? processDefinedRangeData(data, ranges, field, index, indexPrefix)
+        : {},
+      isSuccess,
+      isFetching,
+      isError,
+    };
+  };
 
   const cleanChartData = useDeepCompareMemo(() => {
     if (isChartSuccess && chartData) {
@@ -260,6 +295,7 @@ export const CohortPanel = ({
         enumFilters: filters,
         combineMode: combineMode,
         isSuccess: isSuccess,
+        isFetching: isAggsQueryFetching,
       };
     },
     [cohortFilters.root, data, isSuccess],
@@ -271,60 +307,76 @@ export const CohortPanel = ({
         data: processRangeData(data?.[field]),
         filters: extractRangeValues(cohortFilters.root[field]),
         isSuccess: isSuccess,
+        isFetching: isAggsQueryFetching,
       };
     },
     [data, cohortFilters.root, isSuccess],
   );
 
+  const EnumHookInstances = {
+    useGetFacetData: getEnumFacetData,
+    useUpdateFacetFilters: partial(
+      fieldsAreFlat ? useUpdateFiltersFlat : useUpdateFilters,
+      index,
+    ),
+    useGetFacetFilters: partial(useGetFacetFilters, index),
+    useClearFilter: partial(useClearFilters, index),
+    useFilterExpanded: partial(useFilterExpandedState, index),
+    useToggleExpandFilter: partial(useToggleExpandFilter, index),
+    useGetCombineMode: partial(useCohortFilterCombineState, index),
+    useSetCombineMode: partial(useSetCohortFilterCombineState, index),
+    useFieldNameToLabel: useFieldNameToLabel,
+    useTotalCounts: undefined,
+  };
+  const RangeHookInstances = {
+    useGetFacetData: getRangeFacetData,
+    useUpdateFacetFilters: partial(
+      fieldsAreFlat ? useUpdateFiltersFlat : useUpdateFilters,
+      index,
+    ),
+    useGetFacetFilters: partial(useGetFacetFilters, index),
+    useClearFilter: partial(useClearFilters, index),
+    useFilterExpanded: partial(useFilterExpandedState, index),
+    useToggleExpandFilter: partial(useToggleExpandFilter, index),
+    useFieldNameToLabel: useFieldNameToLabel,
+    useTotalCounts: undefined,
+  };
+
+  const ContinuousHookInstances = {
+    useGetFacetData: useContinuousFacet,
+    useUpdateFacetFilters: partial(
+      fieldsAreFlat ? useUpdateFiltersFlat : useUpdateFilters,
+      index,
+    ),
+    useGetFacetFilters: partial(useGetFacetFilters, index),
+    useClearFilter: partial(useClearFilters, index),
+    useFilterExpanded: partial(useFilterExpandedState, index),
+    useToggleExpandFilter: partial(useToggleExpandFilter, index),
+    useFieldNameToLabel: useFieldNameToLabel,
+    useTotalCounts: undefined,
+  };
+
   // Set up the hooks for the facet components to use based on the required index
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const facetDataHooks: Record<FacetType, FacetDataHooks | EnumFacetDataHooks> =
+
+  // Set up the hooks for the facet components to use based on the required index
+  const facetDataHooks: Record<FacetType, FacetHooks> =
     useDeepCompareMemo(() => {
       return {
         // TODO: see if there a better way to do this
-        enum: {
-          useGetFacetData: getEnumFacetData,
-          useUpdateFacetFilters: partial(useUpdateFilters, index),
-          useGetFacetFilters: partial(useGetFacetFilters, index),
-          useClearFilter: partial(useClearFilters, index),
-          useFilterExpanded: partial(useFilterExpandedState, index),
-          useToggleExpandFilter: partial(useToggleExpandFilter, index),
-          useGetCombineMode: partial(useCohortFilterCombineState, index),
-          useSetCombineMode: partial(useSetCohortFilterCombineState, index),
-          useFieldNameToLabel: useFieldNameToLabel,
-          useTotalCounts: undefined,
-        },
-        exact: {
-          useGetFacetData: getEnumFacetData,
-          useUpdateFacetFilters: partial(useUpdateFilters, index),
-          useGetFacetFilters: partial(useGetFacetFilters, index),
-          useClearFilter: partial(useClearFilters, index),
-          useFilterExpanded: partial(useFilterExpandedState, index),
-          useToggleExpandFilter: partial(useToggleExpandFilter, index),
-          useFieldNameToLabel: useFieldNameToLabel,
-          useTotalCounts: undefined,
-        },
-        multiselect: {
-          useGetFacetData: getEnumFacetData,
-          useUpdateFacetFilters: partial(useUpdateFilters, index),
-          useGetFacetFilters: partial(useGetFacetFilters, index),
-          useClearFilter: partial(useClearFilters, index),
-          useFilterExpanded: partial(useFilterExpandedState, index),
-          useToggleExpandFilter: partial(useToggleExpandFilter, index),
-          useFieldNameToLabel: useFieldNameToLabel,
-          useTotalCounts: undefined,
-        },
-        range: {
-          useGetFacetData: getRangeFacetData,
-          useUpdateFacetFilters: partial(useUpdateFilters, index),
-          useGetFacetFilters: partial(useGetFacetFilters, index),
-          useClearFilter: partial(useClearFilters, index),
-          useFilterExpanded: partial(useFilterExpandedState, index),
-          useToggleExpandFilter: partial(useToggleExpandFilter, index),
-          useFieldNameToLabel: useFieldNameToLabel,
-          useTotalCounts: undefined,
-        },
+        enum: EnumHookInstances,
+        exact: EnumHookInstances,
+        multiselect: EnumHookInstances,
+        range: RangeHookInstances,
+        age: ContinuousHookInstances,
+        age_in_years: ContinuousHookInstances,
+        numeric_range: RangeHookInstances,
+        year: ContinuousHookInstances,
+        years: ContinuousHookInstances,
+        days: ContinuousHookInstances,
+        percent: ContinuousHookInstances,
+        datetime: RangeHookInstances,
+        toggle: EnumHookInstances,
+        upload: EnumHookInstances,
       };
     }, [getEnumFacetData, getRangeFacetData, index]);
 
@@ -391,16 +443,6 @@ export const CohortPanel = ({
     accessibility: accessLevel,
     queryId: cohortId,
   });
-
-  // oxlint-disable-next-line no-unused-vars
-  const [submitJob, result] = useSubmitSowerJobMutation();
-  const { update } = useSowerJobEventBus();
-
-  useEffect(() => {
-    if (result?.data) {
-      update(result.data?.uid);
-    }
-  }, [result]);
 
   if (isCountsError || isAggsQueryError) {
     return <ErrorCard message="Unable to fetch data from server" />; // TODO: replace with configurable message

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import LabeledNumberField from './LabeledNumberField';
 import { JSONValue } from '@gen3/core';
 

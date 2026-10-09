@@ -1,17 +1,17 @@
 import React from 'react';
-import { Paper, Loader } from '@mantine/core';
+import { Paper } from '@mantine/core';
 import { FaExclamationTriangle as FailedIcon } from 'react-icons/fa';
 import { LuClock as CompletedIcon } from 'react-icons/lu';
 import { FiActivity as ActiveIcon } from 'react-icons/fi';
-import { IconBaseProps } from 'react-icons';
-import { JobListResponse } from '@gen3/core';
+import type { IconBaseProps } from 'react-icons';
+import type { JobWithActions } from '@gen3/core';
+import { backgroundStyles, colorClasses } from './colors';
 
 interface JobOverviewCardProps {
   readonly Icon: React.FC<IconBaseProps>;
   readonly color: string;
   readonly count: number;
   readonly text: string;
-  readonly isLoading: boolean;
 }
 
 const JobOverviewCard = ({
@@ -19,26 +19,18 @@ const JobOverviewCard = ({
   color,
   count,
   text,
-  isLoading,
 }: JobOverviewCardProps) => {
+  const { bg, text: textColor } = colorClasses[color] ?? { bg: '', text: '' };
   return (
-    <Paper
-      shadow="md"
-      radius="lg"
-      p="md"
-      className="w-full flex flex-row gap-4"
-    >
+    <Paper radius="md" p="md" className="w-full flex flex-row gap-4 border-2">
       <div
-        className={`w-16 h-16 flex justify-center items-center rounded-md bg-${color} bg-opacity-25`}
+        className="w-16 h-16 flex justify-center items-center rounded-md"
+        style={backgroundStyles[color]}
       >
-        <Icon size={32} className={`text-${color}`} />
+        <Icon size={32} className={`${textColor}`} />
       </div>
       <div className="flex flex-col">
-        {isLoading ? (
-          <Loader type="dots" />
-        ) : (
-          <p className="text-2xl font-bold">{count}</p>
-        )}
+        <p className="text-2xl font-bold">{count}</p>
         {text}
       </div>
     </Paper>
@@ -46,11 +38,10 @@ const JobOverviewCard = ({
 };
 
 interface JobOverviewProps {
-  readonly data: JobListResponse | undefined;
-  readonly isLoading: boolean;
+  readonly data?: Array<JobWithActions>;
 }
 
-const JobOverview = ({ data, isLoading }: JobOverviewProps) => {
+const JobOverview = ({ data }: JobOverviewProps) => {
   const groupedData = data ? Object.groupBy(data, (row) => row.status) : {};
 
   return (
@@ -60,21 +51,18 @@ const JobOverview = ({ data, isLoading }: JobOverviewProps) => {
         count={groupedData?.Running?.length || 0}
         text="Active Jobs"
         color="utility-success"
-        isLoading={isLoading}
       />
       <JobOverviewCard
         Icon={CompletedIcon}
         count={groupedData?.Completed?.length || 0}
         text="Completed"
         color="utility-success"
-        isLoading={isLoading}
       />
       <JobOverviewCard
         Icon={FailedIcon}
         count={groupedData?.Failed?.length || 0}
         text="Failed"
         color="utility-error"
-        isLoading={isLoading}
       />
     </div>
   );

@@ -1,8 +1,7 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { type ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from '../../lib/session/session';
 import { Center, Loader, Stack, Text } from '@mantine/core';
-import { type JWTSessionStatus } from '@gen3/core';
 
 interface ProtectedContentProps {
   children?: ReactNode;
@@ -22,9 +21,6 @@ interface ProtectedContentProps {
  */
 const ProtectedContentUI = ({ children, referer }: ProtectedContentProps) => {
   const router = useRouter();
-  const [stableStatus, setStableStatus] = useState<
-    JWTSessionStatus | undefined
-  >();
 
   let redirect = referer;
   if (!referer && typeof window !== 'undefined') {
@@ -50,16 +46,11 @@ const ProtectedContentUI = ({ children, referer }: ProtectedContentProps) => {
   // Require auth; when unauthenticated, we trigger delayed redirect
   const { status, pending } = useSession(true, delayRedirect);
 
-  useEffect(() => {
-    if (!pending && stableStatus !== status) {
-      // only update stableStatus if session is not pending
-      // this prevents flickering of the status
-      setStableStatus(status);
-    }
-  }, [status, pending, stableStatus]);
-
-  // While we don't have a stable "issued" status, we only handle login gating
-  if (stableStatus !== 'issued') {
+  // Branch on the session directly: `useManageSession` keeps an established
+  // session during /user revalidation, so no local copy of the status is needed.
+  // (A copy synced in an effect lags one render and paints the "not logged in"
+  // message for a frame when the session resolves.)
+  if (status !== 'issued') {
     if (pending) {
       // Session is being established/checked
       return (

@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import WorkspaceTierCard from './WorkspaceTierCard';
 import { WorkspaceTier } from '../types';
 
 const meta = {
-  title: "Workspace Components/WorkspaceTierCard",
+  title: 'Workspace Components/WorkspaceTierCard',
   component: WorkspaceTierCard,
 } satisfies Meta<typeof WorkspaceTierCard>;
 

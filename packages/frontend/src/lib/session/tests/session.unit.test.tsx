@@ -721,6 +721,57 @@ describe('SessionProvider – expiry-driven refresh scheduling', () => {
 
     expect(getUserDetails).toHaveBeenCalled();
   });
+
+  it('schedules off the fence session cookie when it expires sooner than the access token', async () => {
+    const getUserDetails = setupDefaultCoreMocks();
+    hooksMock.useManageSession.mockReturnValue({
+      status: 'issued',
+      pending: false,
+    });
+
+    Object.defineProperty(navigator, 'onLine', {
+      get: () => true,
+      configurable: true,
+    });
+
+    // access_token is good for 20 minutes, but Fence's own `fence` session
+    // cookie (a separate JWT on Fence's SESSION_TIMEOUT schedule) expires in
+    // only 5 — the refresh must be scheduled off the earlier of the two.
+    const accessExpiresSeconds = Math.floor(Date.now() / 1000) + 20 * 60;
+    const fenceExpiresSeconds = Math.floor(Date.now() / 1000) + 5 * 60;
+    global.fetch = jest.fn().mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue({
+        status: 'issued',
+        expires: accessExpiresSeconds,
+        fenceStatus: 'issued',
+        fenceExpires: fenceExpiresSeconds,
+      }),
+    });
+
+    render(
+      <SessionProvider updateSessionTime={1} logoutInactiveUsers={false}>
+        <div />
+      </SessionProvider>,
+    );
+
+    await act(async () => {});
+    getUserDetails.mockClear();
+
+    // Short of the fence deadline — must not have fired yet.
+    await act(async () => {
+      jest.advanceTimersByTime(4 * 60 * 1000);
+    });
+    expect(getUserDetails).not.toHaveBeenCalled();
+
+    // Past the fence deadline (plus REFRESH_BUFFER_MILLISECONDS), well short
+    // of the access token's own 20-minute expiry.
+    await act(async () => {
+      jest.advanceTimersByTime(2 * 60 * 1000);
+    });
+
+    expect(getUserDetails).toHaveBeenCalled();
+  });
 });
 
 // ===========================================================================

@@ -1,16 +1,21 @@
-import React, { FC, ReactNode, useEffect } from 'react';
+import type { FC, ReactNode } from 'react';
+import React, { useEffect } from 'react';
 import { CoreProvider } from '@gen3/core';
-import { createTheme, Modal, Pagination } from '@mantine/core';
-import { TenStringArray } from '../../utils';
+import { createTheme, Modal, Pagination, Tooltip } from '@mantine/core';
+import type { TenStringArray } from '../../utils';
 import { SessionProvider } from '../../lib/session/session';
 import { type Fonts, type RegisteredIcons } from '../../lib/content/types';
-import { ContextModalProps, ModalsProvider } from '@mantine/modals';
+import type { ContextModalProps } from '@mantine/modals';
+import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { addCollection } from '@iconify-icon/react';
-import { SessionConfiguration } from '../../lib/session/types';
+import type { SessionConfiguration } from '../../lib/session/types';
 import { gen3Modals, Gen3ModalsProvider, type ModalsConfig } from '../Modals';
-import { AuthorizedRoutesConfig } from '../../lib/authz/type';
+import type { AuthorizedRoutesConfig } from '../../lib/authz/type';
 import ProtectedRoutesProvider from '../AuthorizedRoutes/ProtectedRoutesProvider';
+import AuthzMappingsProvider from './AuthzMappingsProvider';
+import { SowerProvider } from '../../features/Sower/SowerContext';
+import type { SowerConfiguration } from '../../features/Sower/types';
 import { CookiesProvider } from 'react-cookie';
 
 interface Gen3ProviderProps {
@@ -19,6 +24,7 @@ interface Gen3ProviderProps {
   modalsConfig: ModalsConfig;
   contextModals?: Record<string, FC<ContextModalProps<any>>>;
   protectedRoutesConfig?: AuthorizedRoutesConfig;
+  sowerConfig?: SowerConfiguration;
   children?: ReactNode | undefined;
   defaultNotificationPosition?:
     | 'top-left'
@@ -44,7 +50,7 @@ export const createCSSVariables = (colors: Record<string, string>) => {
   });
 };
 
-// Define theme for mantine v7
+// Define theme for mantine v9
 export const createMantineTheme = (
   fonts: Fonts,
   colors: Record<string, TenStringArray>,
@@ -98,6 +104,23 @@ export const createMantineTheme = (
           },
         },
       }),
+      Tooltip: Tooltip.extend({
+        styles: {
+          tooltip: {
+            color: 'var(--mantine-color-accent-contrast-1)',
+            textColor: 'var(--mantine-color-accent-contrast-1)',
+            backgroundColor: 'var(--mantine-color-accent-1)',
+            opacity: 0.75,
+            fontFamily: '"Montserrat", "sans-serif"',
+            fontWeight: 500,
+          },
+          arrow: {
+            color: 'var(--mantine-color-accent-1)',
+            backgroundColor: 'var(--mantine-color-accent-1)',
+            opacity: 0.75,
+          },
+        },
+      }),
       Pagination: Pagination.extend({
         defaultProps: {
           getControlProps: (control) => {
@@ -126,7 +149,7 @@ export const createMantineTheme = (
 
 /**
  * Gen3Provider wraps around the entire app and provides general configurations
- * for the whole website like color scheme, icons, fonts, and sessionConfigs like
+ * for the whole website like a color scheme, icons, fonts, and sessionConfigs like
  * inactivity limits for session timeouts.
  */
 const Gen3Provider = ({
@@ -135,6 +158,7 @@ const Gen3Provider = ({
   modalsConfig,
   contextModals = {},
   protectedRoutesConfig,
+  sowerConfig,
   defaultNotificationPosition = 'top-center',
   children,
 }: Gen3ProviderProps) => {
@@ -148,30 +172,34 @@ const Gen3Provider = ({
         <ModalsProvider modals={{ ...contextModals, ...gen3Modals }}>
           <Notifications position={defaultNotificationPosition} />
           <SessionProvider {...sessionConfig}>
-            <ProtectedRoutesProvider
-              config={
-                protectedRoutesConfig ?? {
-                  routes: {
-                    '/DataLibrary': {
-                      loginRequired: true,
-                    },
-                    '/Workspace': {
-                      loginRequired: true,
-                    },
-                    '/Profile': {
-                      loginRequired: true,
-                    },
-                    '*': {
-                      loginRequired: false,
-                    },
-                  },
-                }
-              }
-            >
-              <Gen3ModalsProvider config={modalsConfig}>
-                {children}
-              </Gen3ModalsProvider>
-            </ProtectedRoutesProvider>
+            <AuthzMappingsProvider enableWTS={sessionConfig.enableWTS}>
+              <SowerProvider config={sowerConfig}>
+                <ProtectedRoutesProvider
+                  config={
+                    protectedRoutesConfig ?? {
+                      routes: {
+                        '/DataLibrary': {
+                          loginRequired: true,
+                        },
+                        '/Workspace': {
+                          loginRequired: true,
+                        },
+                        '/Profile': {
+                          loginRequired: true,
+                        },
+                        '*': {
+                          loginRequired: false,
+                        },
+                      },
+                    }
+                  }
+                >
+                  <Gen3ModalsProvider config={modalsConfig}>
+                    {children}
+                  </Gen3ModalsProvider>
+                </ProtectedRoutesProvider>
+              </SowerProvider>
+            </AuthzMappingsProvider>
           </SessionProvider>
         </ModalsProvider>
       </CookiesProvider>

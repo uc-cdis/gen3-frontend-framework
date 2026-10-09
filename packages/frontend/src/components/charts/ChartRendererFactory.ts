@@ -6,6 +6,7 @@ import DonutChart from './echarts/DonutChart';
 import HorizontalBarChart from './echarts/HorizontalBarChart';
 import VerticalBarChart from './echarts/VerticalBarChart';
 import { registerEchartsTheme } from './echarts/utils';
+import Count from './Count';
 
 const DefaultChartCatalog = {
   chart: {
@@ -14,6 +15,7 @@ const DefaultChartCatalog = {
     fullPie: PieChart,
     donut: DonutChart,
     verticalBarChart: VerticalBarChart,
+    count: Count,
   },
 };
 

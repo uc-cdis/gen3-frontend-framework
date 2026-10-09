@@ -70,7 +70,7 @@ Service CA patching:
                         The CA is APPENDED to the existing CA bundle, not replaced.
                         Known service types:
                           nginx:  revproxy
-                          go:     hatchery
+                          go:     hatchery,sower
                           node:   gen3ff
                           python: requestor, fence, audit, metadata, indexd, etc.
 
@@ -317,6 +317,36 @@ setup_ssl() {
 
   info "CA secret mkcert-ca created"
 
+  # ── Create combined CA bundle secret ──
+  #
+  # Pods that can't use the initContainer approach (e.g. Sower job pods, whose
+  # spec is built from sowerConfig and only supports volumes/volumeMounts/env)
+  # mount this pre-built bundle: public roots + mkcert CA.
+
+  local base_bundle=""
+  for f in /etc/ssl/cert.pem /etc/ssl/certs/ca-certificates.crt /etc/pki/tls/certs/ca-bundle.crt; do
+    if [[ -f "$f" ]]; then base_bundle="$f"; break; fi
+  done
+
+  if [[ -z "$base_bundle" ]]; then
+    warn "No system CA bundle found on host; skipping mkcert-ca-bundle secret"
+  else
+    local bundle_file
+    bundle_file="$(mktemp "/tmp/ca-bundle-XXXXXX.crt")"
+    cat "$base_bundle" "$caroot/rootCA.pem" > "$bundle_file"
+
+    if kubectl get secret mkcert-ca-bundle >/dev/null 2>&1; then
+      warn "Secret mkcert-ca-bundle already exists, replacing..."
+      kubectl delete secret mkcert-ca-bundle
+    fi
+
+    kubectl create secret generic mkcert-ca-bundle \
+      --from-file=ca-certificates.crt="$bundle_file"
+    rm -f "$bundle_file"
+
+    info "CA bundle secret mkcert-ca-bundle created (base: $base_bundle)"
+  fi
+
   # ── Apply ingress ──
 
   # ── Apply ingress (skip if another Ingress already claims this host+path) ──
@@ -523,6 +553,7 @@ get_service_type() {
   case "$1" in
     revproxy)  echo "nginx" ;;
     hatchery)  echo "go" ;;
+    sower)     echo "go" ;;
     frontend-framework)    echo "node" ;;
     *)         echo "python" ;;
   esac
@@ -533,17 +564,22 @@ get_service_type() {
 # preserving trust for external CAs (unlike the simple mount-and-replace approach).
 patch_service_ca() {
   local service="$1"
-  local deployment="${service}-deployment"
+  local deployment
   local service_type
   service_type="$(get_service_type "$service")"
 
-  info "Patching $deployment (type: $service_type)..."
-
-  # Check if deployment exists
-  if ! kubectl get deployment "$deployment" >/dev/null 2>&1; then
-    warn "Deployment '$deployment' not found. Skipping."
+  # Most Gen3 charts name deployments "<service>-deployment", but some
+  # (e.g. sower) use the bare service name.
+  if kubectl get deployment "${service}-deployment" >/dev/null 2>&1; then
+    deployment="${service}-deployment"
+  elif kubectl get deployment "$service" >/dev/null 2>&1; then
+    deployment="$service"
+  else
+    warn "Deployment '${service}-deployment' or '${service}' not found. Skipping."
     return 0
   fi
+
+  info "Patching $deployment (type: $service_type)..."
 
   local patch_file
   patch_file="$(mktemp "/tmp/ca-patch-${service}-XXXXXX.yaml")"

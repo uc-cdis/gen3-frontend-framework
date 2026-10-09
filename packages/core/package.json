@@ -1,6 +1,6 @@
 {
   "name": "@gen3/core",
-  "version": "0.12.74",
+  "version": "0.12.84",
   "author": "CTDS",
   "description": "Core module for Gen3.2. Packages provides an interface for interacting with the gen3 API, various types, and a redux store for managing state.",
   "license": "Apache-2.0",
@@ -77,7 +77,7 @@
     "redux": "^5.0.1",
     "redux-persist": "^6.0.0",
     "swr": "^2.3.0",
-    "uuid": "11.1.1"
+    "uuid": "^14.0.2"
   },
   "files": [
     "dist"

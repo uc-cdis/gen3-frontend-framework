@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Badge, Menu, SegmentedControl } from '@mantine/core';
 import {
   MantineReactTable,
@@ -7,35 +7,55 @@ import {
   useMantineReactTable,
 } from 'mantine-react-table-open';
 import { PiDotsThreeOutlineFill as DotIcon } from 'react-icons/pi';
+import type { JobWithActions, SowerJobStatus } from '@gen3/core';
 import {
-  JobListResponse,
-  JobStatus,
+  removeSowerJob,
+  useCoreDispatch,
   useLazyGetSowerOutputQuery,
 } from '@gen3/core';
+import { backgroundStyles } from './colors';
 
 export interface JobTableProps {
-  readonly data: JobListResponse | undefined;
-  readonly isLoading: boolean;
-  readonly sowerJobDatetimeCache: Record<string, number>;
+  readonly data?: Array<JobWithActions>;
 }
 
 interface ColorConfig {
-  readonly mantine: string;
-  readonly tailwind: string;
+  mantine: string;
+  text: string;
+  bg: string;
+  border: string;
 }
 
 const STATUS_TO_COLOR: Record<string, ColorConfig> = {
-  Running: { mantine: 'utility.1', tailwind: 'utility-success' },
-  Failed: { mantine: 'utility.3', tailwind: 'utility-error' },
-  Completed: { mantine: 'utility.1', tailwind: 'utility-success' },
+  Running: {
+    mantine: 'utility.1',
+    text: 'var(--mantine-color-utility-contrast-1)',
+    bg: 'bg-utility-success',
+    border: 'border-utility-success',
+  },
+  Failed: {
+    mantine: 'utility.3',
+    text: 'var(--mantine-color-utility-contrast-3)',
+    bg: 'bg-utility-error',
+    border: 'border-utility-error',
+  },
+  Completed: {
+    mantine: 'utility.1',
+    text: 'var(--mantine-color-utility-contrast-1)',
+    bg: 'bg-utility-success',
+    border: 'border-utility-success',
+  },
 };
 
-const JobTable = ({
-  data,
-  isLoading,
-  sowerJobDatetimeCache,
-}: JobTableProps) => {
-  const [filterValue, setFilterValue] = useState('Running');
+const dateFormat = new Intl.DateTimeFormat('en-us', {
+  month: 'short',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+});
+
+const JobTable = ({ data }: JobTableProps) => {
+  const [filterValue, setFilterValue] = useState<SowerJobStatus>('All');
   const [getOutput, outputResponse] = useLazyGetSowerOutputQuery();
   const filteredData = useMemo(
     () =>
@@ -44,20 +64,21 @@ const JobTable = ({
         : (data || []).filter((row) => row.status === filterValue),
     [filterValue, data],
   );
+  const dispatch = useCoreDispatch();
   const groupedData = data ? Object.groupBy(data, (row) => row.status) : {};
-
-  const dateFormat = new Intl.DateTimeFormat('en-us', {
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-  });
 
   useEffect(() => {
     if (outputResponse.isSuccess && !outputResponse.isFetching) {
       window.open(outputResponse.data.output, '_blank');
     }
   }, [outputResponse]);
+
+  const removeJob = useCallback(
+    (id: string) => {
+      dispatch(removeSowerJob(id));
+    },
+    [dispatch],
+  );
 
   const columns = useMemo(
     () => [
@@ -66,14 +87,14 @@ const JobTable = ({
       {
         accessorKey: 'status',
         header: 'Status',
-        Cell: ({ row }: MRT_Cell<JobStatus>) => {
+        Cell: ({ row }: MRT_Cell<JobWithActions>) => {
           const color = STATUS_TO_COLOR[row.original.status];
           return (
             <Badge
               variant="dot"
               color={color?.mantine}
-              classNames={{
-                root: `bg-${color?.tailwind} bg-opacity-25 text-${color?.tailwind} border-1 border-${color?.tailwind}`,
+              styles={{
+                root: backgroundStyles[color.bg],
               }}
               radius="sm"
             >
@@ -85,17 +106,15 @@ const JobTable = ({
       {
         id: 'datetime',
         header: 'Datetime',
-        Cell: ({ row }: MRT_Cell<JobStatus>) =>
-          sowerJobDatetimeCache?.[row.original.uid]
-            ? dateFormat.format(sowerJobDatetimeCache[row.original.uid])
-            : '--',
+        Cell: ({ row }: MRT_Cell<JobWithActions>) =>
+          dateFormat.format(row.original.updated),
       },
       {
         id: 'options',
-        header: '',
-        Cell: ({ row }: MRT_Cell<JobStatus>) => (
+        header: 'Actions',
+        Cell: ({ row }: MRT_Cell<JobWithActions>) => (
           <>
-            {row.original.status === 'Completed' ? (
+            {row.original.status === 'Running' ? null : (
               <Menu>
                 <Menu.Target>
                   <button>
@@ -103,23 +122,27 @@ const JobTable = ({
                   </button>
                 </Menu.Target>
                 <Menu.Dropdown>
-                  <Menu.Item onClick={() => getOutput(row.original.uid)}>
-                    {'Download'}
+                  {row.original.status === 'Completed' ? (
+                    <Menu.Item onClick={() => getOutput(row.original.uid)}>
+                      {'Download'}
+                    </Menu.Item>
+                  ) : null}
+                  <Menu.Item onClick={() => removeJob(row.original.uid)}>
+                    {'Remove'}
                   </Menu.Item>
                 </Menu.Dropdown>
               </Menu>
-            ) : null}
+            )}
           </>
         ),
       },
     ],
-    [],
+    [getOutput, removeJob],
   );
 
   const table = useMantineReactTable({
-    columns: columns as MRT_ColumnDef<JobStatus>[],
+    columns: columns as MRT_ColumnDef<JobWithActions>[],
     data: filteredData,
-    state: { isLoading },
     enableTopToolbar: false,
     enableColumnActions: false,
     enableSorting: false,
@@ -140,6 +163,11 @@ const JobTable = ({
                   circle
                   color={STATUS_TO_COLOR['Running'].mantine}
                   variant="light"
+                  styles={{
+                    label: {
+                      color: STATUS_TO_COLOR['Running'].text,
+                    },
+                  }}
                 >
                   {groupedData?.Running?.length || 0}
                 </Badge>
@@ -155,8 +183,33 @@ const JobTable = ({
                   circle
                   color={STATUS_TO_COLOR['Completed'].mantine}
                   variant="light"
+                  styles={{
+                    label: {
+                      color: STATUS_TO_COLOR['Completed'].text,
+                    },
+                  }}
                 >
                   {groupedData?.Completed?.length || 0}
+                </Badge>
+              </div>
+            ),
+          },
+          {
+            value: 'Failed',
+            label: (
+              <div className="flex gap-2">
+                <span>Failed</span>
+                <Badge
+                  circle
+                  color={STATUS_TO_COLOR['Failed'].mantine}
+                  variant="light"
+                  styles={{
+                    label: {
+                      color: STATUS_TO_COLOR['Failed'].text,
+                    },
+                  }}
+                >
+                  {groupedData?.Failed?.length || 0}
                 </Badge>
               </div>
             ),

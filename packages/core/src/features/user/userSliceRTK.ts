@@ -1,12 +1,14 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { type Gen3FenceResponse } from '../fence/types';
-import { Gen3User, LoginStatus } from './types';
-import { CoreState } from '../../reducers';
+import type { Gen3User, LoginStatus } from './types';
+import type { CoreState } from '../../reducers';
 import { getCookie } from 'cookies-next';
 import { QueryStatus } from '@reduxjs/toolkit/query';
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { GEN3_API } from '../../constants';
 import { fetchFence } from '../fence/fetchFence';
+import { useCoreSelector } from '../../hooks.ts';
+import { isAuthenticated } from './userSlice.ts';
 
 export interface CSRFToken {
   readonly csrfToken: string;
@@ -21,6 +23,7 @@ export const userAuthApi = createApi({
   reducerPath: 'userAuthApi',
   refetchOnMountOrArgChange: 1800,
   refetchOnReconnect: true,
+  tagTypes: ['User'],
   baseQuery: async ({ endpoint }, { getState }) => {
     let results;
     const csrfToken = selectCSRFToken(getState() as CoreState);
@@ -63,6 +66,7 @@ export const userAuthApi = createApi({
               : 'unauthenticated',
         };
       },
+      providesTags: ['User'],
     }),
     getCSRF: builder.query<CSRFToken, void>({
       queryFn: async () => {
@@ -123,6 +127,11 @@ export const selectUserDetails = createSelector(
   (userDetails) => userDetails?.data?.data ?? EMPTY_USER,
 );
 
+export const selectUserLoginStatus = createSelector(
+  selectUserDetailsFromState,
+  (userDetails) => userDetails?.data?.loginStatus ?? 'unauthenticated',
+);
+
 export const selectUserAuthStatus = createSelector(
   selectUserDetailsFromState,
   (userLoginState) =>
@@ -156,3 +165,9 @@ export const useGetUserDetailsRequestStatus = () =>
   userAuthApi.endpoints.fetchUserDetails.useQueryState(undefined, {
     selectFromResult: ({ isFetching, isError }) => ({ isFetching, isError }),
   });
+
+export const useIsUserLoggedIn = (): boolean => {
+  return useCoreSelector((state) =>
+    isAuthenticated(selectUserLoginStatus(state)),
+  );
+};

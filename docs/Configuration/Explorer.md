@@ -5,8 +5,6 @@ For example, "Cases", "Images", "Data Files".
 
 ## Configuration
 
-
-
 The configuration for the explorer is stored an array of objects. Each object in the array represents a tab in the explorer. The following is an example of a tab configuration:
 
 ```json
@@ -125,6 +123,31 @@ To see the other tabs for a shared filters, hover over the share icon:
 
 ![Shared filters tooltip](./images/Explorer/Explorer_shared_filters_tooltip.png)
 
+### Flatten Fields
+
+A query of the form root.subroot.field, by default is expanded into root.subroot and root.subroot.subfield.
+
+```
+root {
+  { subroot:
+     {  field }
+  }
+```
+
+This can be disabled by setting the `flattenFields` option to `true`. In this case the field will be queried
+as `root.subroot.field`.
+
+To enable this set `flattenFields` to `true`. in the explore config for an index:
+
+```json
+  {
+  "tabTitle": "Subjects",
+  "flattenFields": true,
+  "charts": {
+  }
+}
+
+```
 
 ### Charts
 The charts section configures data visualizations for the explorer page. Each chart is defined by its `chartType` and `title`.
@@ -325,13 +348,12 @@ The basic configuration is:
 The configuration has the following members:
 
 * root - parents feild that containes the data that is displayed in the Sub Table
-* label - title at top of table 
-* defaultIfEmpty - value for empty fields defaults to '' 
+* label - title at top of table
+* defaultIfEmpty - value for empty fields defaults to ''
 * fields - fields to use for columns
 * columns - (Optional) table columns field to match fields above title to override what's displayed
 
-
-## Selection Facet
+### Selection Facet
 
 A new facet UI is available instead of the enumerated facet, which can be used when the number of facet keys becomes
 quite large. To enable it, in the filters->tabs section of the config file:
@@ -369,6 +391,40 @@ add a ```fieldsConfig``` entry. The format is _field_ name then _type_. In the e
 switch to use ```multiselect```. Note that ```multiselect``` is the only type supported. The selection is a dropdown that
 is also searchable.
 
+### Range Facets
+
+There are a number of Continuous Range Facets that can handle a variey of contiuous values. These include:
+
+* **age**: in days or years can switch between age in days or years
+* **age_in_years**: years only age
+* **years**: years in decades
+* **year**
+* **percent**: 0 - 100%
+* **numeric_range**: generic_numeric range
+
+![Age of Enrollment](./images/Explorer/RangeFacet.png)
+
+These range facets require setting the minimum, maximum, and step values, in the facet definition section of the
+configuration file.
+For example the `age_in_years` is set with:
+
+```json
+"fieldsConfig": {
+  "age_at_enrollment": {
+    "type": "age_in_years",
+    "range": {
+      "maximum": 32507,
+      "minimum": 0,
+      "step": 10
+    }
+  }
+}
+}
+```
+
+Note that age in years needs to be specified in day units. The above setup 10 pre-defined ranges from in
+increments of 10 years from age 0 to 89.
+
 ### Default Facet Sorting
 
 Enum facets are sorted by value count descending by default. To use a different initial sort order for an individual
@@ -380,9 +436,9 @@ facet, set `defaultSort` in that field's `fieldsConfig` entry within the relevan
     "tabs": [
       {
         "title": "Subjects",
-        "fields": ["gender"],
+        "fields": ["bmi"],
         "fieldsConfig": {
-          "gender": {
+          "bmi": {
             "defaultSort": "label-asc"
           }
         }
@@ -430,6 +486,20 @@ field's `fieldsConfig` entry:
 The selector is disabled by default, and facets without this setting retain the
 existing Match any behavior. Match all is most useful for multivalued fields; on
 a single-valued field, distinct values cannot normally match simultaneously.
+
+### Configuring Facet Name and Description
+
+To override the Facet label and description (or to add a description), you will need to add to the `fieldsConfig`:
+
+```json
+ "fieldsConfig": {
+  "exposure": {
+    "label": "Exposure Type",
+    "description": "Type of exposure"
+  }
+}
+}
+```
 
 ### Logical Operators in the Query Expression
 

@@ -1,7 +1,8 @@
-import React, { JSX, useState } from 'react';
+import type { JSX } from 'react';
+import React, { useState } from 'react';
+import type { AccordionControlProps } from '@mantine/core';
 import {
   Accordion,
-  AccordionControlProps,
   ActionIcon,
   Checkbox,
   CloseButton,
@@ -12,11 +13,11 @@ import {
 } from '@mantine/core';
 import { Icon } from '@iconify-icon/react';
 import { getHotkeyHandler } from '@mantine/hooks';
-import { DataItemSelectedState } from './types';
+import type { DataItemSelectedState } from './types';
 import EmptyList from './EmptyList';
 import { IconSize } from '../../utils/sizes';
 import { formatDate } from '../../utils/date';
-import { StorageOperationResults } from '@gen3/core';
+import type { StorageOperationResults } from '@gen3/core';
 
 interface DatasetAccordionControlProps extends AccordionControlProps {
   listName: string;
@@ -30,6 +31,7 @@ interface DatasetAccordionControlProps extends AccordionControlProps {
   selectListHandler: (checked: boolean) => void;
   selectedState: DataItemSelectedState;
   size?: string;
+  additionalControls?: JSX.Element;
 }
 
 export const DatasetAccordionControl = ({
@@ -42,6 +44,7 @@ export const DatasetAccordionControl = ({
   selectListHandler,
   selectedState,
   size = 'sm',
+  additionalControls,
   ...props
 }: DatasetAccordionControlProps): JSX.Element => {
   const [value, setValue] = useState<string | undefined>(undefined);
@@ -53,15 +56,15 @@ export const DatasetAccordionControl = ({
   const iconSize = IconSize[size] || IconSize['sm'];
   return (
     <div className="flex justify-start w-full items-center px-4 group-data-[active]:bg-secondary-lightest">
-      <div className="flex items-center w-1/4">
+      <div className="flex items-center w-1/3">
         <Checkbox
           size={size}
           onChange={(event) => {
             selectListHandler(event.currentTarget.checked);
             event.stopPropagation();
           }}
-          checked={selectedState == 'checked'}
-          indeterminate={selectedState == 'indeterminate'}
+          checked={selectedState === 'checked'}
+          indeterminate={selectedState === 'indeterminate'}
         />
         <Accordion.Control {...props} className="w-4 mr-3" />
         {value ? (
@@ -107,7 +110,7 @@ export const DatasetAccordionControl = ({
           </div>
         )}
       </div>
-      <div className="flex items-center ml-auto space-x-2">
+      <div className="flex items-center justify-end space-x-2">
         {numberOfItems === 0 && <EmptyList />}
         <div className="flex items-center space-x-2">
           <Text fw={600} c="base-contrast.2" tt="uppercase" size={size}>
@@ -131,6 +134,9 @@ export const DatasetAccordionControl = ({
             {formatDate(updatedTime)}
           </Text>
         </div>
+      </div>
+      <div className="flex items-center justify-end w-1/4 ml-auto">
+        <div className="flex items-center space-x-2">{additionalControls}</div>
         <Tooltip
           label={`Delete list ${listName}. Will not delete the actual dataset`}
         >

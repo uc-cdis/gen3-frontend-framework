@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import MicroContainerReduxPanel from './MicroContainerReduxPanel';
 import React from 'react';

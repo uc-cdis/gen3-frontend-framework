@@ -315,3 +315,9 @@ delete secret
 If you have certificate issues, confirm the secret is correct by
 viewing the ingress config and confirm the secret name is the same in the
 configuration
+
+start etl job manually:
+
+```bash
+kubectl create job etl-manual-$(date +%s) --from=cronjob/etl-cronjob
+```

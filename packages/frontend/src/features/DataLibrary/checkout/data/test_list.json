@@ -1,0 +1,2727 @@
+{
+  "7fcac868-7c45-40d6-bd75-9df24347e929": {
+    "items": {
+      "Canine-Osteosarcoma": {
+        "id": "Canine-Osteosarcoma",
+        "name": "",
+        "members": {
+          "dg.TEST-DATA/94471f4d-fc8e-4990-971b-2cbefbe8d182": {
+            "id": "dg.TEST-DATA/94471f4d-fc8e-4990-971b-2cbefbe8d182",
+            "guid": "dg.TEST-DATA/94471f4d-fc8e-4990-971b-2cbefbe8d182",
+            "name": "SAMPLE_0001.bam",
+            "size": 9274610615,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/962ee071-c4aa-421a-8e0a-3aa131f4138c": {
+            "id": "dg.TEST-DATA/962ee071-c4aa-421a-8e0a-3aa131f4138c",
+            "guid": "dg.TEST-DATA/962ee071-c4aa-421a-8e0a-3aa131f4138c",
+            "name": "SAMPLE_0002.vcf",
+            "size": 11227041584,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/87747723-f8be-4ae9-b715-f85dfc228f03": {
+            "id": "dg.TEST-DATA/87747723-f8be-4ae9-b715-f85dfc228f03",
+            "guid": "dg.TEST-DATA/87747723-f8be-4ae9-b715-f85dfc228f03",
+            "name": "SAMPLE_0003.fastq.gz",
+            "size": 10642192207,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/f03122b0-a1bf-4068-926a-14a276295616": {
+            "id": "dg.TEST-DATA/f03122b0-a1bf-4068-926a-14a276295616",
+            "guid": "dg.TEST-DATA/f03122b0-a1bf-4068-926a-14a276295616",
+            "name": "SAMPLE_0004.cram",
+            "size": 14355762077,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/ddfd58e3-2fea-42ec-a616-9954390a1d08": {
+            "id": "dg.TEST-DATA/ddfd58e3-2fea-42ec-a616-9954390a1d08",
+            "guid": "dg.TEST-DATA/ddfd58e3-2fea-42ec-a616-9954390a1d08",
+            "name": "SAMPLE_0005.bed",
+            "size": 11218044864,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/8db9c236-37f3-4610-b6bb-953554b93be3": {
+            "id": "dg.TEST-DATA/8db9c236-37f3-4610-b6bb-953554b93be3",
+            "guid": "dg.TEST-DATA/8db9c236-37f3-4610-b6bb-953554b93be3",
+            "name": "SUBJ_0006.bam",
+            "size": 8091669380,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/bef7580f-7641-4220-aa1a-64601d3fe45f": {
+            "id": "dg.TEST-DATA/bef7580f-7641-4220-aa1a-64601d3fe45f",
+            "guid": "dg.TEST-DATA/bef7580f-7641-4220-aa1a-64601d3fe45f",
+            "name": "SUBJ_0007.vcf",
+            "size": 13555358455,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/ebed5c28-acfb-415e-a929-83be3053966e": {
+            "id": "dg.TEST-DATA/ebed5c28-acfb-415e-a929-83be3053966e",
+            "guid": "dg.TEST-DATA/ebed5c28-acfb-415e-a929-83be3053966e",
+            "name": "SUBJ_0008.fastq.gz",
+            "size": 13840589934,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/a4dbf2b2-f927-4613-8022-62d6f54c0e1a": {
+            "id": "dg.TEST-DATA/a4dbf2b2-f927-4613-8022-62d6f54c0e1a",
+            "guid": "dg.TEST-DATA/a4dbf2b2-f927-4613-8022-62d6f54c0e1a",
+            "name": "SUBJ_0009.cram",
+            "size": 4111542593,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/06e207d3-e912-4606-8755-6cb5174da2a4": {
+            "id": "dg.TEST-DATA/06e207d3-e912-4606-8755-6cb5174da2a4",
+            "guid": "dg.TEST-DATA/06e207d3-e912-4606-8755-6cb5174da2a4",
+            "name": "SUBJ_0010.bed",
+            "size": 8661146230,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/a5fe6f56-9ac5-4c71-98ff-88c511f0787a": {
+            "id": "dg.TEST-DATA/a5fe6f56-9ac5-4c71-98ff-88c511f0787a",
+            "guid": "dg.TEST-DATA/a5fe6f56-9ac5-4c71-98ff-88c511f0787a",
+            "name": "CASE_0011.bam",
+            "size": 6032463661,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/3a9c8c82-b431-48b8-a01e-4a2507bd9482": {
+            "id": "dg.TEST-DATA/3a9c8c82-b431-48b8-a01e-4a2507bd9482",
+            "guid": "dg.TEST-DATA/3a9c8c82-b431-48b8-a01e-4a2507bd9482",
+            "name": "CASE_0012.vcf",
+            "size": 7331276237,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/bd3259f0-fc52-4415-952d-e21d9b6c1e46": {
+            "id": "dg.TEST-DATA/bd3259f0-fc52-4415-952d-e21d9b6c1e46",
+            "guid": "dg.TEST-DATA/bd3259f0-fc52-4415-952d-e21d9b6c1e46",
+            "name": "CASE_0013.fastq.gz",
+            "size": 8789344689,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/639bc201-1934-4414-93e6-e33cf7bcbacd": {
+            "id": "dg.TEST-DATA/639bc201-1934-4414-93e6-e33cf7bcbacd",
+            "guid": "dg.TEST-DATA/639bc201-1934-4414-93e6-e33cf7bcbacd",
+            "name": "CASE_0014.cram",
+            "size": 9244679979,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/6aafbe7a-c46f-4647-ba26-07289200b885": {
+            "id": "dg.TEST-DATA/6aafbe7a-c46f-4647-ba26-07289200b885",
+            "guid": "dg.TEST-DATA/6aafbe7a-c46f-4647-ba26-07289200b885",
+            "name": "CASE_0015.bed",
+            "size": 12783570577,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/8ff1996b-b111-4854-8c94-8dac527f6510": {
+            "id": "dg.TEST-DATA/8ff1996b-b111-4854-8c94-8dac527f6510",
+            "guid": "dg.TEST-DATA/8ff1996b-b111-4854-8c94-8dac527f6510",
+            "name": "CTRL_0016.bam",
+            "size": 13656218215,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/131386e2-eed4-4ff4-86dd-cf7880d93a4f": {
+            "id": "dg.TEST-DATA/131386e2-eed4-4ff4-86dd-cf7880d93a4f",
+            "guid": "dg.TEST-DATA/131386e2-eed4-4ff4-86dd-cf7880d93a4f",
+            "name": "CTRL_0017.vcf",
+            "size": 7134276397,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/4e0bb5dc-aff7-49b1-b1f8-4656397c0eab": {
+            "id": "dg.TEST-DATA/4e0bb5dc-aff7-49b1-b1f8-4656397c0eab",
+            "guid": "dg.TEST-DATA/4e0bb5dc-aff7-49b1-b1f8-4656397c0eab",
+            "name": "CTRL_0018.fastq.gz",
+            "size": 14058843645,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/82a41dae-66d7-4cc8-b673-74384bf26a22": {
+            "id": "dg.TEST-DATA/82a41dae-66d7-4cc8-b673-74384bf26a22",
+            "guid": "dg.TEST-DATA/82a41dae-66d7-4cc8-b673-74384bf26a22",
+            "name": "CTRL_0019.cram",
+            "size": 8545734556,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/a6db4fa0-83ab-4527-9f9c-1b03b3ef21b6": {
+            "id": "dg.TEST-DATA/a6db4fa0-83ab-4527-9f9c-1b03b3ef21b6",
+            "guid": "dg.TEST-DATA/a6db4fa0-83ab-4527-9f9c-1b03b3ef21b6",
+            "name": "CTRL_0020.bed",
+            "size": 13637217023,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/493beda5-f086-458e-8b91-debf76f31a1a": {
+            "id": "dg.TEST-DATA/493beda5-f086-458e-8b91-debf76f31a1a",
+            "guid": "dg.TEST-DATA/493beda5-f086-458e-8b91-debf76f31a1a",
+            "name": "DONOR_0021.bam",
+            "size": 11494335174,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/07637c45-6536-45f3-8ea6-284e38443231": {
+            "id": "dg.TEST-DATA/07637c45-6536-45f3-8ea6-284e38443231",
+            "guid": "dg.TEST-DATA/07637c45-6536-45f3-8ea6-284e38443231",
+            "name": "DONOR_0022.vcf",
+            "size": 7093631404,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/1196fb14-54a9-4bcd-9bb9-d1d14b771c63": {
+            "id": "dg.TEST-DATA/1196fb14-54a9-4bcd-9bb9-d1d14b771c63",
+            "guid": "dg.TEST-DATA/1196fb14-54a9-4bcd-9bb9-d1d14b771c63",
+            "name": "DONOR_0023.fastq.gz",
+            "size": 11183946241,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/a977a680-cc94-4014-a47b-52540763dcd2": {
+            "id": "dg.TEST-DATA/a977a680-cc94-4014-a47b-52540763dcd2",
+            "guid": "dg.TEST-DATA/a977a680-cc94-4014-a47b-52540763dcd2",
+            "name": "DONOR_0024.cram",
+            "size": 9174015310,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/501abdf4-cf98-4029-88d8-1fd87180b36f": {
+            "id": "dg.TEST-DATA/501abdf4-cf98-4029-88d8-1fd87180b36f",
+            "guid": "dg.TEST-DATA/501abdf4-cf98-4029-88d8-1fd87180b36f",
+            "name": "DONOR_0025.bed",
+            "size": 6400494462,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/af2998ee-74f7-4491-a16c-0b8c456ed7c1": {
+            "id": "dg.TEST-DATA/af2998ee-74f7-4491-a16c-0b8c456ed7c1",
+            "guid": "dg.TEST-DATA/af2998ee-74f7-4491-a16c-0b8c456ed7c1",
+            "name": "SAMPLE_0026.bam",
+            "size": 8561309244,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/7f7cf518-f2a3-4b1e-9836-b867c85f4867": {
+            "id": "dg.TEST-DATA/7f7cf518-f2a3-4b1e-9836-b867c85f4867",
+            "guid": "dg.TEST-DATA/7f7cf518-f2a3-4b1e-9836-b867c85f4867",
+            "name": "SAMPLE_0027.vcf",
+            "size": 15807085701,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/752f3970-e0ca-40a3-a550-1d7b0039b90b": {
+            "id": "dg.TEST-DATA/752f3970-e0ca-40a3-a550-1d7b0039b90b",
+            "guid": "dg.TEST-DATA/752f3970-e0ca-40a3-a550-1d7b0039b90b",
+            "name": "SAMPLE_0028.fastq.gz",
+            "size": 8461807560,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/a4c504bf-9ee4-4e61-87ff-5f0f4461c92a": {
+            "id": "dg.TEST-DATA/a4c504bf-9ee4-4e61-87ff-5f0f4461c92a",
+            "guid": "dg.TEST-DATA/a4c504bf-9ee4-4e61-87ff-5f0f4461c92a",
+            "name": "SAMPLE_0029.cram",
+            "size": 7704247246,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/4ccf05f2-7bc1-4335-a98c-15553db98a24": {
+            "id": "dg.TEST-DATA/4ccf05f2-7bc1-4335-a98c-15553db98a24",
+            "guid": "dg.TEST-DATA/4ccf05f2-7bc1-4335-a98c-15553db98a24",
+            "name": "SAMPLE_0030.bed",
+            "size": 9805702680,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/acad77b7-b49d-4b89-ae12-d2841a8b2636": {
+            "id": "dg.TEST-DATA/acad77b7-b49d-4b89-ae12-d2841a8b2636",
+            "guid": "dg.TEST-DATA/acad77b7-b49d-4b89-ae12-d2841a8b2636",
+            "name": "SUBJ_0031.bam",
+            "size": 8707650241,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/adec4221-eca7-49a4-805a-05dc1fc36ba3": {
+            "id": "dg.TEST-DATA/adec4221-eca7-49a4-805a-05dc1fc36ba3",
+            "guid": "dg.TEST-DATA/adec4221-eca7-49a4-805a-05dc1fc36ba3",
+            "name": "SUBJ_0032.vcf",
+            "size": 13418617328,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/1b80a874-b264-4175-b353-05d2a385bfa1": {
+            "id": "dg.TEST-DATA/1b80a874-b264-4175-b353-05d2a385bfa1",
+            "guid": "dg.TEST-DATA/1b80a874-b264-4175-b353-05d2a385bfa1",
+            "name": "SUBJ_0033.fastq.gz",
+            "size": 9747752281,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/0bcbfb25-4f53-4897-9556-db7fe728056f": {
+            "id": "dg.TEST-DATA/0bcbfb25-4f53-4897-9556-db7fe728056f",
+            "guid": "dg.TEST-DATA/0bcbfb25-4f53-4897-9556-db7fe728056f",
+            "name": "SUBJ_0034.cram",
+            "size": 7692369681,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/92c78375-fa1a-4f41-96a8-5cb7c3950d10": {
+            "id": "dg.TEST-DATA/92c78375-fa1a-4f41-96a8-5cb7c3950d10",
+            "guid": "dg.TEST-DATA/92c78375-fa1a-4f41-96a8-5cb7c3950d10",
+            "name": "SUBJ_0035.bed",
+            "size": 11158723772,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/a0df812e-2145-4ca2-b22f-927ed85103ef": {
+            "id": "dg.TEST-DATA/a0df812e-2145-4ca2-b22f-927ed85103ef",
+            "guid": "dg.TEST-DATA/a0df812e-2145-4ca2-b22f-927ed85103ef",
+            "name": "CASE_0036.bam",
+            "size": 12666219899,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/c21fd460-c7fb-4dfc-8fb4-53801e5b5724": {
+            "id": "dg.TEST-DATA/c21fd460-c7fb-4dfc-8fb4-53801e5b5724",
+            "guid": "dg.TEST-DATA/c21fd460-c7fb-4dfc-8fb4-53801e5b5724",
+            "name": "CASE_0037.vcf",
+            "size": 8558898044,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/5499bb48-0bcf-46cc-8048-ef49981a169f": {
+            "id": "dg.TEST-DATA/5499bb48-0bcf-46cc-8048-ef49981a169f",
+            "guid": "dg.TEST-DATA/5499bb48-0bcf-46cc-8048-ef49981a169f",
+            "name": "CASE_0038.fastq.gz",
+            "size": 5792734475,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/4bf7ed83-5e73-4d17-b998-ac6ecde4a22c": {
+            "id": "dg.TEST-DATA/4bf7ed83-5e73-4d17-b998-ac6ecde4a22c",
+            "guid": "dg.TEST-DATA/4bf7ed83-5e73-4d17-b998-ac6ecde4a22c",
+            "name": "CASE_0039.cram",
+            "size": 9439943108,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/a7b39b81-e8fd-42f1-867b-c26cc6fc0814": {
+            "id": "dg.TEST-DATA/a7b39b81-e8fd-42f1-867b-c26cc6fc0814",
+            "guid": "dg.TEST-DATA/a7b39b81-e8fd-42f1-867b-c26cc6fc0814",
+            "name": "CASE_0040.bed",
+            "size": 14681804819,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/d6212c6f-81d4-4eb9-b4f0-61bc7f457b04": {
+            "id": "dg.TEST-DATA/d6212c6f-81d4-4eb9-b4f0-61bc7f457b04",
+            "guid": "dg.TEST-DATA/d6212c6f-81d4-4eb9-b4f0-61bc7f457b04",
+            "name": "CTRL_0041.bam",
+            "size": 12198105197,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/f607b234-6b66-410c-97d7-e133e694ae4a": {
+            "id": "dg.TEST-DATA/f607b234-6b66-410c-97d7-e133e694ae4a",
+            "guid": "dg.TEST-DATA/f607b234-6b66-410c-97d7-e133e694ae4a",
+            "name": "CTRL_0042.vcf",
+            "size": 13566820073,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/6f071528-46c9-4ae2-87c5-67422c1f6132": {
+            "id": "dg.TEST-DATA/6f071528-46c9-4ae2-87c5-67422c1f6132",
+            "guid": "dg.TEST-DATA/6f071528-46c9-4ae2-87c5-67422c1f6132",
+            "name": "CTRL_0043.fastq.gz",
+            "size": 9624954188,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/ff3a183b-097b-4eb2-becd-0689489a46ca": {
+            "id": "dg.TEST-DATA/ff3a183b-097b-4eb2-becd-0689489a46ca",
+            "guid": "dg.TEST-DATA/ff3a183b-097b-4eb2-becd-0689489a46ca",
+            "name": "CTRL_0044.cram",
+            "size": 9684361048,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/2b43e07b-03bc-4b5e-aa4a-33f5cf9da080": {
+            "id": "dg.TEST-DATA/2b43e07b-03bc-4b5e-aa4a-33f5cf9da080",
+            "guid": "dg.TEST-DATA/2b43e07b-03bc-4b5e-aa4a-33f5cf9da080",
+            "name": "CTRL_0045.bed",
+            "size": 7216192104,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/53842942-18b0-4bf6-921b-1daba468afbd": {
+            "id": "dg.TEST-DATA/53842942-18b0-4bf6-921b-1daba468afbd",
+            "guid": "dg.TEST-DATA/53842942-18b0-4bf6-921b-1daba468afbd",
+            "name": "DONOR_0046.bam",
+            "size": 13620113676,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/3e87de18-c9ec-42a3-a6ab-4803aacd9792": {
+            "id": "dg.TEST-DATA/3e87de18-c9ec-42a3-a6ab-4803aacd9792",
+            "guid": "dg.TEST-DATA/3e87de18-c9ec-42a3-a6ab-4803aacd9792",
+            "name": "DONOR_0047.vcf",
+            "size": 12833964534,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/f5714683-77ab-4ac1-a74b-8292d9ce00de": {
+            "id": "dg.TEST-DATA/f5714683-77ab-4ac1-a74b-8292d9ce00de",
+            "guid": "dg.TEST-DATA/f5714683-77ab-4ac1-a74b-8292d9ce00de",
+            "name": "DONOR_0048.fastq.gz",
+            "size": 9570767364,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/aff52678-617c-42b6-aab0-8a51fdb0d6b0": {
+            "id": "dg.TEST-DATA/aff52678-617c-42b6-aab0-8a51fdb0d6b0",
+            "guid": "dg.TEST-DATA/aff52678-617c-42b6-aab0-8a51fdb0d6b0",
+            "name": "DONOR_0049.cram",
+            "size": 10127522128,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/f1ff215e-01e4-4c7e-956f-c364fd94d024": {
+            "id": "dg.TEST-DATA/f1ff215e-01e4-4c7e-956f-c364fd94d024",
+            "guid": "dg.TEST-DATA/f1ff215e-01e4-4c7e-956f-c364fd94d024",
+            "name": "DONOR_0050.bed",
+            "size": 12185705121,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/b23cfd86-a553-48a9-ba72-76d4d2162fc2": {
+            "id": "dg.TEST-DATA/b23cfd86-a553-48a9-ba72-76d4d2162fc2",
+            "guid": "dg.TEST-DATA/b23cfd86-a553-48a9-ba72-76d4d2162fc2",
+            "name": "SAMPLE_0051.bam",
+            "size": 11567622369,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/eef9d43e-0083-4fb1-86c0-497cce210f33": {
+            "id": "dg.TEST-DATA/eef9d43e-0083-4fb1-86c0-497cce210f33",
+            "guid": "dg.TEST-DATA/eef9d43e-0083-4fb1-86c0-497cce210f33",
+            "name": "SAMPLE_0052.vcf",
+            "size": 12528021652,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/400a7660-58e1-4055-9e8f-46cdd798d616": {
+            "id": "dg.TEST-DATA/400a7660-58e1-4055-9e8f-46cdd798d616",
+            "guid": "dg.TEST-DATA/400a7660-58e1-4055-9e8f-46cdd798d616",
+            "name": "SAMPLE_0053.fastq.gz",
+            "size": 8805772480,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/9b100963-7a43-4360-9e15-706fe2138edd": {
+            "id": "dg.TEST-DATA/9b100963-7a43-4360-9e15-706fe2138edd",
+            "guid": "dg.TEST-DATA/9b100963-7a43-4360-9e15-706fe2138edd",
+            "name": "SAMPLE_0054.cram",
+            "size": 8995755103,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/674eae3c-e1c6-44ab-b2f7-4aa4b1d8f0ed": {
+            "id": "dg.TEST-DATA/674eae3c-e1c6-44ab-b2f7-4aa4b1d8f0ed",
+            "guid": "dg.TEST-DATA/674eae3c-e1c6-44ab-b2f7-4aa4b1d8f0ed",
+            "name": "SAMPLE_0055.bed",
+            "size": 10866965895,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/3d17ebe6-cfbf-4e2a-87f0-bd4417d5348d": {
+            "id": "dg.TEST-DATA/3d17ebe6-cfbf-4e2a-87f0-bd4417d5348d",
+            "guid": "dg.TEST-DATA/3d17ebe6-cfbf-4e2a-87f0-bd4417d5348d",
+            "name": "SUBJ_0056.bam",
+            "size": 14465101491,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/61a4d24c-62fe-4ea8-8207-9ef2178454b2": {
+            "id": "dg.TEST-DATA/61a4d24c-62fe-4ea8-8207-9ef2178454b2",
+            "guid": "dg.TEST-DATA/61a4d24c-62fe-4ea8-8207-9ef2178454b2",
+            "name": "SUBJ_0057.vcf",
+            "size": 8638191533,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/08af8e0a-a106-4711-ad9a-927152a96f4d": {
+            "id": "dg.TEST-DATA/08af8e0a-a106-4711-ad9a-927152a96f4d",
+            "guid": "dg.TEST-DATA/08af8e0a-a106-4711-ad9a-927152a96f4d",
+            "name": "SUBJ_0058.fastq.gz",
+            "size": 6560420643,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/fbbcb227-e737-4eec-85c1-b66eff9efd40": {
+            "id": "dg.TEST-DATA/fbbcb227-e737-4eec-85c1-b66eff9efd40",
+            "guid": "dg.TEST-DATA/fbbcb227-e737-4eec-85c1-b66eff9efd40",
+            "name": "SUBJ_0059.cram",
+            "size": 12289760426,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/476cce25-c7b7-4179-aa23-d69de5bd95fd": {
+            "id": "dg.TEST-DATA/476cce25-c7b7-4179-aa23-d69de5bd95fd",
+            "guid": "dg.TEST-DATA/476cce25-c7b7-4179-aa23-d69de5bd95fd",
+            "name": "SUBJ_0060.bed",
+            "size": 12575001230,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/6872bc09-9d73-4822-8ef3-211791ea6434": {
+            "id": "dg.TEST-DATA/6872bc09-9d73-4822-8ef3-211791ea6434",
+            "guid": "dg.TEST-DATA/6872bc09-9d73-4822-8ef3-211791ea6434",
+            "name": "CASE_0061.bam",
+            "size": 11719087532,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/1ed96025-c1ee-47f0-8616-157de8f8c211": {
+            "id": "dg.TEST-DATA/1ed96025-c1ee-47f0-8616-157de8f8c211",
+            "guid": "dg.TEST-DATA/1ed96025-c1ee-47f0-8616-157de8f8c211",
+            "name": "CASE_0062.vcf",
+            "size": 7517503338,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/91ad4634-7e7c-4e52-aa26-07cbb662eaf3": {
+            "id": "dg.TEST-DATA/91ad4634-7e7c-4e52-aa26-07cbb662eaf3",
+            "guid": "dg.TEST-DATA/91ad4634-7e7c-4e52-aa26-07cbb662eaf3",
+            "name": "CASE_0063.fastq.gz",
+            "size": 8104941815,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/ed310bd4-b6bc-4181-921c-0280ce047c78": {
+            "id": "dg.TEST-DATA/ed310bd4-b6bc-4181-921c-0280ce047c78",
+            "guid": "dg.TEST-DATA/ed310bd4-b6bc-4181-921c-0280ce047c78",
+            "name": "CASE_0064.cram",
+            "size": 6358509799,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/ff8c2729-0e24-4f96-b279-27a5a4eb7909": {
+            "id": "dg.TEST-DATA/ff8c2729-0e24-4f96-b279-27a5a4eb7909",
+            "guid": "dg.TEST-DATA/ff8c2729-0e24-4f96-b279-27a5a4eb7909",
+            "name": "CASE_0065.bed",
+            "size": 6905569678,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/ae941eab-f111-417d-8f60-4bc768df3d30": {
+            "id": "dg.TEST-DATA/ae941eab-f111-417d-8f60-4bc768df3d30",
+            "guid": "dg.TEST-DATA/ae941eab-f111-417d-8f60-4bc768df3d30",
+            "name": "CTRL_0066.bam",
+            "size": 12991211627,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/b907f5fc-7509-44a5-9287-3e54f5debe49": {
+            "id": "dg.TEST-DATA/b907f5fc-7509-44a5-9287-3e54f5debe49",
+            "guid": "dg.TEST-DATA/b907f5fc-7509-44a5-9287-3e54f5debe49",
+            "name": "CTRL_0067.vcf",
+            "size": 11506464199,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/425bfa4a-c64e-4c7b-ada0-b16ec9edeede": {
+            "id": "dg.TEST-DATA/425bfa4a-c64e-4c7b-ada0-b16ec9edeede",
+            "guid": "dg.TEST-DATA/425bfa4a-c64e-4c7b-ada0-b16ec9edeede",
+            "name": "CTRL_0068.fastq.gz",
+            "size": 11926264916,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/93fca906-2c74-4efb-b6be-ccc3a7af97b7": {
+            "id": "dg.TEST-DATA/93fca906-2c74-4efb-b6be-ccc3a7af97b7",
+            "guid": "dg.TEST-DATA/93fca906-2c74-4efb-b6be-ccc3a7af97b7",
+            "name": "CTRL_0069.cram",
+            "size": 8883913939,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/d39f0c63-d020-49d4-b739-4bb295df3302": {
+            "id": "dg.TEST-DATA/d39f0c63-d020-49d4-b739-4bb295df3302",
+            "guid": "dg.TEST-DATA/d39f0c63-d020-49d4-b739-4bb295df3302",
+            "name": "CTRL_0070.bed",
+            "size": 9858330948,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/2ac18e5a-923e-469c-a792-c3812374a9ea": {
+            "id": "dg.TEST-DATA/2ac18e5a-923e-469c-a792-c3812374a9ea",
+            "guid": "dg.TEST-DATA/2ac18e5a-923e-469c-a792-c3812374a9ea",
+            "name": "DONOR_0071.bam",
+            "size": 8079804179,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/e2cc9d50-9b5a-4033-8743-6aaf0fbfb561": {
+            "id": "dg.TEST-DATA/e2cc9d50-9b5a-4033-8743-6aaf0fbfb561",
+            "guid": "dg.TEST-DATA/e2cc9d50-9b5a-4033-8743-6aaf0fbfb561",
+            "name": "DONOR_0072.vcf",
+            "size": 12447933132,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/3edfe0a2-c408-4d06-88f2-a8d367502f7e": {
+            "id": "dg.TEST-DATA/3edfe0a2-c408-4d06-88f2-a8d367502f7e",
+            "guid": "dg.TEST-DATA/3edfe0a2-c408-4d06-88f2-a8d367502f7e",
+            "name": "DONOR_0073.fastq.gz",
+            "size": 7397950992,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/11731976-61a5-4ffa-b4f5-2ecf479a7c57": {
+            "id": "dg.TEST-DATA/11731976-61a5-4ffa-b4f5-2ecf479a7c57",
+            "guid": "dg.TEST-DATA/11731976-61a5-4ffa-b4f5-2ecf479a7c57",
+            "name": "DONOR_0074.cram",
+            "size": 7371638130,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/e38ea2b2-3c97-4c90-a348-770e4b40e70a": {
+            "id": "dg.TEST-DATA/e38ea2b2-3c97-4c90-a348-770e4b40e70a",
+            "guid": "dg.TEST-DATA/e38ea2b2-3c97-4c90-a348-770e4b40e70a",
+            "name": "DONOR_0075.bed",
+            "size": 9204540784,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/43d201ba-cbbb-42a4-91cc-7b7226b4e8a2": {
+            "id": "dg.TEST-DATA/43d201ba-cbbb-42a4-91cc-7b7226b4e8a2",
+            "guid": "dg.TEST-DATA/43d201ba-cbbb-42a4-91cc-7b7226b4e8a2",
+            "name": "SAMPLE_0076.bam",
+            "size": 11103239160,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/e845bf8f-7398-42ee-9f77-3f1b1a934ab9": {
+            "id": "dg.TEST-DATA/e845bf8f-7398-42ee-9f77-3f1b1a934ab9",
+            "guid": "dg.TEST-DATA/e845bf8f-7398-42ee-9f77-3f1b1a934ab9",
+            "name": "SAMPLE_0077.vcf",
+            "size": 10693044898,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/b3094d99-97ba-41af-b065-675090bf6d6d": {
+            "id": "dg.TEST-DATA/b3094d99-97ba-41af-b065-675090bf6d6d",
+            "guid": "dg.TEST-DATA/b3094d99-97ba-41af-b065-675090bf6d6d",
+            "name": "SAMPLE_0078.fastq.gz",
+            "size": 11863218955,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/c2431512-9f53-45e5-b7bd-b19e86d6c99a": {
+            "id": "dg.TEST-DATA/c2431512-9f53-45e5-b7bd-b19e86d6c99a",
+            "guid": "dg.TEST-DATA/c2431512-9f53-45e5-b7bd-b19e86d6c99a",
+            "name": "SAMPLE_0079.cram",
+            "size": 14681804819,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/601efb63-eb08-44d5-8f0f-3983086b3e5d": {
+            "id": "dg.TEST-DATA/601efb63-eb08-44d5-8f0f-3983086b3e5d",
+            "guid": "dg.TEST-DATA/601efb63-eb08-44d5-8f0f-3983086b3e5d",
+            "name": "SAMPLE_0080.bed",
+            "size": 13662541921,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/04a6161c-0b9e-4e56-964c-e4f19705a3fb": {
+            "id": "dg.TEST-DATA/04a6161c-0b9e-4e56-964c-e4f19705a3fb",
+            "guid": "dg.TEST-DATA/04a6161c-0b9e-4e56-964c-e4f19705a3fb",
+            "name": "SUBJ_0081.bam",
+            "size": 7619526188,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/a2eb1938-83ac-490e-a78a-f7fa7766b15f": {
+            "id": "dg.TEST-DATA/a2eb1938-83ac-490e-a78a-f7fa7766b15f",
+            "guid": "dg.TEST-DATA/a2eb1938-83ac-490e-a78a-f7fa7766b15f",
+            "name": "SUBJ_0082.vcf",
+            "size": 6299477450,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/eab8d864-928e-47a3-a02b-802df9674c41": {
+            "id": "dg.TEST-DATA/eab8d864-928e-47a3-a02b-802df9674c41",
+            "guid": "dg.TEST-DATA/eab8d864-928e-47a3-a02b-802df9674c41",
+            "name": "SUBJ_0083.fastq.gz",
+            "size": 7838223004,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/5963a516-b21e-4243-ae45-dc5dcc7606e1": {
+            "id": "dg.TEST-DATA/5963a516-b21e-4243-ae45-dc5dcc7606e1",
+            "guid": "dg.TEST-DATA/5963a516-b21e-4243-ae45-dc5dcc7606e1",
+            "name": "SUBJ_0084.cram",
+            "size": 10739849078,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/d0e69846-0d64-4786-9317-5d17e906286e": {
+            "id": "dg.TEST-DATA/d0e69846-0d64-4786-9317-5d17e906286e",
+            "guid": "dg.TEST-DATA/d0e69846-0d64-4786-9317-5d17e906286e",
+            "name": "SUBJ_0085.bed",
+            "size": 9599759639,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/2d7538c8-c0a5-415a-9cd6-1acccb440021": {
+            "id": "dg.TEST-DATA/2d7538c8-c0a5-415a-9cd6-1acccb440021",
+            "guid": "dg.TEST-DATA/2d7538c8-c0a5-415a-9cd6-1acccb440021",
+            "name": "CASE_0086.bam",
+            "size": 11746234647,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/10e84699-426e-41dd-be9c-9e2391385505": {
+            "id": "dg.TEST-DATA/10e84699-426e-41dd-be9c-9e2391385505",
+            "guid": "dg.TEST-DATA/10e84699-426e-41dd-be9c-9e2391385505",
+            "name": "CASE_0087.vcf",
+            "size": 8349859121,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/3fb8c40e-1016-4d3b-8e97-dfedbd6dbbed": {
+            "id": "dg.TEST-DATA/3fb8c40e-1016-4d3b-8e97-dfedbd6dbbed",
+            "guid": "dg.TEST-DATA/3fb8c40e-1016-4d3b-8e97-dfedbd6dbbed",
+            "name": "CASE_0088.fastq.gz",
+            "size": 11041938523,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/44282d0d-68a2-4b19-b8e6-3ee2f3695261": {
+            "id": "dg.TEST-DATA/44282d0d-68a2-4b19-b8e6-3ee2f3695261",
+            "guid": "dg.TEST-DATA/44282d0d-68a2-4b19-b8e6-3ee2f3695261",
+            "name": "CASE_0089.cram",
+            "size": 8462725698,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/98d2aa64-d1a4-4243-8aa3-d8f4c58b0691": {
+            "id": "dg.TEST-DATA/98d2aa64-d1a4-4243-8aa3-d8f4c58b0691",
+            "guid": "dg.TEST-DATA/98d2aa64-d1a4-4243-8aa3-d8f4c58b0691",
+            "name": "CASE_0090.bed",
+            "size": 9244939962,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/e1a886b8-bc6f-412a-a08f-eebf917a22d2": {
+            "id": "dg.TEST-DATA/e1a886b8-bc6f-412a-a08f-eebf917a22d2",
+            "guid": "dg.TEST-DATA/e1a886b8-bc6f-412a-a08f-eebf917a22d2",
+            "name": "CTRL_0091.bam",
+            "size": 12810079496,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/1f34f129-07bb-430b-b7bb-6073a8076853": {
+            "id": "dg.TEST-DATA/1f34f129-07bb-430b-b7bb-6073a8076853",
+            "guid": "dg.TEST-DATA/1f34f129-07bb-430b-b7bb-6073a8076853",
+            "name": "CTRL_0092.vcf",
+            "size": 14200691270,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/2a520cf0-8471-4f76-a1b8-22886c17e7ee": {
+            "id": "dg.TEST-DATA/2a520cf0-8471-4f76-a1b8-22886c17e7ee",
+            "guid": "dg.TEST-DATA/2a520cf0-8471-4f76-a1b8-22886c17e7ee",
+            "name": "CTRL_0093.fastq.gz",
+            "size": 8190371816,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/366ce117-1c40-4583-822b-b39b2e2aa3f2": {
+            "id": "dg.TEST-DATA/366ce117-1c40-4583-822b-b39b2e2aa3f2",
+            "guid": "dg.TEST-DATA/366ce117-1c40-4583-822b-b39b2e2aa3f2",
+            "name": "CTRL_0094.cram",
+            "size": 8476294758,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/0f50d703-5c2e-4c38-9f91-3a2815e2265b": {
+            "id": "dg.TEST-DATA/0f50d703-5c2e-4c38-9f91-3a2815e2265b",
+            "guid": "dg.TEST-DATA/0f50d703-5c2e-4c38-9f91-3a2815e2265b",
+            "name": "CTRL_0095.bed",
+            "size": 11770382000,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/5e4fac17-a932-42ed-a91e-b5a40722805f": {
+            "id": "dg.TEST-DATA/5e4fac17-a932-42ed-a91e-b5a40722805f",
+            "guid": "dg.TEST-DATA/5e4fac17-a932-42ed-a91e-b5a40722805f",
+            "name": "DONOR_0096.bam",
+            "size": 7256254579,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/b2ef80f6-fe74-436f-8e99-177e8a22cc44": {
+            "id": "dg.TEST-DATA/b2ef80f6-fe74-436f-8e99-177e8a22cc44",
+            "guid": "dg.TEST-DATA/b2ef80f6-fe74-436f-8e99-177e8a22cc44",
+            "name": "DONOR_0097.vcf",
+            "size": 10689764908,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/b8b7d44e-8eb4-4e26-ad4d-6db84798b215": {
+            "id": "dg.TEST-DATA/b8b7d44e-8eb4-4e26-ad4d-6db84798b215",
+            "guid": "dg.TEST-DATA/b8b7d44e-8eb4-4e26-ad4d-6db84798b215",
+            "name": "DONOR_0098.fastq.gz",
+            "size": 7833854725,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/e1740660-8181-4aef-9f6a-d89da73894a2": {
+            "id": "dg.TEST-DATA/e1740660-8181-4aef-9f6a-d89da73894a2",
+            "guid": "dg.TEST-DATA/e1740660-8181-4aef-9f6a-d89da73894a2",
+            "name": "DONOR_0099.cram",
+            "size": 12598197883,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/47b5bac5-adb5-4c01-bae2-49a80de79522": {
+            "id": "dg.TEST-DATA/47b5bac5-adb5-4c01-bae2-49a80de79522",
+            "guid": "dg.TEST-DATA/47b5bac5-adb5-4c01-bae2-49a80de79522",
+            "name": "DONOR_0100.bed",
+            "size": 8796914393,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/66af7996-c167-4f2c-96cb-3f571fb636f2": {
+            "id": "dg.TEST-DATA/66af7996-c167-4f2c-96cb-3f571fb636f2",
+            "guid": "dg.TEST-DATA/66af7996-c167-4f2c-96cb-3f571fb636f2",
+            "name": "SAMPLE_0101.bam",
+            "size": 10652783598,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/f7cfcf3a-8726-415a-b1fd-277e93764d29": {
+            "id": "dg.TEST-DATA/f7cfcf3a-8726-415a-b1fd-277e93764d29",
+            "guid": "dg.TEST-DATA/f7cfcf3a-8726-415a-b1fd-277e93764d29",
+            "name": "SAMPLE_0102.vcf",
+            "size": 10030831511,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/072265e2-48a5-4565-a275-be99641dd0ec": {
+            "id": "dg.TEST-DATA/072265e2-48a5-4565-a275-be99641dd0ec",
+            "guid": "dg.TEST-DATA/072265e2-48a5-4565-a275-be99641dd0ec",
+            "name": "SAMPLE_0103.fastq.gz",
+            "size": 7173437385,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/6786a9f9-5fc1-4e93-a08d-5ad56db98589": {
+            "id": "dg.TEST-DATA/6786a9f9-5fc1-4e93-a08d-5ad56db98589",
+            "guid": "dg.TEST-DATA/6786a9f9-5fc1-4e93-a08d-5ad56db98589",
+            "name": "SAMPLE_0104.cram",
+            "size": 8326440698,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/d5c4b35f-2a0d-45a3-a638-48a64286e7c7": {
+            "id": "dg.TEST-DATA/d5c4b35f-2a0d-45a3-a638-48a64286e7c7",
+            "guid": "dg.TEST-DATA/d5c4b35f-2a0d-45a3-a638-48a64286e7c7",
+            "name": "SAMPLE_0105.bed",
+            "size": 9286429490,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/f9a82718-1e45-43e3-9074-818005f3eb3f": {
+            "id": "dg.TEST-DATA/f9a82718-1e45-43e3-9074-818005f3eb3f",
+            "guid": "dg.TEST-DATA/f9a82718-1e45-43e3-9074-818005f3eb3f",
+            "name": "SUBJ_0106.bam",
+            "size": 7068834378,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/e1c1d06b-7e00-4e99-b6f1-f2a7ec2af37e": {
+            "id": "dg.TEST-DATA/e1c1d06b-7e00-4e99-b6f1-f2a7ec2af37e",
+            "guid": "dg.TEST-DATA/e1c1d06b-7e00-4e99-b6f1-f2a7ec2af37e",
+            "name": "SUBJ_0107.vcf",
+            "size": 13241433013,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/990497a6-5def-46e7-99db-f2c2079e5c27": {
+            "id": "dg.TEST-DATA/990497a6-5def-46e7-99db-f2c2079e5c27",
+            "guid": "dg.TEST-DATA/990497a6-5def-46e7-99db-f2c2079e5c27",
+            "name": "SUBJ_0108.fastq.gz",
+            "size": 8176751552,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/28f71691-c5d6-43b4-a4d0-b2ba3c73b9ca": {
+            "id": "dg.TEST-DATA/28f71691-c5d6-43b4-a4d0-b2ba3c73b9ca",
+            "guid": "dg.TEST-DATA/28f71691-c5d6-43b4-a4d0-b2ba3c73b9ca",
+            "name": "SUBJ_0109.cram",
+            "size": 7432367386,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/5cfc7bba-631a-4c96-beae-a4be29c872c1": {
+            "id": "dg.TEST-DATA/5cfc7bba-631a-4c96-beae-a4be29c872c1",
+            "guid": "dg.TEST-DATA/5cfc7bba-631a-4c96-beae-a4be29c872c1",
+            "name": "SUBJ_0110.bed",
+            "size": 15804575364,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/147f852d-3c75-4353-8a71-35ef4ceb6724": {
+            "id": "dg.TEST-DATA/147f852d-3c75-4353-8a71-35ef4ceb6724",
+            "guid": "dg.TEST-DATA/147f852d-3c75-4353-8a71-35ef4ceb6724",
+            "name": "CASE_0111.bam",
+            "size": 11226372528,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/b20252e0-2b24-4977-ab9a-0db5d990dc99": {
+            "id": "dg.TEST-DATA/b20252e0-2b24-4977-ab9a-0db5d990dc99",
+            "guid": "dg.TEST-DATA/b20252e0-2b24-4977-ab9a-0db5d990dc99",
+            "name": "CASE_0112.vcf",
+            "size": 9304270154,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/3b1b5907-57ee-4189-9d33-57a7e3f5efe7": {
+            "id": "dg.TEST-DATA/3b1b5907-57ee-4189-9d33-57a7e3f5efe7",
+            "guid": "dg.TEST-DATA/3b1b5907-57ee-4189-9d33-57a7e3f5efe7",
+            "name": "CASE_0113.fastq.gz",
+            "size": 10589019321,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/0cecc631-eef7-4768-83dc-f12d03d16eff": {
+            "id": "dg.TEST-DATA/0cecc631-eef7-4768-83dc-f12d03d16eff",
+            "guid": "dg.TEST-DATA/0cecc631-eef7-4768-83dc-f12d03d16eff",
+            "name": "CASE_0114.cram",
+            "size": 10709552739,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/be5364be-d09c-4d90-9f6a-a7920b84a1ff": {
+            "id": "dg.TEST-DATA/be5364be-d09c-4d90-9f6a-a7920b84a1ff",
+            "guid": "dg.TEST-DATA/be5364be-d09c-4d90-9f6a-a7920b84a1ff",
+            "name": "CASE_0115.bed",
+            "size": 11700024085,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/873e4311-36a1-414e-8408-09007b5589b8": {
+            "id": "dg.TEST-DATA/873e4311-36a1-414e-8408-09007b5589b8",
+            "guid": "dg.TEST-DATA/873e4311-36a1-414e-8408-09007b5589b8",
+            "name": "CTRL_0116.bam",
+            "size": 9956129006,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/40c04f72-0539-4a97-b581-e217a686eec0": {
+            "id": "dg.TEST-DATA/40c04f72-0539-4a97-b581-e217a686eec0",
+            "guid": "dg.TEST-DATA/40c04f72-0539-4a97-b581-e217a686eec0",
+            "name": "CTRL_0117.vcf",
+            "size": 11272668265,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/3661880a-ceb4-44d7-9e96-cc0274f816c7": {
+            "id": "dg.TEST-DATA/3661880a-ceb4-44d7-9e96-cc0274f816c7",
+            "guid": "dg.TEST-DATA/3661880a-ceb4-44d7-9e96-cc0274f816c7",
+            "name": "CTRL_0118.fastq.gz",
+            "size": 11109266315,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/1106c0b1-d56e-4588-ab54-52278a31c29c": {
+            "id": "dg.TEST-DATA/1106c0b1-d56e-4588-ab54-52278a31c29c",
+            "guid": "dg.TEST-DATA/1106c0b1-d56e-4588-ab54-52278a31c29c",
+            "name": "CTRL_0119.cram",
+            "size": 13610198345,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/2687e619-5dfa-4911-9d53-36a6ba85d7e3": {
+            "id": "dg.TEST-DATA/2687e619-5dfa-4911-9d53-36a6ba85d7e3",
+            "guid": "dg.TEST-DATA/2687e619-5dfa-4911-9d53-36a6ba85d7e3",
+            "name": "CTRL_0120.bed",
+            "size": 11825096386,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/4ad8ef65-b5b8-422d-a837-8aaab6d75251": {
+            "id": "dg.TEST-DATA/4ad8ef65-b5b8-422d-a837-8aaab6d75251",
+            "guid": "dg.TEST-DATA/4ad8ef65-b5b8-422d-a837-8aaab6d75251",
+            "name": "DONOR_0121.bam",
+            "size": 10670658280,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/199e49e7-6ebb-4ce9-bffa-972d6050039c": {
+            "id": "dg.TEST-DATA/199e49e7-6ebb-4ce9-bffa-972d6050039c",
+            "guid": "dg.TEST-DATA/199e49e7-6ebb-4ce9-bffa-972d6050039c",
+            "name": "DONOR_0122.vcf",
+            "size": 8782166366,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/491d19a2-dc47-4a21-a997-cdc346e0147c": {
+            "id": "dg.TEST-DATA/491d19a2-dc47-4a21-a997-cdc346e0147c",
+            "guid": "dg.TEST-DATA/491d19a2-dc47-4a21-a997-cdc346e0147c",
+            "name": "DONOR_0123.fastq.gz",
+            "size": 8412718531,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/0e269755-596d-420e-88cd-54f294902f49": {
+            "id": "dg.TEST-DATA/0e269755-596d-420e-88cd-54f294902f49",
+            "guid": "dg.TEST-DATA/0e269755-596d-420e-88cd-54f294902f49",
+            "name": "DONOR_0124.cram",
+            "size": 12082026540,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/b9885c1c-8611-4da9-a751-bd09e4ad1ad5": {
+            "id": "dg.TEST-DATA/b9885c1c-8611-4da9-a751-bd09e4ad1ad5",
+            "guid": "dg.TEST-DATA/b9885c1c-8611-4da9-a751-bd09e4ad1ad5",
+            "name": "DONOR_0125.bed",
+            "size": 11157190590,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/cdc13024-3b41-40df-a496-603e6130d440": {
+            "id": "dg.TEST-DATA/cdc13024-3b41-40df-a496-603e6130d440",
+            "guid": "dg.TEST-DATA/cdc13024-3b41-40df-a496-603e6130d440",
+            "name": "SAMPLE_0126.bam",
+            "size": 8305970698,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/f512b990-ccd2-43d7-a66b-720fb5f4152f": {
+            "id": "dg.TEST-DATA/f512b990-ccd2-43d7-a66b-720fb5f4152f",
+            "guid": "dg.TEST-DATA/f512b990-ccd2-43d7-a66b-720fb5f4152f",
+            "name": "SAMPLE_0127.vcf",
+            "size": 12691375250,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Osteosarcoma",
+            "dataset_guid": "Canine-Osteosarcoma",
+            "itemType": "Data"
+          }
+        }
+      },
+      "Canine-B_cell_lymphoma": {
+        "id": "Canine-B_cell_lymphoma",
+        "name": "",
+        "members": {
+          "dg.TEST-DATA/13186c52-05fd-493c-aa40-4a3c3a4244a8": {
+            "id": "dg.TEST-DATA/13186c52-05fd-493c-aa40-4a3c3a4244a8",
+            "guid": "dg.TEST-DATA/13186c52-05fd-493c-aa40-4a3c3a4244a8",
+            "name": "SAMPLE_0128.fastq.gz",
+            "size": 1958692172,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/76938e22-d992-4a17-b25f-310fa3f5ae45": {
+            "id": "dg.TEST-DATA/76938e22-d992-4a17-b25f-310fa3f5ae45",
+            "guid": "dg.TEST-DATA/76938e22-d992-4a17-b25f-310fa3f5ae45",
+            "name": "SAMPLE_0129.cram",
+            "size": 1511445080,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/ae1355a7-aef5-43aa-adb8-23c063a03824": {
+            "id": "dg.TEST-DATA/ae1355a7-aef5-43aa-adb8-23c063a03824",
+            "guid": "dg.TEST-DATA/ae1355a7-aef5-43aa-adb8-23c063a03824",
+            "name": "SAMPLE_0130.bed",
+            "size": 1083938642,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/9fb833f1-e902-4a25-9ceb-12734f0743a2": {
+            "id": "dg.TEST-DATA/9fb833f1-e902-4a25-9ceb-12734f0743a2",
+            "guid": "dg.TEST-DATA/9fb833f1-e902-4a25-9ceb-12734f0743a2",
+            "name": "SUBJ_0131.bam",
+            "size": 1408028885,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/4e5b8140-8daa-4185-8e5e-ff5cce78637d": {
+            "id": "dg.TEST-DATA/4e5b8140-8daa-4185-8e5e-ff5cce78637d",
+            "guid": "dg.TEST-DATA/4e5b8140-8daa-4185-8e5e-ff5cce78637d",
+            "name": "SUBJ_0132.vcf",
+            "size": 986753451,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/13eb1852-8e3a-4b00-ac8a-6dd28ecfbba6": {
+            "id": "dg.TEST-DATA/13eb1852-8e3a-4b00-ac8a-6dd28ecfbba6",
+            "guid": "dg.TEST-DATA/13eb1852-8e3a-4b00-ac8a-6dd28ecfbba6",
+            "name": "SUBJ_0133.fastq.gz",
+            "size": 1133090424,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/e5aa589f-f41b-440b-9ced-8d625200d223": {
+            "id": "dg.TEST-DATA/e5aa589f-f41b-440b-9ced-8d625200d223",
+            "guid": "dg.TEST-DATA/e5aa589f-f41b-440b-9ced-8d625200d223",
+            "name": "SUBJ_0134.cram",
+            "size": 1522711592,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/dc92a98d-cf64-41e1-a7df-495ecb167ede": {
+            "id": "dg.TEST-DATA/dc92a98d-cf64-41e1-a7df-495ecb167ede",
+            "guid": "dg.TEST-DATA/dc92a98d-cf64-41e1-a7df-495ecb167ede",
+            "name": "SUBJ_0135.bed",
+            "size": 1047327457,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/3717d130-e72c-4dd8-b8eb-ce1c45bd3898": {
+            "id": "dg.TEST-DATA/3717d130-e72c-4dd8-b8eb-ce1c45bd3898",
+            "guid": "dg.TEST-DATA/3717d130-e72c-4dd8-b8eb-ce1c45bd3898",
+            "name": "CASE_0136.bam",
+            "size": 999278436,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/567d7f80-e812-4cbc-89e1-a148b5edf7fe": {
+            "id": "dg.TEST-DATA/567d7f80-e812-4cbc-89e1-a148b5edf7fe",
+            "guid": "dg.TEST-DATA/567d7f80-e812-4cbc-89e1-a148b5edf7fe",
+            "name": "CASE_0137.vcf",
+            "size": 1039664557,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/11d05279-7747-443c-8da2-de456e3b832f": {
+            "id": "dg.TEST-DATA/11d05279-7747-443c-8da2-de456e3b832f",
+            "guid": "dg.TEST-DATA/11d05279-7747-443c-8da2-de456e3b832f",
+            "name": "CASE_0138.fastq.gz",
+            "size": 1023040298,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/06ed1faf-3705-481e-a13f-16f6d7fce498": {
+            "id": "dg.TEST-DATA/06ed1faf-3705-481e-a13f-16f6d7fce498",
+            "guid": "dg.TEST-DATA/06ed1faf-3705-481e-a13f-16f6d7fce498",
+            "name": "CASE_0139.cram",
+            "size": 833101703,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/1520b35d-ecbf-43d5-8425-a02c8e0da422": {
+            "id": "dg.TEST-DATA/1520b35d-ecbf-43d5-8425-a02c8e0da422",
+            "guid": "dg.TEST-DATA/1520b35d-ecbf-43d5-8425-a02c8e0da422",
+            "name": "CASE_0140.bed",
+            "size": 1129769375,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/5cf8a34f-0ce5-4450-9ec9-67e871e36f92": {
+            "id": "dg.TEST-DATA/5cf8a34f-0ce5-4450-9ec9-67e871e36f92",
+            "guid": "dg.TEST-DATA/5cf8a34f-0ce5-4450-9ec9-67e871e36f92",
+            "name": "CTRL_0141.bam",
+            "size": 1060342221,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/af9000b2-7f17-472f-967e-08e13ef02aba": {
+            "id": "dg.TEST-DATA/af9000b2-7f17-472f-967e-08e13ef02aba",
+            "guid": "dg.TEST-DATA/af9000b2-7f17-472f-967e-08e13ef02aba",
+            "name": "CTRL_0142.vcf",
+            "size": 971669566,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/48ecf980-c39f-44af-935d-4082d301cd80": {
+            "id": "dg.TEST-DATA/48ecf980-c39f-44af-935d-4082d301cd80",
+            "guid": "dg.TEST-DATA/48ecf980-c39f-44af-935d-4082d301cd80",
+            "name": "CTRL_0143.fastq.gz",
+            "size": 840257344,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/60a474ab-a1c3-4b7f-a994-49958c31aaba": {
+            "id": "dg.TEST-DATA/60a474ab-a1c3-4b7f-a994-49958c31aaba",
+            "guid": "dg.TEST-DATA/60a474ab-a1c3-4b7f-a994-49958c31aaba",
+            "name": "CTRL_0144.cram",
+            "size": 1284930273,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/c6264078-2c47-4ecd-ac03-342b22ea9699": {
+            "id": "dg.TEST-DATA/c6264078-2c47-4ecd-ac03-342b22ea9699",
+            "guid": "dg.TEST-DATA/c6264078-2c47-4ecd-ac03-342b22ea9699",
+            "name": "CTRL_0145.bed",
+            "size": 1167440169,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/a8e4f5da-2d71-4fdf-9168-2a43441bca3a": {
+            "id": "dg.TEST-DATA/a8e4f5da-2d71-4fdf-9168-2a43441bca3a",
+            "guid": "dg.TEST-DATA/a8e4f5da-2d71-4fdf-9168-2a43441bca3a",
+            "name": "DONOR_0146.bam",
+            "size": 1156979117,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/964af1f1-0cc2-4c2f-947a-27ac17faf1da": {
+            "id": "dg.TEST-DATA/964af1f1-0cc2-4c2f-947a-27ac17faf1da",
+            "guid": "dg.TEST-DATA/964af1f1-0cc2-4c2f-947a-27ac17faf1da",
+            "name": "DONOR_0147.vcf",
+            "size": 1053777060,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/657fc5fe-4ae3-40e3-9341-b1fa9292fbab": {
+            "id": "dg.TEST-DATA/657fc5fe-4ae3-40e3-9341-b1fa9292fbab",
+            "guid": "dg.TEST-DATA/657fc5fe-4ae3-40e3-9341-b1fa9292fbab",
+            "name": "DONOR_0148.fastq.gz",
+            "size": 1188739333,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/291db32f-1149-461c-9542-190a1bce1391": {
+            "id": "dg.TEST-DATA/291db32f-1149-461c-9542-190a1bce1391",
+            "guid": "dg.TEST-DATA/291db32f-1149-461c-9542-190a1bce1391",
+            "name": "DONOR_0149.cram",
+            "size": 1176343414,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/56edb9d4-1780-40bf-b07d-800a6cc18cd8": {
+            "id": "dg.TEST-DATA/56edb9d4-1780-40bf-b07d-800a6cc18cd8",
+            "guid": "dg.TEST-DATA/56edb9d4-1780-40bf-b07d-800a6cc18cd8",
+            "name": "DONOR_0150.bed",
+            "size": 1215531768,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/2f58ee9f-23de-43d5-905d-5043c89d79a7": {
+            "id": "dg.TEST-DATA/2f58ee9f-23de-43d5-905d-5043c89d79a7",
+            "guid": "dg.TEST-DATA/2f58ee9f-23de-43d5-905d-5043c89d79a7",
+            "name": "SAMPLE_0151.bam",
+            "size": 1413384309,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/547ae46c-fb16-4af0-b07d-2872898fb0a6": {
+            "id": "dg.TEST-DATA/547ae46c-fb16-4af0-b07d-2872898fb0a6",
+            "guid": "dg.TEST-DATA/547ae46c-fb16-4af0-b07d-2872898fb0a6",
+            "name": "SAMPLE_0152.vcf",
+            "size": 955905959,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/04bb65af-c682-4305-899e-4d9f29f12507": {
+            "id": "dg.TEST-DATA/04bb65af-c682-4305-899e-4d9f29f12507",
+            "guid": "dg.TEST-DATA/04bb65af-c682-4305-899e-4d9f29f12507",
+            "name": "SAMPLE_0153.fastq.gz",
+            "size": 1022513763,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/3b8e5b3c-60b3-41fa-91a0-04cf73ad0cb3": {
+            "id": "dg.TEST-DATA/3b8e5b3c-60b3-41fa-91a0-04cf73ad0cb3",
+            "guid": "dg.TEST-DATA/3b8e5b3c-60b3-41fa-91a0-04cf73ad0cb3",
+            "name": "SAMPLE_0154.cram",
+            "size": 793435743,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/adaa51e7-4d38-4328-8016-802c93ece4ce": {
+            "id": "dg.TEST-DATA/adaa51e7-4d38-4328-8016-802c93ece4ce",
+            "guid": "dg.TEST-DATA/adaa51e7-4d38-4328-8016-802c93ece4ce",
+            "name": "SAMPLE_0155.bed",
+            "size": 1501330712,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/2eab2e32-0442-4758-8a67-717feaa3954a": {
+            "id": "dg.TEST-DATA/2eab2e32-0442-4758-8a67-717feaa3954a",
+            "guid": "dg.TEST-DATA/2eab2e32-0442-4758-8a67-717feaa3954a",
+            "name": "SUBJ_0156.bam",
+            "size": 1522243874,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/2e6bac90-52de-4f86-ae57-e9ee0dd5da14": {
+            "id": "dg.TEST-DATA/2e6bac90-52de-4f86-ae57-e9ee0dd5da14",
+            "guid": "dg.TEST-DATA/2e6bac90-52de-4f86-ae57-e9ee0dd5da14",
+            "name": "SUBJ_0157.vcf",
+            "size": 940129027,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/60aa63d9-411a-43b9-92cb-dbb4b2a8dc6f": {
+            "id": "dg.TEST-DATA/60aa63d9-411a-43b9-92cb-dbb4b2a8dc6f",
+            "guid": "dg.TEST-DATA/60aa63d9-411a-43b9-92cb-dbb4b2a8dc6f",
+            "name": "SUBJ_0158.fastq.gz",
+            "size": 1389928050,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/d5500c3b-e81a-4059-91f0-b8fb0febbdc6": {
+            "id": "dg.TEST-DATA/d5500c3b-e81a-4059-91f0-b8fb0febbdc6",
+            "guid": "dg.TEST-DATA/d5500c3b-e81a-4059-91f0-b8fb0febbdc6",
+            "name": "SUBJ_0159.cram",
+            "size": 1479662484,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/e48eea91-315b-4223-8ab4-379266b6b364": {
+            "id": "dg.TEST-DATA/e48eea91-315b-4223-8ab4-379266b6b364",
+            "guid": "dg.TEST-DATA/e48eea91-315b-4223-8ab4-379266b6b364",
+            "name": "SUBJ_0160.bed",
+            "size": 1165304710,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/914aaa23-a548-47bb-9e83-d74d948c345e": {
+            "id": "dg.TEST-DATA/914aaa23-a548-47bb-9e83-d74d948c345e",
+            "guid": "dg.TEST-DATA/914aaa23-a548-47bb-9e83-d74d948c345e",
+            "name": "CASE_0161.bam",
+            "size": 1067894632,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/2cda75e0-ecef-4a01-882b-ed77f79b761c": {
+            "id": "dg.TEST-DATA/2cda75e0-ecef-4a01-882b-ed77f79b761c",
+            "guid": "dg.TEST-DATA/2cda75e0-ecef-4a01-882b-ed77f79b761c",
+            "name": "CASE_0162.vcf",
+            "size": 1320812851,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/1b0a0bc4-7d14-45c7-92fd-4ecb1db24476": {
+            "id": "dg.TEST-DATA/1b0a0bc4-7d14-45c7-92fd-4ecb1db24476",
+            "guid": "dg.TEST-DATA/1b0a0bc4-7d14-45c7-92fd-4ecb1db24476",
+            "name": "CASE_0163.fastq.gz",
+            "size": 1139665542,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/0af405cf-cc2a-4337-bfa8-15f8302acb61": {
+            "id": "dg.TEST-DATA/0af405cf-cc2a-4337-bfa8-15f8302acb61",
+            "guid": "dg.TEST-DATA/0af405cf-cc2a-4337-bfa8-15f8302acb61",
+            "name": "CASE_0164.cram",
+            "size": 1168046573,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/a8975536-d98a-4f24-8b79-0137e05ed89a": {
+            "id": "dg.TEST-DATA/a8975536-d98a-4f24-8b79-0137e05ed89a",
+            "guid": "dg.TEST-DATA/a8975536-d98a-4f24-8b79-0137e05ed89a",
+            "name": "CASE_0165.bed",
+            "size": 905780103,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/d8632782-0037-438b-809f-d29743f2dd3f": {
+            "id": "dg.TEST-DATA/d8632782-0037-438b-809f-d29743f2dd3f",
+            "guid": "dg.TEST-DATA/d8632782-0037-438b-809f-d29743f2dd3f",
+            "name": "CTRL_0166.bam",
+            "size": 1123198279,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/ad904b48-dc83-4206-ace2-626bc79e429d": {
+            "id": "dg.TEST-DATA/ad904b48-dc83-4206-ace2-626bc79e429d",
+            "guid": "dg.TEST-DATA/ad904b48-dc83-4206-ace2-626bc79e429d",
+            "name": "CTRL_0167.vcf",
+            "size": 1380545899,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/e3ce2de0-789e-49dd-9a7d-303aa3611200": {
+            "id": "dg.TEST-DATA/e3ce2de0-789e-49dd-9a7d-303aa3611200",
+            "guid": "dg.TEST-DATA/e3ce2de0-789e-49dd-9a7d-303aa3611200",
+            "name": "CTRL_0168.fastq.gz",
+            "size": 1147314192,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/9ee3ca92-2be1-414d-bbc3-003ba37af69c": {
+            "id": "dg.TEST-DATA/9ee3ca92-2be1-414d-bbc3-003ba37af69c",
+            "guid": "dg.TEST-DATA/9ee3ca92-2be1-414d-bbc3-003ba37af69c",
+            "name": "CTRL_0169.cram",
+            "size": 1477602912,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/24a57d5e-ba91-4bd1-ba67-4056d8b19752": {
+            "id": "dg.TEST-DATA/24a57d5e-ba91-4bd1-ba67-4056d8b19752",
+            "guid": "dg.TEST-DATA/24a57d5e-ba91-4bd1-ba67-4056d8b19752",
+            "name": "CTRL_0170.bed",
+            "size": 1345190243,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/9070b8a9-de8f-40df-b85d-98f89718ae7b": {
+            "id": "dg.TEST-DATA/9070b8a9-de8f-40df-b85d-98f89718ae7b",
+            "guid": "dg.TEST-DATA/9070b8a9-de8f-40df-b85d-98f89718ae7b",
+            "name": "DONOR_0171.bam",
+            "size": 989815423,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/c8c28701-4cbc-451b-9f47-d9c71b73c401": {
+            "id": "dg.TEST-DATA/c8c28701-4cbc-451b-9f47-d9c71b73c401",
+            "guid": "dg.TEST-DATA/c8c28701-4cbc-451b-9f47-d9c71b73c401",
+            "name": "DONOR_0172.vcf",
+            "size": 1373779655,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/7a625dbd-8131-4f3f-9de4-526fbb394324": {
+            "id": "dg.TEST-DATA/7a625dbd-8131-4f3f-9de4-526fbb394324",
+            "guid": "dg.TEST-DATA/7a625dbd-8131-4f3f-9de4-526fbb394324",
+            "name": "DONOR_0173.fastq.gz",
+            "size": 1520626576,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/70ae315c-7e60-4e2e-b794-44f05f9ca050": {
+            "id": "dg.TEST-DATA/70ae315c-7e60-4e2e-b794-44f05f9ca050",
+            "guid": "dg.TEST-DATA/70ae315c-7e60-4e2e-b794-44f05f9ca050",
+            "name": "DONOR_0174.cram",
+            "size": 1177644634,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/db3caa04-be65-49dd-a975-8284ff23e534": {
+            "id": "dg.TEST-DATA/db3caa04-be65-49dd-a975-8284ff23e534",
+            "guid": "dg.TEST-DATA/db3caa04-be65-49dd-a975-8284ff23e534",
+            "name": "DONOR_0175.bed",
+            "size": 1499430858,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/1ad2db68-b3f9-44c4-93f7-05d183534e25": {
+            "id": "dg.TEST-DATA/1ad2db68-b3f9-44c4-93f7-05d183534e25",
+            "guid": "dg.TEST-DATA/1ad2db68-b3f9-44c4-93f7-05d183534e25",
+            "name": "SAMPLE_0176.bam",
+            "size": 1112047394,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/61f4c856-ec93-47ef-b3ff-d61c9696408d": {
+            "id": "dg.TEST-DATA/61f4c856-ec93-47ef-b3ff-d61c9696408d",
+            "guid": "dg.TEST-DATA/61f4c856-ec93-47ef-b3ff-d61c9696408d",
+            "name": "SAMPLE_0177.vcf",
+            "size": 1496575846,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/fa3ea3c0-e3e6-4323-821a-a2dd76457c89": {
+            "id": "dg.TEST-DATA/fa3ea3c0-e3e6-4323-821a-a2dd76457c89",
+            "guid": "dg.TEST-DATA/fa3ea3c0-e3e6-4323-821a-a2dd76457c89",
+            "name": "SAMPLE_0178.fastq.gz",
+            "size": 1690097818,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/112387a2-bac0-4d4f-8524-4acab99b66a4": {
+            "id": "dg.TEST-DATA/112387a2-bac0-4d4f-8524-4acab99b66a4",
+            "guid": "dg.TEST-DATA/112387a2-bac0-4d4f-8524-4acab99b66a4",
+            "name": "SAMPLE_0179.cram",
+            "size": 1217399715,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/ede9cdaa-8e3c-4269-9c40-fb8ed6978185": {
+            "id": "dg.TEST-DATA/ede9cdaa-8e3c-4269-9c40-fb8ed6978185",
+            "guid": "dg.TEST-DATA/ede9cdaa-8e3c-4269-9c40-fb8ed6978185",
+            "name": "SAMPLE_0180.bed",
+            "size": 917751585,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/ba48caaa-f1a2-4201-aa5b-9a85fd777d6d": {
+            "id": "dg.TEST-DATA/ba48caaa-f1a2-4201-aa5b-9a85fd777d6d",
+            "guid": "dg.TEST-DATA/ba48caaa-f1a2-4201-aa5b-9a85fd777d6d",
+            "name": "SUBJ_0181.bam",
+            "size": 1364891705,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/a0bb3b74-1d91-4fc4-8496-792fbef7e398": {
+            "id": "dg.TEST-DATA/a0bb3b74-1d91-4fc4-8496-792fbef7e398",
+            "guid": "dg.TEST-DATA/a0bb3b74-1d91-4fc4-8496-792fbef7e398",
+            "name": "SUBJ_0182.vcf",
+            "size": 1102920265,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/3e61fdd7-a61a-4dc5-97b3-d230d3111704": {
+            "id": "dg.TEST-DATA/3e61fdd7-a61a-4dc5-97b3-d230d3111704",
+            "guid": "dg.TEST-DATA/3e61fdd7-a61a-4dc5-97b3-d230d3111704",
+            "name": "SUBJ_0183.fastq.gz",
+            "size": 1293491201,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/fdb2d734-c28f-4974-adfa-a22bded0dc04": {
+            "id": "dg.TEST-DATA/fdb2d734-c28f-4974-adfa-a22bded0dc04",
+            "guid": "dg.TEST-DATA/fdb2d734-c28f-4974-adfa-a22bded0dc04",
+            "name": "SUBJ_0184.cram",
+            "size": 1013511704,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/d00ed59b-5d71-481c-bc91-730dcb2e0bfd": {
+            "id": "dg.TEST-DATA/d00ed59b-5d71-481c-bc91-730dcb2e0bfd",
+            "guid": "dg.TEST-DATA/d00ed59b-5d71-481c-bc91-730dcb2e0bfd",
+            "name": "SUBJ_0185.bed",
+            "size": 1050975820,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/72becffd-56e4-4f7f-9e73-066015fc97fc": {
+            "id": "dg.TEST-DATA/72becffd-56e4-4f7f-9e73-066015fc97fc",
+            "guid": "dg.TEST-DATA/72becffd-56e4-4f7f-9e73-066015fc97fc",
+            "name": "CASE_0186.bam",
+            "size": 1870659492,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/28824778-ab16-4136-aaab-53a366287ca5": {
+            "id": "dg.TEST-DATA/28824778-ab16-4136-aaab-53a366287ca5",
+            "guid": "dg.TEST-DATA/28824778-ab16-4136-aaab-53a366287ca5",
+            "name": "CASE_0187.vcf",
+            "size": 1159856820,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/89ad3036-1b8e-4542-9696-e047bd3bdfc1": {
+            "id": "dg.TEST-DATA/89ad3036-1b8e-4542-9696-e047bd3bdfc1",
+            "guid": "dg.TEST-DATA/89ad3036-1b8e-4542-9696-e047bd3bdfc1",
+            "name": "CASE_0188.fastq.gz",
+            "size": 995603024,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/da3967a5-7574-49b6-8da3-51fc91016bdf": {
+            "id": "dg.TEST-DATA/da3967a5-7574-49b6-8da3-51fc91016bdf",
+            "guid": "dg.TEST-DATA/da3967a5-7574-49b6-8da3-51fc91016bdf",
+            "name": "CASE_0189.cram",
+            "size": 1065339933,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/cf951ca0-d243-4128-bf3c-7001f24e3e6e": {
+            "id": "dg.TEST-DATA/cf951ca0-d243-4128-bf3c-7001f24e3e6e",
+            "guid": "dg.TEST-DATA/cf951ca0-d243-4128-bf3c-7001f24e3e6e",
+            "name": "CASE_0190.bed",
+            "size": 1683073593,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/c49e045e-7629-4182-852c-1600068f5866": {
+            "id": "dg.TEST-DATA/c49e045e-7629-4182-852c-1600068f5866",
+            "guid": "dg.TEST-DATA/c49e045e-7629-4182-852c-1600068f5866",
+            "name": "CTRL_0191.bam",
+            "size": 868969574,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/e224c193-387d-404b-881e-1ab1cca9bd3a": {
+            "id": "dg.TEST-DATA/e224c193-387d-404b-881e-1ab1cca9bd3a",
+            "guid": "dg.TEST-DATA/e224c193-387d-404b-881e-1ab1cca9bd3a",
+            "name": "CTRL_0192.vcf",
+            "size": 1244405589,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/113e2da1-d220-4c62-82de-fd94c541ca8f": {
+            "id": "dg.TEST-DATA/113e2da1-d220-4c62-82de-fd94c541ca8f",
+            "guid": "dg.TEST-DATA/113e2da1-d220-4c62-82de-fd94c541ca8f",
+            "name": "CTRL_0193.fastq.gz",
+            "size": 914244266,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/c3b89640-a2cb-4e3f-8c64-010991e2f04c": {
+            "id": "dg.TEST-DATA/c3b89640-a2cb-4e3f-8c64-010991e2f04c",
+            "guid": "dg.TEST-DATA/c3b89640-a2cb-4e3f-8c64-010991e2f04c",
+            "name": "CTRL_0194.cram",
+            "size": 876590417,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/41ecdfce-8d1e-4f18-8c30-cdd020903f15": {
+            "id": "dg.TEST-DATA/41ecdfce-8d1e-4f18-8c30-cdd020903f15",
+            "guid": "dg.TEST-DATA/41ecdfce-8d1e-4f18-8c30-cdd020903f15",
+            "name": "CTRL_0195.bed",
+            "size": 1165300170,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/cee378dc-5509-490b-99f5-1c79cc661c14": {
+            "id": "dg.TEST-DATA/cee378dc-5509-490b-99f5-1c79cc661c14",
+            "guid": "dg.TEST-DATA/cee378dc-5509-490b-99f5-1c79cc661c14",
+            "name": "DONOR_0196.bam",
+            "size": 1381314479,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/f1bb8506-c946-4dca-8883-2dce1e500d84": {
+            "id": "dg.TEST-DATA/f1bb8506-c946-4dca-8883-2dce1e500d84",
+            "guid": "dg.TEST-DATA/f1bb8506-c946-4dca-8883-2dce1e500d84",
+            "name": "DONOR_0197.vcf",
+            "size": 1447411246,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/afe15163-5b73-4a3a-a632-e923d37362a7": {
+            "id": "dg.TEST-DATA/afe15163-5b73-4a3a-a632-e923d37362a7",
+            "guid": "dg.TEST-DATA/afe15163-5b73-4a3a-a632-e923d37362a7",
+            "name": "DONOR_0198.fastq.gz",
+            "size": 1001195656,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-B_cell_lymphoma",
+            "dataset_guid": "Canine-B_cell_lymphoma",
+            "itemType": "Data"
+          }
+        }
+      },
+      "Canine-Non-Hodgkin_lymphoma": {
+        "id": "Canine-Non-Hodgkin_lymphoma",
+        "name": "",
+        "members": {
+          "dg.TEST-DATA/73ef8518-7d0e-4ffe-bf37-7c6f4b33b92f": {
+            "id": "dg.TEST-DATA/73ef8518-7d0e-4ffe-bf37-7c6f4b33b92f",
+            "guid": "dg.TEST-DATA/73ef8518-7d0e-4ffe-bf37-7c6f4b33b92f",
+            "name": "DONOR_0199.cram",
+            "size": 1663204335,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/604496ea-2969-490f-a9db-868c0beaa08d": {
+            "id": "dg.TEST-DATA/604496ea-2969-490f-a9db-868c0beaa08d",
+            "guid": "dg.TEST-DATA/604496ea-2969-490f-a9db-868c0beaa08d",
+            "name": "DONOR_0200.bed",
+            "size": 4340881106,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/7706a149-2ca1-4ecf-bd93-e2c6236ddd46": {
+            "id": "dg.TEST-DATA/7706a149-2ca1-4ecf-bd93-e2c6236ddd46",
+            "guid": "dg.TEST-DATA/7706a149-2ca1-4ecf-bd93-e2c6236ddd46",
+            "name": "SAMPLE_0201.bam",
+            "size": 3098579912,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/583185b6-86dd-4414-9fc4-ba25434c70a0": {
+            "id": "dg.TEST-DATA/583185b6-86dd-4414-9fc4-ba25434c70a0",
+            "guid": "dg.TEST-DATA/583185b6-86dd-4414-9fc4-ba25434c70a0",
+            "name": "SAMPLE_0202.vcf",
+            "size": 509701153,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/83772d62-797e-4098-aaf0-1f8b9446b392": {
+            "id": "dg.TEST-DATA/83772d62-797e-4098-aaf0-1f8b9446b392",
+            "guid": "dg.TEST-DATA/83772d62-797e-4098-aaf0-1f8b9446b392",
+            "name": "SAMPLE_0203.fastq.gz",
+            "size": 1229976102,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/46e77812-03c7-4830-8d61-dae1fca18d2b": {
+            "id": "dg.TEST-DATA/46e77812-03c7-4830-8d61-dae1fca18d2b",
+            "guid": "dg.TEST-DATA/46e77812-03c7-4830-8d61-dae1fca18d2b",
+            "name": "SAMPLE_0204.cram",
+            "size": 2845302085,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/fde44eae-bf96-4def-9779-71d83292e62e": {
+            "id": "dg.TEST-DATA/fde44eae-bf96-4def-9779-71d83292e62e",
+            "guid": "dg.TEST-DATA/fde44eae-bf96-4def-9779-71d83292e62e",
+            "name": "SAMPLE_0205.bed",
+            "size": 5206350898,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/a5ca1baf-52bb-477b-b683-1d471601d77d": {
+            "id": "dg.TEST-DATA/a5ca1baf-52bb-477b-b683-1d471601d77d",
+            "guid": "dg.TEST-DATA/a5ca1baf-52bb-477b-b683-1d471601d77d",
+            "name": "SUBJ_0206.bam",
+            "size": 3245993069,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/e25d0b63-284c-48cc-a3ea-dfdb16a02540": {
+            "id": "dg.TEST-DATA/e25d0b63-284c-48cc-a3ea-dfdb16a02540",
+            "guid": "dg.TEST-DATA/e25d0b63-284c-48cc-a3ea-dfdb16a02540",
+            "name": "SUBJ_0207.vcf",
+            "size": 717003460,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/de08af5e-2ab3-4e4b-8269-598b53287e05": {
+            "id": "dg.TEST-DATA/de08af5e-2ab3-4e4b-8269-598b53287e05",
+            "guid": "dg.TEST-DATA/de08af5e-2ab3-4e4b-8269-598b53287e05",
+            "name": "SUBJ_0208.fastq.gz",
+            "size": 3356143056,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/cca94e4e-37f3-4ae0-a981-71d9e4c2b2af": {
+            "id": "dg.TEST-DATA/cca94e4e-37f3-4ae0-a981-71d9e4c2b2af",
+            "guid": "dg.TEST-DATA/cca94e4e-37f3-4ae0-a981-71d9e4c2b2af",
+            "name": "SUBJ_0209.cram",
+            "size": 3394419768,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/c7412341-e631-4a83-aa67-4663173a276e": {
+            "id": "dg.TEST-DATA/c7412341-e631-4a83-aa67-4663173a276e",
+            "guid": "dg.TEST-DATA/c7412341-e631-4a83-aa67-4663173a276e",
+            "name": "SUBJ_0210.bed",
+            "size": 1826673356,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/bfbcac12-2b49-4234-a3e1-81d521b6abc5": {
+            "id": "dg.TEST-DATA/bfbcac12-2b49-4234-a3e1-81d521b6abc5",
+            "guid": "dg.TEST-DATA/bfbcac12-2b49-4234-a3e1-81d521b6abc5",
+            "name": "CASE_0211.bam",
+            "size": 4488433884,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/8eb5b559-27c3-457f-a16d-16b6df60c145": {
+            "id": "dg.TEST-DATA/8eb5b559-27c3-457f-a16d-16b6df60c145",
+            "guid": "dg.TEST-DATA/8eb5b559-27c3-457f-a16d-16b6df60c145",
+            "name": "CASE_0212.vcf",
+            "size": 4756613570,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/95f6b390-72b8-446a-9ac6-d4b8e87524e0": {
+            "id": "dg.TEST-DATA/95f6b390-72b8-446a-9ac6-d4b8e87524e0",
+            "guid": "dg.TEST-DATA/95f6b390-72b8-446a-9ac6-d4b8e87524e0",
+            "name": "CASE_0213.fastq.gz",
+            "size": 4624990957,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/3719a372-803b-42db-8925-39d86a3804c6": {
+            "id": "dg.TEST-DATA/3719a372-803b-42db-8925-39d86a3804c6",
+            "guid": "dg.TEST-DATA/3719a372-803b-42db-8925-39d86a3804c6",
+            "name": "CASE_0214.cram",
+            "size": 538783133,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/d45fbb36-92eb-4dfc-9e09-1c3385af7abb": {
+            "id": "dg.TEST-DATA/d45fbb36-92eb-4dfc-9e09-1c3385af7abb",
+            "guid": "dg.TEST-DATA/d45fbb36-92eb-4dfc-9e09-1c3385af7abb",
+            "name": "CASE_0215.bed",
+            "size": 3154548808,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/da113b62-a4c8-42b6-836a-c5660b92d35c": {
+            "id": "dg.TEST-DATA/da113b62-a4c8-42b6-836a-c5660b92d35c",
+            "guid": "dg.TEST-DATA/da113b62-a4c8-42b6-836a-c5660b92d35c",
+            "name": "CTRL_0216.bam",
+            "size": 741540032,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/bb2cf13b-fa88-41b8-9353-a10c5590eec2": {
+            "id": "dg.TEST-DATA/bb2cf13b-fa88-41b8-9353-a10c5590eec2",
+            "guid": "dg.TEST-DATA/bb2cf13b-fa88-41b8-9353-a10c5590eec2",
+            "name": "CTRL_0217.vcf",
+            "size": 3032031490,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/5ddc2d8c-3c52-4c06-9b64-d0a07e494da2": {
+            "id": "dg.TEST-DATA/5ddc2d8c-3c52-4c06-9b64-d0a07e494da2",
+            "guid": "dg.TEST-DATA/5ddc2d8c-3c52-4c06-9b64-d0a07e494da2",
+            "name": "CTRL_0218.fastq.gz",
+            "size": 1037547402,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/a37ac24f-e650-4eae-8c2d-18abbc98c063": {
+            "id": "dg.TEST-DATA/a37ac24f-e650-4eae-8c2d-18abbc98c063",
+            "guid": "dg.TEST-DATA/a37ac24f-e650-4eae-8c2d-18abbc98c063",
+            "name": "CTRL_0219.cram",
+            "size": 1430366547,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/74104891-02cc-40b5-bb28-77c564e9d331": {
+            "id": "dg.TEST-DATA/74104891-02cc-40b5-bb28-77c564e9d331",
+            "guid": "dg.TEST-DATA/74104891-02cc-40b5-bb28-77c564e9d331",
+            "name": "CTRL_0220.bed",
+            "size": 4420713050,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/c4cdbcf1-f184-4594-b283-07b54cfa9e84": {
+            "id": "dg.TEST-DATA/c4cdbcf1-f184-4594-b283-07b54cfa9e84",
+            "guid": "dg.TEST-DATA/c4cdbcf1-f184-4594-b283-07b54cfa9e84",
+            "name": "DONOR_0221.bam",
+            "size": 569325789,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/7425187f-ef8d-4c95-ad27-d2738e05d36e": {
+            "id": "dg.TEST-DATA/7425187f-ef8d-4c95-ad27-d2738e05d36e",
+            "guid": "dg.TEST-DATA/7425187f-ef8d-4c95-ad27-d2738e05d36e",
+            "name": "DONOR_0222.vcf",
+            "size": 928075316,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/30782dd8-4702-4b78-8830-5125887f7d2f": {
+            "id": "dg.TEST-DATA/30782dd8-4702-4b78-8830-5125887f7d2f",
+            "guid": "dg.TEST-DATA/30782dd8-4702-4b78-8830-5125887f7d2f",
+            "name": "DONOR_0223.fastq.gz",
+            "size": 1459286271,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/b61bbc94-bc66-440a-9f86-7739da6bd147": {
+            "id": "dg.TEST-DATA/b61bbc94-bc66-440a-9f86-7739da6bd147",
+            "guid": "dg.TEST-DATA/b61bbc94-bc66-440a-9f86-7739da6bd147",
+            "name": "DONOR_0224.cram",
+            "size": 3164134047,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/19091b00-d478-450e-b67c-d91325e784d9": {
+            "id": "dg.TEST-DATA/19091b00-d478-450e-b67c-d91325e784d9",
+            "guid": "dg.TEST-DATA/19091b00-d478-450e-b67c-d91325e784d9",
+            "name": "DONOR_0225.bed",
+            "size": 7035046589,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/0c671617-8d29-48a3-b943-752777c56972": {
+            "id": "dg.TEST-DATA/0c671617-8d29-48a3-b943-752777c56972",
+            "guid": "dg.TEST-DATA/0c671617-8d29-48a3-b943-752777c56972",
+            "name": "SAMPLE_0226.bam",
+            "size": 2825734251,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/62698ffe-620c-4570-9e4f-bf1fa8c1de8e": {
+            "id": "dg.TEST-DATA/62698ffe-620c-4570-9e4f-bf1fa8c1de8e",
+            "guid": "dg.TEST-DATA/62698ffe-620c-4570-9e4f-bf1fa8c1de8e",
+            "name": "SAMPLE_0227.vcf",
+            "size": 4811726463,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/4352326e-e6c7-46bd-8890-19eb5496c1ed": {
+            "id": "dg.TEST-DATA/4352326e-e6c7-46bd-8890-19eb5496c1ed",
+            "guid": "dg.TEST-DATA/4352326e-e6c7-46bd-8890-19eb5496c1ed",
+            "name": "SAMPLE_0228.fastq.gz",
+            "size": 431452569,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/8fbcc99f-ebd1-4287-945c-87aa5ed0f373": {
+            "id": "dg.TEST-DATA/8fbcc99f-ebd1-4287-945c-87aa5ed0f373",
+            "guid": "dg.TEST-DATA/8fbcc99f-ebd1-4287-945c-87aa5ed0f373",
+            "name": "SAMPLE_0229.cram",
+            "size": 1271245731,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/a4182e26-b439-4c28-9047-6f06d8abc5ca": {
+            "id": "dg.TEST-DATA/a4182e26-b439-4c28-9047-6f06d8abc5ca",
+            "guid": "dg.TEST-DATA/a4182e26-b439-4c28-9047-6f06d8abc5ca",
+            "name": "SAMPLE_0230.bed",
+            "size": 3048963314,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/f36f0153-1994-46dd-802f-259eef2ecfd6": {
+            "id": "dg.TEST-DATA/f36f0153-1994-46dd-802f-259eef2ecfd6",
+            "guid": "dg.TEST-DATA/f36f0153-1994-46dd-802f-259eef2ecfd6",
+            "name": "SUBJ_0231.bam",
+            "size": 3079723303,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/bb2e56d9-b5b3-445b-8915-d51242d6d5db": {
+            "id": "dg.TEST-DATA/bb2e56d9-b5b3-445b-8915-d51242d6d5db",
+            "guid": "dg.TEST-DATA/bb2e56d9-b5b3-445b-8915-d51242d6d5db",
+            "name": "SUBJ_0232.vcf",
+            "size": 3244369616,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Non-Hodgkin_lymphoma",
+            "dataset_guid": "Canine-Non-Hodgkin_lymphoma",
+            "itemType": "Data"
+          }
+        }
+      },
+      "Canine-Bladder_cancer": {
+        "id": "Canine-Bladder_cancer",
+        "name": "",
+        "members": {
+          "dg.TEST-DATA/7fa349e7-1f23-4717-ba48-a4cb92e10599": {
+            "id": "dg.TEST-DATA/7fa349e7-1f23-4717-ba48-a4cb92e10599",
+            "guid": "dg.TEST-DATA/7fa349e7-1f23-4717-ba48-a4cb92e10599",
+            "name": "SUBJ_0233.fastq.gz",
+            "size": 4545514618,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Bladder_cancer",
+            "dataset_guid": "Canine-Bladder_cancer",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/473ab9f3-28b5-47eb-837b-b3c184407b8b": {
+            "id": "dg.TEST-DATA/473ab9f3-28b5-47eb-837b-b3c184407b8b",
+            "guid": "dg.TEST-DATA/473ab9f3-28b5-47eb-837b-b3c184407b8b",
+            "name": "SUBJ_0234.cram",
+            "size": 4375507267,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Bladder_cancer",
+            "dataset_guid": "Canine-Bladder_cancer",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/4ddeddad-239e-4cbe-ba0b-fef39bcc2016": {
+            "id": "dg.TEST-DATA/4ddeddad-239e-4cbe-ba0b-fef39bcc2016",
+            "guid": "dg.TEST-DATA/4ddeddad-239e-4cbe-ba0b-fef39bcc2016",
+            "name": "SUBJ_0235.bed",
+            "size": 4159306830,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Bladder_cancer",
+            "dataset_guid": "Canine-Bladder_cancer",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/d17d9892-8b91-49ab-8e70-3e05c94140ea": {
+            "id": "dg.TEST-DATA/d17d9892-8b91-49ab-8e70-3e05c94140ea",
+            "guid": "dg.TEST-DATA/d17d9892-8b91-49ab-8e70-3e05c94140ea",
+            "name": "CASE_0236.bam",
+            "size": 4873738843,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Bladder_cancer",
+            "dataset_guid": "Canine-Bladder_cancer",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/a7515e74-8bd9-48a0-b37d-b963c02925b6": {
+            "id": "dg.TEST-DATA/a7515e74-8bd9-48a0-b37d-b963c02925b6",
+            "guid": "dg.TEST-DATA/a7515e74-8bd9-48a0-b37d-b963c02925b6",
+            "name": "CASE_0237.vcf",
+            "size": 3578336472,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Bladder_cancer",
+            "dataset_guid": "Canine-Bladder_cancer",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/e851f0f1-2570-4f51-bc0b-60a7d2d6d346": {
+            "id": "dg.TEST-DATA/e851f0f1-2570-4f51-bc0b-60a7d2d6d346",
+            "guid": "dg.TEST-DATA/e851f0f1-2570-4f51-bc0b-60a7d2d6d346",
+            "name": "CASE_0238.fastq.gz",
+            "size": 4693385460,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Bladder_cancer",
+            "dataset_guid": "Canine-Bladder_cancer",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/45f8a572-4d49-44ca-8f0d-dac3328fd8ea": {
+            "id": "dg.TEST-DATA/45f8a572-4d49-44ca-8f0d-dac3328fd8ea",
+            "guid": "dg.TEST-DATA/45f8a572-4d49-44ca-8f0d-dac3328fd8ea",
+            "name": "CASE_0239.cram",
+            "size": 4054282456,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Bladder_cancer",
+            "dataset_guid": "Canine-Bladder_cancer",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/05a992e5-4f8e-490c-b978-ed853a504e84": {
+            "id": "dg.TEST-DATA/05a992e5-4f8e-490c-b978-ed853a504e84",
+            "guid": "dg.TEST-DATA/05a992e5-4f8e-490c-b978-ed853a504e84",
+            "name": "CASE_0240.bed",
+            "size": 4355061599,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Bladder_cancer",
+            "dataset_guid": "Canine-Bladder_cancer",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/d863ec9f-4f09-44e4-baf0-7a8018be140f": {
+            "id": "dg.TEST-DATA/d863ec9f-4f09-44e4-baf0-7a8018be140f",
+            "guid": "dg.TEST-DATA/d863ec9f-4f09-44e4-baf0-7a8018be140f",
+            "name": "CTRL_0241.bam",
+            "size": 3718234888,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Bladder_cancer",
+            "dataset_guid": "Canine-Bladder_cancer",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/199d26c8-1b4e-4a35-a915-f5bc66bd3ac4": {
+            "id": "dg.TEST-DATA/199d26c8-1b4e-4a35-a915-f5bc66bd3ac4",
+            "guid": "dg.TEST-DATA/199d26c8-1b4e-4a35-a915-f5bc66bd3ac4",
+            "name": "CTRL_0242.vcf",
+            "size": 3898797911,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Bladder_cancer",
+            "dataset_guid": "Canine-Bladder_cancer",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/e0daa0d1-4137-490a-9fe4-30f9c98c7978": {
+            "id": "dg.TEST-DATA/e0daa0d1-4137-490a-9fe4-30f9c98c7978",
+            "guid": "dg.TEST-DATA/e0daa0d1-4137-490a-9fe4-30f9c98c7978",
+            "name": "CTRL_0243.fastq.gz",
+            "size": 3942968517,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Bladder_cancer",
+            "dataset_guid": "Canine-Bladder_cancer",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/90485dad-3297-458c-99fc-50648d8c3b16": {
+            "id": "dg.TEST-DATA/90485dad-3297-458c-99fc-50648d8c3b16",
+            "guid": "dg.TEST-DATA/90485dad-3297-458c-99fc-50648d8c3b16",
+            "name": "CTRL_0244.cram",
+            "size": 3794960995,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-Bladder_cancer",
+            "dataset_guid": "Canine-Bladder_cancer",
+            "itemType": "Data"
+          }
+        }
+      },
+      "Canine-PMed_trial": {
+        "id": "Canine-PMed_trial",
+        "name": "",
+        "members": {
+          "dg.TEST-DATA/63f600e6-76e5-48fd-bdb9-ad66df50bf1d": {
+            "id": "dg.TEST-DATA/63f600e6-76e5-48fd-bdb9-ad66df50bf1d",
+            "guid": "dg.TEST-DATA/63f600e6-76e5-48fd-bdb9-ad66df50bf1d",
+            "name": "CTRL_0245.bed",
+            "size": 2316212,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/02aed422-94c4-4169-bc69-0c00059e3755": {
+            "id": "dg.TEST-DATA/02aed422-94c4-4169-bc69-0c00059e3755",
+            "guid": "dg.TEST-DATA/02aed422-94c4-4169-bc69-0c00059e3755",
+            "name": "DONOR_0246.bam",
+            "size": 2331800,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/13bab6ee-2f5f-491f-9052-ed780e279303": {
+            "id": "dg.TEST-DATA/13bab6ee-2f5f-491f-9052-ed780e279303",
+            "guid": "dg.TEST-DATA/13bab6ee-2f5f-491f-9052-ed780e279303",
+            "name": "DONOR_0247.vcf",
+            "size": 2397779,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/b4ed6a94-ecf9-4f29-be89-2ac815b2b2bf": {
+            "id": "dg.TEST-DATA/b4ed6a94-ecf9-4f29-be89-2ac815b2b2bf",
+            "guid": "dg.TEST-DATA/b4ed6a94-ecf9-4f29-be89-2ac815b2b2bf",
+            "name": "DONOR_0248.fastq.gz",
+            "size": 2371191,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/7d054ef5-821a-41bc-8927-38af173990e1": {
+            "id": "dg.TEST-DATA/7d054ef5-821a-41bc-8927-38af173990e1",
+            "guid": "dg.TEST-DATA/7d054ef5-821a-41bc-8927-38af173990e1",
+            "name": "DONOR_0249.cram",
+            "size": 2536815,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/a8053319-20ea-44b8-b7ab-577b127d9901": {
+            "id": "dg.TEST-DATA/a8053319-20ea-44b8-b7ab-577b127d9901",
+            "guid": "dg.TEST-DATA/a8053319-20ea-44b8-b7ab-577b127d9901",
+            "name": "DONOR_0250.bed",
+            "size": 2381976,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/23238374-847d-460a-b411-371ebd1368d5": {
+            "id": "dg.TEST-DATA/23238374-847d-460a-b411-371ebd1368d5",
+            "guid": "dg.TEST-DATA/23238374-847d-460a-b411-371ebd1368d5",
+            "name": "SAMPLE_0251.bam",
+            "size": 2338894,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/fc408fce-c079-446a-b8cf-45d8d0ac9a99": {
+            "id": "dg.TEST-DATA/fc408fce-c079-446a-b8cf-45d8d0ac9a99",
+            "guid": "dg.TEST-DATA/fc408fce-c079-446a-b8cf-45d8d0ac9a99",
+            "name": "SAMPLE_0252.vcf",
+            "size": 2355781,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/1ea3a3c2-7247-4093-8501-48373dea7546": {
+            "id": "dg.TEST-DATA/1ea3a3c2-7247-4093-8501-48373dea7546",
+            "guid": "dg.TEST-DATA/1ea3a3c2-7247-4093-8501-48373dea7546",
+            "name": "SAMPLE_0253.fastq.gz",
+            "size": 2462237,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/d4592439-e746-4a1a-a95b-9c759a4fb88e": {
+            "id": "dg.TEST-DATA/d4592439-e746-4a1a-a95b-9c759a4fb88e",
+            "guid": "dg.TEST-DATA/d4592439-e746-4a1a-a95b-9c759a4fb88e",
+            "name": "SAMPLE_0254.cram",
+            "size": 2440184,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/06271cb2-15ac-45ff-aea7-ea1e8f7b16a7": {
+            "id": "dg.TEST-DATA/06271cb2-15ac-45ff-aea7-ea1e8f7b16a7",
+            "guid": "dg.TEST-DATA/06271cb2-15ac-45ff-aea7-ea1e8f7b16a7",
+            "name": "SAMPLE_0255.bed",
+            "size": 2451800,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/e15dd5ae-6e1b-47f6-917b-05a5afd506c0": {
+            "id": "dg.TEST-DATA/e15dd5ae-6e1b-47f6-917b-05a5afd506c0",
+            "guid": "dg.TEST-DATA/e15dd5ae-6e1b-47f6-917b-05a5afd506c0",
+            "name": "SUBJ_0256.bam",
+            "size": 2525513,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/19232bb4-3052-4aaa-81ba-6fddf1de8e75": {
+            "id": "dg.TEST-DATA/19232bb4-3052-4aaa-81ba-6fddf1de8e75",
+            "guid": "dg.TEST-DATA/19232bb4-3052-4aaa-81ba-6fddf1de8e75",
+            "name": "SUBJ_0257.vcf",
+            "size": 2366751,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/f1baa153-7019-4d25-90fc-cd004598435f": {
+            "id": "dg.TEST-DATA/f1baa153-7019-4d25-90fc-cd004598435f",
+            "guid": "dg.TEST-DATA/f1baa153-7019-4d25-90fc-cd004598435f",
+            "name": "SUBJ_0258.fastq.gz",
+            "size": 2417805,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/c5a37a1c-0929-47d4-8bce-bb0fdecf47d4": {
+            "id": "dg.TEST-DATA/c5a37a1c-0929-47d4-8bce-bb0fdecf47d4",
+            "guid": "dg.TEST-DATA/c5a37a1c-0929-47d4-8bce-bb0fdecf47d4",
+            "name": "SUBJ_0259.cram",
+            "size": 2512576,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/1b50d77c-c408-4108-be5b-575c26c166ae": {
+            "id": "dg.TEST-DATA/1b50d77c-c408-4108-be5b-575c26c166ae",
+            "guid": "dg.TEST-DATA/1b50d77c-c408-4108-be5b-575c26c166ae",
+            "name": "SUBJ_0260.bed",
+            "size": 2166921,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/3710927c-48ae-4631-9f0b-9c80934517b0": {
+            "id": "dg.TEST-DATA/3710927c-48ae-4631-9f0b-9c80934517b0",
+            "guid": "dg.TEST-DATA/3710927c-48ae-4631-9f0b-9c80934517b0",
+            "name": "CASE_0261.bam",
+            "size": 2476597,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/e40e06e9-7bf3-42e2-89ab-7e229493dbaa": {
+            "id": "dg.TEST-DATA/e40e06e9-7bf3-42e2-89ab-7e229493dbaa",
+            "guid": "dg.TEST-DATA/e40e06e9-7bf3-42e2-89ab-7e229493dbaa",
+            "name": "CASE_0262.vcf",
+            "size": 2444614,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/4547e208-3033-4a89-b304-b7285b14e271": {
+            "id": "dg.TEST-DATA/4547e208-3033-4a89-b304-b7285b14e271",
+            "guid": "dg.TEST-DATA/4547e208-3033-4a89-b304-b7285b14e271",
+            "name": "CASE_0263.fastq.gz",
+            "size": 2319445,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/31051cf3-20ae-4968-aa32-44da8bea1ac0": {
+            "id": "dg.TEST-DATA/31051cf3-20ae-4968-aa32-44da8bea1ac0",
+            "guid": "dg.TEST-DATA/31051cf3-20ae-4968-aa32-44da8bea1ac0",
+            "name": "CASE_0264.cram",
+            "size": 2346649,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/d76d55d8-426d-467e-8dc9-55c6d934be48": {
+            "id": "dg.TEST-DATA/d76d55d8-426d-467e-8dc9-55c6d934be48",
+            "guid": "dg.TEST-DATA/d76d55d8-426d-467e-8dc9-55c6d934be48",
+            "name": "CASE_0265.bed",
+            "size": 55081605,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/d9a969bb-9b6a-47b6-99d4-dfb1e9f0499e": {
+            "id": "dg.TEST-DATA/d9a969bb-9b6a-47b6-99d4-dfb1e9f0499e",
+            "guid": "dg.TEST-DATA/d9a969bb-9b6a-47b6-99d4-dfb1e9f0499e",
+            "name": "CTRL_0266.bam",
+            "size": 2405942,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/f1bcac04-557a-42df-853e-c08cfe046c62": {
+            "id": "dg.TEST-DATA/f1bcac04-557a-42df-853e-c08cfe046c62",
+            "guid": "dg.TEST-DATA/f1bcac04-557a-42df-853e-c08cfe046c62",
+            "name": "CTRL_0267.vcf",
+            "size": 2387061,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          },
+          "dg.TEST-DATA/0a4c065e-cbfa-4237-a68b-931c41649d1c": {
+            "id": "dg.TEST-DATA/0a4c065e-cbfa-4237-a68b-931c41649d1c",
+            "guid": "dg.TEST-DATA/0a4c065e-cbfa-4237-a68b-931c41649d1c",
+            "name": "CTRL_0268.fastq.gz",
+            "size": 2449487,
+            "type": "GA4GH_DRS",
+            "dataset_id": "Canine-PMed_trial",
+            "dataset_guid": "Canine-PMed_trial",
+            "itemType": "Data"
+          }
+        }
+      }
+    },
+    "version": 0,
+    "created_time": "2026-09-24T19:56:16.987330+00:00",
+    "updated_time": "2026-09-24T20:08:30.067122+00:00",
+    "name": "list2",
+    "id": "7fcac868-7c45-40d6-bd75-9df24347e929",
+    "authz": {
+      "authz": [
+        "/users/0/user-data-library/lists/7fcac868-7c45-40d6-bd75-9df24347e929"
+      ],
+      "version": 0
+    }
+  }
+}

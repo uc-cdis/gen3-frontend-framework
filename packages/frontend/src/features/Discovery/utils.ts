@@ -1,6 +1,6 @@
 import { JSONPath } from 'jsonpath-plus';
-import { JSONObject } from '@gen3/core';
-import { DiscoveryIndexConfig } from './types';
+import type { JSONObject } from '@gen3/core';
+import type { DiscoveryIndexConfig } from './types';
 import { AccessLevel } from '../../utils';
 
 export const jsonPathAccessor = (path: string) => (row: JSONObject) => {

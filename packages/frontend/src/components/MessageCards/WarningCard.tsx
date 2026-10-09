@@ -7,7 +7,11 @@ const WarningCard: React.FunctionComponent<MessageTextProps> = ({
 }: MessageTextProps): ReactElement => (
   <MessageCard
     message={message}
-    icon={<IconAlertTriangle size={24} />}
+    icon={
+      <IconAlertTriangle
+        style={{ width: '75%', height: '75%', marginBottom: '5px' }}
+      />
+    }
     color="utility.2"
   />
 );

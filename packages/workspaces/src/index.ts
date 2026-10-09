@@ -3,4 +3,10 @@ import {
   WorkspacesCenterPageGetServerSideProps,
 } from './pages/WorkspacesCenter';
 
-export { WorkspacesCenterPage, WorkspacesCenterPageGetServerSideProps };
+import CostTracker from './components/CostTracker';
+
+export {
+  CostTracker,
+  WorkspacesCenterPage,
+  WorkspacesCenterPageGetServerSideProps,
+};

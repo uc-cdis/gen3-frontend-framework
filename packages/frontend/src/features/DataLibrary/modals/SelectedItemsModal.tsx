@@ -43,7 +43,7 @@ const ModalHeader = () => {
 };
 
 const bindAction = (action: DataLibraryActionConfig) => {
-  const actionFunction = findAction(action.actionFunction);
+  const actionFunction = findAction(action.actionName);
   if (!actionFunction) {
     return NullAction;
   }
@@ -68,7 +68,6 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
   const [actionConfig, setActionConfig] =
     useState<DataLibraryActionConfig | null>(null);
   const [isRunning, setIsRunning] = useState(false);
-
   const destinations = useMemo(() => {
     return actions.map((action) => {
       return { label: action.label, value: action.id };
