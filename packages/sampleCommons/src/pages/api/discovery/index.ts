@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { JSONObject } from '@gen3/core';
+import type { JSONObject } from '@gen3/core';
 import filterByTags from '@/utils/api/discovery/processData/filterByTags';
 import paginateData from '@/utils/api/discovery/processData/paginateData';
 import searchData from '@/utils/api/discovery/processData/searchData';
