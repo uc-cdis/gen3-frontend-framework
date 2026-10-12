@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { ContextModalProps } from '@mantine/modals';
+import type { ContextModalProps } from '@mantine/modals';
 import { Button, Loader, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import ErrorCard from '../MessageCards/ErrorCard';
+import type { CoreState } from '@gen3/core';
 import {
-  CoreState,
   createNewCohort,
   selectAvailableCohorts,
   useCoreDispatch,

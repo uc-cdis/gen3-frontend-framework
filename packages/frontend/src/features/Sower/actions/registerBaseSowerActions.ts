@@ -4,6 +4,7 @@ import {
 } from './sowerActionFactory';
 import { notificationOutputAction, sendPFBToURL } from './outputActions';
 import { createPFBFromDataLibraryList } from './sowerJobActions';
+import { buildExportFilesToZipJob } from './exportFilesToZip';
 
 // register functions
 
@@ -11,6 +12,10 @@ export const registerBaseSowerActions = () => {
   sowerJobBuilderRegistry.register(
     'export-user-data-library',
     createPFBFromDataLibraryList,
+  );
+  sowerJobBuilderRegistry.register(
+    'export-files-to-zip',
+    buildExportFilesToZipJob,
   );
   sowerOutputActionRegistry.register('handoff-pfb-to-url', sendPFBToURL);
   sowerOutputActionRegistry.register('notification', notificationOutputAction);
