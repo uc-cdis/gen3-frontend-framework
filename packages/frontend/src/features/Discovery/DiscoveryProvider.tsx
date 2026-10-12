@@ -1,5 +1,7 @@
 import React, { createContext, useState } from 'react';
-import { DiscoveryIndexConfig } from './types';
+import type { DiscoveryIndexConfig } from './types';
+import type { AccessLevel } from '../../utils';
+import { supportedAccessLevels } from './utils';
 
 interface DiscoveryProviderValue {
   discoveryConfig: DiscoveryIndexConfig;
@@ -9,6 +11,7 @@ interface DiscoveryProviderValue {
   >;
   selectedAccessLevels: number[];
   setSelectedAccessLevels: React.Dispatch<React.SetStateAction<number[]>>;
+  enabledAccessLevels: Set<AccessLevel>;
 }
 
 const DiscoveryContext = createContext<DiscoveryProviderValue>({
@@ -17,6 +20,7 @@ const DiscoveryContext = createContext<DiscoveryProviderValue>({
   setSelectedTags: () => {},
   selectedAccessLevels: [],
   setSelectedAccessLevels: () => [],
+  enabledAccessLevels: new Set(),
 });
 
 const useDiscoveryContext = () => {
@@ -34,12 +38,15 @@ const DiscoveryProvider = ({
   children: React.ReactNode;
   discoveryIndexConfig: DiscoveryIndexConfig;
 }) => {
+  const selectedAccessLevelsSet = new Set<AccessLevel>(
+    supportedAccessLevels(discoveryIndexConfig),
+  );
   const [selectedTags, setSelectedTags] = useState<{ [key: string]: boolean }>(
     {},
   );
-  const [selectedAccessLevels, setSelectedAccessLevels] = useState<number[]>(
-    [],
-  );
+  const [selectedAccessLevels, setSelectedAccessLevels] = useState<number[]>([
+    ...selectedAccessLevelsSet,
+  ]);
 
   return (
     <DiscoveryContext.Provider
@@ -49,6 +56,7 @@ const DiscoveryProvider = ({
         setSelectedTags,
         selectedAccessLevels,
         setSelectedAccessLevels,
+        enabledAccessLevels: selectedAccessLevelsSet,
       }}
     >
       {children}

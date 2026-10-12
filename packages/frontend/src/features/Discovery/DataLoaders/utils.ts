@@ -170,6 +170,7 @@ export const processAuthorizations = (
   // mark studies as accessible or inaccessible to user
   const { authzField, dataAvailabilityField } = config.minimalFieldMapping;
   const { supportedValues, isMesh } = config.features.authorization;
+
   const studiesWithAccessibleField = data.map((study) => {
     let accessible: AccessLevel = AccessLevel.NOT_AVAILABLE;
     if (
