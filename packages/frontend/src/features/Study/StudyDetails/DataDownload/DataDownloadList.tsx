@@ -1,14 +1,14 @@
 import React from 'react';
-import { JSONObject } from '@gen3/core';
+import type { JSONObject } from '@gen3/core';
 import DownloadButtonsRow from './DownloadButtonsRow/DownloadButtonsRow';
 import StandaloneDataDownloadButton from './StandaloneDataDownloadButton';
-import {
-  MAX_NUMBER_OF_ITEMS_IN_LIST,
-  ProcessData,
+import type {
   processedDatumForDataDownloadList,
   sourceFieldData,
 } from './Utils/ProcessData';
+import { MAX_NUMBER_OF_ITEMS_IN_LIST, processData } from './Utils/ProcessData';
 import { Alert } from '@mantine/core';
+import { useDiscoveryContext } from '@gen3/frontend';
 
 interface DataDownloadListProps {
   readonly data: JSONObject;
@@ -20,27 +20,28 @@ type DataDownloadListData = {
 };
 
 const DataDownloadList = ({ data }: DataDownloadListProps) => {
-  const DataDownloadListData = ProcessData(
-    data['__manifest'] as sourceFieldData,
+  const { discoveryConfig } = useDiscoveryContext();
+  const { dataObjectField } = discoveryConfig.features.exportFromDiscovery
+    ?.exportDataFields ?? { dataObjectField: '__manifest' }; //TODO: document this default
+  const dataDownloadListData = processData(
+    data[dataObjectField] as sourceFieldData,
   );
   return (
     <>
       <DownloadButtonsRow data={data} />
-      {DataDownloadListData.dataForDataDownloadListHasBeenTruncated && (
+      {dataDownloadListData.dataForDataDownloadListHasBeenTruncated && (
         <Alert
           className="mt-4 mb-4"
           title={`More than ${MAX_NUMBER_OF_ITEMS_IN_LIST} files found. Visit repository to view all files.`}
         />
       )}
-      {DataDownloadListData.processedDataForDataDownloadList.map(
-        (fileInfo, i: number) => (
-          <StandaloneDataDownloadButton
-            key={`${fileInfo.guid}_${i}`}
-            data={fileInfo.guid as unknown as JSONObject}
-            title={fileInfo.title as string}
-          />
-        ),
-      )}
+      {dataDownloadListData.processedDataForDataDownloadList.map((fileInfo) => (
+        <StandaloneDataDownloadButton
+          key={`${fileInfo.guid}`}
+          data={fileInfo.guid as unknown as JSONObject}
+          title={fileInfo.title as string}
+        />
+      ))}
     </>
   );
 };

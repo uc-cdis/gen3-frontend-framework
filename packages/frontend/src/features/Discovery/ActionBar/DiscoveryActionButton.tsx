@@ -8,7 +8,7 @@ export interface ExportActionButtonProps {
   label?: string;
   icon?: ReactNode;
   disabled?: boolean;
-  tooltip?: string;
+  tooltipText?: string;
   active?: boolean;
   showIcon?: boolean;
   loginRequired?: boolean;
@@ -21,7 +21,7 @@ const DiscoveryActionButton = ({
   label = undefined,
   icon = undefined,
   disabled = false,
-  tooltip = undefined,
+  tooltipText = undefined,
   onClick = () => null,
   showIcon = true,
   loginRequired = false,
@@ -31,7 +31,7 @@ const DiscoveryActionButton = ({
   const requiresLogin = !useIsUserLoggedIn() && loginRequired;
 
   return (
-    <Tooltip disabled={!tooltip} label={tooltip}>
+    <Tooltip disabled={!tooltipText} label={tooltipText}>
       <Button
         ref={ref}
         onClick={onClick}

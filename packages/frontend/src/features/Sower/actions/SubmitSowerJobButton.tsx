@@ -56,6 +56,14 @@ interface SubmitSowerJobButtonProps {
    * variant of maintine buttom
    */
   variant?: ButtonProps['variant'];
+  /*
+   * optional error handling function
+   */
+  onError?: () => void;
+  /*
+   * optional successful submission
+   */
+  onSuccess?: () => void;
 }
 
 const SubmitSowerJobButton = forwardRef<
@@ -68,6 +76,8 @@ const SubmitSowerJobButton = forwardRef<
       label,
       tooltipText,
       disabled = false,
+      onSuccess,
+      onError,
       ...props
     }: SubmitSowerJobButtonProps,
     ref,
@@ -80,18 +90,22 @@ const SubmitSowerJobButton = forwardRef<
 
     useEffect(() => {
       if (isSuccess) {
-        notifications.show({
-          title: 'Job Submission',
-          message: 'Job Submitted Successfully',
-        });
+        if (onSuccess) onSuccess();
+        else
+          notifications.show({
+            title: 'Job Submission',
+            message: 'Job Submitted Successfully',
+          });
       }
       if (isError) {
-        notifications.show({
-          title: 'Job Submission',
-          message: 'Job Submission Failed',
-        });
+        if (onError) onError();
+        else
+          notifications.show({
+            title: 'Job Submission',
+            message: 'Job Submission Failed',
+          });
       }
-    }, [isSuccess, isError]);
+    }, [isSuccess, isError, onError, onSuccess]);
 
     const { jobAction, outputAction } = actions;
 

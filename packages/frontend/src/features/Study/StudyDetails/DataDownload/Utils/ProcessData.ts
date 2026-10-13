@@ -8,7 +8,7 @@ export type processedDatumForDataDownloadList = {
   guid: string;
 };
 
-export const ProcessData = (sourceFieldData: sourceFieldData) => {
+export const processData = (sourceFieldData: sourceFieldData) => {
   if (!Array.isArray(sourceFieldData)) {
     return {
       processedDataForDataDownloadList: [],
