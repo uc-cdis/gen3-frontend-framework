@@ -22,7 +22,9 @@ export { VLMDSubmissionAccessRequestPageGetServerSideProps } from './VLMDSubmiss
 export { default as VLMDSubmissionPage } from './VLMDSubmission';
 export { VLMDSubmissionPageGetServerSideProps } from './VLMDSubmission/data';
 
-// VLMDSubmission raw form — without NavPageLayout, for embedding in other layouts
+// VLMDSubmission form with router/authz logic — without NavPageLayout, for embedding in other layouts
+export { default as VLMDSubmissionForm } from '../../features/DiscoveryForms/VLMDSubmission/VLMDSubmissionForm';
+// VLMDSubmission raw tabbed panel — without NavPageLayout or router/authz wiring
 export { default as VLMDSubmissionTabbedPanel } from '../../features/DiscoveryForms/VLMDSubmission';
 export type {
   VLMDSubmissionConfig,

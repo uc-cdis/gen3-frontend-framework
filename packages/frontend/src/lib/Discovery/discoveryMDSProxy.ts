@@ -15,7 +15,7 @@ import addAccessLevelsMetaData from './addAccessLevelsMetaData';
 
 let cachedData: Array<JSONObject> = [];
 let cacheTime = 0;
-const CACHE_DURATION = 0.25 * 60 * 60 * 1000; // 15 minutes in milliseconds
+const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
 const mdsAggregateApi = `${GEN3_MDS_API}/aggregate/metadata?data=True&limit=2000&offset=0`;
 const mdsMetadataApi = `${GEN3_MDS_API}/metadata?data=True&_guid_type=unregistered_discovery_metadata&limit=2000&offset=0`;
 
@@ -71,7 +71,10 @@ const processData = async (
   };
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   const cookies = req.headers.cookie || '';
   const currentTime = Date.now();
   // Check if cached data is still valid

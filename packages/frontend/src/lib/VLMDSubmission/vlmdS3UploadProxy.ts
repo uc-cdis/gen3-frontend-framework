@@ -1,12 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import type { Readable } from 'stream';
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 async function readBody(readable: Readable): Promise<Buffer> {
   const chunks: Buffer[] = [];
   for await (const chunk of readable) {
