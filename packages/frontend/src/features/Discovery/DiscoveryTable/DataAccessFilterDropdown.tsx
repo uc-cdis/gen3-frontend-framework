@@ -22,8 +22,10 @@ const DataAccessFilterDropdown = () => {
     discoveryConfig,
   } = useDiscoveryContext();
 
-  const enabledAccessLevelsConfig =
-    discoveryConfig.features.authorization.supportedValues;
+  const enabledAccessLevelsConfig = useMemo(
+    () => discoveryConfig.features?.authorization?.supportedValues ?? {},
+    [discoveryConfig.features?.authorization?.supportedValues],
+  );
 
   const accessLevelItems = useMemo(
     () => [
