@@ -16,6 +16,6 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     label: 'Download Action',
-    tooltip: 'Download action tooltip',
+    tooltipText: 'Download action tooltip',
   },
 };

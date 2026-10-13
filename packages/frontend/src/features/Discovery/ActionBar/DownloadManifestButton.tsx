@@ -61,7 +61,7 @@ const DownloadManifestButton = ({
       label={buttonConfig?.label ?? 'Download Manifest'}
       icon={<Icon icon="gen3:download" width="1.25rem" height="1.25rem" />}
       disabled={disabled}
-      tooltip={
+      tooltipText={
         disabledReason ??
         buttonConfig?.tooltip ??
         'Download Manifest of selected studies'

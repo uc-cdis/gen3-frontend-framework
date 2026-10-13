@@ -101,7 +101,7 @@ const ExportToWorkspaceButton = ({
       label={buttonConfig?.label ?? 'Download Manifest'}
       icon={<Icon icon="gen3:arrow-export" width="1.25rem" height="1.25rem" />}
       disabled={disabled}
-      tooltip={
+      tooltipText={
         disabledReason ??
         buttonConfig?.tooltip ??
         'Export Selection to Workspace'
