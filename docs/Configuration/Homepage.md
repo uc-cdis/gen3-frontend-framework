@@ -158,7 +158,7 @@ Example:
 ```json
 {
   "redirectPage": "/Discovery"
-  .
+  ...
 }
 
 ```
