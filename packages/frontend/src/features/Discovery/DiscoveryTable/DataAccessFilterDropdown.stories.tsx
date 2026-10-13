@@ -18,6 +18,11 @@ const DataAccessFilterDropdownWrapper = (initialLevels: number[] = []) => {
             setSelectedTags: () => {},
             selectedAccessLevels,
             setSelectedAccessLevels,
+            enabledAccessLevels: new Set([
+              AccessLevel.ACCESSIBLE,
+              AccessLevel.UNACCESSIBLE,
+              AccessLevel.WAITING,
+            ]),
           }}
         >
           <div className="bg-base-lighter p-4 h-96 flex items-center justify-center">

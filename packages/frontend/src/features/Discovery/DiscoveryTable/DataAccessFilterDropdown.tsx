@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Button,
   Checkbox,
@@ -15,8 +15,62 @@ import { Icon } from '@iconify-icon/react';
 
 const DataAccessFilterDropdown = () => {
   const [opened, setOpened] = useState(false);
-  const { selectedAccessLevels, setSelectedAccessLevels } =
-    useDiscoveryContext();
+  const {
+    selectedAccessLevels,
+    setSelectedAccessLevels,
+    enabledAccessLevels,
+    discoveryConfig,
+  } = useDiscoveryContext();
+
+  const enabledAccessLevelsConfig = useMemo(
+    () => discoveryConfig.features?.authorization?.supportedValues ?? {},
+    [discoveryConfig.features?.authorization?.supportedValues],
+  );
+
+  const accessLevelItems = useMemo(
+    () => [
+      {
+        level: AccessLevel.WAITING,
+        label: enabledAccessLevelsConfig?.['waiting']?.label ?? 'Waiting',
+        icon: <Icon icon="gen3:clock" width="1.5rem" height="1.5rem" />,
+      },
+      {
+        level: AccessLevel.ACCESSIBLE,
+        label: enabledAccessLevelsConfig?.['accessible']?.label ?? 'Available',
+        icon: <Icon icon="gen3:lock-open" width="1.5rem" height="1.5rem" />,
+      },
+      {
+        level: AccessLevel.UNACCESSIBLE,
+        label:
+          enabledAccessLevelsConfig?.['unaccessible']?.label ??
+          'Not Accessible',
+        icon: <Icon icon="gen3:lock-outline" width="1.5rem" height="1.5rem" />,
+      },
+      {
+        level: AccessLevel.NOT_AVAILABLE,
+        label:
+          enabledAccessLevelsConfig?.['unaccessible']?.label ?? 'Not Available',
+        icon: <Icon icon="gen3:dash-outlined" width="1.5rem" height="1.5rem" />,
+      },
+      {
+        level: AccessLevel.OTHER,
+        label: enabledAccessLevelsConfig?.['other']?.label ?? 'Other',
+        icon: <Icon icon="gen3:dash-outlined" width="1.5rem" height="1.5rem" />,
+      },
+      {
+        level: AccessLevel.MIXED,
+        label: enabledAccessLevelsConfig?.['mixed']?.label ?? 'Mixed',
+        icon: (
+          <span>
+            <Icon icon="gen3:lock-outline" width="1.5rem" height="1.5rem" />{' '}
+            <Icon icon="gen3:lock-open" width="1.5rem" height="1.5rem" />
+          </span>
+        ),
+      },
+    ],
+    [enabledAccessLevelsConfig],
+  );
+
   // User selections before they click OK
   const [draftAccessLevels, setDraftAccessLevels] =
     useState<AccessLevel[]>(selectedAccessLevels);
@@ -43,32 +97,9 @@ const DataAccessFilterDropdown = () => {
 
   const handleReset = () => {
     setDraftAccessLevels([]);
-    setSelectedAccessLevels([]);
+    setSelectedAccessLevels([...enabledAccessLevels]);
     setOpened(false);
   };
-
-  const items = [
-    {
-      level: AccessLevel.WAITING,
-      label: 'Waiting',
-      icon: <Icon icon="gen3:clock" width="1.5rem" height="1.5rem" />,
-    },
-    {
-      level: AccessLevel.ACCESSIBLE,
-      label: 'Available',
-      icon: <Icon icon="gen3:lock-open" width="1.5rem" height="1.5rem" />,
-    },
-    {
-      level: AccessLevel.UNACCESSIBLE,
-      label: 'Request Access',
-      icon: <Icon icon="gen3:lock-outline" width="1.5rem" height="1.5rem" />,
-    },
-    {
-      level: AccessLevel.NOT_AVAILABLE,
-      label: 'Not Available',
-      icon: <Icon icon="gen3:dash-outlined" width="1.5rem" height="1.5rem" />,
-    },
-  ];
 
   return (
     <Popover
@@ -101,26 +132,28 @@ const DataAccessFilterDropdown = () => {
 
       <Popover.Dropdown className="p-0">
         <Stack gap={0} className="py-2">
-          {items.map((item) => (
-            <Checkbox
-              key={item.level}
-              checked={draftAccessLevels.includes(item.level)}
-              onChange={() => handleCheckboxToggle(item.level)}
-              radius="xs"
-              label={
-                <span className="flex items-center gap-3">
-                  {item.icon}
-                  <Text size="sm">{item.label}</Text>
-                </span>
-              }
-              classNames={{
-                root: 'px-4 py-2 hover:bg-gray-50 cursor-pointer',
-                body: 'items-center',
-                labelWrapper: 'grow cursor-pointer',
-                label: 'cursor-pointer pl-0',
-              }}
-            />
-          ))}
+          {accessLevelItems
+            .filter((item) => enabledAccessLevels.has(item.level))
+            .map((item) => (
+              <Checkbox
+                key={item.level}
+                checked={draftAccessLevels.includes(item.level)}
+                onChange={() => handleCheckboxToggle(item.level)}
+                radius="xs"
+                label={
+                  <span className="flex items-center gap-3">
+                    {item.icon}
+                    <Text size="sm">{item.label}</Text>
+                  </span>
+                }
+                classNames={{
+                  root: 'px-4 py-2 hover:bg-gray-50 cursor-pointer',
+                  body: 'items-center',
+                  labelWrapper: 'grow cursor-pointer',
+                  label: 'cursor-pointer pl-0',
+                }}
+              />
+            ))}
         </Stack>
         <div className="border-t border-gray-100 p-3">
           <Group grow gap="sm">
