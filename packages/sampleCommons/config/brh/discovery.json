@@ -97,17 +97,11 @@
           "supportedValues": {
             "accessible": {
               "enabled": true,
-              "menuText": "Available"
+              "label": "Available"
             },
             "unaccessible": {
               "enabled": true,
-              "menuText": "Not Accessible"
-            },
-            "waiting": {
-              "enabled": false
-            },
-            "notAvailable": {
-              "enabled": false
+              "label": "Not Accessible"
             }
           }
         }

@@ -30,6 +30,11 @@ const TestComponent = ({
             return next;
           });
         },
+        enabledAccessLevels: new Set([
+          AccessLevel.ACCESSIBLE,
+          AccessLevel.UNACCESSIBLE,
+          AccessLevel.WAITING,
+        ]),
       }}
     >
       <DataAccessFilterDropdown />
