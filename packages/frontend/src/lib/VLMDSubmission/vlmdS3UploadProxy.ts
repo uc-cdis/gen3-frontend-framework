@@ -9,6 +9,24 @@ async function readBody(readable: Readable): Promise<Buffer> {
   return Buffer.concat(chunks);
 }
 
+const S3_HOSTNAME_PATTERN = /^(?:[a-z0-9][a-z0-9.-]*\.)?s3[a-z0-9.-]*\.amazonaws\.com$/;
+
+const parseS3PresignedUrl = (rawUrl: string): URL | undefined => {
+  let parsedUrl: URL;
+  try {
+    parsedUrl = new URL(rawUrl);
+  } catch {
+    return undefined;
+  }
+  const isPlainHttpsS3Url =
+    parsedUrl.protocol === 'https:' &&
+    !parsedUrl.username &&
+    !parsedUrl.password &&
+    !parsedUrl.port &&
+    S3_HOSTNAME_PATTERN.test(parsedUrl.hostname);
+  return isPlainHttpsS3Url ? parsedUrl : undefined;
+};
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -22,10 +40,16 @@ export default async function handler(
     return res.status(400).json({ error: 'Missing presignedUrl' });
   }
 
+  const s3Url = parseS3PresignedUrl(presignedUrl);
+  if (!s3Url) {
+    return res.status(400).json({ error: 'Invalid presignedUrl' });
+  }
+
   const body = await readBody(req);
 
-  const s3Response = await fetch(presignedUrl, {
+  const s3Response = await fetch(s3Url.href, {
     method: 'PUT',
+    redirect: 'error',
     body: body as unknown as BodyInit,
     headers: {
       'Content-Type': req.headers['content-type'] ?? 'application/octet-stream',
