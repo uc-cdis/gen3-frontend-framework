@@ -47,6 +47,7 @@ export default async function handler(
 
   const body = await readBody(req);
 
+  // deepcode ignore Ssrf: s3Url is restricted by parseS3PresignedUrl to https S3 hostnames with redirects disabled
   const s3Response = await fetch(s3Url.href, {
     method: 'PUT',
     redirect: 'error',
