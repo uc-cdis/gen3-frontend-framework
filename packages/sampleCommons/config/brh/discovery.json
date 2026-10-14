@@ -178,7 +178,7 @@
           "errorIfNotAvailable": false,
           "valueIfNotAvailable": "n/a",
           "contentType": "dataAccess",
-          "sortable": false
+          "sortable": true
         }
       ],
       "studyPreviewField": {
