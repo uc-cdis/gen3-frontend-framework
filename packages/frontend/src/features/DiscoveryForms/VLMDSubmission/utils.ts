@@ -2,8 +2,15 @@ import { GEN3_FENCE_API, GEN3_MDS_API } from '@gen3/core';
 import { getCookie } from 'cookies-next';
 import type { CDEInfo } from './types';
 import { toString } from 'lodash';
+import {
+  CDE_METADATA_GUID_TYPE,
+  COMMON_DATA_ELEMENTS_FIELD,
+  COMMON_DATA_ELEMENTS_TAG_CATEGORY,
+  DEFAULT_GEN3_DISCOVERY_FIELD,
+  DEFAULT_VARIABLE_METADATA_FIELD,
+  MDS_PAGE_SIZE,
+} from './constants';
 
-const LIMIT = 2000;
 const MAX_FILENAME_LENGTH = 255;
 const INVALID_WINDOWS_FILENAMES = [
   'CON',
@@ -97,14 +104,15 @@ export const uploadToS3 = (
   new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.onreadystatechange = () => {
-      if (xhr.readyState === 4) {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
         if (xhr.status === 200) resolve();
         else reject(xhr.responseText);
       }
     };
     if (onProgress) {
-      xhr.upload.onprogress = (e) => {
-        if (e.lengthComputable) onProgress((e.loaded / file.size) * 100);
+      xhr.upload.onprogress = (progressEvent) => {
+        if (progressEvent.lengthComputable)
+          onProgress((progressEvent.loaded / file.size) * 100);
       };
     }
     xhr.open('POST', `/api/vlmdS3Upload?presignedUrl=${encodeURIComponent(s3URL)}`);
@@ -113,37 +121,37 @@ export const uploadToS3 = (
   });
 
 export const loadCDEInfoFromMDS = async (
-  guidType = 'cde_metadata',
+  guidType = CDE_METADATA_GUID_TYPE,
 ): Promise<CDEInfo[]> => {
   let allCDEInfo: CDEInfo[] = [];
   let offset = 0;
   let shouldContinue = true;
 
   while (shouldContinue) {
-    const url = `${GEN3_MDS_API}/metadata?data=True&_guid_type=${guidType}&limit=${LIMIT}&offset=${offset}`;
+    const url = `${GEN3_MDS_API}/metadata?data=True&_guid_type=${guidType}&limit=${MDS_PAGE_SIZE}&offset=${offset}`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`CDE metadata request failed: ${res.status}`);
     const json = await res.json();
-    const entries: CDEInfo[] = Object.entries(json).map(([k, v]) => {
-      const val = v as Record<string, unknown>;
-      const drupalID = toString(val.drupal_id ?? '');
-      const internalCDEID = toString(val.internal_cde_id ?? '');
-      const fileName = toString(val.file_name ?? '');
+    const entries: CDEInfo[] = Object.entries(json).map(([guid, entry]) => {
+      const record = entry as Record<string, unknown>;
+      const drupalID = toString(record.drupal_id ?? '');
+      const internalCDEID = toString(record.internal_cde_id ?? '');
+      const fileName = toString(record.file_name ?? '');
       const prefix = (drupalID || internalCDEID).trim();
       return {
         drupalID,
         internalCDEID,
         fileName,
-        guid: k,
-        isCoreCDE: Boolean(val.is_core_cde),
+        guid,
+        isCoreCDE: Boolean(record.is_core_cde),
         option: prefix ? `${prefix} ${fileName}`.trim() : fileName,
       };
     });
     allCDEInfo = allCDEInfo.concat(entries);
-    if (entries.length < LIMIT) {
+    if (entries.length < MDS_PAGE_SIZE) {
       shouldContinue = false;
     } else {
-      offset += LIMIT;
+      offset += MDS_PAGE_SIZE;
     }
   }
   return allCDEInfo;
@@ -153,8 +161,8 @@ export const updateCDEMetadataInMDS = async (
   metadataID: string,
   updatedCDEInfo: CDEInfo[],
   selectedCoreCDEs: string[],
-  variableMetadataField = 'variable_level_metadata',
-  gen3DiscoveryField = 'gen3_discovery',
+  variableMetadataField = DEFAULT_VARIABLE_METADATA_FIELD,
+  gen3DiscoveryField = DEFAULT_GEN3_DISCOVERY_FIELD,
   tagsListFieldName?: string,
 ): Promise<void> => {
   const queryURL = `${GEN3_MDS_API}/metadata/${metadataID}`;
@@ -175,10 +183,10 @@ export const updateCDEMetadataInMDS = async (
   if (
     !Object.prototype.hasOwnProperty.call(
       metadataToUpdate[variableMetadataField],
-      'common_data_elements',
+      COMMON_DATA_ELEMENTS_FIELD,
     )
   ) {
-    metadataToUpdate[variableMetadataField].common_data_elements = {};
+    metadataToUpdate[variableMetadataField][COMMON_DATA_ELEMENTS_FIELD] = {};
   }
 
   const cdeMetadata = updatedCDEInfo.reduce<Record<string, string>>(
@@ -188,16 +196,20 @@ export const updateCDEMetadataInMDS = async (
     },
     {},
   );
-  metadataToUpdate[variableMetadataField].common_data_elements = cdeMetadata;
+  metadataToUpdate[variableMetadataField][COMMON_DATA_ELEMENTS_FIELD] =
+    cdeMetadata;
 
   if (tagsListFieldName && metadataToUpdate[gen3DiscoveryField]) {
     const tags: { name: string; category: string }[] =
       metadataToUpdate[gen3DiscoveryField][tagsListFieldName] ?? [];
     const updatedTags = tags.filter(
-      (t) => t.category !== 'Common Data Elements',
+      (tag) => tag.category !== COMMON_DATA_ELEMENTS_TAG_CATEGORY,
     );
     Object.keys(cdeMetadata).forEach((key) =>
-      updatedTags.push({ name: key, category: 'Common Data Elements' }),
+      updatedTags.push({
+        name: key,
+        category: COMMON_DATA_ELEMENTS_TAG_CATEGORY,
+      }),
     );
     metadataToUpdate[gen3DiscoveryField][tagsListFieldName] = updatedTags;
   }

@@ -67,10 +67,11 @@ const CDESubmission = ({
       email: '',
     },
     validate: {
-      firstName: (v) => (v.trim() ? null : 'First name is required'),
-      lastName: (v) => (v.trim() ? null : 'Last name is required'),
-      email: (v) =>
-        /^\S+@\S+\.\S+$/.test(v) ? null : 'A valid email address is required',
+      firstName: (firstName) =>
+        firstName.trim() ? null : 'First name is required',
+      lastName: (lastName) => (lastName.trim() ? null : 'Last name is required'),
+      email: (email) =>
+        /^\S+@\S+\.\S+$/.test(email) ? null : 'A valid email address is required',
     },
   });
 
@@ -80,11 +81,15 @@ const CDESubmission = ({
         setCDEInfoFromMDS(cdeInfo);
         if (existingCDENames.length > 0) {
           const existingCore = cdeInfo
-            .filter((e) => existingCDENames.includes(e.option) && e.isCoreCDE)
-            .map((e) => e.option);
+            .filter(
+              (cde) => existingCDENames.includes(cde.option) && cde.isCoreCDE,
+            )
+            .map((cde) => cde.option);
           const existingNonCore = cdeInfo
-            .filter((e) => existingCDENames.includes(e.option) && !e.isCoreCDE)
-            .map((e) => e.option);
+            .filter(
+              (cde) => existingCDENames.includes(cde.option) && !cde.isCoreCDE,
+            )
+            .map((cde) => cde.option);
           form.setValues({
             coreCDEs: existingCore,
             selectedCDEs: [...existingCore, ...existingNonCore],
@@ -92,12 +97,13 @@ const CDESubmission = ({
         }
       })
       .catch((err) => console.error('Failed to load CDE info from MDS:', err));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [existingCDENames.length]);
 
   const handleCoreCDEChange = (newCore: string[]) => {
     const nonCore = form.values.selectedCDEs.filter(
-      (opt) => !cdeInfoFromMDS.find((e) => e.option === opt && e.isCoreCDE),
+      (opt) =>
+        !cdeInfoFromMDS.find((cde) => cde.option === opt && cde.isCoreCDE),
     );
     form.setValues({
       coreCDEs: newCore,
@@ -107,7 +113,7 @@ const CDESubmission = ({
 
   const handleAllCDEChange = (newSelected: string[]) => {
     const newCore = newSelected.filter((opt) =>
-      cdeInfoFromMDS.find((e) => e.option === opt && e.isCoreCDE),
+      cdeInfoFromMDS.find((cde) => cde.option === opt && cde.isCoreCDE),
     );
     form.setValues({ coreCDEs: newCore, selectedCDEs: newSelected });
   };
@@ -118,8 +124,8 @@ const CDESubmission = ({
     setSubmitting(true);
 
     const values = form.values;
-    const selectedCDEInfo = cdeInfoFromMDS.filter((e) =>
-      values.selectedCDEs.includes(e.option),
+    const selectedCDEInfo = cdeInfoFromMDS.filter((cde) =>
+      values.selectedCDEs.includes(cde.option),
     );
 
     try {
@@ -167,7 +173,12 @@ const CDESubmission = ({
   if (submissionStatus?.status === 'success') {
     return (
       <Stack>
-        <Alert ref={alertRef} tabIndex={-1} color="green" title="Your CDE selections have been submitted!">
+        <Alert
+          ref={alertRef}
+          tabIndex={-1}
+          color="green"
+          title="Your CDE selections have been submitted!"
+        >
           Thank you for your submission!
           <br />
           <Anchor href="/Discovery">Go to Discovery Page</Anchor>
@@ -179,7 +190,12 @@ const CDESubmission = ({
   if (submissionStatus?.status === 'error') {
     return (
       <Stack>
-        <Alert ref={alertRef} tabIndex={-1} color="red" title="A problem occurred during submission">
+        <Alert
+          ref={alertRef}
+          tabIndex={-1}
+          color="red"
+          title="A problem occurred during submission"
+        >
           {submissionStatus.text}
         </Alert>
         <Group>
@@ -197,15 +213,22 @@ const CDESubmission = ({
     );
   }
 
-  const coreCDEs = cdeInfoFromMDS.filter((e) => e.isCoreCDE);
-  const allCDEOptions = cdeInfoFromMDS.map((e) => ({
-    value: e.option,
-    label: e.option,
+  const coreCDEs = cdeInfoFromMDS.filter((cde) => cde.isCoreCDE);
+  const allCDEOptions = cdeInfoFromMDS.map((cde) => ({
+    value: cde.option,
+    label: cde.option,
   }));
 
   return (
     <Stack>
-      <Divider label={<Text size="sm" fw={700} c="dark">HEAL CDEs</Text>} labelPosition="center" />
+      <Divider
+        label={
+          <Text size="sm" fw={700} c="dark">
+            HEAL CDEs
+          </Text>
+        }
+        labelPosition="center"
+      />
       {disableCDESubmissionForm ? (
         <Text size="sm" ta="center">
           We have received your CDE selections from the HEAL CDE team. If you
@@ -283,7 +306,13 @@ const CDESubmission = ({
             label="This information will be used to contact you regarding your submission status. It is not stored on the HEAL Data Platform."
             events={{ hover: true, focus: true, touch: false }}
           >
-            <Text size="sm" fw={700} c="dark" style={{ display: 'flex', alignItems: 'center', gap: 4 }} tabIndex={0}>
+            <Text
+              size="sm"
+              fw={700}
+              c="dark"
+              style={{ display: 'flex', alignItems: 'center', gap: 4 }}
+              tabIndex={0}
+            >
               Administration <AiOutlineQuestionCircle aria-hidden="true" />
             </Text>
           </Tooltip>

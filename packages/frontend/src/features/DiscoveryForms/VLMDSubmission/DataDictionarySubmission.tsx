@@ -29,6 +29,10 @@ import {
 } from './utils';
 
 const ALLOWED_EXTENSIONS = ['.csv', '.tsv', '.json'];
+const MAX_FILE_SIZE_MB = 10;
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+const UPLOAD_COMPLETE_PERCENT = 100;
+const FENCE_GUID_PREFIX = 'PREFIX/';
 
 interface DDFormValues {
   studyGrant: string;
@@ -50,7 +54,7 @@ const DataDictionarySubmission = ({
 }: VLMDSubmissionProps): ReactElement => {
   const [submissionStatus, setSubmissionStatus] =
     useState<FormSubmissionStatus | null>(null);
-  const [uploadProgress, setUploadProgress] = useState(100);
+  const [uploadProgress, setUploadProgress] = useState(UPLOAD_COMPLETE_PERCENT);
   const [uploading, setUploading] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [duplicateName, setDuplicateName] = useState<string | undefined>();
@@ -77,20 +81,22 @@ const DataDictionarySubmission = ({
       email: '',
     },
     validate: {
-      ddName: (v) => validateDataDictionaryName(v),
-      file: (v) => {
-        if (!v) return 'A file is required';
-        if (v.size === 0) return 'File is empty';
-        if (v.size > 10 * 1024 * 1024) return 'File size cannot exceed 10 MB';
-        const ext = v.name.slice(v.name.lastIndexOf('.')).toLowerCase();
+      ddName: (ddName) => validateDataDictionaryName(ddName),
+      file: (file) => {
+        if (!file) return 'A file is required';
+        if (file.size === 0) return 'File is empty';
+        if (file.size > MAX_FILE_SIZE_BYTES)
+          return `File size cannot exceed ${MAX_FILE_SIZE_MB} MB`;
+        const ext = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
         if (!ALLOWED_EXTENSIONS.includes(ext))
           return `Invalid file type. Allowed: ${ALLOWED_EXTENSIONS.join(', ')}`;
         return null;
       },
-      firstName: (v) => (v.trim() ? null : 'First name is required'),
-      lastName: (v) => (v.trim() ? null : 'Last name is required'),
-      email: (v) =>
-        /^\S+@\S+\.\S+$/.test(v) ? null : 'A valid email address is required',
+      firstName: (firstName) =>
+        firstName.trim() ? null : 'First name is required',
+      lastName: (lastName) => (lastName.trim() ? null : 'Last name is required'),
+      email: (email) =>
+        /^\S+@\S+\.\S+$/.test(email) ? null : 'A valid email address is required',
     },
   });
 
@@ -110,7 +116,6 @@ const DataDictionarySubmission = ({
         studyRegistrationAuthZ,
         config.dataDictionarySubmissionBucket,
       );
-      const FENCE_GUID_PREFIX = 'PREFIX/';
       const guid = rawGuid.startsWith(FENCE_GUID_PREFIX)
         ? rawGuid.slice(FENCE_GUID_PREFIX.length)
         : rawGuid;
@@ -119,7 +124,9 @@ const DataDictionarySubmission = ({
         status: 'info',
         text: 'Uploading data dictionary…',
       });
-      await uploadToS3(url, values.file, (pct) => setUploadProgress(pct));
+      await uploadToS3(url, values.file, (percentage) =>
+        setUploadProgress(percentage),
+      );
 
       setSubmissionStatus({ status: 'info', text: 'Finishing upload…' });
 
@@ -164,7 +171,7 @@ const DataDictionarySubmission = ({
       });
     } finally {
       setUploading(false);
-      setUploadProgress(100);
+      setUploadProgress(UPLOAD_COMPLETE_PERCENT);
     }
   };
 
@@ -327,7 +334,7 @@ const DataDictionarySubmission = ({
           label="Select Data Dictionary File"
           required
           accept={ALLOWED_EXTENSIONS.join(',')}
-          description="Supported file types: CSV, TSV, JSON; Maximum file size: 10 MB"
+          description={`Supported file types: CSV, TSV, JSON; Maximum file size: ${MAX_FILE_SIZE_MB} MB`}
           placeholder="Click to select a file"
           {...form.getInputProps('file')}
         />
