@@ -69,9 +69,12 @@ const CDESubmission = ({
     validate: {
       firstName: (firstName) =>
         firstName.trim() ? null : 'First name is required',
-      lastName: (lastName) => (lastName.trim() ? null : 'Last name is required'),
+      lastName: (lastName) =>
+        lastName.trim() ? null : 'Last name is required',
       email: (email) =>
-        /^\S+@\S+\.\S+$/.test(email) ? null : 'A valid email address is required',
+        /^\S+@\S+\.\S+$/.test(email)
+          ? null
+          : 'A valid email address is required',
     },
   });
 
@@ -97,7 +100,6 @@ const CDESubmission = ({
         }
       })
       .catch((err) => console.error('Failed to load CDE info from MDS:', err));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [existingCDENames.length]);
 
   const handleCoreCDEChange = (newCore: string[]) => {
