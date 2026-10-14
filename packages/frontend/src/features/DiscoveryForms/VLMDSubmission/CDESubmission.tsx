@@ -183,7 +183,9 @@ const CDESubmission = ({
         >
           Thank you for your submission!
           <br />
-          <Anchor href="/Discovery">Go to Discovery Page</Anchor>
+          <Anchor href="/Discovery" underline="always">
+            Go to Discovery Page
+          </Anchor>
         </Alert>
       </Stack>
     );
@@ -235,7 +237,7 @@ const CDESubmission = ({
         <Text size="sm" ta="center">
           We have received your CDE selections from the HEAL CDE team. If you
           need to update your selections, please contact{' '}
-          <Anchor href="mailto:heal_cde@hsc.utah.edu">
+          <Anchor href="mailto:heal_cde@hsc.utah.edu" underline="always">
             heal_cde@hsc.utah.edu
           </Anchor>
           .
@@ -247,6 +249,7 @@ const CDESubmission = ({
           Repository{' '}
           <Anchor
             href="https://github.com/HEAL/heal-metadata-schemas"
+            underline="always"
             target="_blank"
             rel="noreferrer"
           >
@@ -256,7 +259,7 @@ const CDESubmission = ({
         </Text>
       )}
       <Divider />
-      <Text size="xs" c="dimmed">
+      <Text size="xs" c="gray.7">
         <Text span c="red">
           *
         </Text>{' '}
@@ -294,6 +297,7 @@ const CDESubmission = ({
       <MultiSelect
         label="All CDEs"
         description="Search and select from all CDEs"
+        descriptionProps={{ c: 'gray.7' }}
         data={allCDEOptions}
         value={form.values.selectedCDEs}
         onChange={handleAllCDEChange}

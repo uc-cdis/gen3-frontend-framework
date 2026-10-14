@@ -205,7 +205,9 @@ const DataDictionarySubmission = ({
           Thank you for your submission! You will be notified via e-mail when
           processing is completed.
           <br />
-          <Anchor href="/Discovery">Go to Discovery Page</Anchor>
+          <Anchor href="/Discovery" underline="always">
+            Go to Discovery Page
+          </Anchor>
         </Alert>
       </Stack>
     );
@@ -300,6 +302,7 @@ const DataDictionarySubmission = ({
           (VLMD) schema.{' '}
           <Anchor
             href="https://heal.github.io/platform-documentation/vlmd/vlmd_tools/"
+            underline="always"
             target="_blank"
             rel="noreferrer"
           >
@@ -308,6 +311,7 @@ const DataDictionarySubmission = ({
           for creating HEAL-compliant VLMD. Examples are available{' '}
           <Anchor
             href="https://github.com/HEAL/heal-metadata-schemas/tree/main/variable-level-metadata-schema/examples"
+            underline="always"
             target="_blank"
             rel="noreferrer"
           >
@@ -315,7 +319,7 @@ const DataDictionarySubmission = ({
           </Anchor>
           .
         </Text>
-        <Text size="xs" c="dimmed">
+        <Text size="xs" c="gray.7">
           <Text span c="red">
             *
           </Text>{' '}
@@ -336,6 +340,8 @@ const DataDictionarySubmission = ({
           accept={ALLOWED_EXTENSIONS.join(',')}
           description={`Supported file types: CSV, TSV, JSON; Maximum file size: ${MAX_FILE_SIZE_MB} MB`}
           placeholder="Click to select a file"
+          descriptionProps={{ c: 'gray.7' }}
+          styles={(theme) => ({ placeholder: { color: theme.colors.gray[7] } })}
           {...form.getInputProps('file')}
         />
 
@@ -357,7 +363,7 @@ const DataDictionarySubmission = ({
                 </Badge>
               ))}
             </Group>
-            <Text size="sm" c="dimmed">
+            <Text size="sm" c="gray.7">
               Using an existing name will overwrite it.
             </Text>
           </Stack>
