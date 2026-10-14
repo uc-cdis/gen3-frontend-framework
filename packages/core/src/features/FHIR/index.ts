@@ -7,7 +7,10 @@ export {
   useLazySearchFhirResourceQuery,
   useReadFhirResourceQuery,
   useLazyReadFhirResourceQuery,
+} from './fhirApi';
+export {
+  fhirSearchUrl,
   type FhirSearchParams,
   type FhirSearchArgs,
   type FhirReadArgs,
-} from './fhirApi';
+} from './utils';

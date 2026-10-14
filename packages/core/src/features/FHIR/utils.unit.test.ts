@@ -1,4 +1,23 @@
-import { serializeFhirParams } from './fhirApi';
+import { GEN3_FHIR_API } from '../../constants';
+import { fhirSearchUrl, serializeFhirParams } from './utils';
+
+describe('fhirSearchUrl', () => {
+  it('builds the search path with no trailing slash', () => {
+    expect(fhirSearchUrl('Patient')).toBe(`${GEN3_FHIR_API}/Patient`);
+  });
+
+  it('adds the query string when there are params', () => {
+    expect(
+      fhirSearchUrl('Patient', { birthdate: ['ge1990-01-01', 'lt2000-01-01'] }),
+    ).toBe(
+      `${GEN3_FHIR_API}/Patient?birthdate=ge1990-01-01&birthdate=lt2000-01-01`,
+    );
+  });
+
+  it('leaves off the ? when params are empty', () => {
+    expect(fhirSearchUrl('Patient', {})).toBe(`${GEN3_FHIR_API}/Patient`);
+  });
+});
 
 describe('serializeFhirParams', () => {
   it('writes a single value as key=value', () => {

@@ -47,6 +47,15 @@
         }
       },
       {
+        "icon": "gen3:datafile",
+        "href": "/FHIRQuery",
+        "name": "FHIR Query",
+        "tooltip": {
+          "authorized": "Search FHIR resources such as Patient and Observation.",
+          "loginRequired": "Log in to use FHIR Query."
+        }
+      },
+      {
         "icon": "gen3:analysis",
         "href": "/Analysis",
         "name": "Analysis",
