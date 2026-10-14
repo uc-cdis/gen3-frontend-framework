@@ -40,6 +40,38 @@ import {
   isGQLUnion,
 } from './filters';
 
+const nestedPathForField = (field: string): string | undefined => {
+  const parts = field.split('.');
+  parts.pop();
+  return parts.length > 0 ? parts.join('.') : undefined;
+};
+
+const leafField = (field: string): string => field.split('.').at(-1) ?? field;
+
+const wrapNestedField = (field: string, leafFilter: GQLFilter): GQLFilter => {
+  const path = nestedPathForField(field);
+  return path ? { nested: { path, ...leafFilter } } : leafFilter;
+};
+
+const operationField = (operation: Operation): string | undefined =>
+  'field' in operation ? operation.field : undefined;
+
+const withLeafField = (operation: Operation, field: string): Operation =>
+  ({ ...operation, field: leafField(field) }) as Operation;
+
+const withLeafFields = (operation: Operation): Operation => {
+  if (operation.operator === 'and' || operation.operator === 'or') {
+    return {
+      ...operation,
+      operands: operation.operands.map(withLeafFields),
+    };
+  }
+  if (operation.operator === 'nested') {
+    return withLeafFields(operation.operand);
+  }
+  return withLeafField(operation, operation.field);
+};
+
 /**
  * Constructs a nested operation object based on the provided field and leaf operand.
  * If the field does not contain a dot '.', it either assigns the field to the leaf operand (if applicable)
@@ -189,9 +221,8 @@ export const extractContents = (
 export class ToGqlAllNested implements OperationHandler<GQLFilter> {
   handleEquals = (op: Equals): GQLEqual | GQLNestedFilter => {
     if (op.field.includes('.')) {
-      const leafField = op.field.split('.').at(-1) ?? 'unset';
-      return buildNestedGQLFilter(op.field, {
-        '=': { [leafField]: op.operand },
+      return wrapNestedField(op.field, {
+        '=': { [leafField(op.field)]: op.operand },
       }) as GQLNestedFilter;
     }
     return {
@@ -202,9 +233,8 @@ export class ToGqlAllNested implements OperationHandler<GQLFilter> {
   };
   handleNotEquals = (op: NotEquals): GQLNotEqual | GQLNestedFilter => {
     if (op.field.includes('.')) {
-      const leafField = op.field.split('.').at(-1) ?? 'unset';
-      return buildNestedGQLFilter(op.field, {
-        '!=': { [leafField]: op.operand },
+      return wrapNestedField(op.field, {
+        '!=': { [leafField(op.field)]: op.operand },
       }) as GQLNestedFilter;
     }
     return {
@@ -215,9 +245,8 @@ export class ToGqlAllNested implements OperationHandler<GQLFilter> {
   };
   handleLessThan = (op: LessThan): GQLLessThan | GQLNestedFilter => {
     if (op.field.includes('.')) {
-      const leafField = op.field.split('.').at(-1) ?? 'unset';
-      return buildNestedGQLFilter(op.field, {
-        '<': { [leafField]: op.operand },
+      return wrapNestedField(op.field, {
+        '<': { [leafField(op.field)]: op.operand },
       }) as GQLNestedFilter;
     }
     return {
@@ -230,9 +259,8 @@ export class ToGqlAllNested implements OperationHandler<GQLFilter> {
     op: LessThanOrEquals,
   ): GQLLessThanOrEquals | GQLNestedFilter => {
     if (op.field.includes('.')) {
-      const leafField = op.field.split('.').at(-1) ?? 'unset';
-      return buildNestedGQLFilter(op.field, {
-        '<=': { [leafField]: op.operand },
+      return wrapNestedField(op.field, {
+        '<=': { [leafField(op.field)]: op.operand },
       }) as GQLNestedFilter;
     }
     return {
@@ -243,9 +271,8 @@ export class ToGqlAllNested implements OperationHandler<GQLFilter> {
   };
   handleGreaterThan = (op: GreaterThan): GQLGreaterThan | GQLNestedFilter => {
     if (op.field.includes('.')) {
-      const leafField = op.field.split('.').at(-1) ?? 'unset';
-      return buildNestedGQLFilter(op.field, {
-        '>': { [leafField]: op.operand },
+      return wrapNestedField(op.field, {
+        '>': { [leafField(op.field)]: op.operand },
       }) as GQLNestedFilter;
     }
     return {
@@ -258,9 +285,8 @@ export class ToGqlAllNested implements OperationHandler<GQLFilter> {
     op: GreaterThanOrEquals,
   ): GQLGreaterThanOrEquals | GQLNestedFilter => {
     if (op.field.includes('.')) {
-      const leafField = op.field.split('.').at(-1) ?? 'unset';
-      return buildNestedGQLFilter(op.field, {
-        '>=': { [leafField]: op.operand },
+      return wrapNestedField(op.field, {
+        '>=': { [leafField(op.field)]: op.operand },
       }) as GQLNestedFilter;
     }
     return {
@@ -272,9 +298,8 @@ export class ToGqlAllNested implements OperationHandler<GQLFilter> {
 
   handleIncludes = (op: Includes): GQLIncludes | GQLNestedFilter => {
     if (op.field.includes('.')) {
-      const leafField = op.field.split('.').at(-1) ?? 'unset';
-      return buildNestedGQLFilter(op.field, {
-        in: { [leafField]: op.operands },
+      return wrapNestedField(op.field, {
+        in: { [leafField(op.field)]: op.operands },
       }) as GQLNestedFilter;
     }
     return {
@@ -286,9 +311,8 @@ export class ToGqlAllNested implements OperationHandler<GQLFilter> {
 
   handleExcludes = (op: Excludes): GQLExcludes | GQLNestedFilter => {
     if (op.field.includes('.')) {
-      const leafField = op.field.split('.').at(-1) ?? 'unset';
-      return buildNestedGQLFilter(op.field, {
-        exclude: { [leafField]: op.operands },
+      return wrapNestedField(op.field, {
+        exclude: { [leafField(op.field)]: op.operands },
       }) as GQLNestedFilter;
     }
     return {
@@ -302,9 +326,8 @@ export class ToGqlAllNested implements OperationHandler<GQLFilter> {
     op: ExcludeIfAny,
   ): GQLExcludeIfAny | GQLNestedFilter => {
     if (op.field.includes('.')) {
-      const leafField = op.field.split('.').at(-1) ?? 'unset';
-      return buildNestedGQLFilter(op.field, {
-        excludeifany: { [leafField]: op.operands },
+      return wrapNestedField(op.field, {
+        excludeifany: { [leafField(op.field)]: op.operands },
       }) as GQLNestedFilter;
     }
     return {
@@ -314,21 +337,43 @@ export class ToGqlAllNested implements OperationHandler<GQLFilter> {
     };
   };
 
-  handleIntersection = (op: Intersection): GQLIntersection => ({
-    and: op.operands.map((x) =>
-      convertFilterToGqlFilter(x),
-    ) as ReadonlyArray<GQLFilter>,
-  });
+  handleIntersection = (
+    op: Intersection,
+  ): GQLIntersection | GQLNestedFilter => {
+    const fields = op.operands.map(operationField);
+    const nestedPaths = fields.map((field) =>
+      field ? nestedPathForField(field) : undefined,
+    );
+    const sharedNestedPath = nestedPaths[0];
+
+    if (
+      sharedNestedPath &&
+      fields.every(Boolean) &&
+      nestedPaths.every((path) => path === sharedNestedPath)
+    ) {
+      return {
+        nested: {
+          path: sharedNestedPath,
+          and: op.operands.map((operand, index) =>
+            convertFilterToGqlFilter(
+              withLeafField(operand, fields[index] as string),
+            ),
+          ),
+        },
+      };
+    }
+
+    return { and: op.operands.map(convertFilterToNestedGqlFilter) };
+  };
 
   handleUnion = (op: Union): GQLUnion => ({
-    or: op.operands.map((x) => convertFilterToGqlFilter(x)),
+    or: op.operands.map(convertFilterToNestedGqlFilter),
   });
 
   handleMissing = (op: Missing): GQLMissing | GQLNestedFilter => {
     if (op.field.includes('.')) {
-      const leafField = op.field.split('.').at(-1) ?? 'unset';
-      return buildNestedGQLFilter(op.field, {
-        is: { [leafField]: 'MISSING' },
+      return wrapNestedField(op.field, {
+        is: { [leafField(op.field)]: 'MISSING' },
       }) as GQLNestedFilter;
     }
     return {
@@ -340,9 +385,8 @@ export class ToGqlAllNested implements OperationHandler<GQLFilter> {
 
   handleExists = (op: Exists): GQLExists | GQLNestedFilter => {
     if (op.field.includes('.')) {
-      const leafField = op.field.split('.').at(-1) ?? 'unset';
-      return buildNestedGQLFilter(op.field, {
-        not: { [leafField]: op?.operand ?? null },
+      return wrapNestedField(op.field, {
+        not: { [leafField(op.field)]: op?.operand ?? null },
       }) as GQLNestedFilter;
     }
     return {
@@ -353,10 +397,18 @@ export class ToGqlAllNested implements OperationHandler<GQLFilter> {
   };
 
   handleNestedFilter = (op: NestedFilter): GQLNestedFilter => {
-    const child: GQLFilter = convertFilterToGqlFilter(op.operand);
+    let path = op.path;
+    let operand = op.operand;
+
+    while (operand.operator === 'nested') {
+      path = operand.path;
+      operand = operand.operand;
+    }
+
+    const child = convertFilterToGqlFilter(withLeafFields(operand));
     return {
       nested: {
-        path: op.path,
+        path,
         ...child,
       },
     } as GQLNestedFilter;
