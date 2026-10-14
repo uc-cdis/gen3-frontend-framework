@@ -122,15 +122,22 @@ const DataAccessFilterDropdown = () => {
           <FilterIcon
             size={18}
             color={
-              selectedAccessLevels.length > 0
-                ? 'var(--mantine-color-accent-5)'
-                : 'gray'
+              selectedAccessLevels.length === enabledAccessLevels.size
+                ? 'var(--mantine-base-contrast-5)'
+                : 'var(--mantine-color-accent-5)'
             }
           />
         </UnstyledButton>
       </Popover.Target>
 
-      <Popover.Dropdown className="p-0">
+      {/* The dropdown is portaled, but React events still bubble to the sortable header cell */}
+      <Popover.Dropdown
+        className="p-0"
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => {
+          if (e.key !== 'Escape') e.stopPropagation();
+        }}
+      >
         <Stack gap={0} className="py-2">
           {accessLevelItems
             .filter((item) => enabledAccessLevels.has(item.level))
