@@ -97,9 +97,18 @@ export interface WorkspaceAssetsHandlerOptions {
    * `{serverExtensionProxyBaseUrl}{serverExtensionProxyPath}/{rest}`
    * instead of `{requestOrigin}{serverExtensionProxyPath}/{rest}`.
    *
-   * Omitted → origin is resolved from the incoming request headers (default behaviour).
+   * Omitted → origin is resolved from the incoming request headers (default behavior).
    */
   serverExtensionProxyBaseUrl?: string;
+  /**
+   * Hosts the extension proxy may target when `serverExtensionProxyBaseUrl` is
+   * not set and the origin is therefore derived from the request's
+   * `Host` / `X-Forwarded-Host` headers. Entries match either the full
+   * `host:port` or just the hostname (case-insensitive). Defaults to loopback
+   * only; requests resolving to any other host get a 403. Ignored when
+   * `serverExtensionProxyBaseUrl` is set.
+   */
+  allowedHosts?: string[];
 }
 
 // ---------- constants ----------
@@ -197,8 +206,34 @@ function replaceTitle(html: string, branding: BrandingConfig): string {
   );
 }
 
+/** Serialize JSON for embedding in an inline <script>, neutralising `</script>` breakouts. */
+function safeScriptJson(value: unknown): string {
+  return JSON.stringify(value)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
+}
+
+const SAFE_HOST_RE =
+  /^(?:[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?|\[[0-9A-Fa-f:.]+\])(?::\d{1,5})?$/;
+const DEFAULT_HOST = 'localhost:8890';
+const DEFAULT_ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]'];
+
+function isAllowedHost(host: string, allowedHosts: string[]): boolean {
+  const lower = host.toLowerCase();
+  const hostname = lower.replace(/:\d+$/, '');
+  return allowedHosts.some((entry) => {
+    const allowed = entry.trim().toLowerCase();
+    return allowed === lower || allowed === hostname;
+  });
+}
+
 /**
  * Resolve the origin from forwarding headers, with referer fallback.
+ * Header values are validated (scheme allowlist, hostname[:port] syntax) so they
+ * cannot inject markup or URL components into generated HTML or proxy targets.
  * Handles proxies that drop non-standard ports from the Host header.
  */
 function resolveOrigin(req: NextApiRequest): { proto: string; host: string } {
@@ -237,7 +272,9 @@ function resolveOrigin(req: NextApiRequest): { proto: string; host: string } {
     resolvedHost = 'localhost:8890';
   }
 
-  return { proto: resolvedProto, host: resolvedHost };
+  const proto = resolvedProto === 'https' ? 'https' : 'http';
+  const host = SAFE_HOST_RE.test(resolvedHost) ? resolvedHost : DEFAULT_HOST;
+  return { proto, host };
 }
 
 interface RemoteInjectionConfig {
@@ -311,7 +348,7 @@ function injectRemoteConfig(
         ]);
         merged.disabledExtensions = [...combined];
       }
-      return `${openTag}${JSON.stringify(merged)}${closeTag}`;
+      return `${openTag}${safeScriptJson(merged)}${closeTag}`;
     },
   );
 
@@ -335,7 +372,7 @@ function injectBranding(html: string, branding: BrandingConfig): string {
       }
       if (branding.appName) existing.appName = branding.appName;
       if (branding.faviconUrl) existing.faviconUrl = branding.faviconUrl;
-      return `${openTag}${JSON.stringify(existing)}${closeTag}`;
+      return `${openTag}${safeScriptJson(existing)}${closeTag}`;
     },
   );
 
@@ -574,6 +611,7 @@ export function createWorkspaceAssetsHandler(
 
   const serverExtensionProxyPath = options?.serverExtensionProxyPath;
   const serverExtensionProxyBaseUrl = options?.serverExtensionProxyBaseUrl;
+  const allowedHosts = options?.allowedHosts ?? DEFAULT_ALLOWED_HOSTS;
   const getToken = options?.getToken;
 
   const remoteInjectionConfig: RemoteInjectionConfig = {
@@ -662,12 +700,18 @@ export function createWorkspaceAssetsHandler(
       const extensionPath = safeSegments.join('/');
       const rawQuery = req.url?.split('?')[1];
       const qs = rawQuery ? `?${rawQuery}` : '';
-      const proxyBase =
-        serverExtensionProxyBaseUrl ??
-        (() => {
-          const { proto, host } = resolveOrigin(req);
-          return `${proto}://${host}`;
-        })();
+      let proxyBase = serverExtensionProxyBaseUrl;
+      if (!proxyBase) {
+        const { proto, host } = resolveOrigin(req);
+        if (!isAllowedHost(host, allowedHosts)) {
+          console.warn(
+            `[workspace-assets] refusing to proxy to non-allowlisted host "${host}"; set serverExtensionProxyBaseUrl or allowedHosts.`,
+          );
+          res.status(403).end('Forbidden');
+          return;
+        }
+        proxyBase = `${proto}://${host}`;
+      }
       const targetUrl = `${proxyBase}${serverExtensionProxyPath}/${extensionPath}${qs}`;
       return proxyServerExtension(req, res, targetUrl, getToken);
     }
@@ -686,6 +730,14 @@ export function createWorkspaceAssetsHandler(
       filePath = candidateIndex;
     } else {
       res.status(404).end('Not found');
+      return;
+    }
+
+    // Defense in depth: the allowlist above already restricts filePath to files
+    // enumerated under the tier root, but assert containment explicitly.
+    filePath = nodePath.resolve(filePath);
+    if (!filePath.startsWith(tierRoot + nodePath.sep)) {
+      res.status(403).end('Forbidden');
       return;
     }
 
