@@ -1,4 +1,4 @@
-import {
+import type {
   AdditionalDataItem,
   CohortItem,
   DataLibrary,
@@ -12,13 +12,12 @@ import {
   ExportDatasetFields,
   FileItem,
   FileItemAPI,
-  isCohortItem,
-  isFileItem,
   LibraryListItemsAPI,
   LibraryListItemsGroupedByDataset,
 } from './types';
+import { isCohortItem, isFileItem } from './types';
 import { parse } from 'graphql';
-import { JSONObject } from '../../types/';
+import type { JSONObject } from '../../types/';
 
 const processItem = (id: string, data: any) => {
   if (data?.type === 'AdditionalData') {

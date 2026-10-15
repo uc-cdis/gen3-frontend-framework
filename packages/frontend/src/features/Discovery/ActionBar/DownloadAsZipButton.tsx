@@ -1,19 +1,32 @@
 import React from 'react';
-import { ExportActionButtonProps } from './types';
+import type { ExportActionButtonProps } from './types';
 import { FiDownload as DownloadIcon } from 'react-icons/fi';
 import SubmitSowerJobButton from '../../Sower/actions/SubmitSowerJobButton';
-import { useLazyGetIndexdMetdataQuery } from '@gen3/core';
+import generateFilenameWithoutPrefix from '../../../utils/generateFilenameWithoutPrefix';
+import { processZipFileMetadata } from './utils';
 
 const DownloadAllAsZipButton = ({
   buttonConfig,
   selectedResources,
   exportDataFields,
 }: ExportActionButtonProps) => {
-  const [trigger, results] = useLazyGetIndexdMetdataQuery();
+  const { dataObjectField, datasetIdField } = exportDataFields;
 
-  // create a file manifest by first getting file metadata
-
-  // create study metadata
+  const fileMetadata = processZipFileMetadata(
+    datasetIdField,
+    dataObjectField,
+    'all_files',
+    selectedResources,
+  );
+  let zipFilename;
+  if (Object.keys(fileMetadata).length === 1) {
+    zipFilename = generateFilenameWithoutPrefix(
+      'all_files',
+      Object.keys(fileMetadata)[0],
+    );
+  } else {
+    zipFilename = generateFilenameWithoutPrefix('all_files');
+  }
 
   return (
     <SubmitSowerJobButton
@@ -22,13 +35,10 @@ const DownloadAllAsZipButton = ({
       tooltipText="Download Zip"
       actions={{
         jobAction: {
-          name: 'Download Zip',
+          name: 'export-files-to-zip',
           parameters: {
-            zipFilename: 'study_datafile.zip',
-            fileMetadata: {
-              selectedResources,
-              exportDataFields,
-            },
+            zipFilename,
+            fileMetadata,
           },
         },
       }}

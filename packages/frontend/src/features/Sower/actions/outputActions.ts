@@ -39,6 +39,11 @@ export const notificationOutputAction: JobOutputAction = async ({
   });
 };
 
+export const showSowerJobCompleteModalOutputAction: JobOutputAction = async ({
+  parameters,
+  onError = () => null,
+}) => {};
+
 const PRESIGNED_URL_TEMPLATE_VARIABLE = '{{PRESIGNED_URL}}';
 interface SendPFBToURLParameters {
   targetURLTemplate: string;
@@ -63,7 +68,7 @@ export const sendPFBToURL: JobOutputAction = async ({
   onDone = () => null,
   onError = () => null,
   onAbort = () => null,
-  signal = undefined,
+  signal,
 }) => {
   if (!isSendPFBToURLParameters(parameters)) {
     onError(new Error('Invalid parameters for sendPFBToURL action'));

@@ -267,8 +267,7 @@
       "minimalFieldMapping": {
         "tagsListField": "tags",
         "authzField": "authz",
-        "uid": "_unique_id",
-        "dataObjectField": "__manifest"
+        "uid": "_unique_id"
       },
       "tags": {
         "tagCategories": [

@@ -3,6 +3,8 @@ import { SaveCohortModal } from './SaveCohortModal';
 import { FirstTimeModal } from './FirstTimeModal/FirstTimeModal';
 import JobModal from './JobModal';
 import SessionExpiringModal from './SessionExpiringModal';
+import { JobFailedModal } from './JobFailedModal';
+import { JobSaveOutputModal } from './JobSaveOutputModal';
 
 export const gen3Modals = {
   baseContextModal: BaseContextModal,
@@ -10,4 +12,6 @@ export const gen3Modals = {
   firstTimeModal: FirstTimeModal,
   jobModal: JobModal,
   sessionExpiringModal: SessionExpiringModal,
+  jobFailedModal: JobFailedModal,
+  jobSaveOutputModal: JobSaveOutputModal,
 };
