@@ -78,7 +78,8 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
 
   const variableMetadataFieldName = config.variableMetadataFieldName;
   const variableMetadata = variableMetadataFieldName
-    ? (studyDetails[variableMetadataFieldName] as Record<string, unknown> | undefined)
+    ? (studyDetails[variableMetadataFieldName] as
+        Record<string, unknown> | undefined)
     : undefined;
 
   const studyNavQuery = {

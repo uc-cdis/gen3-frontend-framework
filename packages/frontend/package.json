@@ -53,38 +53,6 @@
       "require": "./dist/pages/cjs/index.js"
     },
     "./lib/*": "./src/lib/*",
-    "./pages/StudyForms/StudyRegistration": {
-      "types": "./dist/dts/pages/StudyForms/StudyRegistration/index.d.ts",
-      "default": "./dist/dts/pages/StudyForms/StudyRegistration/index.js"
-    },
-    "./pages/StudyForms/StudyRegistration/data": {
-      "types": "./dist/dts/pages/StudyForms/StudyRegistration/data.d.ts",
-      "default": "./dist/dts/pages/StudyForms/StudyRegistration/data.js"
-    },
-    "./pages/StudyForms/StudyRegistrationAccessRequest": {
-      "types": "./dist/dts/pages/StudyForms/StudyRegistrationAccessRequest/index.d.ts",
-      "default": "./dist/dts/pages/StudyForms/StudyRegistrationAccessRequest/index.js"
-    },
-    "./pages/StudyForms/StudyRegistrationAccessRequest/data": {
-      "types": "./dist/dts/pages/StudyForms/StudyRegistrationAccessRequest/data.d.ts",
-      "default": "./dist/dts/pages/StudyForms/StudyRegistrationAccessRequest/data.js"
-    },
-    "./pages/StudyForms/VLMDSubmission": {
-      "types": "./dist/dts/pages/StudyForms/VLMDSubmission/index.d.ts",
-      "default": "./dist/dts/pages/StudyForms/VLMDSubmission/index.js"
-    },
-    "./pages/StudyForms/VLMDSubmission/data": {
-      "types": "./dist/dts/pages/StudyForms/VLMDSubmission/data.d.ts",
-      "default": "./dist/dts/pages/StudyForms/VLMDSubmission/data.js"
-    },
-    "./pages/StudyForms/VLMDSubmissionAccessRequest": {
-      "types": "./dist/dts/pages/StudyForms/VLMDSubmissionAccessRequest/index.d.ts",
-      "default": "./dist/dts/pages/StudyForms/VLMDSubmissionAccessRequest/index.js"
-    },
-    "./pages/StudyForms/VLMDSubmissionAccessRequest/data": {
-      "types": "./dist/dts/pages/StudyForms/VLMDSubmissionAccessRequest/data.d.ts",
-      "default": "./dist/dts/pages/StudyForms/VLMDSubmissionAccessRequest/data.js"
-    },
     "./dist/styles.css": "./dist/styles.css"
   },
   "style": "dist/styles.css",
