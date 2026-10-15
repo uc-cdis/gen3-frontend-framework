@@ -138,6 +138,7 @@ const CDESubmission = ({
         config.variableMetadataField,
         config.gen3DiscoveryField,
         config.tagsListFieldName,
+        config.advSearchFilterField,
       );
 
       const hostname =
@@ -235,12 +236,20 @@ const CDESubmission = ({
       />
       {disableCDESubmissionForm ? (
         <Text size="sm" ta="center">
-          We have received your CDE selections from the HEAL CDE team. If you
-          need to update your selections, please contact{' '}
-          <Anchor href="mailto:heal_cde@hsc.utah.edu" underline="always">
-            heal_cde@hsc.utah.edu
-          </Anchor>
-          .
+          We have received your CDE selections. If you need to update your selections, please contact{' '}
+          {config.cdeSupportEmail ? (
+            <>
+              <Anchor
+                href={`mailto:${config.cdeSupportEmail}`}
+                underline="always"
+              >
+                {config.cdeSupportEmail}
+              </Anchor>
+              .
+            </>
+          ) : (
+            'the CDE support team.'
+          )}
         </Text>
       ) : (
         <Text size="sm" ta="center">

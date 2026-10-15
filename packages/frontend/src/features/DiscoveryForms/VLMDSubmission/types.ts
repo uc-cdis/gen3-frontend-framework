@@ -5,6 +5,8 @@ export interface VLMDSubmissionConfig {
   variableMetadataField?: string;
   gen3DiscoveryField?: string;
   tagsListFieldName?: string;
+  advSearchFilterField?: string;
+  cdeSupportEmail?: string;
   remoteSupportService: {
     service: string;
     configuration: RemoteSupportConfiguration;

@@ -18,6 +18,7 @@ const baseConfig = {
   variableMetadataField: 'variable_level_metadata',
   gen3DiscoveryField: 'gen3_discovery',
   tagsListFieldName: 'tags',
+  advSearchFilterField: 'advSearchFilters',
   remoteSupportService: {
     service: 'zendesk',
     configuration: {

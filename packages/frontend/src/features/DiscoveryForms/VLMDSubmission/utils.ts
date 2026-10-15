@@ -5,6 +5,7 @@ import { toString } from 'lodash';
 import {
   CDE_METADATA_GUID_TYPE,
   COMMON_DATA_ELEMENTS_FIELD,
+  COMMON_DATA_ELEMENTS_FILTER_KEY,
   COMMON_DATA_ELEMENTS_TAG_CATEGORY,
   DEFAULT_GEN3_DISCOVERY_FIELD,
   DEFAULT_VARIABLE_METADATA_FIELD,
@@ -164,6 +165,7 @@ export const updateCDEMetadataInMDS = async (
   variableMetadataField = DEFAULT_VARIABLE_METADATA_FIELD,
   gen3DiscoveryField = DEFAULT_GEN3_DISCOVERY_FIELD,
   tagsListFieldName?: string,
+  advSearchFilterField?: string,
 ): Promise<void> => {
   const queryURL = `${GEN3_MDS_API}/metadata/${metadataID}`;
   const queryRes = await fetch(queryURL);
@@ -214,8 +216,20 @@ export const updateCDEMetadataInMDS = async (
     metadataToUpdate[gen3DiscoveryField][tagsListFieldName] = updatedTags;
   }
 
-  // unused param kept for potential filter updates
-  void selectedCoreCDEs;
+  if (advSearchFilterField && metadataToUpdate[gen3DiscoveryField]) {
+    const filters: { key: string; value: string }[] =
+      metadataToUpdate[gen3DiscoveryField][advSearchFilterField] ?? [];
+    const updatedFilters = filters.filter(
+      (filter) => filter.key !== COMMON_DATA_ELEMENTS_FILTER_KEY,
+    );
+    selectedCoreCDEs.forEach((coreCDE) =>
+      updatedFilters.push({
+        key: COMMON_DATA_ELEMENTS_FILTER_KEY,
+        value: coreCDE,
+      }),
+    );
+    metadataToUpdate[gen3DiscoveryField][advSearchFilterField] = updatedFilters;
+  }
 
   const rawToken =
     process.env.NODE_ENV === 'development'
