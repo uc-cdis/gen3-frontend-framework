@@ -50,13 +50,6 @@ const DEFAULT_OPTIONS: WorkspaceAssetsHandlerOptions = {
   // ingress (avoiding self-signed-cert issues). Readable from the JSON config
   // file or the WORKSPACE_PROXY_URL env var.
   serverExtensionProxyBaseUrl: process.env.WORKSPACE_PROXY_URL || undefined,
-  // Hosts the proxy may target when no base URL is set (origin then comes from
-  // request headers). Comma-separated; unset → loopback only.
-  allowedHosts: process.env.WORKSPACE_ALLOWED_HOSTS
-    ? process.env.WORKSPACE_ALLOWED_HOSTS.split(',')
-        .map((h) => h.trim())
-        .filter(Boolean)
-    : undefined,
   // Direct calls to serverExtensionProxyBaseUrl bypass nginx, which normally
   // injects the X-Gen3-User-ID/REMOTE_USER headers workspace-proxy requires —
   // reuse this app's cookie extraction to inject them explicitly instead.
@@ -117,20 +110,6 @@ function parseOptions(raw: unknown): WorkspaceAssetsHandlerOptions {
     }
   }
 
-  const allowedHosts = source.allowedHosts;
-  if (allowedHosts !== undefined) {
-    if (
-      Array.isArray(allowedHosts) &&
-      allowedHosts.every((entry) => typeof entry === 'string')
-    ) {
-      parsed.allowedHosts = allowedHosts;
-    } else {
-      console.warn(
-        '[workspace-assets] ignoring allowedHosts: expected an array of strings.',
-      );
-    }
-  }
-
   const extensions = source.additionalDisabledExtensions;
 
   // oxlint-disable-next-line no-console
@@ -177,8 +156,7 @@ let loadedConfigMtimeMs: number | undefined;
 /** mtime of the config file, or undefined when it does not exist. */
 function configMtimeMs(): number | undefined {
   try {
-    const file = configFilePath();
-    return fs.statSync(file).mtimeMs;
+    return fs.statSync(configFilePath()).mtimeMs;
   } catch {
     return undefined;
   }
