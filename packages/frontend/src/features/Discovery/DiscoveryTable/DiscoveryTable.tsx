@@ -14,7 +14,7 @@ import {
   type MRT_SortingState,
   useMantineReactTable,
 } from 'mantine-react-table-open';
-import { Loader, LoadingOverlay, Text } from '@mantine/core';
+import { LoadingOverlay, Text } from '@mantine/core';
 import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
 import { getManualSortingAndPagination, jsonPathAccessor } from '../utils';
 import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory';
@@ -233,14 +233,14 @@ const DiscoveryTable = ({
     state: {
       density: 'xs',
       rowSelection,
-      isLoading,
+
       ...(manualSortingAndPagination
         ? {
             pagination,
             sorting,
           }
         : {}),
-      showProgressBars: isFetching,
+
       showAlertBanner: isError,
       expanded: config.tableConfig.expandableRows === true ? true : undefined,
       columnVisibility: {
@@ -301,13 +301,6 @@ const DiscoveryTable = ({
     setSelection(rowSelection ? Object.keys(rowSelection) : []);
   }, [rowSelection, setSelection]);
 
-  if (dataRequestStatus.isLoading) {
-    return (
-      <div className="flex w-full py-24 relative justify-center">
-        <Loader variant="dots" />
-      </div>
-    );
-  }
   if (dataRequestStatus.isError) {
     return (
       <div className="flex w-full py-24 h-100 relative justify-center">

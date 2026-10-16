@@ -18,7 +18,7 @@ const DataAccessFilterDropdownWrapper = (initialLevels: number[] = []) => {
             setSelectedTags: () => {},
             selectedAccessLevels,
             setSelectedAccessLevels,
-            enabledAccessLevels: new Set([
+            supportedAccessLevels: new Set([
               AccessLevel.ACCESSIBLE,
               AccessLevel.UNACCESSIBLE,
               AccessLevel.WAITING,

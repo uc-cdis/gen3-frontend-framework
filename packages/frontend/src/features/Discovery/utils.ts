@@ -42,11 +42,11 @@ export const getAccessLevelFromNumber = (
   }
 };
 
-const StringToSupportedAccessLevels: Record<string, AccessLevel> = {
+export const StringToSupportedAccessLevels: Record<string, AccessLevel> = {
   accessible: AccessLevel.ACCESSIBLE,
   unaccessible: AccessLevel.UNACCESSIBLE,
   waiting: AccessLevel.WAITING,
-  not_available: AccessLevel.NOT_AVAILABLE,
+  notAvailable: AccessLevel.NOT_AVAILABLE,
   other: AccessLevel.OTHER,
   mixed: AccessLevel.MIXED,
 };
@@ -56,7 +56,7 @@ const StringToSupportedAccessLevels: Record<string, AccessLevel> = {
  *
  * @param {DiscoveryIndexConfig} config - The configuration object that contains feature-specific settings,
  *                                         including authorization and supported access levels.
- * @returns {Array<AccessLevel>} An array of access levels that are marked as enabled in the configuration.
+ * @returns {Array<AccessLevel>} An array of access levels defined in the configuration.
  *
  * Type Member Properties:
  * - `config.features.authorization.supportedValues` (Object): A mapping of access level keys to their settings.
@@ -68,20 +68,12 @@ const StringToSupportedAccessLevels: Record<string, AccessLevel> = {
  * - If `supportedValues` is undefined or empty in the configuration, the function returns an empty array.
  * - Only enabled access levels (where `value.enabled` is truthy) are included in the resulting array.
  */
-export const supportedAccessLevels = (
+export const processSupportedAccessLevels = (
   config: DiscoveryIndexConfig,
 ): Array<AccessLevel> => {
   const supportedValues = config?.features?.authorization?.supportedValues;
   if (!supportedValues) return [];
-
-  return Object.entries(supportedValues).reduce<Array<AccessLevel>>(
-    (acc, [key, value]) => {
-      const accessLevel = StringToSupportedAccessLevels[key];
-      if (accessLevel && value?.enabled) {
-        acc.push(accessLevel);
-      }
-      return acc;
-    },
-    [],
+  return Object.keys(supportedValues).map(
+    (x) => StringToSupportedAccessLevels[x],
   );
 };

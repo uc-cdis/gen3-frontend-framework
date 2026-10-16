@@ -6,19 +6,21 @@ import {
   Popover,
   Stack,
   Text,
+  Tooltip,
   UnstyledButton,
 } from '@mantine/core';
 import { LuFilter as FilterIcon } from 'react-icons/lu';
 import { useDiscoveryContext } from '../DiscoveryProvider';
 import { AccessLevel } from '../../../utils';
 import { Icon } from '@iconify-icon/react';
+import { StringToSupportedAccessLevels } from '../utils';
 
 const DataAccessFilterDropdown = () => {
   const [opened, setOpened] = useState(false);
   const {
     selectedAccessLevels,
     setSelectedAccessLevels,
-    enabledAccessLevels,
+    supportedAccessLevels,
     discoveryConfig,
   } = useDiscoveryContext();
 
@@ -49,7 +51,7 @@ const DataAccessFilterDropdown = () => {
       {
         level: AccessLevel.NOT_AVAILABLE,
         label:
-          enabledAccessLevelsConfig?.['unaccessible']?.label ?? 'Not Available',
+          enabledAccessLevelsConfig?.['notAvailable']?.label ?? 'Not Available',
         icon: <Icon icon="gen3:dash-outlined" width="1.5rem" height="1.5rem" />,
       },
       {
@@ -96,9 +98,15 @@ const DataAccessFilterDropdown = () => {
   };
 
   const handleReset = () => {
-    setDraftAccessLevels([]);
-    setSelectedAccessLevels([...enabledAccessLevels]);
-    setOpened(false);
+    setDraftAccessLevels(
+      Object.entries(
+        discoveryConfig.features.authorization?.supportedValues ?? {},
+      ).reduce<number[]>((acc, [key, value]) => {
+        if (value.enabled && key in StringToSupportedAccessLevels)
+          acc.push(StringToSupportedAccessLevels[key]);
+        return acc;
+      }, []),
+    );
   };
 
   return (
@@ -111,23 +119,30 @@ const DataAccessFilterDropdown = () => {
       shadow="md"
     >
       <Popover.Target>
-        <UnstyledButton
-          className="pt-0.5 px-3 ml-1 hover:bg-gray-300/50 rounded transition-colors"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleOpenChange(!opened);
-          }}
-          aria-label="Filter by data access"
+        <Tooltip
+          label={
+            discoveryConfig.features.authorization?.tooltip ??
+            'Filter by data access'
+          }
         >
-          <FilterIcon
-            size={18}
-            color={
-              selectedAccessLevels.length === enabledAccessLevels.size
-                ? 'var(--mantine-base-contrast-5)'
-                : 'var(--mantine-color-accent-5)'
-            }
-          />
-        </UnstyledButton>
+          <UnstyledButton
+            className="pt-0.5 px-3 ml-1 hover:bg-gray-300/50 rounded transition-colors"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleOpenChange(!opened);
+            }}
+            aria-label="Filter by data access"
+          >
+            <FilterIcon
+              size={18}
+              color={
+                selectedAccessLevels.length === supportedAccessLevels.size
+                  ? 'var(--mantine-base-contrast-5)'
+                  : 'var(--mantine-color-accent-5)'
+              }
+            />
+          </UnstyledButton>
+        </Tooltip>
       </Popover.Target>
 
       {/* The dropdown is portaled, but React events still bubble to the sortable header cell */}
@@ -140,7 +155,7 @@ const DataAccessFilterDropdown = () => {
       >
         <Stack gap={0} className="py-2">
           {accessLevelItems
-            .filter((item) => enabledAccessLevels.has(item.level))
+            .filter((item) => supportedAccessLevels.has(item.level))
             .map((item) => (
               <Checkbox
                 key={item.level}

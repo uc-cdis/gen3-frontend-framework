@@ -4,7 +4,7 @@ export interface AuthorizationValues {
 }
 
 export interface DataAuthorization {
-  columnTooltip?: string;
+  tooltip?: string;
   supportedValues?: Record<string, AuthorizationValues>;
   isMesh?: boolean;
   enabled?: boolean;

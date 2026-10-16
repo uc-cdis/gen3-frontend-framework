@@ -1,7 +1,10 @@
 import React, { createContext, useMemo, useState } from 'react';
 import type { DiscoveryIndexConfig } from './types';
 import type { AccessLevel } from '../../utils';
-import { supportedAccessLevels } from './utils';
+import {
+  processSupportedAccessLevels,
+  StringToSupportedAccessLevels,
+} from './utils';
 
 interface DiscoveryProviderValue {
   discoveryConfig: DiscoveryIndexConfig;
@@ -11,7 +14,7 @@ interface DiscoveryProviderValue {
   >;
   selectedAccessLevels: number[];
   setSelectedAccessLevels: React.Dispatch<React.SetStateAction<number[]>>;
-  enabledAccessLevels: Set<AccessLevel>;
+  supportedAccessLevels: Set<AccessLevel>;
 }
 
 const DiscoveryContext = createContext<DiscoveryProviderValue>({
@@ -20,7 +23,7 @@ const DiscoveryContext = createContext<DiscoveryProviderValue>({
   setSelectedTags: () => {},
   selectedAccessLevels: [],
   setSelectedAccessLevels: () => [],
-  enabledAccessLevels: new Set(),
+  supportedAccessLevels: new Set(),
 });
 
 const useDiscoveryContext = () => {
@@ -38,16 +41,26 @@ const DiscoveryProvider = ({
   children: React.ReactNode;
   discoveryIndexConfig: DiscoveryIndexConfig;
 }) => {
-  const enabledAccessLevels = useMemo(
-    () => new Set<AccessLevel>(supportedAccessLevels(discoveryIndexConfig)),
+  const supportedAccessLevels: Set<AccessLevel> = useMemo(
+    () =>
+      new Set<AccessLevel>(processSupportedAccessLevels(discoveryIndexConfig)),
     [discoveryIndexConfig],
   );
+
+  console.log('supportedAccessLevels', [...supportedAccessLevels]);
 
   const [selectedTags, setSelectedTags] = useState<{ [key: string]: boolean }>(
     {},
   );
   const [selectedAccessLevels, setSelectedAccessLevels] = useState<number[]>(
-    () => [...enabledAccessLevels],
+    () =>
+      Object.entries(
+        discoveryIndexConfig.features.authorization?.supportedValues ?? {},
+      ).reduce<number[]>((acc, [key, value]) => {
+        if (value.enabled && key in StringToSupportedAccessLevels)
+          acc.push(StringToSupportedAccessLevels[key]);
+        return acc;
+      }, []),
   );
 
   return (
@@ -58,7 +71,7 @@ const DiscoveryProvider = ({
         setSelectedTags,
         selectedAccessLevels,
         setSelectedAccessLevels,
-        enabledAccessLevels,
+        supportedAccessLevels,
       }}
     >
       {children}
