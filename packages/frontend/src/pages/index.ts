@@ -9,6 +9,7 @@ export * from './DataLibrary';
 export * from './Discovery';
 export * from './ClinicalDataAnalysis';
 export * from './Explorer';
+export * from './FHIRQuery';
 export * from './Landing';
 export * from './Login';
 export * from './NotebookLite';

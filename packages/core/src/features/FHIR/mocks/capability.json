@@ -1,0 +1,78 @@
+{
+  "fhirVersion": "4.0.1",
+  "rest": [
+    {
+      "mode": "server",
+      "resource": [
+        {
+          "type": "Binary"
+        },
+        {
+          "type": "DomainResource",
+          "searchParam": [
+            {
+              "name": "_text",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "type": "Patient",
+          "searchParam": [
+            {
+              "definition": "http://hl7.org/fhir/SearchParameter/individual-birthdate",
+              "extension": [
+                {
+                  "url": "https://g.co/fhir/StructureDefinition/CapabilityStatementSearchParameterModifiers",
+                  "valueCoding": {
+                    "code": "missing",
+                    "system": "http://hl7.org/fhir/ValueSet/search-modifier-code"
+                  }
+                }
+              ],
+              "name": "birthdate",
+              "type": "date"
+            },
+            {
+              "definition": "http://hl7.org/fhir/SearchParameter/individual-gender",
+              "extension": [
+                {
+                  "url": "https://g.co/fhir/StructureDefinition/CapabilityStatementSearchParameterModifiers",
+                  "valueCoding": {
+                    "code": "missing",
+                    "system": "http://hl7.org/fhir/ValueSet/search-modifier-code"
+                  }
+                }
+              ],
+              "name": "gender",
+              "type": "token"
+            },
+            {
+              "definition": "http://hl7.org/fhir/SearchParameter/Patient-name",
+              "extension": [
+                {
+                  "url": "https://g.co/fhir/StructureDefinition/CapabilityStatementSearchParameterModifiers",
+                  "valueCoding": {
+                    "code": "missing",
+                    "system": "http://hl7.org/fhir/ValueSet/search-modifier-code"
+                  }
+                }
+              ],
+              "name": "name",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "type": "Resource",
+          "searchParam": [
+            {
+              "name": "_id",
+              "type": "token"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
