@@ -56,7 +56,8 @@
   "dependencies": {
     "@gen3/core": "^0.12.88",
     "@gen3/frontend": "^0.12.88",
-    "camelcase-keys": "^10.0.2"
+    "camelcase-keys": "^10.0.2",
+    "jose": "^6.2.12"
   },
   "peerDependencies": {
     "@mantine/core": "^9.6.2",
