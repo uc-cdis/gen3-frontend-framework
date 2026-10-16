@@ -137,7 +137,7 @@ interface DiscoveryTableConfig {
   size?: string;
 }
 
-interface DiscoveryPageTitle {
+export interface DiscoveryPageTitle {
   enabled: boolean;
   text: string;
 }
