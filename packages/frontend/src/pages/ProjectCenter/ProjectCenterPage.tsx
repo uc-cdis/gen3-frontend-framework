@@ -10,9 +10,9 @@ registerDiscoveryDefaultCellRenderers();
 const ProjectCenterPage = ({
   headerProps,
   footerProps,
-  discoveryConfig,
+  projectCenterConfig,
 }: ProjectCenterPageProps): JSX.Element => {
-  if (discoveryConfig === undefined) {
+  if (projectCenterConfig === undefined) {
     return (
       <Center maw={400} h={100} mx="auto">
         <div>ProjectCenter config is not defined. Page disabled</div>
@@ -27,12 +27,12 @@ const ProjectCenterPage = ({
         title: 'Gen3 Project Center Page',
         content: 'Project Center Data',
         key: 'gen3-project-center-page',
-        ...(discoveryConfig?.headerMetadata
-          ? discoveryConfig.headerMetadata
+        ...(projectCenterConfig?.headerMetadata
+          ? projectCenterConfig.headerMetadata
           : {}),
       }}
     >
-      <ProjectCenter discoveryConfig={discoveryConfig} />
+      <ProjectCenter projectCenterConfig={projectCenterConfig} />
     </NavPageLayout>
   );
 };

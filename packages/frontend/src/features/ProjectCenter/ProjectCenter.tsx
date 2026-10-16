@@ -9,24 +9,18 @@ const extractLabel = (c: ProjectCenterIndexConfig, idx: number) =>
   c.label ?? c.features?.pageTitle?.text ?? `Index ${idx.toString()}`;
 
 export interface ProjectCenterProps {
-  discoveryConfig: ProjectCenterConfig;
+  projectCenterConfig: ProjectCenterConfig;
 }
 
-const ProjectCenter = ({ discoveryConfig }: ProjectCenterProps) => {
-  const menuItems = useMemo(() => {
-    return discoveryConfig.metadataConfig.map((n, idx) => {
-      return { value: idx.toString(), label: extractLabel(n, idx) };
-    });
-  }, [discoveryConfig.metadataConfig]);
-
-  if (menuItems.length === 0) {
-    return <MessagePanel message="No discovery configuration" />;
+const ProjectCenter = ({ projectCenterConfig }: ProjectCenterProps) => {
+  if (!projectCenterConfig?.metadataConfig) {
+    return <MessagePanel message="No ProjectCenter configuration" />;
   }
 
   return (
     <DiscoveryProvider
       discoveryIndexConfig={
-        discoveryConfig.metadataConfig[0] as DiscoveryIndexConfig
+        projectCenterConfig.metadataConfig[0] as DiscoveryIndexConfig
       }
     >
       <ProjectCenterIndexPanel indexSelector={null} />

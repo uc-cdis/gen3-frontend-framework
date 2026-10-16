@@ -10,7 +10,7 @@ export const ProjectCenterPageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async () => {
   try {
-    const discoveryConfig: DiscoveryConfig =
+    const projectCenterConfig: DiscoveryConfig =
       await ContentSource.getContentDatabase().get(
         `${GEN3_COMMONS_NAME}/projectCenter.json`,
       );
@@ -20,7 +20,7 @@ export const ProjectCenterPageGetServerSideProps: GetServerSideProps<
         `${GEN3_COMMONS_NAME}/dataLibrary.json`,
       );
 
-    discoveryConfig.metadataConfig?.forEach((index) => {
+    projectCenterConfig.metadataConfig?.forEach((index) => {
       if (index.features.exportFromDiscovery)
         index.features.exportFromDiscovery.dataLibraryStoreMode =
           datalibraryConfig?.storageMode ?? DataLibraryStoreMode.ApiOnly;
@@ -29,7 +29,7 @@ export const ProjectCenterPageGetServerSideProps: GetServerSideProps<
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
-        discoveryConfig: discoveryConfig,
+        projectCenterConfig: projectCenterConfig,
       },
     };
   } catch (err) {
@@ -37,7 +37,7 @@ export const ProjectCenterPageGetServerSideProps: GetServerSideProps<
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
-        discoveryConfig: [],
+        projectCenterConfig: [],
       },
     };
   }
