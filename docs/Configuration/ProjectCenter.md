@@ -126,7 +126,6 @@ The page also reads these `features` entries from the Discovery configuration. T
 - **aiSearch**: AI-powered search panel.
 - **exportFromDiscovery**: action buttons to export the selected records.
 
-Keys such as `tagsColumn`, `tagsInDescription` and `exportToWorkspace` are Discovery table settings and have no effect here.
 
 #### c. Aggregations (`aggregations`)
 

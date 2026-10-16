@@ -86,7 +86,7 @@ const ProjectCenterDisplay = ({
     accessable: boolean
   }) => {
     return (
-      <Tabs.Tab value={value}>
+      <Tabs.Tab value={value} key={value}>
         <div className="flex">
           <div className="">
             <ThemeIcon color="base" variant="light" size={36}>

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import React, { useMemo, useRef, useState } from 'react';
 import ProjectCenterDisplay from './ProjectCenterDisplay/ProjectCenterDisplay';
-import { Button, Grid, Text } from '@mantine/core';
+import { Button, Grid, Title } from '@mantine/core';
 import AdvancedSearchPanel from '../Discovery/Search/AdvancedSearchPanel';
 import type {
   MRT_PaginationState,
@@ -148,7 +148,7 @@ const ProjectCenterIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) =>
         <div className="w-full">
           {discoveryConfig.features?.pageTitle &&
           discoveryConfig?.features?.pageTitle.enabled ? (
-            <Text size="xl">{discoveryConfig?.features?.pageTitle.text}</Text>
+            <Title size="xl">{discoveryConfig?.features?.pageTitle.text}</Title>
           ) : null}
           <div className="flex items-center p-2 mb-4 bg-base-max rounded-lg">
             {indexSelector}

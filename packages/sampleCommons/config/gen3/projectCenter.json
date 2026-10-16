@@ -24,28 +24,9 @@
             }
           ]
         },
-        "tagsColumn": {
-          "enabled": false
-        },
-        "tagsInDescription": {
-          "enabled": true
-        },
-        "exportToWorkspace": {
-          "enabled": true,
-          "manifestFieldName": "__manifest",
-          "enableDownloadManifest": true,
-          "enableDownloadZip": true,
-          "downloadZipButtonText": "Download Zip",
-          "downloadManifestButtonText": "Download Manifest",
-          "documentationLinks": {
-            "gen3Client": "https://docs.gen3.org/gen3-resources/tools/data-client/",
-            "gen3Workspaces": "https://docs.gen3.org/gen3-resources/user-guide/analyze-data/"
-          },
-          "verifyExternalLogins": true
-        },
         "pageTitle": {
           "enabled": true,
-          "title": "Discover Datasets"
+          "text": "Projects"
         },
         "search": {
           "searchBar": {
