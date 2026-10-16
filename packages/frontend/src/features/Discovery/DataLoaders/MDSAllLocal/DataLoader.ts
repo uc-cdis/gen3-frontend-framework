@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { JSONPath } from 'jsonpath-plus';
 import {
   AggregationsData,
@@ -29,6 +29,8 @@ import {
 } from '../utils';
 import { SummaryStatisticsConfig } from '../../Statistics';
 import { SummaryStatistics } from '../../Statistics/types';
+import buildTagCategoryData from './tagCategoryData';
+import filterByTags from './filterByTags';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { GetDataProps, GetDataResponse, MetadataDataHook } from '../types';
 import { getManualSortingAndPagination } from '../../utils';
@@ -401,6 +403,7 @@ export const useLoadAllData = ({
   pagination,
   searchTerms,
   advancedSearchTerms,
+  selectedTags = {},
   discoveryConfig,
   guidType = 'discovery_metadata',
   maxStudies = 10000,
@@ -453,40 +456,55 @@ export const useLoadAllData = ({
     isSuccess,
   });
 
+  const tagsField = discoveryConfig?.minimalFieldMapping?.tagsListFieldName;
+
+  // items for the tag filter dropdown, built from all studies
+  const tagCategoryData = useMemo(
+    () => buildTagCategoryData(mdsData, discoveryConfig?.tags, tagsField),
+    [mdsData, discoveryConfig?.tags, tagsField],
+  );
+
+  // apply the tags selected in the tag filter dropdown
+  const filteredData = useMemo(
+    () => filterByTags(searchedData, selectedTags, discoveryConfig),
+    [searchedData, selectedTags, discoveryConfig],
+  );
+
   // TODO: determine if this is even needed
   const { paginatedData } = usePagination({
-    data: searchedData,
+    data: filteredData,
     pagination,
   });
 
   useEffect(() => {
     setSummaryStatistics(
-      processAllSummaries(searchedData, discoveryConfig?.aggregations),
+      processAllSummaries(filteredData, discoveryConfig?.aggregations),
     );
     if (
       discoveryConfig.features.chartsSection?.charts &&
-      searchedData.length > 0
+      filteredData.length > 0
     )
       setChartData(
         processChartData(
-          searchedData,
+          filteredData,
           Object.keys(discoveryConfig.features.chartsSection.charts),
         ),
       );
   }, [
-    searchedData,
+    filteredData,
     discoveryConfig?.aggregations,
     discoveryConfig.features.chartsSection?.charts,
   ]);
 
   return {
-    data: manualSortingAndPagination ? paginatedData : searchedData,
-    hits: searchedData.length ?? -1,
+    data: manualSortingAndPagination ? paginatedData : filteredData,
+    hits: filteredData.length ?? -1,
     clearSearch: clearSearchTerms,
     suggestions: suggestions,
     advancedSearchFilterValues,
     summaryStatistics,
     charts: chartData,
+    tagCategoryData,
     dataRequestStatus: {
       isUninitialized,
       isFetching,
@@ -501,6 +519,7 @@ export const useLoadAllMDSData = ({
   pagination,
   searchTerms,
   advancedSearchTerms,
+  selectedTags,
   discoveryConfig,
   guidType = 'discovery_metadata',
   maxStudies = 10000,
@@ -510,6 +529,7 @@ export const useLoadAllMDSData = ({
     pagination,
     searchTerms,
     advancedSearchTerms,
+    selectedTags,
     discoveryConfig,
     guidType,
     maxStudies,
@@ -521,6 +541,7 @@ export const useLoadAllAggMDSData = ({
   pagination,
   searchTerms,
   advancedSearchTerms,
+  selectedTags,
   discoveryConfig,
   guidType = 'discovery_metadata',
   maxStudies = 10000,
@@ -530,6 +551,7 @@ export const useLoadAllAggMDSData = ({
     pagination,
     searchTerms,
     advancedSearchTerms,
+    selectedTags,
     discoveryConfig,
     guidType,
     maxStudies,

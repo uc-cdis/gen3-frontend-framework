@@ -132,7 +132,7 @@ interface DiscoveryTableConfig {
   expandingRowRenderFunction?: string;
 }
 
-interface DiscoveryPageTitle {
+export interface DiscoveryPageTitle {
   enabled: boolean;
   text: string;
 }

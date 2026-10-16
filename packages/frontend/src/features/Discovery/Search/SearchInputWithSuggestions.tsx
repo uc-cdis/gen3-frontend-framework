@@ -27,7 +27,7 @@ const SearchInputWithSuggestions = ({
         leftSection={<SearchIcon size={24} />}
         placeholder={placeholder || 'Search...'}
         data-testid="discovery-textbox-search-bar"
-        aria-label="DiscoverySearch Input"
+        aria-label="Search"
         value={searchBarTerms.join(' ')}
         onChange={(value) => {
           searchChanged(value);
