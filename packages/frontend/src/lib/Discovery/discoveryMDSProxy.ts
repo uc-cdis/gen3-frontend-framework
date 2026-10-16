@@ -1,3 +1,4 @@
+import type { NextApiRequest, NextApiResponse } from 'next';
 import type { JSONObject } from '@gen3/core/server';
 import { GEN3_MDS_API } from '@gen3/core/server';
 import {
@@ -14,15 +15,15 @@ import addAccessLevelsMetaData from './addAccessLevelsMetaData';
 
 let cachedData: Array<JSONObject> = [];
 let cacheTime = 0;
-const CACHE_DURATION = 0.25 * 60 * 60 * 1000; // 15 minutes in milliseconds
+const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
 const mdsAggregateApi = `${GEN3_MDS_API}/aggregate/metadata?data=True&limit=2000&offset=0`;
 const mdsMetadataApi = `${GEN3_MDS_API}/metadata?data=True&_guid_type=unregistered_discovery_metadata&limit=2000&offset=0`;
 
 // Main Function to Orchestrate Steps
 const processData = async (
   data: Array<JSONObject>,
-  reqBody: any,
-  cookies: any,
+  reqBody: NextApiRequest['body'],
+  cookies: string | undefined,
 ) => {
   const {
     pagination,
@@ -70,11 +71,14 @@ const processData = async (
   };
 };
 
-export default async function handler(req: any, res: any) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   const cookies = req.headers.cookie || '';
   const currentTime = Date.now();
   // Check if cached data is still valid
-  if (cachedData && currentTime - cacheTime < CACHE_DURATION) {
+  if (cachedData.length > 0 && currentTime - cacheTime < CACHE_DURATION) {
     const processedData = await processData(cachedData, req.body, cookies);
     res.status(200).json(processedData);
   } else {
@@ -87,9 +91,7 @@ export default async function handler(req: any, res: any) {
       // Check if both responses are OK
       if (!mdsAggregateResponse.ok || !mdsMetadataResponse.ok) {
         throw new Error(
-          `One of the responses was not ok:
-        mdsAggregateResponse:${mdsAggregateResponse},
-        mdsMetadataResponse ${mdsMetadataResponse}`,
+          `One of the responses was not ok: mdsAggregateResponse ${mdsAggregateResponse.status} ${mdsAggregateResponse.statusText}, mdsMetadataResponse ${mdsMetadataResponse.status} ${mdsMetadataResponse.statusText}`,
         );
       }
       // Parse the JSON data from both responses
