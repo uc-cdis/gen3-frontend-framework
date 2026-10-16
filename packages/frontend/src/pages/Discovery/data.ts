@@ -1,10 +1,10 @@
-import { GetServerSideProps } from 'next';
+import type { GetServerSideProps } from 'next';
 import { DataLibraryStoreMode, GEN3_COMMONS_NAME } from '@gen3/core';
 import { getNavPageLayoutPropsFromConfig } from '../../lib/common/staticProps';
 import ContentSource from '../../lib/content';
 import { type DiscoveryConfig } from '../../features/Discovery';
 import type { NavPageLayoutProps } from '../../features/Navigation';
-import { DataLibraryConfig } from '../../features/DataLibrary';
+import type { DataLibraryConfig } from '../../features/DataLibrary';
 
 export const DiscoveryPageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps

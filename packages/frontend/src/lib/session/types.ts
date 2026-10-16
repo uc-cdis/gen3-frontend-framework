@@ -101,6 +101,11 @@ export interface SessionConfiguration {
    * and frontend calls get 401s.
    */
   renewAccessTokenEarlyMilliseconds?: number;
+
+  /**
+   * Enable getting authz resources from WorkspaceToken Service
+   */
+  enableWTS?: boolean;
 }
 
 export interface SessionProviderProps extends SessionConfiguration {

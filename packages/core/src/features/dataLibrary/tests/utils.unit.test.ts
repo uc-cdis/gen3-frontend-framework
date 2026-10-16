@@ -78,7 +78,7 @@ describe('groupDatasetItems', () => {
     expect(result).toEqual({});
   });
 
-  it('should skip data objects without a datasetIdFieldName or dataObjectFieldName', () => {
+  it('should skip data objects without a datasetIdFieldName', () => {
     const data = [
       {
         datasetId: 'dataset1',

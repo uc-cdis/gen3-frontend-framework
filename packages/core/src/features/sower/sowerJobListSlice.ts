@@ -1,6 +1,7 @@
 import {
   createEntityAdapter,
   createSlice,
+  type EntityState,
   type PayloadAction,
 } from '@reduxjs/toolkit';
 import type { JobId, JobWithActions, SowerJobStage } from './types';
@@ -38,6 +39,13 @@ const sowerJobsListSlice = createSlice({
   name: 'sowerJobsList',
   initialState,
   reducers: {
+    /** Replaces the job list, used when loading a user's persisted jobs. */
+    hydrateSowerJobs: (
+      _,
+      action: PayloadAction<EntityState<JobWithActions, JobId>>,
+    ) => action.payload,
+    /** Empties the job list, used when the logged-in user changes. */
+    clearSowerJobs: () => initialState,
     addSowerJob: (state, action: PayloadAction<JobWithActions>) => {
       const date = Date.now();
       sowerJobListAdapter.addOne(state, {
@@ -110,6 +118,8 @@ const sowerJobsListSlice = createSlice({
 });
 
 export const {
+  hydrateSowerJobs,
+  clearSowerJobs,
   addSowerJob,
   removeSowerJob,
   removeSowerJobsUpdatedBefore,

@@ -198,7 +198,7 @@
       },
       "minimalFieldMapping": {
         "authzField": "authz",
-        "tagsListFieldName": "tags",
+        "tagsListField": "tags",
         "dataAvailabilityField": "data_availability",
         "uid": "_unique_id"
       }

@@ -1,4 +1,5 @@
 {
+  "redirectPage": "/Discovery",
   "body": [
     {
       "title": {
@@ -15,7 +16,7 @@
           {
             "link": {
               "href": "/Discovery",
-              "text": "Discovery Data"
+              "text": "Discover Data"
             }
           }
         ],

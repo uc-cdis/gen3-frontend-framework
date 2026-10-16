@@ -77,8 +77,6 @@ const exportFileManifestToZip: JobBuilderAction = (params) => {
     };
   };
 
-  console.log('exportFileManifestToZip', resultManifest);
-
   return resultManifest;
 };
 

@@ -45,7 +45,7 @@ export interface SupportServiceConfiguration {
   configuration: RemoteSupportConfiguration;
 }
 
-export interface requestAccessFormProps extends Omit<FormProps, 'body'> {
+export interface RequestAccessFormProps extends Omit<FormProps, 'body'> {
   enabled: boolean;
   label: string;
   form: FormProps['body'];
@@ -59,5 +59,5 @@ export interface WorkspaceConfig extends Gen3AppConfigData {
   launchStepIndicatorConfig: LaunchStepIndicatorConfiguration;
   requirePayModel?: boolean;
   externalLoginsNotUsed?: boolean;
-  requestAccessForm?: requestAccessFormProps;
+  requestAccessForm?: RequestAccessFormProps;
 }

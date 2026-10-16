@@ -45,7 +45,7 @@ const persistConfig = {
     'cart',
     'workspaceKernels',
     'tieredWorkspace',
-    // sower.sowerJobsList is nested, so it is persisted in features/sower/reducers.ts
+    // sower.sowerJobsList is user specific, so it is persisted per user in features/sower/sowerJobsPersistence.ts
   ],
 };
 

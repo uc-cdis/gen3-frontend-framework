@@ -51,6 +51,7 @@ const sessionConfig = {
   inactiveTimeLimit: 20,
   logoutInactiveUsers: false,
   monitorWorkspace: false,
+  enableWTS: false,
 };
 
 const protectecRoutes = {

@@ -1,16 +1,22 @@
-import { JSONObject } from '@gen3/core';
-import { DiscoveryIndexConfig, selectedTags } from '../types/discoveryApi';
+import type { JSONObject } from '@gen3/core/server';
+import type { DiscoveryIndexConfig, SelectedTags } from '../../types';
 
 const filterByTags = (
   studies: JSONObject[],
-  selectedTags: selectedTags,
+  selectedTags: SelectedTags,
   config: DiscoveryIndexConfig,
 ): JSONObject[] => {
+  // check if tagsListField is defined in config
+  const tagField = config?.minimalFieldMapping?.tagsListField;
+  if (!tagField) {
+    return studies;
+  }
+
   // if no tags selected, show all studies
   if (Object.values(selectedTags).every((selected) => !selected)) {
     return studies;
   }
-  const tagField = config.minimalFieldMapping.tagsListFieldName;
+
   return studies.filter((study) => {
     if (!study[tagField]) {
       return false;

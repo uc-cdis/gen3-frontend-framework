@@ -144,3 +144,21 @@ export default Homepage;
 
 HTML, React components, Mantine Components, Typescript or Javascript code can be added to
 as children of  ```NavPageLayout -> div```.
+
+## Set another page as the default landing page
+
+If you wish to set another page as the default landing page,
+you can modify the ```redirectPage``` property in the ```landingPage.json``` file located in the ```config```
+directory. For example, if you want to redirect to the ```Discovery``` page, you can set the ```redirectPage```
+property to ```"/Discovery"```. If this is set, you do not need to define anything
+in the ```landingPage.json```config file.
+
+Example:
+
+```json
+{
+  "redirectPage": "/Discovery"
+  ...
+}
+
+```

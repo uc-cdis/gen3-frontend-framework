@@ -114,7 +114,7 @@ The tag filter dropdown lists tags grouped by category and filters the project l
 
 1. Set `features.search.tagSearchDropdown.enabled` to `true`. `collapsibleButtonText` sets the button label (for example `Study Filters`).
 2. Add the index-level `tags` block (section 2.d) with each category's `display` set to `true`.
-3. Set `minimalFieldMapping.tagsListFieldName` to the field holding each record's tags. Each tag is an object with `name` and `category`.
+3. Set `minimalFieldMapping.tagsListField` to the field holding each record's tags. Each tag is an object with `name` and `category`.
 
 Only categories listed in `tags.tagCategories` with `display: true` appear, and each lists the tags of that category found in the loaded studies. Selecting tags shows only the studies that have at least one of them.
 
@@ -221,13 +221,13 @@ Fields the page needs from each record:
 
 - **uid**: unique identifier field, used to open a project from a link.
 - **authzField**: field holding the project's authorization resource path.
-- **tagsListFieldName**: field holding the list of tags.
+- **tagsListField**: field holding the list of tags.
 - **dataAvailabilityField**: field indicating data availability.
 
 ```json
 "minimalFieldMapping": {
   "authzField": "authz",
-  "tagsListFieldName": "tags",
+  "tagsListField": "tags",
   "dataAvailabilityField": "data_availability",
   "uid": "_hdp_uid"
 }

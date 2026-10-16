@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react';
 import React from 'react';
 import type { ButtonProps } from '@mantine/core';
-import { Button, Loader, Tooltip } from '@mantine/core';
-import { FiDownload as DownloadIcon } from 'react-icons/fi';
+import { Button, Tooltip } from '@mantine/core';
 import { useIsUserLoggedIn } from '@gen3/core';
 
 export interface ExportActionButtonProps {
@@ -17,14 +16,13 @@ export interface ExportActionButtonProps {
   ref?: React.RefObject<HTMLButtonElement>;
 }
 
-const DataLibraryActionButton = ({
+const DiscoveryActionButton = ({
   ref,
   label = undefined,
   icon = undefined,
   disabled = false,
   tooltip = undefined,
   onClick = () => null,
-  active = false,
   showIcon = true,
   loginRequired = false,
   ...buttonProps
@@ -32,19 +30,13 @@ const DataLibraryActionButton = ({
   // TODO Test what idp was used to login and restrict actions to that idp or all or none
   const requiresLogin = !useIsUserLoggedIn() && loginRequired;
 
-  const buttonIcon = active ? (
-    <Loader size="sm" className="p-1" />
-  ) : (
-    <DownloadIcon title="download" size={16} />
-  );
-
   return (
     <Tooltip disabled={!tooltip} label={tooltip}>
       <Button
         ref={ref}
         onClick={onClick}
         disabled={disabled || requiresLogin}
-        leftSection={showIcon ? buttonIcon : undefined}
+        rightSection={showIcon ? icon : undefined}
         {...buttonProps}
       >
         {label}
@@ -53,4 +45,4 @@ const DataLibraryActionButton = ({
   );
 };
 
-export default DataLibraryActionButton;
+export default DiscoveryActionButton;

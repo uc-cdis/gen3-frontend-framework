@@ -1,5 +1,5 @@
-import { JSONObject } from '@gen3/core';
-import { DiscoveryIndexConfig } from '../types/discoveryApi';
+import type { JSONObject } from '@gen3/core/server';
+import type { DiscoveryIndexConfig } from '../../types';
 
 interface category {
   name: string;
@@ -23,11 +23,11 @@ const processTagCategoryData = (
 ) => {
   const allCategoryData: categoryData[] = [];
   const getTagsInCategory = (category: category) => {
-    if (!data || !data.length) {
+    if (!data?.length) {
       return [];
     }
     const tagMap: { [key: string]: number } = {};
-    const tagField = discoveryConfig.minimalFieldMapping.tagsListFieldName;
+    const tagField = discoveryConfig.minimalFieldMapping.tagsListField;
     data.forEach((study) => {
       if (study[tagField]) {
         (study[tagField] as []).forEach((tag: tag) => {

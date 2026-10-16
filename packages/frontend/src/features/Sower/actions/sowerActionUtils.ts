@@ -77,7 +77,6 @@ export const buildSubmitSowerJob = (
 
   try {
     const jobBody = jobAction(parameters);
-    console.log('jobBody', jobBody);
     return jobBody;
   } catch (error) {
     if (onError) onError(error as Error);
