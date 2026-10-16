@@ -23,7 +23,11 @@ import fs from 'fs';
 import http from 'http';
 import https from 'https';
 import { getCookie } from 'cookies-next';
-import { decodeJwtClaims, extractTokenFallback } from './utils';
+import {
+  decodeJwtClaims,
+  extractTokenFallback,
+  verifyJwtClaims,
+} from './utils';
 
 const MAX_FILE_SIZE_BYTES = 67108864; // 64 * 1024 * 1024
 
@@ -109,6 +113,25 @@ export interface WorkspaceAssetsHandlerOptions {
    * `serverExtensionProxyBaseUrl` is set.
    */
   allowedHosts?: string[];
+  /**
+   * JWKS endpoint (e.g. Fence's `/.well-known/jwks`) used to verify the
+   * caller's JWT signature before its claims are used for the identity headers
+   * (`REMOTE_USER`, `X-Gen3-User-ID`). When set, a token that fails
+   * verification gets a 401. When omitted, claims are decoded WITHOUT
+   * verification and trust upstream (Ambassador/revproxy) to have verified them
+   * — only safe if the proxy is never reached directly.
+   */
+  jwksUrl?: string;
+  /**
+   * Extra request headers (lower-case names) forwarded to the extension proxy
+   * on top of `DEFAULT_FORWARDED_HEADERS`. All other headers are dropped.
+   */
+  forwardedHeaders?: string[];
+  /**
+   * Cookie names forwarded to the extension proxy (default: `_xsrf`). The
+   * rest of the `Cookie` header, including `access_token`, is dropped.
+   */
+  forwardedCookies?: string[];
 }
 
 // ---------- constants ----------
@@ -219,6 +242,24 @@ function safeScriptJson(value: unknown): string {
 const SAFE_HOST_RE =
   /^(?:[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?|\[[0-9A-Fa-f:.]+\])(?::\d{1,5})?$/;
 const DEFAULT_HOST = 'localhost:8890';
+// Headers the extension proxy forwards upstream. Everything else (notably
+// Cookie, Authorization and X-Forwarded-*) is dropped; identity headers are
+// injected explicitly from the verified JWT.
+const DEFAULT_FORWARDED_HEADERS = new Set([
+  'accept',
+  'accept-encoding',
+  'accept-language',
+  'cache-control',
+  'content-type',
+  'if-modified-since',
+  'if-none-match',
+  'origin',
+  'pragma',
+  'referer',
+  'user-agent',
+  'x-xsrftoken',
+]);
+const DEFAULT_FORWARDED_COOKIES = ['_xsrf'];
 const DEFAULT_ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]'];
 
 function isAllowedHost(host: string, allowedHosts: string[]): boolean {
@@ -390,30 +431,51 @@ function readBody(req: NextApiRequest): Promise<Buffer> {
   });
 }
 
+interface ProxyOptions {
+  getToken?: (req: NextApiRequest) => string | null;
+  jwksUrl?: string;
+  forwardedHeaders: Set<string>;
+  forwardedCookies: string[];
+}
+
+/** Keep only the named cookies from a Cookie header value. */
+function filterCookies(header: string, names: string[]): string {
+  return header
+    .split(';')
+    .map((part) => part.trim())
+    .filter((part) => names.includes(part.split('=')[0]))
+    .join('; ');
+}
+
 async function proxyServerExtension(
   req: NextApiRequest,
   res: NextApiResponse,
   targetUrl: string,
-  getToken?: (req: NextApiRequest) => string | null,
+  proxyOptions: ProxyOptions,
 ): Promise<void> {
+  const { getToken, jwksUrl, forwardedHeaders, forwardedCookies } =
+    proxyOptions;
   const forwardHeaders: Record<string, string> = {};
 
   for (const [key, value] of Object.entries(req.headers)) {
     if (!value) continue;
     const lower = key.toLowerCase();
-    if (
-      lower === 'host' ||
-      lower === 'content-length' ||
-      lower === 'transfer-encoding'
-    )
+    if (lower === 'cookie') {
+      const kept = filterCookies(
+        Array.isArray(value) ? value.join('; ') : value,
+        forwardedCookies,
+      );
+      if (kept) forwardHeaders[key] = kept;
       continue;
+    }
+    if (!forwardedHeaders.has(lower)) continue;
     forwardHeaders[key] = Array.isArray(value) ? value.join(',') : value;
   }
 
   // Inject identity headers so workspace-proxy auth passes.
   // Direct server-side calls bypass nginx (which normally injects X-Gen3-User-ID /
   // REMOTE_USER from the validated access_token), so we must add them explicitly.
-  // SECURITY: decodeJwtClaims below does not verify the JWT signature — it relies on
+  // SECURITY: unless jwksUrl is configured, decodeJwtClaims below does not verify the JWT signature — it relies on
   // Ambassador/revproxy having already done so before this code path is reached. When
   // serverExtensionProxyBaseUrl (WORKSPACE_PROXY_URL) targets workspace-proxy directly,
   // that verification is skipped entirely, so a caller could supply a correctly-shaped
@@ -443,7 +505,16 @@ async function proxyServerExtension(
   );
 
   if (jwt) {
-    const claims = decodeJwtClaims(jwt);
+    let claims: Record<string, unknown> | null;
+    if (jwksUrl) {
+      claims = await verifyJwtClaims(jwt, jwksUrl);
+      if (!claims) {
+        res.status(401).end('Invalid token');
+        return;
+      }
+    } else {
+      claims = decodeJwtClaims(jwt);
+    }
     // Gen3 nginx extracts the username from context.user.name (not sub, which is
     // a numeric ID). Check context.user.name first so REMOTE_USER matches what
     // workspace-proxy expects for per-user container routing.
@@ -612,6 +683,15 @@ export function createWorkspaceAssetsHandler(
   const serverExtensionProxyPath = options?.serverExtensionProxyPath;
   const serverExtensionProxyBaseUrl = options?.serverExtensionProxyBaseUrl;
   const allowedHosts = options?.allowedHosts ?? DEFAULT_ALLOWED_HOSTS;
+  const proxyOptions: ProxyOptions = {
+    getToken: options?.getToken,
+    jwksUrl: options?.jwksUrl,
+    forwardedHeaders: new Set([
+      ...DEFAULT_FORWARDED_HEADERS,
+      ...(options?.forwardedHeaders ?? []).map((h) => h.toLowerCase()),
+    ]),
+    forwardedCookies: options?.forwardedCookies ?? DEFAULT_FORWARDED_COOKIES,
+  };
   const getToken = options?.getToken;
 
   const remoteInjectionConfig: RemoteInjectionConfig = {
@@ -713,7 +793,7 @@ export function createWorkspaceAssetsHandler(
         proxyBase = `${proto}://${host}`;
       }
       const targetUrl = `${proxyBase}${serverExtensionProxyPath}/${extensionPath}${qs}`;
-      return proxyServerExtension(req, res, targetUrl, getToken);
+      return proxyServerExtension(req, res, targetUrl, proxyOptions);
     }
 
     const allowedFiles = allowedFilesByTier[tier];

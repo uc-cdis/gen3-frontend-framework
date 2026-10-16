@@ -19,7 +19,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
 import nodePath from 'path';
-import { GEN3_COMMONS_NAME } from '@gen3/core';
+import { GEN3_COMMONS_NAME, GEN3_FENCE_SERVICE } from '@gen3/core';
 import { getAccessToken } from '@gen3/frontend/server';
 import {
   createWorkspaceAssetsHandler,
@@ -50,6 +50,11 @@ const DEFAULT_OPTIONS: WorkspaceAssetsHandlerOptions = {
   // ingress (avoiding self-signed-cert issues). Readable from the JSON config
   // file or the WORKSPACE_PROXY_URL env var.
   serverExtensionProxyBaseUrl: process.env.WORKSPACE_PROXY_URL || undefined,
+  // Fence JWKS used to verify the caller's JWT signature before its claims are
+  // trusted for the REMOTE_USER / X-Gen3-User-ID headers. Override with
+  // WORKSPACE_JWKS_URL if Fence is not reachable at GEN3_FENCE_SERVICE.
+  jwksUrl:
+    process.env.WORKSPACE_JWKS_URL || `${GEN3_FENCE_SERVICE}/.well-known/jwks`,
   // Hosts the proxy may target when no base URL is set (origin then comes from
   // request headers). Comma-separated; unset → loopback only.
   allowedHosts: process.env.WORKSPACE_ALLOWED_HOSTS
@@ -78,6 +83,7 @@ const STRING_OPTIONS = [
   'fullThemesUrl',
   'serverExtensionProxyPath',
   'serverExtensionProxyBaseUrl',
+  'jwksUrl',
 ] as const satisfies ReadonlyArray<keyof WorkspaceAssetsHandlerOptions>;
 
 function configFilePath(): string {
@@ -117,16 +123,21 @@ function parseOptions(raw: unknown): WorkspaceAssetsHandlerOptions {
     }
   }
 
-  const allowedHosts = source.allowedHosts;
-  if (allowedHosts !== undefined) {
+  for (const key of [
+    'allowedHosts',
+    'forwardedHeaders',
+    'forwardedCookies',
+  ] as const) {
+    const value = source[key];
+    if (value === undefined) continue;
     if (
-      Array.isArray(allowedHosts) &&
-      allowedHosts.every((entry) => typeof entry === 'string')
+      Array.isArray(value) &&
+      value.every((entry) => typeof entry === 'string')
     ) {
-      parsed.allowedHosts = allowedHosts;
+      parsed[key] = value;
     } else {
       console.warn(
-        '[workspace-assets] ignoring allowedHosts: expected an array of strings.',
+        `[workspace-assets] ignoring ${key}: expected an array of strings.`,
       );
     }
   }
