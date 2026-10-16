@@ -156,6 +156,16 @@ const QueryParams = ({
                     className={`font-mono ${row.enabled ? '' : 'text-gray-400'}`}
                   >
                     {row.name}
+                    {row.name === '_count' && (
+                      <Text
+                        span
+                        size="xs"
+                        c="dimmed"
+                        className="ml-2 font-sans"
+                      >
+                        per page
+                      </Text>
+                    )}
                   </Table.Td>
                   <Table.Td>
                     <ParamValueInput

@@ -11,37 +11,21 @@ import { FiSearch } from 'react-icons/fi';
 import type { ParamDef } from '@gen3/core';
 import type { ParamRow } from './params';
 
-interface AddParamsModalProps {
-  opened: boolean;
-  onClose: () => void;
-  resource: string;
+interface ParamPickerProps {
   params: ParamDef[];
   rows: ParamRow[];
-  // The parent closes the modal after adding, and puts focus on the new row
   onAdd: (picked: ParamDef[]) => void;
+  onCancel: () => void;
 }
 
-// Pick several params at once. Each one becomes a row with an empty value.
-const AddParamsModal = ({
-  opened,
-  onClose,
-  resource,
+const ParamPicker = ({
   params,
   rows,
   onAdd,
-}: AddParamsModalProps): ReactElement => {
+  onCancel,
+}: ParamPickerProps): ReactElement => {
   const [search, setSearch] = useState('');
   const [picked, setPicked] = useState<string[]>([]);
-
-  const reset = () => {
-    setSearch('');
-    setPicked([]);
-  };
-
-  const close = () => {
-    reset();
-    onClose();
-  };
 
   const toggle = (name: string) =>
     setPicked((prev) =>
@@ -56,20 +40,8 @@ const AddParamsModal = ({
   const shown = params.filter((p) => p.name.toLowerCase().includes(query));
   const count = picked.length;
 
-  const add = () => {
-    onAdd(params.filter((p) => picked.includes(p.name)));
-    reset();
-  };
-
   return (
-    <Modal
-      opened={opened}
-      onClose={close}
-      title={`Add parameters: ${resource}`}
-      size="lg"
-      // QueryParams decides where focus goes once the modal closes
-      returnFocus={false}
-    >
+    <>
       <TextInput
         data-autofocus
         aria-label="Search params"
@@ -106,17 +78,51 @@ const AddParamsModal = ({
         )}
       </ScrollArea.Autosize>
       <div className="mt-4 flex justify-end gap-2">
-        <Button variant="default" onClick={close}>
+        <Button variant="default" onClick={onCancel}>
           Cancel
         </Button>
-        <Button onClick={add} disabled={count === 0}>
+        <Button
+          onClick={() => onAdd(params.filter((p) => picked.includes(p.name)))}
+          disabled={count === 0}
+        >
           {count === 0
             ? 'Add parameters'
             : `Add ${count} parameter${count === 1 ? '' : 's'}`}
         </Button>
       </div>
-    </Modal>
+    </>
   );
 };
+
+interface AddParamsModalProps {
+  opened: boolean;
+  onClose: () => void;
+  resource: string;
+  params: ParamDef[];
+  rows: ParamRow[];
+  // The parent closes the modal after adding, and puts focus on the new row
+  onAdd: (picked: ParamDef[]) => void;
+}
+
+// Pick several params at once. Each one becomes a row with an empty value.
+const AddParamsModal = ({
+  opened,
+  onClose,
+  resource,
+  params,
+  rows,
+  onAdd,
+}: AddParamsModalProps): ReactElement => (
+  <Modal
+    opened={opened}
+    onClose={onClose}
+    title={`Add parameters: ${resource}`}
+    size="lg"
+    // QueryParams decides where focus goes once the modal closes
+    returnFocus={false}
+  >
+    <ParamPicker params={params} rows={rows} onAdd={onAdd} onCancel={onClose} />
+  </Modal>
+);
 
 export default AddParamsModal;

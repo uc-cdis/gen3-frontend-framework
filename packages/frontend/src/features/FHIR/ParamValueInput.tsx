@@ -2,7 +2,7 @@ import React, { type ReactElement, type Ref } from 'react';
 import { Select, TextInput } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import type { ParamType } from '@gen3/core';
-import { DATE_PREFIXES } from './constants';
+import { COUNT_HINT, DATE_PREFIXES } from './constants';
 import type { ParamRow } from './params';
 
 // Commas mean OR for every param type; the hint goes on the common text ones
@@ -58,7 +58,7 @@ const ParamValueInput = ({
     <TextInput
       ref={ref}
       aria-label={`${row.name} value`}
-      placeholder={PLACEHOLDERS[row.type]}
+      placeholder={row.name === '_count' ? COUNT_HINT : PLACEHOLDERS[row.type]}
       value={row.value}
       onChange={(e) => onChange({ value: e.currentTarget.value })}
       classNames={{ input: 'font-mono' }}

@@ -1,7 +1,6 @@
 import type { ParamDef } from '@gen3/core';
 
-// The resource types shown as tabs, in order. A constant for now.
-// This is matching mock up for now - just for MVP.
+// The tabs, in the mockup's order. A constant for the MVP.
 export const RESOURCE_TABS = [
   'Patient',
   'Observation',
@@ -19,8 +18,12 @@ export const EXTRA_PARAMS: ParamDef[] = [
   { name: '_id', type: 'token' },
 ];
 
-// All 8 prefixes the server advertises for date params
-// {value, label} shape is expected by Mantine Select's data
+// _count sets the page size, not how many are found. The name misleads
+// There's no cap, so it also warns about big pages.
+export const COUNT_HINT =
+  'Results per page (default 100). Large pages are slow.';
+
+// All 8 date prefixes the server advertises, shaped for Mantine Select
 export const DATE_PREFIXES = [
   { value: 'eq', label: 'eq · equals' },
   { value: 'ne', label: 'ne · not equal' },

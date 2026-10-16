@@ -10,6 +10,7 @@ export {
 } from './fhirApi';
 export {
   fhirSearchUrl,
+  nextPageOf,
   type FhirSearchParams,
   type FhirSearchArgs,
   type FhirReadArgs,

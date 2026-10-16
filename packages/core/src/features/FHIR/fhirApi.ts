@@ -1,10 +1,11 @@
 import { gen3Api } from '../gen3';
 import { GEN3_FHIR_API } from '../../constants';
 import { parseCapability } from './capability';
-import type { Bundle, FhirResource, ResourceDef } from './types';
+import type { FhirResource, FhirSearchResponse, ResourceDef } from './types';
 import {
   FHIR_HEADERS,
   fhirSearchUrl,
+  toSearchResponse,
   type FhirReadArgs,
   type FhirSearchArgs,
 } from './utils';
@@ -20,12 +21,16 @@ export const fhirApi = gen3Api.injectEndpoints({
         headers: FHIR_HEADERS,
       }),
       transformResponse: parseCapability,
+      // It rarely changes and it's a big download, so keep it an hour after
+      // the page stops using it.
+      keepUnusedDataFor: 3600,
     }),
-    searchFhirResource: builder.query<Bundle, FhirSearchArgs>({
-      query: ({ resource, params }) => ({
-        url: fhirSearchUrl(resource, params),
+    searchFhirResource: builder.query<FhirSearchResponse, FhirSearchArgs>({
+      query: ({ resource, params, page }) => ({
+        url: fhirSearchUrl(resource, params, page),
         headers: FHIR_HEADERS,
       }),
+      transformResponse: toSearchResponse,
     }),
     readFhirResource: builder.query<FhirResource, FhirReadArgs>({
       query: ({ resource, id }) => ({

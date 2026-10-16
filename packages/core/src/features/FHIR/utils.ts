@@ -1,10 +1,15 @@
+import type { FetchBaseQueryMeta } from '@reduxjs/toolkit/query';
 import { GEN3_FHIR_API } from '../../constants';
+import type { Bundle, FhirSearchResponse } from './types';
 
 export type FhirSearchParams = Record<string, string | string[]>;
 
 export interface FhirSearchArgs {
   resource: string;
   params?: FhirSearchParams;
+  // A later page: the query string of the server's `next` link. It already
+  // carries the params, and is sent exactly as given.
+  page?: string;
 }
 
 export interface FhirReadArgs {
@@ -32,10 +37,32 @@ export const serializeFhirParams = (params: FhirSearchParams): string =>
 export const fhirSearchUrl = (
   resource: string,
   params?: FhirSearchParams,
+  page?: string,
 ): string => {
+  const path = `${GEN3_FHIR_API}/${encodeURIComponent(resource)}`;
+  if (page) return `${path}${page}`;
   const qs = params ? serializeFhirParams(params) : '';
-  return `${GEN3_FHIR_API}/${encodeURIComponent(resource)}${qs ? `?${qs}` : ''}`;
+  return `${path}${qs ? `?${qs}` : ''}`;
 };
 
-// gen3Api doesn't set Accept, so a per-request one sticks
+// The next link's query string, untouched: re-encoding would break _page_token,
+// and the link's own host and trailing slash don't work from here
+export const nextPageOf = (bundle: Bundle): string | undefined => {
+  const next = bundle.link?.find((link) => link.relation === 'next');
+  if (!next) return undefined;
+  try {
+    // The base only matters if a link is relative
+    return new URL(next.url, 'http://localhost').search || undefined;
+  } catch {
+    // A malformed link means no next page
+    return undefined;
+  }
+};
+
+// gen3Api never sets Accept, so this one isn't overwritten
 export const FHIR_HEADERS = { Accept: 'application/fhir+json' };
+
+export const toSearchResponse = (
+  bundle: Bundle,
+  meta?: FetchBaseQueryMeta,
+): FhirSearchResponse => ({ bundle, status: meta?.response?.status });

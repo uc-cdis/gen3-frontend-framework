@@ -43,3 +43,10 @@ export interface Bundle {
   link?: BundleLink[];
   entry?: BundleEntry[];
 }
+
+// RTK keeps no HTTP status for a successful request, so the search endpoint
+// returns it next to the bundle
+export interface FhirSearchResponse {
+  bundle: Bundle;
+  status?: number;
+}

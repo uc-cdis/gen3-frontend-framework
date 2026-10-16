@@ -4,9 +4,10 @@ import { fhirSearchUrl, useGetFhirCapabilityQuery } from '@gen3/core';
 import QueryParams from './QueryParams';
 import RequestBar from './RequestBar';
 import ResourceTabs from './ResourceTabs';
+import Results from './Results';
 import ServerStatus from './ServerStatus';
 import { RESOURCE_TABS } from './constants';
-import { useOrigin } from './hooks';
+import { useFhirSearch, useOrigin } from './hooks';
 import { paramsFor, rowsToParams, type ParamRow } from './params';
 import { readableUrl, toAbsoluteUrl } from './utils';
 
@@ -25,17 +26,29 @@ const FhirQuery = (): ReactElement => {
 
   const rows = rowsByTab[resource] ?? [];
   const params = paramsFor(capability, resource);
+  const { result, send, next, back, retry } = useFhirSearch(resource);
 
-  // Manually defined resources not supported, if any. This is just for protection.
+  // Tabs the server doesn't list. None today; this is a safeguard.
   const unsupported = capability
     ? RESOURCE_TABS.filter((type) => !capability.some((r) => r.type === type))
     : [];
-  // Readable in the UI. The real request is still fully encoded.
-  const url = readableUrl(
-    toAbsoluteUrl(fhirSearchUrl(resource, rowsToParams(rows)), origin),
-  );
 
-  // Update the resource's rows based on the update function
+  // What Send would send right now
+  const draft = rowsToParams(rows);
+  const draftUrl = fhirSearchUrl(resource, draft);
+
+  // Readable in the UI. The real request is still fully encoded.
+  const url = readableUrl(toAbsoluteUrl(draftUrl, origin));
+
+  const stale =
+    !!result &&
+    fhirSearchUrl(result.sent.resource, result.sent.params) !== draftUrl;
+
+  // Paging continues the sent search, so it waits for Send once params change
+  const unlessStale = (go?: () => Promise<void>) =>
+    go && !stale ? () => void go() : undefined;
+
+  // Runs a row recipe on this tab's latest rows
   const updateRows = (update: (rows: ParamRow[]) => ParamRow[]) =>
     setRowsByTab((prev) => ({
       ...prev,
@@ -48,7 +61,11 @@ const FhirQuery = (): ReactElement => {
         <Title order={2}>FHIR Query</Title>
         <ServerStatus />
       </div>
-      <RequestBar url={url} />
+      <RequestBar
+        url={url}
+        onSend={() => void send(draft)}
+        loading={result?.loading}
+      />
       <ResourceTabs
         value={resource}
         onChange={setResource}
@@ -62,6 +79,14 @@ const FhirQuery = (): ReactElement => {
         }
         rows={rows}
         onRowsChange={updateRows}
+      />
+      <Results
+        resource={resource}
+        result={result}
+        stale={stale}
+        onBack={unlessStale(back)}
+        onNext={unlessStale(next)}
+        onRetry={retry && (() => void retry())}
       />
     </div>
   );
