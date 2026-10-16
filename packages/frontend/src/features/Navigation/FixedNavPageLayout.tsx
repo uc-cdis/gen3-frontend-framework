@@ -1,10 +1,12 @@
-import React, { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
+import React from 'react';
 import Head from 'next/head';
 import { useResizeObserver } from '@mantine/hooks';
 import Footer from './Footer/Footer';
 import Header from './Header';
-import { NavPageLayoutProps } from './types';
+import type { NavPageLayoutProps } from './types';
 import LeftSidePanel from './Vertical/LeftSidePanel';
+import { AuthzMappingsGate } from '../../components/Providers/AuthzMappingsProvider';
 
 const FixedNavPageLayout = ({
   headerProps,
@@ -43,7 +45,9 @@ const FixedNavPageLayout = ({
             items={headerProps.navigation.items}
             classNames={headerProps.navigation.classNames}
           />
-          <main className={mainContentStyle}>{children}</main>
+          <main className={mainContentStyle}>
+            <AuthzMappingsGate>{children}</AuthzMappingsGate>
+          </main>
         </div>
       ) : (
         <main
@@ -52,7 +56,7 @@ const FixedNavPageLayout = ({
             height: `calc(100vh - ${headerRect?.height ?? 0}px - ${footerRect?.height ?? 0}px)`,
           }}
         >
-          {children}
+          <AuthzMappingsGate>{children}</AuthzMappingsGate>
         </main>
       )}
       {CustomFooterComponent ? (

@@ -1,11 +1,7 @@
-import { JSONObject } from '@gen3/core';
-import {
-  AdvancedSearchTerms,
-  DiscoveryIndexConfig,
-  SearchKV,
-} from '../types/discoveryApi';
+import type { JSONObject } from '@gen3/core/server';
+import type { AdvancedSearchTerms } from '../../Search/types';
+import type { DiscoveryIndexConfig, SearchKV } from '../../types';
 
-// NOTE: DUPLICATED FROM packages/frontend/src/features/Discovery/DataLoaders/MDSAllLocal/filterByAdvSearch.ts
 /**
  *
  * @param studies
@@ -58,7 +54,7 @@ const filterByAdvSearch = (
 
         const studyFilters = study[config.features.advSearchFilters.field];
         const isSearchKV = (obj: any): obj is SearchKV => {
-          return obj && obj.key && obj.value;
+          return obj?.key && obj.value;
         };
         const isSearchKVArray = (obj: any): obj is SearchKV[] => {
           return obj && Array.isArray(obj) && obj.every(isSearchKV);
@@ -67,7 +63,7 @@ const filterByAdvSearch = (
           return false;
         }
 
-        if (!studyFilters || !studyFilters.length) {
+        if (!studyFilters?.length) {
           return false;
         }
 
@@ -94,7 +90,7 @@ const filterByAdvSearch = (
 
       const studyFilters = study[config.features.advSearchFilters?.field];
       const isSearchKV = (obj: any): obj is SearchKV => {
-        return obj && obj.key && obj.value;
+        return obj?.key && obj.value;
       };
       const isSearchKVArray = (obj: any): obj is SearchKV[] => {
         return obj && Array.isArray(obj) && obj.every(isSearchKV);
@@ -103,7 +99,7 @@ const filterByAdvSearch = (
         return false;
       }
 
-      if (!studyFilters || !studyFilters.length) {
+      if (!studyFilters?.length) {
         return false;
       }
 

@@ -11,16 +11,9 @@ WORKDIR /gen3
 # Copy root manifests first to maximize npm install cache hits
 COPY package.json package-lock.json lerna.json ./
 
-# Install ALL dependencies once (including dev deps for build)
-RUN npm config set fetch-retries 5 && \
-    npm config set fetch-retry-mintimeout 20000 && \
-    npm config set fetch-retry-maxtimeout 120000 && \
-    npm ci && \
-    npm cache clean --force
-
 # Python, bash, and curl for the JupyterLite build.
 # No real micromamba binary needed — see stub below.
-RUN apk add --no-cache python3 py3-pip bash curl bzip2 uv git coreutils
+RUN --mount=type=cache apk add --no-cache python3 py3-pip bash curl bzip2 uv git coreutils
 
 # Stub that satisfies prepare_wasm.js without the glibc-linked micromamba binary.
 COPY docker/micromamba-stub.py /usr/local/bin/micromamba
@@ -38,6 +31,9 @@ COPY packages/workspaces/package.json  packages/workspaces/
 # lerna is in devDependencies so no global install is needed.
 # Cache mount avoids re-downloading packages on repeated builds.
 RUN --mount=type=cache,target=/root/.npm \
+    npm config set fetch-retries 5 && \
+    npm config set fetch-retry-mintimeout 20000 && \
+    npm config set fetch-retry-maxtimeout 120000 && \
     npm ci --include=optional
 
 # Copy source after install so the install layer stays cached on source-only changes
@@ -70,7 +66,8 @@ RUN npm run build:jupyterlite
 RUN NODE_OPTIONS="--max-old-space-size=4096" \
     ./node_modules/.bin/lerna run build \
     --scope=@gen3/samplecommons \
-    --include-dependencies
+    --include-dependencies && \
+    npm prune --omit=dev;
 
 # ─────────────────────────────────────────────
 # Production stage

@@ -12,6 +12,9 @@ import DiscoveryConfigProvider, {
 import { type DiscoveryConfig } from './types';
 import { registerDefaultDiscoveryDataLoaders } from './DataLoaders/registeredDataLoaders';
 
+export * from './DataLoaders/preProcessData';
+export * from './DataLoaders/processData';
+
 export {
   type CellRenderFunctionProps,
   type DiscoveryConfig,

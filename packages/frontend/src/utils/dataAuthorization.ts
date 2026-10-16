@@ -1,6 +1,6 @@
 export interface AuthorizationValues {
   enabled: boolean;
-  menuText: string;
+  label?: string;
 }
 
 export interface DataAuthorization {

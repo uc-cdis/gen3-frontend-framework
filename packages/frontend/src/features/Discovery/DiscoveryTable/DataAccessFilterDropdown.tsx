@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Button,
   Checkbox,
@@ -8,30 +8,79 @@ import {
   Text,
   UnstyledButton,
 } from '@mantine/core';
-import {
-  MdOutlineLock as RequestAccessIcon,
-  MdOutlineLockOpen as AvailableIcon,
-  MdOutlineWatchLater as WaitingIcon,
-} from 'react-icons/md';
-import { AiOutlineDash as NotAvailableIcon } from 'react-icons/ai';
 import { LuFilter as FilterIcon } from 'react-icons/lu';
 import { useDiscoveryContext } from '../DiscoveryProvider';
 import { AccessLevel } from '../../../utils';
+import { Icon } from '@iconify-icon/react';
 
 const DataAccessFilterDropdown = () => {
   const [opened, setOpened] = useState(false);
-  const { selectedAccessLevels, setSelectedAccessLevels } =
-    useDiscoveryContext();
+  const {
+    selectedAccessLevels,
+    setSelectedAccessLevels,
+    enabledAccessLevels,
+    discoveryConfig,
+  } = useDiscoveryContext();
+
+  const enabledAccessLevelsConfig = useMemo(
+    () => discoveryConfig.features?.authorization?.supportedValues ?? {},
+    [discoveryConfig.features?.authorization?.supportedValues],
+  );
+
+  const accessLevelItems = useMemo(
+    () => [
+      {
+        level: AccessLevel.WAITING,
+        label: enabledAccessLevelsConfig?.['waiting']?.label ?? 'Waiting',
+        icon: <Icon icon="gen3:clock" width="1.5rem" height="1.5rem" />,
+      },
+      {
+        level: AccessLevel.ACCESSIBLE,
+        label: enabledAccessLevelsConfig?.['accessible']?.label ?? 'Available',
+        icon: <Icon icon="gen3:lock-open" width="1.5rem" height="1.5rem" />,
+      },
+      {
+        level: AccessLevel.UNACCESSIBLE,
+        label:
+          enabledAccessLevelsConfig?.['unaccessible']?.label ??
+          'Not Accessible',
+        icon: <Icon icon="gen3:lock-outline" width="1.5rem" height="1.5rem" />,
+      },
+      {
+        level: AccessLevel.NOT_AVAILABLE,
+        label:
+          enabledAccessLevelsConfig?.['unaccessible']?.label ?? 'Not Available',
+        icon: <Icon icon="gen3:dash-outlined" width="1.5rem" height="1.5rem" />,
+      },
+      {
+        level: AccessLevel.OTHER,
+        label: enabledAccessLevelsConfig?.['other']?.label ?? 'Other',
+        icon: <Icon icon="gen3:dash-outlined" width="1.5rem" height="1.5rem" />,
+      },
+      {
+        level: AccessLevel.MIXED,
+        label: enabledAccessLevelsConfig?.['mixed']?.label ?? 'Mixed',
+        icon: (
+          <span>
+            <Icon icon="gen3:lock-outline" width="1.5rem" height="1.5rem" />{' '}
+            <Icon icon="gen3:lock-open" width="1.5rem" height="1.5rem" />
+          </span>
+        ),
+      },
+    ],
+    [enabledAccessLevelsConfig],
+  );
+
   // User selections before they click OK
   const [draftAccessLevels, setDraftAccessLevels] =
     useState<AccessLevel[]>(selectedAccessLevels);
 
-  // Sync draft with global state whenever the popover opens
-  useEffect(() => {
-    if (opened) {
+  const handleOpenChange = (isOpen: boolean) => {
+    if (isOpen) {
       setDraftAccessLevels(selectedAccessLevels);
     }
-  }, [opened, selectedAccessLevels]);
+    setOpened(isOpen);
+  };
 
   const handleCheckboxToggle = (level: AccessLevel) => {
     setDraftAccessLevels((current) =>
@@ -48,104 +97,83 @@ const DataAccessFilterDropdown = () => {
 
   const handleReset = () => {
     setDraftAccessLevels([]);
-    setSelectedAccessLevels([]);
+    setSelectedAccessLevels([...enabledAccessLevels]);
     setOpened(false);
   };
 
-  const items = [
-    {
-      level: AccessLevel.WAITING,
-      label: 'Waiting',
-      icon: <WaitingIcon className="text-xl" />,
-    },
-    {
-      level: AccessLevel.ACCESSIBLE,
-      label: 'Available',
-      icon: <AvailableIcon className="text-xl" />,
-    },
-    {
-      level: AccessLevel.UNACCESSIBLE,
-      label: 'Request Access',
-      icon: <RequestAccessIcon className="text-xl" />,
-    },
-    {
-      level: AccessLevel.NOT_AVAILABLE,
-      label: 'Not Available',
-      icon: <NotAvailableIcon className="text-xl" />,
-    },
-  ];
-
   return (
-    // oxlint-disable-next-line jsx-a11y/click-events-have-key-events jsx-a11y/no-static-element-interactions
-    <div onClick={(e) => e.stopPropagation()}>
-      <Popover
-        opened={opened}
-        onChange={setOpened}
-        width={250}
-        position="bottom"
-        withArrow
-        shadow="md"
-        // Limit user to popover until they click OK
-        closeOnClickOutside={false}
-        closeOnEscape={false}
-        trapFocus={true}
-      >
-        <Popover.Target>
-          <UnstyledButton
-            className="pt-0.5 px-3 ml-1 hover:bg-gray-300/50 rounded transition-colors"
-            onClick={() => setOpened((o) => !o)}
-          >
-            <span className="sr-only">Filter</span>
-            <FilterIcon size={18} />
-          </UnstyledButton>
-        </Popover.Target>
+    <Popover
+      opened={opened}
+      onChange={handleOpenChange}
+      width={250}
+      position="bottom"
+      withArrow
+      shadow="md"
+    >
+      <Popover.Target>
+        <UnstyledButton
+          className="pt-0.5 px-3 ml-1 hover:bg-gray-300/50 rounded transition-colors"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleOpenChange(!opened);
+          }}
+          aria-label="Filter by data access"
+        >
+          <FilterIcon
+            size={18}
+            color={
+              selectedAccessLevels.length === enabledAccessLevels.size
+                ? 'var(--mantine-base-contrast-5)'
+                : 'var(--mantine-color-accent-5)'
+            }
+          />
+        </UnstyledButton>
+      </Popover.Target>
 
-        <Popover.Dropdown className="p-0">
-          <Stack gap={0} className="py-2">
-            {items.map((item) => (
-              // oxlint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-              <label
+      {/* The dropdown is portaled, but React events still bubble to the sortable header cell */}
+      <Popover.Dropdown
+        className="p-0"
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => {
+          if (e.key !== 'Escape') e.stopPropagation();
+        }}
+      >
+        <Stack gap={0} className="py-2">
+          {accessLevelItems
+            .filter((item) => enabledAccessLevels.has(item.level))
+            .map((item) => (
+              <Checkbox
                 key={item.level}
-                className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 cursor-pointer"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleCheckboxToggle(item.level);
+                checked={draftAccessLevels.includes(item.level)}
+                onChange={() => handleCheckboxToggle(item.level)}
+                radius="xs"
+                label={
+                  <span className="flex items-center gap-3">
+                    {item.icon}
+                    <Text size="sm">{item.label}</Text>
+                  </span>
+                }
+                classNames={{
+                  root: 'px-4 py-2 hover:bg-gray-50 cursor-pointer',
+                  body: 'items-center',
+                  labelWrapper: 'grow cursor-pointer',
+                  label: 'cursor-pointer pl-0',
                 }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleCheckboxToggle(item.level);
-                  }
-                }}
-              >
-                <Checkbox
-                  checked={draftAccessLevels.includes(item.level)}
-                  readOnly
-                  radius="xs"
-                  className="pointer-events-none"
-                />
-                <span className="text-gray-600">{item.icon}</span>
-                <Text size="sm">{item.label}</Text>
-              </label>
+              />
             ))}
-          </Stack>
-          <div className="border-t border-gray-100 p-3">
-            <Group grow gap="sm">
-              <Button
-                variant="outline"
-                size="xs"
-                className="border-blue-600 text-blue-600"
-                onClick={handleApply}
-              >
-                OK
-              </Button>
-              <Button size="xs" onClick={handleReset}>
-                Reset
-              </Button>
-            </Group>
-          </div>
-        </Popover.Dropdown>
-      </Popover>
-    </div>
+        </Stack>
+        <div className="border-t border-gray-100 p-3">
+          <Group grow gap="sm">
+            <Button variant="outline" size="xs" onClick={handleReset}>
+              Reset
+            </Button>
+            <Button variant="filled" size="xs" onClick={handleApply}>
+              OK
+            </Button>
+          </Group>
+        </div>
+      </Popover.Dropdown>
+    </Popover>
   );
 };
 

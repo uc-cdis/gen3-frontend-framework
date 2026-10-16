@@ -140,7 +140,9 @@ const DefaultGen3StudyDetailsFieldsRenderers: Record<
   accessDescriptor: { default: AccessDescriptor },
   tags: { default: RenderDetailTags },
   number: { default: LabeledNumberField },
-  paragraphs: { default: LabeledParagraph },
+  paragraphs: {
+    default: LabeledParagraph,
+  },
 };
 
 StudyFieldRendererFactory.registerFieldRendererCatalog(

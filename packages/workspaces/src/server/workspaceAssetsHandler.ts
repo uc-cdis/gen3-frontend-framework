@@ -23,7 +23,11 @@ import fs from 'fs';
 import http from 'http';
 import https from 'https';
 import { getCookie } from 'cookies-next';
-import { decodeJwtClaims, extractTokenFallback } from './utils';
+import {
+  decodeJwtClaims,
+  extractTokenFallback,
+  verifyJwtClaims,
+} from './utils';
 
 const MAX_FILE_SIZE_BYTES = 67108864; // 64 * 1024 * 1024
 
@@ -97,9 +101,37 @@ export interface WorkspaceAssetsHandlerOptions {
    * `{serverExtensionProxyBaseUrl}{serverExtensionProxyPath}/{rest}`
    * instead of `{requestOrigin}{serverExtensionProxyPath}/{rest}`.
    *
-   * Omitted → origin is resolved from the incoming request headers (default behaviour).
+   * Omitted → origin is resolved from the incoming request headers (default behavior).
    */
   serverExtensionProxyBaseUrl?: string;
+  /**
+   * Hosts the extension proxy may target when `serverExtensionProxyBaseUrl` is
+   * not set and the origin is therefore derived from the request's
+   * `Host` / `X-Forwarded-Host` headers. Entries match either the full
+   * `host:port` or just the hostname (case-insensitive). Defaults to loopback
+   * only; requests resolving to any other host get a 403. Ignored when
+   * `serverExtensionProxyBaseUrl` is set.
+   */
+  allowedHosts?: string[];
+  /**
+   * JWKS endpoint (e.g. Fence's `/.well-known/jwks`) used to verify the
+   * caller's JWT signature before its claims are used for the identity headers
+   * (`REMOTE_USER`, `X-Gen3-User-ID`). When set, a token that fails
+   * verification gets a 401. When omitted, claims are decoded WITHOUT
+   * verification and trust upstream (Ambassador/revproxy) to have verified them
+   * — only safe if the proxy is never reached directly.
+   */
+  jwksUrl?: string;
+  /**
+   * Extra request headers (lower-case names) forwarded to the extension proxy
+   * on top of `DEFAULT_FORWARDED_HEADERS`. All other headers are dropped.
+   */
+  forwardedHeaders?: string[];
+  /**
+   * Cookie names forwarded to the extension proxy (default: `_xsrf`). The
+   * rest of the `Cookie` header, including `access_token`, is dropped.
+   */
+  forwardedCookies?: string[];
 }
 
 // ---------- constants ----------
@@ -197,8 +229,52 @@ function replaceTitle(html: string, branding: BrandingConfig): string {
   );
 }
 
+/** Serialize JSON for embedding in an inline <script>, neutralising `</script>` breakouts. */
+function safeScriptJson(value: unknown): string {
+  return JSON.stringify(value)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
+}
+
+const SAFE_HOST_RE =
+  /^(?:[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?|\[[0-9A-Fa-f:.]+\])(?::\d{1,5})?$/;
+const DEFAULT_HOST = 'localhost:8890';
+// Headers the extension proxy forwards upstream. Everything else (notably
+// Cookie, Authorization and X-Forwarded-*) is dropped; identity headers are
+// injected explicitly from the verified JWT.
+const DEFAULT_FORWARDED_HEADERS = new Set([
+  'accept',
+  'accept-encoding',
+  'accept-language',
+  'cache-control',
+  'content-type',
+  'if-modified-since',
+  'if-none-match',
+  'origin',
+  'pragma',
+  'referer',
+  'user-agent',
+  'x-xsrftoken',
+]);
+const DEFAULT_FORWARDED_COOKIES = ['_xsrf'];
+const DEFAULT_ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]'];
+
+function isAllowedHost(host: string, allowedHosts: string[]): boolean {
+  const lower = host.toLowerCase();
+  const hostname = lower.replace(/:\d+$/, '');
+  return allowedHosts.some((entry) => {
+    const allowed = entry.trim().toLowerCase();
+    return allowed === lower || allowed === hostname;
+  });
+}
+
 /**
  * Resolve the origin from forwarding headers, with referer fallback.
+ * Header values are validated (scheme allowlist, hostname[:port] syntax) so they
+ * cannot inject markup or URL components into generated HTML or proxy targets.
  * Handles proxies that drop non-standard ports from the Host header.
  */
 function resolveOrigin(req: NextApiRequest): { proto: string; host: string } {
@@ -237,7 +313,9 @@ function resolveOrigin(req: NextApiRequest): { proto: string; host: string } {
     resolvedHost = 'localhost:8890';
   }
 
-  return { proto: resolvedProto, host: resolvedHost };
+  const proto = resolvedProto === 'https' ? 'https' : 'http';
+  const host = SAFE_HOST_RE.test(resolvedHost) ? resolvedHost : DEFAULT_HOST;
+  return { proto, host };
 }
 
 interface RemoteInjectionConfig {
@@ -311,7 +389,7 @@ function injectRemoteConfig(
         ]);
         merged.disabledExtensions = [...combined];
       }
-      return `${openTag}${JSON.stringify(merged)}${closeTag}`;
+      return `${openTag}${safeScriptJson(merged)}${closeTag}`;
     },
   );
 
@@ -335,7 +413,7 @@ function injectBranding(html: string, branding: BrandingConfig): string {
       }
       if (branding.appName) existing.appName = branding.appName;
       if (branding.faviconUrl) existing.faviconUrl = branding.faviconUrl;
-      return `${openTag}${JSON.stringify(existing)}${closeTag}`;
+      return `${openTag}${safeScriptJson(existing)}${closeTag}`;
     },
   );
 
@@ -353,30 +431,51 @@ function readBody(req: NextApiRequest): Promise<Buffer> {
   });
 }
 
+interface ProxyOptions {
+  getToken?: (req: NextApiRequest) => string | null;
+  jwksUrl?: string;
+  forwardedHeaders: Set<string>;
+  forwardedCookies: string[];
+}
+
+/** Keep only the named cookies from a Cookie header value. */
+function filterCookies(header: string, names: string[]): string {
+  return header
+    .split(';')
+    .map((part) => part.trim())
+    .filter((part) => names.includes(part.split('=')[0]))
+    .join('; ');
+}
+
 async function proxyServerExtension(
   req: NextApiRequest,
   res: NextApiResponse,
   targetUrl: string,
-  getToken?: (req: NextApiRequest) => string | null,
+  proxyOptions: ProxyOptions,
 ): Promise<void> {
+  const { getToken, jwksUrl, forwardedHeaders, forwardedCookies } =
+    proxyOptions;
   const forwardHeaders: Record<string, string> = {};
 
   for (const [key, value] of Object.entries(req.headers)) {
     if (!value) continue;
     const lower = key.toLowerCase();
-    if (
-      lower === 'host' ||
-      lower === 'content-length' ||
-      lower === 'transfer-encoding'
-    )
+    if (lower === 'cookie') {
+      const kept = filterCookies(
+        Array.isArray(value) ? value.join('; ') : value,
+        forwardedCookies,
+      );
+      if (kept) forwardHeaders[key] = kept;
       continue;
+    }
+    if (!forwardedHeaders.has(lower)) continue;
     forwardHeaders[key] = Array.isArray(value) ? value.join(',') : value;
   }
 
   // Inject identity headers so workspace-proxy auth passes.
   // Direct server-side calls bypass nginx (which normally injects X-Gen3-User-ID /
   // REMOTE_USER from the validated access_token), so we must add them explicitly.
-  // SECURITY: decodeJwtClaims below does not verify the JWT signature — it relies on
+  // SECURITY: unless jwksUrl is configured, decodeJwtClaims below does not verify the JWT signature — it relies on
   // Ambassador/revproxy having already done so before this code path is reached. When
   // serverExtensionProxyBaseUrl (WORKSPACE_PROXY_URL) targets workspace-proxy directly,
   // that verification is skipped entirely, so a caller could supply a correctly-shaped
@@ -406,7 +505,16 @@ async function proxyServerExtension(
   );
 
   if (jwt) {
-    const claims = decodeJwtClaims(jwt);
+    let claims: Record<string, unknown> | null;
+    if (jwksUrl) {
+      claims = await verifyJwtClaims(jwt, jwksUrl);
+      if (!claims) {
+        res.status(401).end('Invalid token');
+        return;
+      }
+    } else {
+      claims = decodeJwtClaims(jwt);
+    }
     // Gen3 nginx extracts the username from context.user.name (not sub, which is
     // a numeric ID). Check context.user.name first so REMOTE_USER matches what
     // workspace-proxy expects for per-user container routing.
@@ -574,6 +682,16 @@ export function createWorkspaceAssetsHandler(
 
   const serverExtensionProxyPath = options?.serverExtensionProxyPath;
   const serverExtensionProxyBaseUrl = options?.serverExtensionProxyBaseUrl;
+  const allowedHosts = options?.allowedHosts ?? DEFAULT_ALLOWED_HOSTS;
+  const proxyOptions: ProxyOptions = {
+    getToken: options?.getToken,
+    jwksUrl: options?.jwksUrl,
+    forwardedHeaders: new Set([
+      ...DEFAULT_FORWARDED_HEADERS,
+      ...(options?.forwardedHeaders ?? []).map((h) => h.toLowerCase()),
+    ]),
+    forwardedCookies: options?.forwardedCookies ?? DEFAULT_FORWARDED_COOKIES,
+  };
   const getToken = options?.getToken;
 
   const remoteInjectionConfig: RemoteInjectionConfig = {
@@ -662,14 +780,20 @@ export function createWorkspaceAssetsHandler(
       const extensionPath = safeSegments.join('/');
       const rawQuery = req.url?.split('?')[1];
       const qs = rawQuery ? `?${rawQuery}` : '';
-      const proxyBase =
-        serverExtensionProxyBaseUrl ??
-        (() => {
-          const { proto, host } = resolveOrigin(req);
-          return `${proto}://${host}`;
-        })();
+      let proxyBase = serverExtensionProxyBaseUrl;
+      if (!proxyBase) {
+        const { proto, host } = resolveOrigin(req);
+        if (!isAllowedHost(host, allowedHosts)) {
+          console.warn(
+            `[workspace-assets] refusing to proxy to non-allowlisted host "${host}"; set serverExtensionProxyBaseUrl or allowedHosts.`,
+          );
+          res.status(403).end('Forbidden');
+          return;
+        }
+        proxyBase = `${proto}://${host}`;
+      }
       const targetUrl = `${proxyBase}${serverExtensionProxyPath}/${extensionPath}${qs}`;
-      return proxyServerExtension(req, res, targetUrl, getToken);
+      return proxyServerExtension(req, res, targetUrl, proxyOptions);
     }
 
     const allowedFiles = allowedFilesByTier[tier];
@@ -686,6 +810,14 @@ export function createWorkspaceAssetsHandler(
       filePath = candidateIndex;
     } else {
       res.status(404).end('Not found');
+      return;
+    }
+
+    // Defense in depth: the allowlist above already restricts filePath to files
+    // enumerated under the tier root, but assert containment explicitly.
+    filePath = nodePath.resolve(filePath);
+    if (!filePath.startsWith(tierRoot + nodePath.sep)) {
+      res.status(403).end('Forbidden');
       return;
     }
 

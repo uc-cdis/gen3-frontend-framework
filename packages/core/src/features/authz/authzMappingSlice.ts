@@ -1,11 +1,11 @@
 import { gen3Api } from '../gen3';
 import { createSelector } from '@reduxjs/toolkit';
-import {
-  type AuthzMapping,
+import type {
   AuthzResourceResponse,
   CreateAuthzResourceRequest,
   CreateAuthzResourceResponse,
 } from './types';
+import { type AuthzMapping } from './types';
 import { GEN3_AUTHZ_API } from '../../constants';
 
 const TAGS = 'authz';

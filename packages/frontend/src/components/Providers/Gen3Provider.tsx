@@ -13,6 +13,7 @@ import type { SessionConfiguration } from '../../lib/session/types';
 import { gen3Modals, Gen3ModalsProvider, type ModalsConfig } from '../Modals';
 import type { AuthorizedRoutesConfig } from '../../lib/authz/type';
 import ProtectedRoutesProvider from '../AuthorizedRoutes/ProtectedRoutesProvider';
+import AuthzMappingsProvider from './AuthzMappingsProvider';
 import { SowerProvider } from '../../features/Sower/SowerContext';
 import type { SowerConfiguration } from '../../features/Sower/types';
 import { CookiesProvider } from 'react-cookie';
@@ -49,7 +50,7 @@ export const createCSSVariables = (colors: Record<string, string>) => {
   });
 };
 
-// Define theme for mantine v7
+// Define theme for mantine v9
 export const createMantineTheme = (
   fonts: Fonts,
   colors: Record<string, TenStringArray>,
@@ -148,7 +149,7 @@ export const createMantineTheme = (
 
 /**
  * Gen3Provider wraps around the entire app and provides general configurations
- * for the whole website like color scheme, icons, fonts, and sessionConfigs like
+ * for the whole website like a color scheme, icons, fonts, and sessionConfigs like
  * inactivity limits for session timeouts.
  */
 const Gen3Provider = ({
@@ -171,32 +172,34 @@ const Gen3Provider = ({
         <ModalsProvider modals={{ ...contextModals, ...gen3Modals }}>
           <Notifications position={defaultNotificationPosition} />
           <SessionProvider {...sessionConfig}>
-            <SowerProvider config={sowerConfig}>
-              <ProtectedRoutesProvider
-                config={
-                  protectedRoutesConfig ?? {
-                    routes: {
-                      '/DataLibrary': {
-                        loginRequired: true,
+            <AuthzMappingsProvider enableWTS={sessionConfig.enableWTS}>
+              <SowerProvider config={sowerConfig}>
+                <ProtectedRoutesProvider
+                  config={
+                    protectedRoutesConfig ?? {
+                      routes: {
+                        '/DataLibrary': {
+                          loginRequired: true,
+                        },
+                        '/Workspace': {
+                          loginRequired: true,
+                        },
+                        '/Profile': {
+                          loginRequired: true,
+                        },
+                        '*': {
+                          loginRequired: false,
+                        },
                       },
-                      '/Workspace': {
-                        loginRequired: true,
-                      },
-                      '/Profile': {
-                        loginRequired: true,
-                      },
-                      '*': {
-                        loginRequired: false,
-                      },
-                    },
+                    }
                   }
-                }
-              >
-                <Gen3ModalsProvider config={modalsConfig}>
-                  {children}
-                </Gen3ModalsProvider>
-              </ProtectedRoutesProvider>
-            </SowerProvider>
+                >
+                  <Gen3ModalsProvider config={modalsConfig}>
+                    {children}
+                  </Gen3ModalsProvider>
+                </ProtectedRoutesProvider>
+              </SowerProvider>
+            </AuthzMappingsProvider>
           </SessionProvider>
         </ModalsProvider>
       </CookiesProvider>

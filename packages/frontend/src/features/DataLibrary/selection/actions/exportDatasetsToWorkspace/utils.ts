@@ -1,17 +1,6 @@
-import { cloneDeep, get, unset } from 'lodash';
+import { cloneDeep } from 'lodash';
+import { removeKeys } from '../../../../../utils/removeKey';
 
-export const removeKeys = (obj: object, keysToRemove: Array<string>) => {
-  keysToRemove.forEach((key) => {
-    if (key.includes('.')) {
-      const [firstKey, ...nestedKeys] = key.split('.');
-      const nestedObj = get(obj, firstKey);
-      unset(nestedObj, nestedKeys.join('.'));
-    } else {
-      unset(obj, key);
-    }
-  });
-  return obj;
-};
 /**
  * Processes and assembles metadata by cloning objects, removing specified keys, and optionally accessing a defined metadata root.
  *

@@ -1,6 +1,6 @@
-import type { JSX} from 'react';
+import type { JSX } from 'react';
 import React, { useEffect, useState } from 'react';
-import type { requestAccessFormProps } from '../../features/Workspace/types';
+import type { RequestAccessFormProps } from '../../features/Workspace/types';
 import TextContent from '../../components/Content/TextContent';
 import type {
   FormOnSubmitReturnProps,
@@ -8,7 +8,7 @@ import type {
 } from '../../components/Content/Form';
 import Form from '../../components/Content/Form';
 import Image from 'next/image';
-import { Button, Loader, Title, Text } from '@mantine/core';
+import { Button, Loader, Text, Title } from '@mantine/core';
 import {
   type CoreState,
   getRemoteSupportServiceRegistry,
@@ -22,9 +22,13 @@ import {
 import { useRouter } from 'next/router';
 import { withBasePath } from '../../utils/strings';
 
-const WorkspaceRequestForm = ({requestAccessForm}: {requestAccessForm: requestAccessFormProps}) => {
+const WorkspaceRequestForm = ({
+  requestAccessForm,
+}: {
+  requestAccessForm: RequestAccessFormProps;
+}) => {
   const { basePath } = useRouter();
-    // check requester to see if user has already submitted workspace request for access
+  // check requester to see if user has already submitted workspace request for access
   const { data, isLoading, isError } = useUserRequestQuery({
     policy_ids: ['workspace_accessor'],
   });
@@ -121,7 +125,10 @@ const WorkspaceRequestForm = ({requestAccessForm}: {requestAccessForm: requestAc
         {requestAccessForm.success?.topIcon && (
           <div className="bg-white rounded-lg inline-block p-3">
             <Image
-              src={withBasePath(basePath, requestAccessForm.success.topIcon.src)}
+              src={withBasePath(
+                basePath,
+                requestAccessForm.success.topIcon.src,
+              )}
               alt={requestAccessForm.success.topIcon.alt}
               width={36}
               height={36}
@@ -144,10 +151,9 @@ const WorkspaceRequestForm = ({requestAccessForm}: {requestAccessForm: requestAc
         )}
       </div>
     );
-  }
+  };
 
   const workspaceRequestForm = () => {
-    
     const formContainer = (children: JSX.Element) => {
       return (
         <div className="mx-20 sm:mt-8 2xl:mt-10 w-full bg-base-max">
@@ -160,12 +166,17 @@ const WorkspaceRequestForm = ({requestAccessForm}: {requestAccessForm: requestAc
           {children}
         </div>
       );
-    }
+    };
     if (isLoading) {
       return formContainer(<Loader />);
     }
     if (!userInfo?.email) {
-      return formContainer(<Text c="red">Something went wrong, user must be logged in with email to access this form</Text>);
+      return formContainer(
+        <Text c="red">
+          Something went wrong, user must be logged in with email to access this
+          form
+        </Text>,
+      );
     }
     const autoFillValuesStatic = autoFillValues(requestAccessForm.form);
     return formContainer(
@@ -175,11 +186,11 @@ const WorkspaceRequestForm = ({requestAccessForm}: {requestAccessForm: requestAc
         submitButtonText={requestAccessForm.submitButtonText}
         errorMessage={formError}
         onSubmit={formOnSubmit}
-      />
+      />,
     );
   };
 
-  return formSuccess ? workspaceRequestSuccess(): workspaceRequestForm();
+  return formSuccess ? workspaceRequestSuccess() : workspaceRequestForm();
 };
 
 export default WorkspaceRequestForm;

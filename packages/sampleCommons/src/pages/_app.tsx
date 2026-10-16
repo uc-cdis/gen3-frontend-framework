@@ -1,6 +1,7 @@
 import whyDidYouRender from '@welldone-software/why-did-you-render';
 import type { AppContext, AppInitialProps, AppProps } from 'next/app';
 import App from 'next/app';
+import Head from 'next/head';
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { MantineProvider, mergeThemeOverrides } from '@mantine/core';
 
@@ -105,6 +106,10 @@ const Gen3App = ({
 
   return (
     <React.Fragment>
+      <Head>
+        {/* fallback title; pages override it via their layout's <Head> */}
+        <title>Gen3 Data Commons</title>
+      </Head>
       <Suspense fallback={<Loading />}>
         {/*publicConfig?.dataDogAppId != null &&
           publicConfig?.dataDogClientToken != null && (

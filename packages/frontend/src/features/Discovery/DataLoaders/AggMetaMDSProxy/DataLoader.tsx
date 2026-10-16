@@ -1,18 +1,18 @@
 import { useState } from 'react';
-import {
-  categoryObject,
+import type {
+  CategoryObject,
   DiscoverDataHookResponse,
   DiscoveryDataLoaderProps,
 } from '../../types';
 import { useDeepCompareEffect } from 'use-deep-compare';
-import { JSONObject } from '@gen3/core';
+import type { JSONObject } from '@gen3/core';
 import { processAdvancedSearchTerms, processAllSummaries } from '../utils';
 
 interface ProxyData {
   displayedData: JSONObject[];
   hits: number;
   suggestions: string[];
-  tagCategoryData: categoryObject[];
+  tagCategoryData: CategoryObject[];
 }
 
 export const useAggMetaMDSProxy = ({
