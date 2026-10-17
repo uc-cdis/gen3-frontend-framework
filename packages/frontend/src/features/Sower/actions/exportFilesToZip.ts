@@ -18,7 +18,7 @@ export const buildExportFilesToZipJob: JobBuilderAction = (params) => {
   // TODO: tighten the typing for this.
   const { zipFilename, fileMetadata } = params as unknown as BuildExportToFiles;
   return {
-    action: 'export-files',
+    action: 'batch-export',
     input: {
       zip_filename: zipFilename,
       file_metadata: fileMetadata,

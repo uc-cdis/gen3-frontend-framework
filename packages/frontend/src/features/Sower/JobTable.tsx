@@ -45,6 +45,12 @@ const STATUS_TO_COLOR: Record<string, ColorConfig> = {
     bg: 'bg-utility-success',
     border: 'border-utility-success',
   },
+  Unknown: {
+    mantine: 'utility.2',
+    text: 'var(--mantine-color-utility-contrast-2)',
+    bg: 'bg-utility-warning',
+    border: 'border-utility-warning',
+  },
 };
 
 const dateFormat = new Intl.DateTimeFormat('en-us', {
@@ -88,6 +94,7 @@ const JobTable = ({ data }: JobTableProps) => {
         accessorKey: 'status',
         header: 'Status',
         Cell: ({ row }: MRT_Cell<JobWithActions>) => {
+          console.log('row status', row.original.status);
           const color = STATUS_TO_COLOR[row.original.status];
           return (
             <Badge

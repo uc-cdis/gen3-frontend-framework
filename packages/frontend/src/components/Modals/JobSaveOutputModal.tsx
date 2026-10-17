@@ -1,14 +1,15 @@
 import type { ContextModalProps } from '@mantine/modals';
 import { Button, Text } from '@mantine/core';
-import React, { useEffect } from 'react';
-import { useLazyGetSowerOutputQuery } from '@gen3/core';
+import React, { useCallback } from 'react';
+import { isValidUrl } from '../../utils/isUrl';
 
 const DEFAULT_MESSAGE =
   "Your download has been prepared. If your download doesn't start automatically, please click this link";
 
 export interface JobFileSaveModelProps {
-  jobId: string;
+  output?: string;
   message?: string;
+  guid?: string;
 }
 
 export const JobSaveOutputModal = ({
@@ -16,22 +17,23 @@ export const JobSaveOutputModal = ({
   id,
   innerProps,
 }: ContextModalProps<JobFileSaveModelProps>) => {
-  const [getOutput, outputResponse] = useLazyGetSowerOutputQuery();
+  const { message = DEFAULT_MESSAGE, output } = innerProps;
 
-  useEffect(() => {
-    if (outputResponse.isSuccess && !outputResponse.isFetching) {
-      window.open(outputResponse.data.output, '_blank');
-    }
-  }, [outputResponse]);
+  const outputIsUrl = output !== undefined && isValidUrl(output);
+  // a non-URL output is a message to show the user
+  const currentMessage =
+    output !== undefined && !outputIsUrl ? output : message;
 
-  const { message = DEFAULT_MESSAGE, jobId } = innerProps;
+  // open the download link when it arrives
+  const handleDownloadFile = useCallback(() => {
+    if (output !== undefined && outputIsUrl)
+      window.open(output, '_blank', 'noopener,noreferrer');
+  }, [output, outputIsUrl]);
 
-  // state the download
-  void getOutput(jobId);
   return (
     <div className="flex flex-col items-center justify-center">
-      <Text size="md"> {message}</Text>
-      <Button onClick={() => getOutput(jobId)}>Download</Button>
+      <Text size="md"> {currentMessage}</Text>
+      <Button onClick={() => handleDownloadFile()}>Download</Button>
     </div>
   );
 };

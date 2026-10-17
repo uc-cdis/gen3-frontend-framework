@@ -4,9 +4,9 @@ import FileSaver from 'file-saver';
 import type { ExportActionButtonProps, ExportActionProps } from './types';
 import { notifications } from '@mantine/notifications';
 import { useIsAuthenticated } from '../../../lib/session/session';
-import { MANIFEST_FILENAME } from '../../../types/constants';
 import { combineManifests, getDisabledState } from './utils';
 import { Icon } from '@iconify-icon/react';
+import generateFilenameWithoutPrefix from '../../../utils/generateFilenameWithoutPrefix';
 
 const handleDownloadManifestClick = <
   T extends Record<string, any> = Record<string, any>,
@@ -14,7 +14,7 @@ const handleDownloadManifestClick = <
   exportDataFields,
   selectedResources,
 }: ExportActionProps<T>) => {
-  const { dataObjectField } = exportDataFields;
+  const { dataObjectField, datasetIdField } = exportDataFields;
   if (dataObjectField === undefined) {
     notifications.show({
       title: 'Error notification',
@@ -36,10 +36,16 @@ const handleDownloadManifestClick = <
     });
     return;
   }
+
+  const filename = generateFilenameWithoutPrefix(
+    'manifest',
+    selectedResources[0][datasetIdField],
+  );
+
   const blob = new Blob([JSON.stringify(manifest, null, 2)], {
     type: 'text/json',
   });
-  FileSaver.saveAs(blob, MANIFEST_FILENAME);
+  FileSaver.saveAs(blob, `${filename}.json`);
 };
 
 const DownloadManifestButton = ({

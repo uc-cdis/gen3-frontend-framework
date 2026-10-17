@@ -64,6 +64,7 @@ export interface CreateAndExportOutputConfig {
 export interface DispatchedJobWithOutputAction {
   dispatchJob: DispatchJobParameters;
   outputAction?: JobActionFunctionConfig; // output action is optional
+  errorAction?: JobActionFunctionConfig;
 }
 
 export enum SowerJobStage {

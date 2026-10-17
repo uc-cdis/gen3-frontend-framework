@@ -128,15 +128,18 @@ const useSowerFailureNotifications = () => {
       )
         continue;
       notifiedRef.current.add(job.uid);
-      notifications.show({
-        id: `sower-failed-${job.uid}`,
-        title: 'Job Failed',
-        message:
-          job.stage === SowerJobStage.SendJobOutput
-            ? `${job.name} finished, but its output could not be processed`
-            : `${job.name} failed`,
-        color: 'red',
-      });
+      if (job.actions.errorAction) {
+        console.log('useSowerFailureNotifications');
+      } else
+        notifications.show({
+          id: `sower-failed-${job.uid}`,
+          title: 'Job Failed',
+          message:
+            (job.outputGUID ?? job.stage === SowerJobStage.SendJobOutput)
+              ? `${job.name} finished, but its output could not be processed`
+              : `${job.name} failed`,
+          color: 'red',
+        });
     }
   }, [jobs]);
 };

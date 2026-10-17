@@ -63,7 +63,7 @@ const processTopBarItems = (
         <React.Fragment key={`${item.name}-topbar-item`}>
           {Custom ? (
             Custom
-          ) : (
+          ) : item?.modal && item.modal === 'jobModal' ? ( // TODO: refactor this to support customization
             <NavigationIndicator>
               <IconButton
                 name={item.name}
@@ -82,6 +82,23 @@ const processTopBarItems = (
                 }
               />
             </NavigationIndicator>
+          ) : (
+            <IconButton
+              name={item.name}
+              iconSize={item.iconSize}
+              leftIcon={item.leftIcon}
+              rightIcon={item.rightIcon}
+              classNames={mergedClassnames}
+              tooltip={item.tooltip}
+              clickHandler={() =>
+                item?.modal &&
+                modals.openContextModal({
+                  modal: item.modal,
+                  innerProps: {},
+                  size: '90vw',
+                })
+              }
+            />
           )}
           <Divider
             size="md"

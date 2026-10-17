@@ -9,6 +9,7 @@ import {
   useLazyGetSowerOutputQuery,
 } from '@gen3/core';
 import { bindSowerOutputJob } from './actions/sowerActionUtils';
+import { isValidUrl } from '../../utils/isUrl';
 
 /**
  * Watches the sower job list for completed jobs that have a sendJobAction pending.
@@ -20,7 +21,7 @@ import { bindSowerOutputJob } from './actions/sowerActionUtils';
 const useJobOutputAction: () => void = () => {
   const jobs = useCoreSelector(selectSowerJobsList);
   const dispatch = useCoreDispatch();
-  const [fetchOutput] = useLazyGetSowerOutputQuery();
+  const [fetchOutput, fetchOutputResults] = useLazyGetSowerOutputQuery();
   // Held in a ref so the effect dependency array only reacts to job list
   // changes, not to RTK Query trigger identity changes between renders.
   const fetchOutputRef = useRef(fetchOutput);
@@ -44,24 +45,39 @@ const useJobOutputAction: () => void = () => {
         }),
       );
 
-      const setOutputStageError = () => {
+      const setOutputStageError = (msg?: string) => {
         dispatch(
           updateSowerJob({
             jobId: job.uid,
             stage: SowerJobStage.SendJobOutput,
             status: SowerJobStatus.Failed,
+            outputGUID: msg,
           }),
         );
       };
 
+      console.log('useJobOutputAction');
+
       fetchOutputRef
         .current(job.uid)
         .then(async ({ data, error }) => {
+          console.log('output data', data);
           if (error) {
             // failure notification is handled by useSowerFailureNotifications
             setOutputStageError();
             return;
           }
+
+          console.log('output data', data);
+
+          if (data && !isValidUrl(data.output)) {
+            console.warn(
+              `useJobOutputAction: job ${job.uid} has invalid output URL`,
+            );
+            setOutputStageError(data.output);
+            return;
+          }
+
           if (!job.actions.outputAction) {
             console.warn(
               `useJobOutputAction: job ${job.uid} has no outputActionFunction`,

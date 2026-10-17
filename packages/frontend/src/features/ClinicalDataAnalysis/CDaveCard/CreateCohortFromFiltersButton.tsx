@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { LoadingOverlay, Tooltip } from '@mantine/core';
-import { FilterSet, useLazyGetObjectIdsQuery } from '@gen3/core';
-import { WithOrWithoutCohortType } from './types';
+import type { FilterSet } from '@gen3/core';
+import { useLazyGetObjectIdsQuery } from '@gen3/core';
+import type { WithOrWithoutCohortType } from './types';
 import AddToExistingCohortModal from './AddToExistingCohortModal';
 import { modals } from '@mantine/modals';
 import { getObjectIdsFromFilter } from './utils';

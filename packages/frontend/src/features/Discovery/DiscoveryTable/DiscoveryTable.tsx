@@ -102,7 +102,7 @@ const DiscoveryTable = ({
 }: DiscoveryTableProps) => {
   const { discoveryConfig: config } = useDiscoveryContext();
   const { setStudyDetails } = useStudyContext();
-  const { isLoading, isError, isFetching } = dataRequestStatus;
+  const { isError } = dataRequestStatus;
   const manualSortingAndPagination = getManualSortingAndPagination(config);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({}); //ts type available
   const size = discoveryConfig.tableConfig.size || 'sm';
@@ -266,9 +266,17 @@ const DiscoveryTable = ({
         textTransform: 'uppercase',
       },
     },
-    mantineSelectCheckboxProps: ({ row }) => ({
-      title: 'Click to select item for download or open in workspace',
-    }),
+    mantineSelectCheckboxProps: ({ row }) => {
+      if (checkIfRowIsSelectable(row))
+        // TODO: make these messages configurable https://ctds-planx.atlassian.net/browse/GFF-609
+        return {
+          title: 'Click to select item for download or open in workspace',
+        };
+      else
+        return {
+          title: 'No data available to export or download',
+        };
+    },
     mantineTableBodyRowProps: ({ row }) => ({
       onClick: () => {
         setStudyDetails(() => {

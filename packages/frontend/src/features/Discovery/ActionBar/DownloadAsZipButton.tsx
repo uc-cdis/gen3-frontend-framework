@@ -32,14 +32,17 @@ const DownloadAllAsZipButton = ({
     <SubmitSowerJobButton
       label={buttonConfig.label ?? 'Export Zip'}
       rightIcon={<DownloadIcon />}
-      tooltipText="Download Zip"
+      tooltipText="Download Zippy"
       actions={{
         jobAction: {
           name: 'export-files-to-zip',
           parameters: {
-            zipFilename,
+            zipFilename: `${zipFilename}.zip`,
             fileMetadata,
           },
+        },
+        outputAction: {
+          name: 'showSowerJobComplete',
         },
       }}
     />

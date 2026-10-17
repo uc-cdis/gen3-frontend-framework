@@ -1,6 +1,7 @@
 import { notifications } from '@mantine/notifications';
 import type { JobOutputAction } from '@gen3/core';
 import { fetchFencePresignedURL, isObject, isString } from '@gen3/core';
+import { modals } from '@mantine/modals';
 
 interface BaseOutputActionParameters extends Record<string, unknown> {
   output?: string;
@@ -42,7 +43,18 @@ export const notificationOutputAction: JobOutputAction = async ({
 export const showSowerJobCompleteModalOutputAction: JobOutputAction = async ({
   parameters,
   onError = () => null,
-}) => {};
+}) => {
+  const { jobId, message } = parameters;
+
+  modals.openContextModal({
+    modal: 'jobSaveOutputModal',
+    title: 'Save Job Output',
+    innerProps: {
+      message: message ?? 'Your file is ready',
+      jobId,
+    },
+  });
+};
 
 const PRESIGNED_URL_TEMPLATE_VARIABLE = '{{PRESIGNED_URL}}';
 interface SendPFBToURLParameters {

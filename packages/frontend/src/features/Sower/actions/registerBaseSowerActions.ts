@@ -2,7 +2,11 @@ import {
   sowerJobBuilderRegistry,
   sowerOutputActionRegistry,
 } from './sowerActionFactory';
-import { notificationOutputAction, sendPFBToURL } from './outputActions';
+import {
+  notificationOutputAction,
+  sendPFBToURL,
+  showSowerJobCompleteModalOutputAction,
+} from './outputActions';
 import { createPFBFromDataLibraryList } from './sowerJobActions';
 import { buildExportFilesToZipJob } from './exportFilesToZip';
 
@@ -19,4 +23,8 @@ export const registerBaseSowerActions = () => {
   );
   sowerOutputActionRegistry.register('handoff-pfb-to-url', sendPFBToURL);
   sowerOutputActionRegistry.register('notification', notificationOutputAction);
+  sowerOutputActionRegistry.register(
+    'showSowerJobComplete',
+    showSowerJobCompleteModalOutputAction,
+  );
 };

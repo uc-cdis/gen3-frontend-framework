@@ -6,6 +6,7 @@ import AddToDataLibrary from './AddToDataLibrary';
 import { DataLibraryStoreMode } from '@gen3/core';
 import { Text } from '@mantine/core';
 import ExportToWorkspaceButton from './ExportToWorkspaceButton';
+import DownloadAllAsZipButton from './DownloadAsZipButton';
 
 const createActionButton = ({
   buttonConfig,
@@ -35,6 +36,14 @@ const createActionButton = ({
     ),
     exportToWorkspace: (
       <ExportToWorkspaceButton
+        buttonConfig={buttonConfig}
+        selectedResources={selectedResources}
+        exportDataFields={exportDataFields}
+        key={buttonConfig.type}
+      />
+    ),
+    zip: (
+      <DownloadAllAsZipButton
         buttonConfig={buttonConfig}
         selectedResources={selectedResources}
         exportDataFields={exportDataFields}
