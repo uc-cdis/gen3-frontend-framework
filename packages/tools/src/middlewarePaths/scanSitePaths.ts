@@ -10,12 +10,12 @@ const dev = process.env.NODE_ENV !== 'production';
 loadEnvConfig(process.cwd(), dev);
 
 const GEN3_COMMONS_NAME = process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME || 'gen3';
+const LOGIN_ROUTE = '/Login';
 const PAGE_EXT_RE = /\.(tsx|ts|jsx|js)$/;
 
 const DEFAULT_EXCLUDED_ROUTES = [
   '/403',
   '/404',
-  '/Login',
   '/*',
   '/api',
   '/no-workspace-access',
@@ -188,9 +188,12 @@ const createMiddlewareRoutes = (
 
   if (matcher.length === 0) {
     matcher = [
-      '/((?!_next/static|_next/image|_next/data|Login|api|403|404|no-workspace-access|favicon.ico|.*\\.ico$|.*\\.png$|.*\\.jpg$|.*\\.svg$|.*\\.json$).*)',
+      '/((?!_next/static|_next/image|_next/data|api|403|404|no-workspace-access|favicon.ico|.*\\.ico$|.*\\.png$|.*\\.jpg$|.*\\.svg$|.*\\.json$).*)',
     ];
   }
+  
+  // The proxy redirects logged in users away from the Login page, so it must see /Login
+  matcher.push(LOGIN_ROUTE);
 
   console.log(`proxy matcher entries:\n${matcher.join('\n')}`);
   writeGeneratedMiddlewareEntryTs(matcher);
