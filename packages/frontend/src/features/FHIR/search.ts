@@ -1,4 +1,5 @@
 import {
+  isArray,
   isNotDefined,
   isObject,
   nextPageOf,
@@ -31,7 +32,16 @@ export interface TabResult extends Step {
   ms?: number;
   error?: unknown;
   loading: boolean;
+  // While loading: whether the page on screen showed the pager
+  paged?: boolean;
 }
+
+// More than one page, so the pager shows. While loading it stays as it was:
+// the new trail and the old nextPage describe two different pages.
+export const showsPager = (result: TabResult): boolean =>
+  result.loading
+    ? !!result.paged
+    : result.trail.length > 0 || !!result.nextPage;
 
 export const firstPage = (
   resource: string,
@@ -73,8 +83,16 @@ export const retryStep = (result: TabResult): Step => ({
 const isRecord = (x: unknown): x is Record<string, unknown> =>
   !isNotDefined(x) && isObject(x);
 
+// entry and link are optional, but a bad one would throw later, in
+// nextPageOf or EntryList
+const isListOfRecords = (x: unknown): boolean =>
+  isNotDefined(x) || (isArray(x) && x.every(isRecord));
+
 const isBundle = (x: unknown): x is Bundle =>
-  isRecord(x) && x.resourceType === 'Bundle';
+  isRecord(x) &&
+  x.resourceType === 'Bundle' &&
+  isListOfRecords(x.entry) &&
+  isListOfRecords(x.link);
 
 // RTK calls an HTML error page PARSING_ERROR, with the real status in
 // originalStatus

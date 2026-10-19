@@ -1,7 +1,7 @@
 import React, { type ReactElement } from 'react';
 import { Button, Text, Tooltip } from '@mantine/core';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import type { TabResult } from './search';
+import { showsPager, type TabResult } from './search';
 import { pageLabel } from './utils';
 
 interface PagerProps {
@@ -23,7 +23,7 @@ const Pager = ({
   className = '',
 }: PagerProps): ReactElement | null => {
   // A single page needs no pager
-  if (result.trail.length === 0 && !result.nextPage) return null;
+  if (!showsPager(result)) return null;
 
   const page = result.trail.length + 1;
   // While a page loads, the range would describe the old one

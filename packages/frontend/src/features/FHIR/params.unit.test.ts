@@ -6,6 +6,7 @@ import {
   newRow,
   paramsFor,
   removeRow,
+  rowError,
   rowsToParams,
   setAllEnabled,
   updateRow,
@@ -207,5 +208,66 @@ describe('rowsToParams', () => {
       birthdate: ['ge1980-01-01', 'lt1990-01-01'],
       gender: ['female'],
     });
+  });
+});
+
+describe('rowError', () => {
+  const date = (value: string) =>
+    row({ name: 'birthdate', type: 'date', prefix: 'ge', value });
+  const count = (value: string) =>
+    row({ name: '_count', type: 'number', value });
+
+  it('accepts full and partial dates', () => {
+    for (const value of ['1990', '1990-05', '1990-05-14', '2024-02-29'])
+      expect(rowError(date(value))).toBeUndefined();
+  });
+
+  it('rejects dates in the wrong shape', () => {
+    for (const value of [
+      '2',
+      '199',
+      '1990-5',
+      '1990/05/14',
+      '1990-05-14T10:00',
+    ])
+      expect(rowError(date(value))).toBe('Use YYYY, YYYY-MM or YYYY-MM-DD');
+  });
+
+  it('rejects dates that do not exist', () => {
+    for (const value of [
+      '2020-02-30',
+      '2023-02-29',
+      '1990-13',
+      '1990-00',
+      '1990-04-31',
+      '0000',
+    ])
+      expect(rowError(date(value))).toBe('Not a real date');
+  });
+
+  it('accepts _count from 1 to the max', () => {
+    for (const value of ['1', '100', '1000'])
+      expect(rowError(count(value))).toBeUndefined();
+  });
+
+  it('rejects _count over the max', () => {
+    expect(rowError(count('1001'))).toBe(
+      "Max 1000 per page (the server's limit)",
+    );
+  });
+
+  it('rejects _count that is 0 or not a whole number', () => {
+    for (const value of ['0', '-5', '2.5', 'abc', '1e3'])
+      expect(rowError(count(value))).toBe('Use a whole number from 1 to 1000');
+  });
+
+  it('ignores empty values and trims the rest', () => {
+    expect(rowError(date(''))).toBeUndefined();
+    expect(rowError(count('   '))).toBeUndefined();
+    expect(rowError(date(' 1990 '))).toBeUndefined();
+  });
+
+  it('leaves other params alone', () => {
+    expect(rowError(row({ value: 'anything, really' }))).toBeUndefined();
   });
 });

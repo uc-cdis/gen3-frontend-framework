@@ -10,7 +10,7 @@ import EntryList from './EntryList';
 import SearchError from './SearchError';
 import { useOrigin } from './hooks';
 import type { TabResult } from './search';
-import { toAbsoluteUrl } from './utils';
+import { emptyMessage, toAbsoluteUrl } from './utils';
 
 interface ResultsProps {
   resource: string;
@@ -82,7 +82,9 @@ const Results = ({
       );
     const content =
       entries.length === 0 ? (
-        <EmptyTableMessage message={`No ${resource} matches these params.`} />
+        <EmptyTableMessage
+          message={emptyMessage(resource, result.bundle.total)}
+        />
       ) : (
         <EntryList entries={entries} onView={show} />
       );

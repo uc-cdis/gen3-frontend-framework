@@ -4,7 +4,7 @@ import type {
   ParamType,
   ResourceDef,
 } from '@gen3/core';
-import { EXTRA_PARAMS } from './constants';
+import { EXTRA_PARAMS, MAX_COUNT } from './constants';
 
 // One row in the query params table.
 export interface ParamRow {
@@ -74,6 +74,44 @@ export const paramsFor = (
     .filter((p) => p.type !== 'composite')
     .sort((a, b) => a.name.localeCompare(b.name));
   return [...EXTRA_PARAMS, ...sorted];
+};
+
+// FHIR dates can be partial: 1990, 1990-05 or 1990-05-14
+// https://hl7.org/fhir/R4/datatypes.html#date
+const DATE_FORMAT = /^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?$/;
+const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+const isLeapYear = (year: number): boolean =>
+  (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+
+const dateError = (value: string): string | undefined => {
+  const match = DATE_FORMAT.exec(value);
+  if (!match) return 'Use YYYY, YYYY-MM or YYYY-MM-DD';
+  // A month or day that's left out can't be out of range
+  const [year, month, day] = match.slice(1).map((part) => Number(part ?? 1));
+  if (year < 1 || month < 1 || month > 12) return 'Not a real date';
+  const lastDay =
+    month === 2 && isLeapYear(year) ? 29 : DAYS_IN_MONTH[month - 1];
+  if (day < 1 || day > lastDay) return 'Not a real date';
+  return undefined;
+};
+
+// 0 is valid FHIR (count only), but it lists nothing, so the UI asks for 1+
+const countError = (value: string): string | undefined => {
+  if (!/^\d+$/.test(value) || Number(value) < 1)
+    return `Use a whole number from 1 to ${MAX_COUNT}`;
+  if (Number(value) > MAX_COUNT)
+    return `Max ${MAX_COUNT} per page (the server's limit)`;
+  return undefined;
+};
+
+// Why this row's value can't be sent. Empty values are fine: they're skipped.
+export const rowError = (row: ParamRow): string | undefined => {
+  const value = row.value.trim();
+  if (!value) return undefined;
+  if (row.name === '_count') return countError(value);
+  if (row.type === 'date') return dateError(value);
+  return undefined;
 };
 
 // Skips unchecked and empty rows. Repeated keys become arrays, sent as AND.

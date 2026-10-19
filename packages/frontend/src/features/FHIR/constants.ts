@@ -18,10 +18,13 @@ export const EXTRA_PARAMS: ParamDef[] = [
   { name: '_id', type: 'token' },
 ];
 
+// Google's FHIR store caps _count at 1000; above that the search fails.
+// https://docs.cloud.google.com/healthcare-api/docs/how-tos/fhir-search
+export const MAX_COUNT = 1000;
+
 // _count sets the page size, not how many are found. The name misleads
-// There's no cap, so it also warns about big pages.
-export const COUNT_HINT =
-  'Results per page (default 100). Large pages are slow.';
+// Big pages are slow even under the cap, so it warns about that too.
+export const COUNT_HINT = `Results per page (default 100, max ${MAX_COUNT}). Large pages are slow.`;
 
 // All 8 date prefixes the server advertises, shaped for Mantine Select
 export const DATE_PREFIXES = [

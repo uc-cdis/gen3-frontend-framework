@@ -130,4 +130,17 @@ describe('toReply', () => {
   it('treats no reply at all as an error', () => {
     expect(toReply().status).toBe('PARSING_ERROR');
   });
+
+  it('treats a Bundle with a malformed entry or link as an error', () => {
+    const malformed = [
+      { link: {} },
+      { link: [null] },
+      { entry: 'x' },
+      { entry: [null] },
+    ];
+    for (const shape of malformed) {
+      const bundle = { resourceType: 'Bundle', ...shape } as unknown as Bundle;
+      expect(toReply({ bundle, status: 200 }).status).toBe('PARSING_ERROR');
+    }
+  });
 });

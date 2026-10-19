@@ -2,6 +2,7 @@ import type { Bundle } from '@gen3/core';
 import {
   canRetry,
   countLabel,
+  emptyMessage,
   errorMessage,
   hostOf,
   pageLabel,
@@ -50,7 +51,25 @@ describe('pageLabel', () => {
   });
 
   it('says so when a page came back empty', () => {
-    expect(pageLabel(3, 200, 0, 250)).toBe('No results · page 3');
+    expect(pageLabel(3, 200, 0)).toBe('No results · page 3');
+    expect(pageLabel(1, 0, 0, 0)).toBe('No results · page 1');
+  });
+
+  it('keeps the total on an empty page that has one', () => {
+    expect(pageLabel(1, 0, 0, 1175)).toBe('Showing 0 of 1,175 · page 1');
+  });
+});
+
+describe('emptyMessage', () => {
+  it('says nothing matched when there is no total', () => {
+    expect(emptyMessage('Patient')).toBe('No Patient matches these params.');
+    expect(emptyMessage('Patient', 0)).toBe('No Patient matches these params.');
+  });
+
+  it('agrees with the total when the server sent one', () => {
+    expect(emptyMessage('Patient', 1175)).toBe(
+      '1,175 Patient found, but this page is empty.',
+    );
   });
 });
 

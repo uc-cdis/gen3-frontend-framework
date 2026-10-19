@@ -35,8 +35,39 @@ describe('Pager', () => {
   });
 
   it('says so while a page loads', () => {
-    render(<Pager result={{ ...page2, loading: true }} stale={false} />);
+    render(
+      <Pager result={{ ...page2, loading: true, paged: true }} stale={false} />,
+    );
     expect(screen.getByText('Loading page 2…')).toBeVisible();
+  });
+
+  it('stays while page 1 loads after Back from the last page', () => {
+    // Page 2 is still on screen. It has no next link, and page 1 has no trail.
+    render(
+      <Pager
+        result={{
+          ...page2,
+          sent: { resource: 'Patient' },
+          trail: [],
+          offset: 0,
+          nextPage: undefined,
+          loading: true,
+          paged: true,
+        }}
+        stale={false}
+      />,
+    );
+    expect(screen.getByText('Loading page 1…')).toBeVisible();
+  });
+
+  it('stays hidden while a search that had no pager loads', () => {
+    render(
+      <Pager
+        result={{ ...page2, trail: [], loading: true, paged: false }}
+        stale={false}
+      />,
+    );
+    expect(screen.queryByRole('button', { name: /next/i })).toBeNull();
   });
 
   it("says a failed page didn't load", () => {

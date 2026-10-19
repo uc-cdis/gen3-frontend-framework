@@ -54,11 +54,21 @@ export const pageLabel = (
   shown: number,
   total?: number,
 ): string => {
-  if (!shown) return `No results · page ${page}`;
-  const range = `${numbers.format(offset + 1)}–${numbers.format(offset + shown)}`;
   const of = total === undefined ? '' : ` of ${numbers.format(total)}`;
+  // An empty page can still have a total, and the response line shows it
+  if (!shown)
+    return total
+      ? `Showing 0${of} · page ${page}`
+      : `No results · page ${page}`;
+  const range = `${numbers.format(offset + 1)}–${numbers.format(offset + shown)}`;
   return `Showing ${range}${of} · page ${page}`;
 };
+
+// For a page with no entries. It must agree with countLabel's total.
+export const emptyMessage = (resource: string, total?: number): string =>
+  total
+    ? `${numbers.format(total)} ${resource} found, but this page is empty.`
+    : `No ${resource} matches these params.`;
 
 // The server's error body is always {"detail":"Not Found"}, so the message
 // has to come from the status

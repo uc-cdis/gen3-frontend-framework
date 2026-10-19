@@ -1,9 +1,10 @@
-import React, { type ReactElement, type Ref } from 'react';
-import { Select, TextInput } from '@mantine/core';
-import { DateInput } from '@mantine/dates';
+import React, { type ReactElement, type Ref, useState } from 'react';
+import { ActionIcon, Popover, Select, TextInput } from '@mantine/core';
+import { DatePicker } from '@mantine/dates';
+import { FiCalendar } from 'react-icons/fi';
 import type { ParamType } from '@gen3/core';
 import { COUNT_HINT, DATE_PREFIXES } from './constants';
-import type { ParamRow } from './params';
+import { rowError, type ParamRow } from './params';
 
 // Commas mean OR for every param type; the hint goes on the common text ones
 const PLACEHOLDERS: Partial<Record<ParamType, string>> = {
@@ -23,15 +24,66 @@ interface ParamValueInputProps {
   ref?: Ref<HTMLInputElement>;
 }
 
-// Dates get a prefix and a picker
+// The month the calendar opens on: 1990 → Jan 1990, 1990-05 → May 1990
+const openingDate = (date: string): string => `${date}-01-01`.slice(0, 10);
+
+interface CalendarButtonProps {
+  name: string;
+  // The typed date if it's valid, which may be partial
+  date?: string;
+  onPick: (date: string) => void;
+}
+
+// Picking a day fills in a full date. Partial dates are typed.
+const CalendarButton = ({
+  name,
+  date,
+  onPick,
+}: CalendarButtonProps): ReactElement => {
+  const [opened, setOpened] = useState(false);
+  return (
+    <Popover
+      opened={opened}
+      onChange={setOpened}
+      position="bottom-end"
+      shadow="md"
+      trapFocus
+      returnFocus
+    >
+      <Popover.Target>
+        <ActionIcon
+          variant="subtle"
+          color="gray"
+          aria-label={`Pick ${name} from a calendar`}
+          onClick={() => setOpened((o) => !o)}
+        >
+          <FiCalendar />
+        </ActionIcon>
+      </Popover.Target>
+      <Popover.Dropdown>
+        <DatePicker
+          value={date?.length === 10 ? date : null}
+          defaultDate={date ? openingDate(date) : undefined}
+          onChange={(picked) => {
+            if (picked) onPick(picked);
+            setOpened(false);
+          }}
+        />
+      </Popover.Dropdown>
+    </Popover>
+  );
+};
+
+// Dates get a prefix, a typed value and a calendar
 const ParamValueInput = ({
   row,
   onChange,
   ref,
 }: ParamValueInputProps): ReactElement => {
+  const error = rowError(row);
   if (row.type === 'date') {
     return (
-      <div className="flex gap-2">
+      <div className="flex items-start gap-2">
         <Select
           ref={ref}
           aria-label={`${row.name} prefix`}
@@ -41,13 +93,21 @@ const ParamValueInput = ({
           allowDeselect={false}
           className="w-48"
         />
-        <DateInput
+        <TextInput
           aria-label={`${row.name} date`}
-          placeholder="YYYY-MM-DD"
-          valueFormat="YYYY-MM-DD"
-          value={row.value || null}
-          onChange={(date) => onChange({ value: date ?? '' })}
-          clearable
+          placeholder="YYYY, YYYY-MM or YYYY-MM-DD"
+          value={row.value}
+          onChange={(e) => onChange({ value: e.currentTarget.value })}
+          error={error}
+          rightSection={
+            <CalendarButton
+              name={row.name}
+              date={error ? undefined : row.value.trim()}
+              onPick={(value) => onChange({ value })}
+            />
+          }
+          rightSectionPointerEvents="all"
+          classNames={{ input: 'font-mono' }}
           className="flex-1"
         />
       </div>
@@ -61,6 +121,7 @@ const ParamValueInput = ({
       placeholder={row.name === '_count' ? COUNT_HINT : PLACEHOLDERS[row.type]}
       value={row.value}
       onChange={(e) => onChange({ value: e.currentTarget.value })}
+      error={error}
       classNames={{ input: 'font-mono' }}
     />
   );

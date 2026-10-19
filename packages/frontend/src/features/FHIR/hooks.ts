@@ -1,13 +1,11 @@
 import { useState, useSyncExternalStore } from 'react';
-import {
-  useLazySearchFhirResourceQuery,
-  type FhirSearchParams,
-} from '@gen3/core';
+import { fhirApi, useCoreDispatch, type FhirSearchParams } from '@gen3/core';
 import {
   backStep,
   firstPage,
   nextStep,
   retryStep,
+  showsPager,
   toReply,
   type Step,
   type TabResult,
@@ -32,26 +30,52 @@ interface FhirSearch {
   retry?: () => Promise<void>;
 }
 
-// Our own state, not RTK's cache, which drops results after a minute unused
+// One slot per tab, kept by us: RTK's cache drops unused results after a minute
 export const useFhirSearch = (resource: string): FhirSearch => {
-  const [trigger] = useLazySearchFhirResourceQuery();
+  const dispatch = useCoreDispatch();
   const [resultsByTab, setResultsByTab] = useState<
     Partial<Record<string, TabResult>>
   >({});
 
   const run = async ({ sent, trail, offset }: Step) => {
-    // The old bundle stays visible under the overlay
-    setResultsByTab((prev) => ({
-      ...prev,
-      [resource]: { ...prev[resource], sent, trail, offset, loading: true },
-    }));
+    // Keep the old bundle and its pager on screen under the overlay
+    setResultsByTab((prev) => {
+      const shown = prev[resource];
+      return {
+        ...prev,
+        [resource]: {
+          ...shown,
+          sent,
+          trail,
+          offset,
+          loading: true,
+          paged: !!shown && showsPager(shown),
+        },
+      };
+    });
 
     const started = performance.now();
-    const { data, error } = await trigger(sent);
-    const ms = Math.round(performance.now() - started);
-    const reply = toReply(data, error);
 
-    // Drop a slow reply if a newer request replaced `sent`
+    const request = dispatch(
+      fhirApi.endpoints.searchFhirResource.initiate(sent, {
+        forceRefetch: true,
+      }),
+    );
+    let reply: ReturnType<typeof toReply>;
+    try {
+      const { data, error } = await request;
+      reply = toReply(data, error);
+    } catch (err) {
+      // Don't leave the tab stuck loading. toReply() alone means "unreadable reply"
+      console.error(err);
+      reply = toReply();
+    } finally {
+      // Our state has the reply, so RTK can drop its copy
+      request.unsubscribe();
+    }
+    const ms = Math.round(performance.now() - started);
+
+    // A newer request on this tab wins, so drop this reply
     setResultsByTab((prev) =>
       prev[resource]?.sent !== sent
         ? prev

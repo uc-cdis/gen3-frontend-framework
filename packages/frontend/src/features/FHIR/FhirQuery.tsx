@@ -8,7 +8,7 @@ import Results from './Results';
 import ServerStatus from './ServerStatus';
 import { RESOURCE_TABS } from './constants';
 import { useFhirSearch, useOrigin } from './hooks';
-import { paramsFor, rowsToParams, type ParamRow } from './params';
+import { paramsFor, rowError, rowsToParams, type ParamRow } from './params';
 import { readableUrl, toAbsoluteUrl } from './utils';
 
 const whyNoParams = (isError: boolean, loaded: boolean, resource: string) => {
@@ -36,6 +36,9 @@ const FhirQuery = (): ReactElement => {
   // What Send would send right now
   const draft = rowsToParams(rows);
   const draftUrl = fhirSearchUrl(resource, draft);
+  // The server's error can't say which value was bad, so we stop it here.
+  // Unchecked rows aren't sent, so they don't count.
+  const invalid = rows.some((row) => row.enabled && rowError(row));
 
   // Readable in the UI. The real request is still fully encoded.
   const url = readableUrl(toAbsoluteUrl(draftUrl, origin));
@@ -63,7 +66,7 @@ const FhirQuery = (): ReactElement => {
       </div>
       <RequestBar
         url={url}
-        onSend={() => void send(draft)}
+        onSend={invalid ? undefined : () => void send(draft)}
         loading={result?.loading}
       />
       <ResourceTabs
