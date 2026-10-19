@@ -11,4 +11,14 @@ export interface SowerJobExpirationConfig {
   jobExpirationCheckMinutes?: number;
 }
 
-export type SowerConfiguration = SowerJobExpirationConfig;
+export interface SowerUnknownStatusConfig {
+  /**
+   * Minutes a job may stay in the Unknown status before polling is paused and
+   * the job is shown as "status unavailable" with a Retry action. `0` disables
+   * the timeout. Defaults to 30 minutes.
+   */
+  unknownStatusTimeoutMinutes?: number;
+}
+
+export type SowerConfiguration = SowerJobExpirationConfig &
+  SowerUnknownStatusConfig;

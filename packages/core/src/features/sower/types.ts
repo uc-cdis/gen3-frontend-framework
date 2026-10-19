@@ -8,6 +8,14 @@ export const SowerJobStatus = {
 export type SowerJobStatus =
   (typeof SowerJobStatus)[keyof typeof SowerJobStatus];
 
+/** Jobs whose status can still change, so they need to keep being polled. */
+export const isPollableStatus = (status: SowerJobStatus): boolean =>
+  status === SowerJobStatus.Running || status === SowerJobStatus.Unknown;
+
+/** Completed and Failed are final: a later Unknown must not overwrite them. */
+export const isTerminalStatus = (status: SowerJobStatus): boolean =>
+  status === SowerJobStatus.Completed || status === SowerJobStatus.Failed;
+
 export type JobId = string;
 
 // Job Status read from the sower service
@@ -47,6 +55,7 @@ export type JobOutputAction = JobActionFunction<Record<string, unknown>, void>;
 export interface JobActionFunctionConfig {
   name: string;
   parameters?: Record<string, unknown>;
+  message?: string; // custom message to display in the UI when the job is running
 }
 
 export interface BoundJobActionConfig<T> extends JobActionFunctionConfig {
@@ -76,6 +85,11 @@ export interface ExtendedJobStatus extends JobStatus {
   created: number;
   updated: number;
   outputGUID?: string;
+  /**
+   * Set when a job has been Unknown for longer than the configured timeout.
+   * Polling is paused until the user retries or the status changes.
+   */
+  statusStale?: boolean;
 }
 
 export interface JobWithActions extends ExtendedJobStatus {

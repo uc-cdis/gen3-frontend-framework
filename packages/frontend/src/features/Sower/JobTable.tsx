@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Badge, Menu, SegmentedControl } from '@mantine/core';
+import { Badge, Menu, SegmentedControl, Tooltip } from '@mantine/core';
 import {
   MantineReactTable,
   type MRT_Cell,
@@ -10,6 +10,7 @@ import { PiDotsThreeOutlineFill as DotIcon } from 'react-icons/pi';
 import type { JobWithActions, SowerJobStatus } from '@gen3/core';
 import {
   removeSowerJob,
+  retrySowerJobStatus,
   useCoreDispatch,
   useLazyGetSowerOutputQuery,
 } from '@gen3/core';
@@ -94,9 +95,10 @@ const JobTable = ({ data }: JobTableProps) => {
         accessorKey: 'status',
         header: 'Status',
         Cell: ({ row }: MRT_Cell<JobWithActions>) => {
-          console.log('row status', row.original.status);
           const color = STATUS_TO_COLOR[row.original.status];
-          return (
+          const isStale =
+            row.original.status === 'Unknown' && row.original.statusStale;
+          const badge = (
             <Badge
               variant="dot"
               color={color?.mantine}
@@ -105,8 +107,20 @@ const JobTable = ({ data }: JobTableProps) => {
               }}
               radius="sm"
             >
-              {row.original.status}
+              {isStale ? 'Status unavailable' : row.original.status}
             </Badge>
+          );
+          if (row.original.status !== 'Unknown') return badge;
+          return (
+            <Tooltip
+              label={
+                isStale
+                  ? 'We could not determine this job’s status. Use Retry to check again.'
+                  : 'Status temporarily unavailable. We’ll keep checking.'
+              }
+            >
+              {badge}
+            </Tooltip>
           );
         },
       },
@@ -134,6 +148,16 @@ const JobTable = ({ data }: JobTableProps) => {
                       {'Download'}
                     </Menu.Item>
                   ) : null}
+                  {row.original.status === 'Unknown' &&
+                  row.original.statusStale ? (
+                    <Menu.Item
+                      onClick={() =>
+                        dispatch(retrySowerJobStatus(row.original.uid))
+                      }
+                    >
+                      {'Retry'}
+                    </Menu.Item>
+                  ) : null}
                   <Menu.Item onClick={() => removeJob(row.original.uid)}>
                     {'Remove'}
                   </Menu.Item>
@@ -144,7 +168,7 @@ const JobTable = ({ data }: JobTableProps) => {
         ),
       },
     ],
-    [getOutput, removeJob],
+    [getOutput, removeJob, dispatch],
   );
 
   const table = useMantineReactTable({
@@ -221,6 +245,30 @@ const JobTable = ({ data }: JobTableProps) => {
               </div>
             ),
           },
+          ...((groupedData?.Unknown?.length || 0) > 0
+            ? [
+                {
+                  value: 'Unknown',
+                  label: (
+                    <div className="flex gap-2">
+                      <span>Unknown</span>
+                      <Badge
+                        circle
+                        color={STATUS_TO_COLOR['Unknown'].mantine}
+                        variant="light"
+                        styles={{
+                          label: {
+                            color: STATUS_TO_COLOR['Unknown'].text,
+                          },
+                        }}
+                      >
+                        {groupedData?.Unknown?.length || 0}
+                      </Badge>
+                    </div>
+                  ),
+                },
+              ]
+            : []),
           { value: 'All', label: 'All Jobs' },
         ]}
         className="mb-8"

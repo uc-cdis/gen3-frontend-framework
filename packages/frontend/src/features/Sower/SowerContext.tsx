@@ -1,6 +1,7 @@
 import type { ReactElement, ReactNode } from 'react';
 import React, { useEffect, useRef } from 'react';
 import {
+  isPollableStatus,
   selectSowerJobsList,
   selectUserAuthStatus,
   SowerJobStage,
@@ -13,12 +14,13 @@ import {
 } from '@gen3/core';
 import useJobOutputAction from './useJobOutputAction';
 import useSowerJobExpiration from './useSowerJobExpiration';
+import useSowerUnknownTimeout from './useSowerUnknownTimeout';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { notifications } from '@mantine/notifications';
 import type { SowerConfiguration } from './types';
 
 /**
- * Polls the status of all Running jobs tracked in the sower slice and
+ * Polls the status of all Running and Unknown jobs tracked in the sower slice and
  * dispatches updateSowerJobStatus as statuses change. This drives
  * useJobOutputAction, which fires output callbacks when jobs complete.
  */
@@ -29,8 +31,10 @@ const useSowerPolling = () => {
   const jobs = useCoreSelector(selectSowerJobsList);
   const [trigger, result] = useLazyGetMultipleSowerJobStatusQuery();
 
+  // Unknown jobs may still resolve, so keep polling them until they time out
+  // (statusStale), at which point the user must retry.
   const runningIds = jobs
-    .filter((j) => j.status === SowerJobStatus.Running)
+    .filter((j) => isPollableStatus(j.status) && !j.statusStale)
     .map((j) => j.uid);
 
   const pollerKey = [...runningIds]
@@ -152,6 +156,7 @@ export const SowerProvider = ({
   config?: SowerConfiguration;
 }): ReactElement => {
   useSowerJobExpiration(config);
+  useSowerUnknownTimeout(config);
   useSowerPolling();
   useSowerHydration();
   useJobOutputAction();

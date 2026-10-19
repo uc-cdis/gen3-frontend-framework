@@ -8,7 +8,9 @@ export interface NavigationNotifierProps {
 
 const NavigationNotifier = ({ children }: NavigationNotifierProps) => {
   const jobs = useCoreSelector(selectSowerJobsList);
-  const runningJobs = jobs.filter((job) => job.status === 'Running');
+  const runningJobs = jobs.filter(
+    (job) => job.status === 'Running' || job.status === 'Unknown',
+  );
 
   return (
     <Indicator

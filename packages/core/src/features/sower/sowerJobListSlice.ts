@@ -5,7 +5,7 @@ import {
   type PayloadAction,
 } from '@reduxjs/toolkit';
 import type { JobId, JobWithActions, SowerJobStage } from './types';
-import { SowerJobStatus } from './types';
+import { isTerminalStatus, SowerJobStatus } from './types';
 import type { CoreState } from '../../reducers';
 
 interface UpdateSowerJobStatus {
@@ -62,14 +62,34 @@ const sowerJobsListSlice = createSlice({
       action: PayloadAction<UpdateSowerJobStatus>,
     ) => {
       const { jobId, status } = action.payload;
+      const job = state.entities[jobId];
+      if (!job || job.status === status) return;
+      // a late Unknown must not regress a finished job
+      if (isTerminalStatus(job.status) && status === SowerJobStatus.Unknown)
+        return;
 
       sowerJobListAdapter.updateOne(state, {
         id: jobId,
         changes: {
           status: status,
           updated: Date.now(),
+          statusStale: false,
         },
       });
+    },
+    /** Pauses polling for jobs that have been Unknown past the timeout. */
+    markSowerJobsStatusStale: (state, action: PayloadAction<JobId[]>) => {
+      for (const id of action.payload) {
+        const job = state.entities[id];
+        if (job?.status === SowerJobStatus.Unknown) job.statusStale = true;
+      }
+    },
+    /** Resumes polling for a stale Unknown job and restarts its timeout. */
+    retrySowerJobStatus: (state, action: PayloadAction<JobId>) => {
+      const job = state.entities[action.payload];
+      if (job?.status !== SowerJobStatus.Unknown) return;
+      job.statusStale = false;
+      job.updated = Date.now();
     },
     updateSowerJobStage: (
       state,
@@ -124,6 +144,8 @@ export const {
   removeSowerJob,
   removeSowerJobsUpdatedBefore,
   updateSowerJobStatus,
+  markSowerJobsStatusStale,
+  retrySowerJobStatus,
   updateSowerJobStage,
   updateSowerJob,
 } = sowerJobsListSlice.actions;
