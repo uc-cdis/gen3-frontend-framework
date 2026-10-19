@@ -88,7 +88,9 @@ const dateError = (value: string): string | undefined => {
   const match = DATE_FORMAT.exec(value);
   if (!match) return 'Use YYYY, YYYY-MM or YYYY-MM-DD';
   // A month or day that's left out can't be out of range
-  const [year, month, day] = match.slice(1).map((part) => Number(part ?? 1));
+  const [year, month, day] = match
+    .slice(1)
+    .map((part: string | undefined) => Number(part ?? 1));
   if (year < 1 || month < 1 || month > 12) return 'Not a real date';
   const lastDay =
     month === 2 && isLeapYear(year) ? 29 : DAYS_IN_MONTH[month - 1];
