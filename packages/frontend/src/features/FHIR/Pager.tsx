@@ -41,17 +41,17 @@ const Pager = ({
   // Why a button is off, for its tooltip
   const blocked = stale
     ? 'Params changed. Press Send to search again.'
-    : result.loading
-      ? 'Loading…'
-      : undefined;
+    : undefined;
   const whyNoBack = blocked ?? "You're on the first page";
   const whyNoNext =
     blocked ??
     (result.error ? "This page didn't load" : 'This is the last page');
+  // The loading overlay already says why, so no tooltip then
+  const quiet = result.loading;
 
   return (
     <div className={`flex items-center justify-end gap-3 ${className}`}>
-      <Tooltip label={whyNoBack} disabled={!!onBack}>
+      <Tooltip label={whyNoBack} disabled={!!onBack || quiet}>
         <span>
           <Button
             variant="default"
@@ -67,7 +67,7 @@ const Pager = ({
       <Text size="sm" c="dimmed">
         {label}
       </Text>
-      <Tooltip label={whyNoNext} disabled={!!onNext}>
+      <Tooltip label={whyNoNext} disabled={!!onNext || quiet}>
         <span>
           <Button
             variant="default"
