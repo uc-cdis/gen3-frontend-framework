@@ -134,7 +134,6 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
     useDisclosure(false);
 
   const [isDropdownTagViewerOpen, setIsDropdownTagViewerOpen] = useState(false);
-  const tagViewerContentRef = useRef<HTMLDivElement | null>(null);
   const enableSearchBar = discoveryConfig?.features?.search?.searchBar?.enabled;
   const enableSearchableTags =
     discoveryConfig?.features?.search?.tagSearchDropdown?.enabled;

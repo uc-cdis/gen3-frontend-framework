@@ -1,6 +1,10 @@
 {
   "metadataConfig": [
     {
+      "tableConfig": {
+        "selectableRows": true,
+        "expandableRows": true
+      },
       "features": {
         "advSearchFilters": {
           "enabled": false,

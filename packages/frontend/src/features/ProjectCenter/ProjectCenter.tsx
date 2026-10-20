@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
-import { DiscoveryIndexConfig } from '../Discovery/types';
-import { ProjectCenterConfig, ProjectCenterIndexConfig } from './types';
+import React from 'react';
+import type { DiscoveryIndexConfig } from '../Discovery/types';
+import type { ProjectCenterConfig, ProjectCenterIndexConfig } from './types';
 import ProjectCenterIndexPanel from './ProjectCenterIndexPanel';
 import MessagePanel from '../../components/MessagePanel';
 import DiscoveryProvider from '../Discovery/DiscoveryProvider';

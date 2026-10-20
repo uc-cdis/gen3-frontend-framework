@@ -1,14 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { Alert, Loader, LoadingOverlay, Text, Tabs, ThemeIcon } from '@mantine/core';
-import { useDeepCompareEffect } from 'use-deep-compare';
+import { useRouter, useSearchParams } from 'next/navigation';
+import {
+  Alert,
+  Loader,
+  LoadingOverlay,
+  Tabs,
+  Text,
+  ThemeIcon,
+} from '@mantine/core';
 import StudyDetailsPanel from './StudyDetailsPanel';
 import { accessibleFieldName, AccessLevel } from '../../../utils';
 import { useDiscoveryContext } from '../../Discovery/DiscoveryProvider';
 import { useStudyContext } from '../../Study/StudyProvider';
 import StudyDetails from '../../Study/StudyDetails/StudyDetails';
-import { DataRequestStatus } from '../../Discovery/types';
-import { ProjectCenterIndexConfig } from '../types';
+import type { DataRequestStatus } from '../../Discovery/types';
+import type { ProjectCenterIndexConfig } from '../types';
 
 import {
   LuLock as LockedIcon,
@@ -19,13 +25,11 @@ interface ProjectCenterDisplayProps {
   data: Array<Record<string, any>>;
   studyIdFromWindow?: string;
   dataRequestStatus: DataRequestStatus;
-  setSelection: (selection: Array<string>) => void;
 }
 const ProjectCenterDisplay = ({
   data,
   studyIdFromWindow,
   dataRequestStatus,
-  setSelection,
 }: ProjectCenterDisplayProps) => {
   const { discoveryConfig } = useDiscoveryContext();
   const config = discoveryConfig as unknown as ProjectCenterIndexConfig;
@@ -60,9 +64,7 @@ const ProjectCenterDisplay = ({
 
   // When the result set changes (e.g. a new search) select the top study.
   // The first non-empty result set is skipped so a ?tab= deep link is respected.
-  const resultIds = Array.isArray(data)
-    ? data.map(getUid).join(',')
-    : '';
+  const resultIds = Array.isArray(data) ? data.map(getUid).join(',') : '';
   const previousResultIds = useRef<string | null>(null);
   useEffect(() => {
     if (!resultIds) return;
@@ -77,37 +79,39 @@ const ProjectCenterDisplay = ({
     study_id,
     full_name,
     tag,
-    accessable
-  } : {
-    value: string,
-    study_id: string,
-    full_name: string,
-    tag: string,
-    accessable: boolean
+    accessable,
+  }: {
+    value: string;
+    study_id: string;
+    full_name: string;
+    tag: string;
+    accessable: boolean;
   }) => {
     return (
       <Tabs.Tab value={value} key={value}>
         <div className="flex">
           <div className="">
             <ThemeIcon color="base" variant="light" size={36}>
-              {
-                accessable ? (
-                  <UnlockedIcon aria-label="Unlocked"/>
-                ) : (
-                  <LockedIcon aria-label="Locked"/>
-                )
-              }
+              {accessable ? (
+                <UnlockedIcon aria-label="Unlocked" />
+              ) : (
+                <LockedIcon aria-label="Locked" />
+              )}
             </ThemeIcon>
           </div>
           <div className="text-left pl-2 text-balance">
             <Text fz="xs">{study_id}</Text>
-            <Text fz="sm" className="font-bold">{full_name}</Text>
-            <Text fz="xs" c="dimmed">{tag}</Text>
+            <Text fz="sm" className="font-bold">
+              {full_name}
+            </Text>
+            <Text fz="xs" c="dimmed">
+              {tag}
+            </Text>
           </div>
         </div>
       </Tabs.Tab>
-    ); 
-  }
+    );
+  };
   const createTabs = () => {
     return (
       <Tabs
@@ -116,28 +120,31 @@ const ProjectCenterDisplay = ({
         unstyled
         keepMounted={false}
         classNames={{
-          root: "flex",
-          list: "flex flex-col border-r py-5 w-[260px] bg-base-lighter flex-none",
-          panel: "grow bg-white",
-          tab: "p-2 border-l-4 border-l-base-lighter border-y aria-selected:bg-white aria-selected:border-primary hover:bg-base-lightest hover:border-primary-lightest",
-          tabLabel: "",
-          tabSection: ""
+          root: 'flex',
+          list: 'flex flex-col border-r py-5 w-[260px] bg-base-lighter flex-none',
+          panel: 'grow bg-white',
+          tab: 'p-2 border-l-4 border-l-base-lighter border-y aria-selected:bg-white aria-selected:border-primary hover:bg-base-lightest hover:border-primary-lightest',
+          tabLabel: '',
+          tabSection: '',
         }}
       >
         <Tabs.List>
-          {data.map(({
-            [uidField]: uid,
-            study_id,
-            full_name,
-            tags,
-            [accessibleFieldName]: accessableLevel
-          })=> tabCard({
-            value: uid,
-            study_id: study_id, 
-            full_name: full_name, 
-            tag: tags?.[0]?.name,
-            accessable: accessableLevel === AccessLevel.ACCESSIBLE
-          }))}
+          {data.map(
+            ({
+              [uidField]: uid,
+              study_id,
+              full_name,
+              tags,
+              [accessibleFieldName]: accessableLevel,
+            }) =>
+              tabCard({
+                value: uid,
+                study_id: study_id,
+                full_name: full_name,
+                tag: tags?.[0]?.name,
+                accessable: accessableLevel === AccessLevel.ACCESSIBLE,
+              }),
+          )}
         </Tabs.List>
         {tabNotFound && (
           <div className="grow bg-white p-5">
@@ -162,13 +169,8 @@ const ProjectCenterDisplay = ({
           />
         ))}
       </Tabs>
-    ); 
-  }
-
-  useDeepCompareEffect(() => {
-    // report the selected study ids to the parent (the project list has no row selection yet, so this stays empty)
-    setSelection(rowSelection ? Object.keys(rowSelection) : []);
-  }, [rowSelection, setSelection]);
+    );
+  };
 
   if (dataRequestStatus.isLoading) {
     return (
@@ -187,7 +189,9 @@ const ProjectCenterDisplay = ({
   if (noStudies) {
     return (
       <div className="flex w-full py-24 justify-center">
-        <Text size="xl">No Projects found. Try changing your search or filters.</Text>
+        <Text size="xl">
+          No Projects found. Try changing your search or filters.
+        </Text>
       </div>
     );
   }

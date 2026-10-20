@@ -1,21 +1,17 @@
 import type { ReactNode } from 'react';
 import React, { useMemo, useRef, useState } from 'react';
 import ProjectCenterDisplay from './ProjectCenterDisplay/ProjectCenterDisplay';
-import { Button, Grid, Title } from '@mantine/core';
-import AdvancedSearchPanel from '../Discovery/Search/AdvancedSearchPanel';
+import { Button, Collapse, Grid, Title } from '@mantine/core';
 import type {
   MRT_PaginationState,
   MRT_SortingState,
 } from 'mantine-react-table-open';
-import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
-import ActionBar from '../Discovery/ActionBar/ActionBar';
+import { useDebouncedValue } from '@mantine/hooks';
 import SummaryStatisticPanel from '../Discovery/Statistics/SummaryStatisticPanel';
-import { CollapsableCharts } from '../../components/charts';
 import { useLoadAllMDSData } from '../Discovery/DataLoaders/MDSAllLocal/DataLoader';
 import type { AdvancedSearchTerms } from '../Discovery/Search/types';
 import { SearchCombination } from '../Discovery/Search/types';
 import SearchInputWithSuggestions from '../Discovery/Search/SearchInputWithSuggestions';
-import AiSearch from '../Discovery/Search/AiSearch';
 import { getDiscoveryDataLoader } from '../Discovery/DataLoaders/registeredDataLoaders';
 import StudyProvider from '../Study/StudyProvider';
 import { useDeepCompareMemo } from 'use-deep-compare';
@@ -41,7 +37,9 @@ export interface ProjectCenterIndexPanelProps {
  *
  * @return {JSX.Element} the Project Center panel.
  */
-const ProjectCenterIndexPanel = ({ indexSelector }: ProjectCenterIndexPanelProps) => {
+const ProjectCenterIndexPanel = ({
+  indexSelector,
+}: ProjectCenterIndexPanelProps) => {
   const {
     discoveryConfig,
     selectedTags,
@@ -99,10 +97,8 @@ const ProjectCenterIndexPanel = ({ indexSelector }: ProjectCenterIndexPanelProps
   const {
     data,
     dataRequestStatus,
-    advancedSearchFilterValues,
     suggestions,
     summaryStatistics,
-    charts: chartData,
     tagCategoryData,
   } = dataHook({
     pagination: {
@@ -117,20 +113,22 @@ const ProjectCenterIndexPanel = ({ indexSelector }: ProjectCenterIndexPanelProps
     selectedTags: selectedTags,
     selectedAccessLevels: selectedAccessLevels,
   });
-  const selectedRecords = useMemo(() => {
-    const uidField = discoveryConfig?.minimalFieldMapping?.uid ?? 'guid';
-    const filterSelectedMembers = (data: Array<Record<string, any>>) =>
-      data?.filter(
-        (member) => uidField in member && selections.includes(member[uidField]),
-      );
-    return filterSelectedMembers(data);
-  }, [data, discoveryConfig?.minimalFieldMapping?.uid, selections]);
 
-  const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
-    useDisclosure(false);
+  const categoryTypes =
+    discoveryConfig?.features?.search?.tagSearchDropdown?.categoryTypes;
+
+  const tagCategoryMenus = useMemo(() => {
+    if (!categoryTypes || !tagCategoryData) {
+      return tagCategoryData;
+    }
+
+    const allowedTypes = new Set(categoryTypes);
+    return tagCategoryData.filter((category) =>
+      allowedTypes.has(category.category),
+    );
+  }, [tagCategoryData, categoryTypes]);
 
   const [isDropdownTagViewerOpen, setIsDropdownTagViewerOpen] = useState(false);
-  const tagViewerContentRef = useRef<HTMLDivElement | null>(null);
   const enableSearchBar = discoveryConfig?.features?.search?.searchBar?.enabled;
   const enableSearchableTags =
     discoveryConfig?.features?.search?.tagSearchDropdown?.enabled;
@@ -152,10 +150,13 @@ const ProjectCenterIndexPanel = ({ indexSelector }: ProjectCenterIndexPanelProps
             <SummaryStatisticPanel summaries={summaryStatistics} />
             {enableSearchBar && (
               <div className="w-3/4 flex flex-col ml-2">
-                <Grid align="center" gap="sm">
-                  <Grid.Col
-                    span={{ md: enableSearchableTags ? 7 : 10, sm: 12 }}
-                  >
+                <Grid
+                  gap="sm"
+                  justify="space-between"
+                  align="flex-start"
+                  classNames={{ root: 'w-full' }}
+                >
+                  <Grid.Col span={8}>
                     <SearchInputWithSuggestions
                       searchBarTerms={searchBarTerms}
                       setSearchBarTerms={setSearchBarTerms}
@@ -175,93 +176,81 @@ const ProjectCenterIndexPanel = ({ indexSelector }: ProjectCenterIndexPanelProps
                     />
                   </Grid.Col>
                   {enableSearchableTags && (
-                    <Grid.Col span={{ sm: 12, md: 5 }} align="center">
-                      <Button
-                        onClick={() => setSelectedTags({})}
-                        variant="outline"
-                        leftSection={<IoIosRefresh />}
-                        className={
-                          Object.keys(selectedTags).length === 0
-                            ? 'border-gray-400 mr-2'
-                            : 'mr-2'
-                        }
-                        data-disabled={Object.keys(selectedTags).length === 0}
+                    <Grid.Col span={4}>
+                      <div
+                        className={`flex justify-end items-center ${discoveryConfig?.features?.search?.searchBar?.inputSubtitle ? 'pt-6' : ''}`}
                       >
-                        Reset
-                      </Button>
-                      <Button
-                        className="mt-1"
-                        onClick={() =>
-                          setIsDropdownTagViewerOpen((prev) => !prev)
-                        }
-                        disabled={data.length === 0}
-                        variant="outline"
-                        leftSection={
-                          isDropdownTagViewerOpen ? (
-                            <IoIosArrowUp />
-                          ) : (
-                            <IoIosArrowDown />
-                          )
-                        }
-                      >
-                        {`${
-                          discoveryConfig?.features?.search?.tagSearchDropdown
-                            ?.collapsibleButtonText || 'Tag Panel'
-                        }`}
-                      </Button>
+                        <Button
+                          onClick={() => setSelectedTags({})}
+                          variant="outline"
+                          leftSection={<IoIosRefresh />}
+                          className={
+                            Object.keys(selectedTags).length === 0
+                              ? 'border-gray-400 mr-2'
+                              : 'mr-2'
+                          }
+                          data-disabled={Object.keys(selectedTags).length === 0}
+                        >
+                          Reset
+                        </Button>
+                        <Button
+                          onClick={() =>
+                            setIsDropdownTagViewerOpen((prev) => !prev)
+                          }
+                          disabled={data.length === 0}
+                          variant="outline"
+                          leftSection={
+                            isDropdownTagViewerOpen ? (
+                              <IoIosArrowUp />
+                            ) : (
+                              <IoIosArrowDown />
+                            )
+                          }
+                        >
+                          {`${
+                            discoveryConfig?.features?.search?.tagSearchDropdown
+                              ?.collapsibleButtonText || 'Tag Panel'
+                          }`}
+                        </Button>
+                      </div>
                     </Grid.Col>
                   )}
+                  <Grid.Col span={8}>
+                    {enableSearchInputSelectableFields && (
+                      <SearchInputSelectableFields
+                        searchMode={searchMode}
+                        setSearchMode={setSearchMode}
+                        searchableTextFields={
+                          discoveryConfig?.features?.search?.searchBar
+                            ?.searchableTextFields
+                        }
+                        searchableAndSelectableTextFields={
+                          discoveryConfig?.features?.search?.searchBar
+                            ?.searchableAndSelectableTextFields
+                        }
+                        setSelectedFieldsForSearchIndexing={
+                          setSelectedFieldsForSearchIndexing
+                        }
+                      />
+                    )}
+                    {tagCategoryData && tagCategoryData.length > 0 && (
+                      <Collapse expanded={isDropdownTagViewerOpen}>
+                        <DiscoveryDropdownTagViewer
+                          tagCategoryData={tagCategoryMenus}
+                        />
+                      </Collapse>
+                    )}
+                  </Grid.Col>
                 </Grid>
-                {enableSearchInputSelectableFields && (
-                  <SearchInputSelectableFields
-                    searchMode={searchMode}
-                    setSearchMode={setSearchMode}
-                    searchableTextFields={
-                      discoveryConfig?.features?.search?.searchBar
-                        ?.searchableTextFields
-                    }
-                    searchableAndSelectableTextFields={
-                      discoveryConfig?.features?.search?.searchBar
-                        ?.searchableAndSelectableTextFields
-                    }
-                    setSelectedFieldsForSearchIndexing={
-                      setSelectedFieldsForSearchIndexing
-                    }
-                  />
-                )}
-                {tagCategoryData && tagCategoryData.length > 0 && (
-                  <div
-                    ref={tagViewerContentRef}
-                    className={`transition-all duration-300 ease-in-out mt-2 ${
-                      isDropdownTagViewerOpen
-                        ? 'max-h-screen opacity-100'
-                        : 'max-h-0 opacity-0'
-                    } overflow-hidden`}
-                    style={{
-                      height:
-                        isDropdownTagViewerOpen && tagViewerContentRef.current
-                          ? `${tagViewerContentRef.current.scrollHeight}px`
-                          : '0px',
-                    }}
-                  >
-                    <DiscoveryDropdownTagViewer
-                      tagCategoryData={tagCategoryData}
-                    />
-                  </div>
-                )}
               </div>
             )}
           </div>
           <div className="flex justify-start">
-            <div
-              className="w-full"
-              ref={parentDivRef}
-            >
+            <div className="w-full" ref={parentDivRef}>
               <ProjectCenterDisplay
                 data={data}
                 studyIdFromWindow={studyIdFromWindow as string}
                 dataRequestStatus={dataRequestStatus}
-                setSelection={setSelections}
               />
             </div>
           </div>
