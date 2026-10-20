@@ -39,8 +39,12 @@ export async function proxy(req: NextRequest) {
   const loggedIn = isLoggedIn(loginStatus);
 
   // Logged in users have no reason to see the Login page: send them to Profile.
-  if (pathname === '/Login' && loggedIn) {
-    return NextResponse.redirect(new URL('/Profile', req.url));
+  if (pathname === '/Login') {
+    if (loggedIn) {
+      return NextResponse.redirect(new URL('/Profile', req.url));
+    } else {
+      return NextResponse.next();
+    }
   }
 
   // check if there is a wildcard route
