@@ -115,6 +115,7 @@ patch_file() {
 # Format: "name|git_url|subdir"  (subdir is optional)
 REPOS=(
   "cdislogging|https://github.com/uc-cdis/cdislogging.git"
+  "cryptography|https://github.com/pyca/cryptography"
   "fastavro|https://github.com/fastavro/fastavro.git"
   "drsclient|https://github.com/uc-cdis/drsclient.git"
   "indexd|https://github.com/uc-cdis/indexd.git|indexclient"
