@@ -27,6 +27,7 @@ export type RemoteComputeWorkspaceProps = {
   workspaceId: string;
   userId: string;
   notebookName?: string;
+  label?: string;
 };
 
 /**
@@ -44,6 +45,7 @@ const RemoteComputeWorkspace = React.memo(
         notebookName = 'remote-workspace',
         onReady = () => {},
         onError = () => {},
+        label,
       }: RemoteComputeWorkspaceProps,
       ref,
     ) => {
@@ -176,44 +178,6 @@ const RemoteComputeWorkspace = React.memo(
           try {
             const app = (iframeRef.current?.contentWindow as any)?.jupyterapp;
 
-            /* ------ TODO Remove
-            // Inject server-side JEG token — overrides any client-supplied auth header.
-            // This ensures calls from JupyterLite's own serverconnection.js are also authenticated.
-            let accessToken = getCookie('access_token');
-            if (process.env.NODE_ENV === 'development') {
-              // NOTE: This cookie can only be accessed from the client side
-              // in development mode. Otherwise, the cookie is set as httpOnly
-              accessToken = getCookie('credentials_token');
-            }
-
-            if (app && accessToken) {
-              console.log(
-                'Injecting server-side JEG token into JupyterLite app',
-                app,
-              );
-              const win = iframeRef.current?.contentWindow as any;
-              // JupyterLab reads token from PageConfig at startup; after startup, update ServerConnection
-              if (win.PageConfig) {
-                win.PageConfig.setOption('token', accessToken);
-              }
-              // Also update the service manager's settings if accessible
-              if (app.serviceManager?.serverSettings) {
-                // ServerConnection.makeSettings merges with existing settings
-                const SC =
-                  win.JupyterFrontEnd?.ServerConnection ?? win.ServerConnection;
-                if (SC?.makeSettings) {
-                  const newSettings = SC.makeSettings({
-                    ...app.serviceManager.serverSettings,
-                    token: accessToken,
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                  });
-                  // Reassign — works on many JupyterLab 3/4 builds
-                  app.serviceManager._serverSettings = newSettings;
-                }
-              }
-            }
-            ------ */
-
             if (app?.status === 'ready' || app?.started) {
               setJupyterReady(true);
               onReady?.();
@@ -296,7 +260,10 @@ const RemoteComputeWorkspace = React.memo(
       if (status !== WorkspaceStatus.Running) {
         return (
           <div className="w-full flex flex-col grow">
-            <MicroContainerReduxPanel enableOptions={enableOptions}/>
+            <MicroContainerReduxPanel
+              enableOptions={enableOptions}
+              label={label}
+            />
           </div>
         );
       }

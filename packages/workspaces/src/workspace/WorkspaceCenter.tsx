@@ -106,6 +106,7 @@ const WorkspaceCenter = ({
               workspaceId={authContext?.workspaceId || 'workspace-default'}
               userId={authContext?.username || 'anonymous'}
               enableOptions={config?.enableOptions}
+              label={config.stoppedLabel}
             />
           </WorkspaceLayout>
         </MicroContainerReduxProvider>
