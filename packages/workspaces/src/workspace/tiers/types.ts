@@ -42,6 +42,7 @@ export interface RemoteComputeWorkspaceTierConfiguration extends WorkspaceTierIn
   enableOptions?: boolean;
   type: Extract<WorkspaceTier, 'remote'>;
   startTimeLimit?: number; // time limit in seconds
+  stoppedLabel?: string;
 }
 
 export type RemoteComputeWorkspaceHandle = {
