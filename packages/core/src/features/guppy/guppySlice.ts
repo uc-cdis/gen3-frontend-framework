@@ -181,7 +181,7 @@ export const explorerApi = explorerTags.injectEndpoints({
         indexPrefix = '',
         filterName = 'filter',
       }: RawDataAndTotalCountsParams) => {
-        const gqlFilter = convertFilterSetToGqlFilter(filters);
+        const gqlFilter = convertFilterSetToNestedGqlFilter(filters);
         const params = [
           ...(sort ? ['$sort: JSON'] : []),
           ...(gqlFilter ? [`$${filterName}: JSON`] : []),
@@ -397,7 +397,7 @@ export const explorerApi = explorerTags.injectEndpoints({
           query: query,
           variables: {
             ...(filters && {
-              [filterName]: convertFilterSetToGqlFilter(filters),
+              [filterName]: convertFilterSetToNestedGqlFilter(filters),
             }),
             nestedAggFields: nestedAggFields,
           },
@@ -422,7 +422,7 @@ export const explorerApi = explorerTags.injectEndpoints({
         indexPrefix = '',
         filterName = 'filter',
       }: QueryCountsParams) => {
-        const gqlFilters = convertFilterSetToGqlFilter(filters);
+        const gqlFilters = convertFilterSetToNestedGqlFilter(filters);
         const queryLine = `query totalCounts${queryId ? `${indexPrefix}_${queryId}` : ''} ${
           gqlFilters ? `($${filterName}: JSON)` : ''
         }{`;
@@ -483,7 +483,7 @@ export const explorerApi = explorerTags.injectEndpoints({
         indexPrefix = '',
         filterName = 'filter',
       }: QueryForFileCountSummaryParams) => {
-        const gqlFilters = convertFilterSetToGqlFilter(filters);
+        const gqlFilters = convertFilterSetToNestedGqlFilter(filters);
         const query = `query summary ($${filterName}: JSON) {
         ${indexPrefix}_aggregation {
           ${type} (filter: $${filterName}, accessibility: ${accessibility}) {
@@ -588,7 +588,7 @@ export const explorerApi = explorerTags.injectEndpoints({
         accessibility = Accessibility.ALL,
         limit = GUPPY_MAX_ITEMS,
       }: ObjectIdQueryRequest) => {
-        const gqlFilter = convertFilterSetToGqlFilter(filters);
+        const gqlFilter = convertFilterSetToNestedGqlFilter(filters);
         const query = `query getObjectIds ($filter: JSON) {
           ${indexPrefix}${index} (filter: $filter, accessibility: ${accessibility}, first: ${limit}) {
               ${rawDataQueryStrForEachField(field)}
@@ -670,7 +670,9 @@ export const buildGetAggregationQuery = (
             }`;
   const queryBody: GraphQLQuery = {
     query: query,
-    variables: { [filterName]: convertFilterSetToGqlFilter(filters) },
+    variables: {
+      [filterName]: convertFilterSetToNestedGqlFilter(filters),
+    },
   };
 
   return queryBody;
@@ -703,7 +705,9 @@ export const buildGetStatsAggregationQuery = (
             }`;
   const queryBody: GraphQLQuery = {
     query: query,
-    variables: { [filterName]: convertFilterSetToGqlFilter(filters) },
+    variables: {
+      [filterName]: convertFilterSetToNestedGqlFilter(filters),
+    },
   };
 
   return queryBody;
