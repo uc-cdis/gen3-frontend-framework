@@ -522,6 +522,8 @@ export const useLoadAllData = ({
 
   const tagCategoryData = processTagCategoryData(mdsData, discoveryConfig);
 
+  console.log('tagCategoryData', tagCategoryData);
+
   const { advancedSearchFilterValues } = useGetAdvancedSearchFilterValues({
     data: mdsData,
     advancedSearchFilters:

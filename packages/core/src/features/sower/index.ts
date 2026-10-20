@@ -40,6 +40,7 @@ import {
   retrySowerJobStatus,
   sowerJobListSelectors,
   updateSowerJob,
+  updateSowerJobOutputError,
   updateSowerJobStage,
   updateSowerJobStatus,
 } from './sowerJobListSlice';
@@ -58,6 +59,7 @@ export {
   useGetSowerOutputQuery,
   useLazyGetSowerOutputQuery,
   useGetSowerServiceStatusQuery,
+  updateSowerJobOutputError,
   type JobListResponse,
   type GetSowerJobListQueryType,
   type ExtendedJobStatus,

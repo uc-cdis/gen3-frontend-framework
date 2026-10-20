@@ -11,6 +11,7 @@ import {
   useCoreSelector,
   useLazyGetMultipleSowerJobStatusQuery,
   useLazyGetSowerJobListQuery,
+  useLazyGetSowerOutputQuery,
 } from '@gen3/core';
 import useJobOutputAction from './useJobOutputAction';
 import useSowerJobExpiration from './useSowerJobExpiration';
@@ -115,6 +116,7 @@ const useSowerHydration = () => {
 const useSowerFailureNotifications = () => {
   const jobs = useCoreSelector(selectSowerJobsList);
   const notifiedRef = useRef<Set<string> | null>(null);
+  const [fetchOutput] = useLazyGetSowerOutputQuery();
 
   useEffect(() => {
     if (notifiedRef.current === null) {

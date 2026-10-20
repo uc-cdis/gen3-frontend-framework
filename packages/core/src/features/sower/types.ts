@@ -55,7 +55,6 @@ export type JobOutputAction = JobActionFunction<Record<string, unknown>, void>;
 export interface JobActionFunctionConfig {
   name: string;
   parameters?: Record<string, unknown>;
-  message?: string; // custom message to display in the UI when the job is running
 }
 
 export interface BoundJobActionConfig<T> extends JobActionFunctionConfig {
@@ -84,7 +83,14 @@ export enum SowerJobStage {
 export interface ExtendedJobStatus extends JobStatus {
   created: number;
   updated: number;
+  /**
+   * Set the output data from the completed job
+   */
   outputGUID?: string;
+  /**
+   * Set when the output action indicates an error
+   */
+  outputError?: boolean;
   /**
    * Set when a job has been Unknown for longer than the configured timeout.
    * Polling is paused until the user retries or the status changes.

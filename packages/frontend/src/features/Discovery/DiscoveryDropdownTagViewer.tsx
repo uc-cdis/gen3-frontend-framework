@@ -1,6 +1,7 @@
-import React, { JSX, useEffect, useRef, useState } from 'react';
+import type { JSX } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Group, MultiSelect } from '@mantine/core';
-import { CategoryObject } from './types';
+import type { CategoryObject } from './types';
 import { useDiscoveryContext } from './DiscoveryProvider';
 
 interface RenderMultiSelectOptionProps {
@@ -107,6 +108,7 @@ interface DiscoveryDropdownTagViewerProps {
 const DiscoveryDropdownTagViewer = ({
   tagCategoryData,
 }: DiscoveryDropdownTagViewerProps) => {
+  console.log('tagCategoryData', tagCategoryData);
   if (!tagCategoryData || tagCategoryData?.length === 0) return null;
 
   return (

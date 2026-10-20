@@ -52,11 +52,11 @@
           "title": "Discover Datasets"
         },
         "exportToDataLibrary": {
-          "enabled" : true,
-          "buttons" : [
+          "enabled": true,
+          "buttons": [
             {
-              "type" : "add-to-data-library",
-              "label" : "Add to Data Library"
+              "type": "add-to-data-library",
+              "label": "Add to Data Library"
             }
           ]
         },
@@ -242,19 +242,19 @@
         "authzField": "authz",
         "tagsListFieldName": "tags",
         "dataAvailabilityField": "data_availability",
-        "uid": "_hdp_uid"
+        "uid": "_unique_id"
       },
       "tags": {
         "tagCategories": [
           {
             "name": "Condition",
             "color": "#532565",
-            "display": false
+            "display": true
           },
           {
-            "name": "Data Type",
+            "name": "Commons",
             "color": "#982568",
-            "display": false
+            "display": true
           }
         ]
       }

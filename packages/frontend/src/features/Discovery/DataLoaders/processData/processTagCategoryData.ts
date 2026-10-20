@@ -1,14 +1,15 @@
 import type { JSONObject } from '@gen3/core/server';
 import type { DiscoveryIndexConfig } from '../../types';
 
-interface category {
+interface Category {
   name: string;
   displayName?: string;
   display: boolean;
   color: string;
 }
-interface categoryData {
+interface CategoryData {
   categoryDisplayName: string;
+  category: string;
   color: string;
   tags: string[];
 }
@@ -21,8 +22,8 @@ const processTagCategoryData = (
   data: Array<JSONObject>,
   discoveryConfig: DiscoveryIndexConfig,
 ) => {
-  const allCategoryData: categoryData[] = [];
-  const getTagsInCategory = (category: category) => {
+  const allCategoryData: CategoryData[] = [];
+  const getTagsInCategory = (category: Category) => {
     if (!data?.length) {
       return [];
     }
@@ -41,7 +42,7 @@ const processTagCategoryData = (
     return tagArray;
   };
 
-  discoveryConfig.tags.tagCategories.map((category: category) => {
+  discoveryConfig.tags.tagCategories.map((category: Category) => {
     let categoryDisplayName = category.displayName;
     if (!categoryDisplayName) {
       // Capitalize category name
@@ -55,6 +56,7 @@ const processTagCategoryData = (
     const tagsInCategory = getTagsInCategory(category);
     const categoryData = {
       categoryDisplayName: categoryDisplayName,
+      category: category.name,
       color: category.color,
       tags: tagsInCategory,
     };

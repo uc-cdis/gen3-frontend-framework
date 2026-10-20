@@ -1,5 +1,5 @@
-import { JSONObject } from '@gen3/core';
-import { DiscoveryIndexConfig } from '../types';
+import type { JSONObject } from '@gen3/core';
+import type { DiscoveryIndexConfig } from '../types';
 
 export interface QueryType {
   term: string;

@@ -22,6 +22,11 @@ interface UpdateSowerJobCompleted {
   jobId: JobId;
   stage: SowerJobStage;
   status: SowerJobStatus;
+}
+
+interface UpdateSowerJobOutputError {
+  jobId: JobId;
+  outputError: boolean;
   outputGUID?: string;
 }
 
@@ -123,13 +128,25 @@ const sowerJobsListSlice = createSlice({
       }
     },
     updateSowerJob: (state, action: PayloadAction<UpdateSowerJobCompleted>) => {
-      const { jobId, stage, status, outputGUID } = action.payload;
+      const { jobId, stage, status } = action.payload;
       sowerJobListAdapter.updateOne(state, {
         id: jobId,
         changes: {
           stage: stage,
           updated: Date.now(),
           status: status,
+        },
+      });
+    },
+    updateSowerJobOutputError: (
+      state,
+      action: PayloadAction<UpdateSowerJobOutputError>,
+    ) => {
+      const { jobId, outputGUID, outputError } = action.payload;
+      sowerJobListAdapter.updateOne(state, {
+        id: jobId,
+        changes: {
+          outputError: outputError,
           outputGUID: outputGUID,
         },
       });
@@ -148,6 +165,7 @@ export const {
   retrySowerJobStatus,
   updateSowerJobStage,
   updateSowerJob,
+  updateSowerJobOutputError,
 } = sowerJobsListSlice.actions;
 
 export const sowerJobsListReducer = sowerJobsListSlice.reducer;

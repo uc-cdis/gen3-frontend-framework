@@ -88,7 +88,10 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
   };
 
   return (
-    <Stack key={title} className="rounded-sm rounded-t-md bg-base-max p-0">
+    <Stack
+      key={title}
+      className="rounded-sm rounded-t-md bg-base-max p-0 shadow-sm border-2 border-base-light"
+    >
       <div className="relative h-[28em]">
         <div className="p-0 h-max-1/3 h-1/3 flex justify-center items-start relative overflow-hidden auto-rows-min">
           <Image

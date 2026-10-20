@@ -1,9 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import {
   selectSowerJobsList,
   SowerJobStage,
   SowerJobStatus,
   updateSowerJob,
+  updateSowerJobOutputError,
   useCoreDispatch,
   useCoreSelector,
   useLazyGetSowerOutputQuery,
@@ -21,13 +22,7 @@ import { isValidUrl } from '../../utils/isUrl';
 const useJobOutputAction: () => void = () => {
   const jobs = useCoreSelector(selectSowerJobsList);
   const dispatch = useCoreDispatch();
-  const [fetchOutput, fetchOutputResults] = useLazyGetSowerOutputQuery();
-  // Held in a ref so the effect dependency array only reacts to job list
-  // changes, not to RTK Query trigger identity changes between renders.
-  const fetchOutputRef = useRef(fetchOutput);
-  useEffect(() => {
-    fetchOutputRef.current = fetchOutput;
-  }, [fetchOutput]);
+  const [fetchOutput] = useLazyGetSowerOutputQuery();
 
   useEffect(() => {
     const pending = jobs.filter(
@@ -45,37 +40,35 @@ const useJobOutputAction: () => void = () => {
         }),
       );
 
-      const setOutputStageError = (msg?: string) => {
-        dispatch(
-          updateSowerJob({
-            jobId: job.uid,
-            stage: SowerJobStage.SendJobOutput,
-            status: SowerJobStatus.Failed,
-            outputGUID: msg,
-          }),
-        );
-      };
-
-      console.log('useJobOutputAction');
-
-      fetchOutputRef
-        .current(job.uid)
+      fetchOutput(job.uid)
         .then(async ({ data, error }) => {
-          console.log('output data', data);
           if (error) {
-            // failure notification is handled by useSowerFailureNotifications
-            setOutputStageError();
+            console.warn(
+              `useJobOutputAction: job ${job.uid} failed to fetch output`,
+            );
             return;
           }
 
-          console.log('output data', data);
-
-          if (data && !isValidUrl(data.output)) {
+          if (!data) {
             console.warn(
-              `useJobOutputAction: job ${job.uid} has invalid output URL`,
+              `useJobOutputAction: job ${job.uid} has no output data`,
             );
-            setOutputStageError(data.output);
             return;
+          }
+
+          // if there is a mesdage and not a output url
+          // then set the output error and continue to display the message
+          if (!isValidUrl(data.output)) {
+            console.warn(
+              `useJobOutputAction: job ${job.uid} has invalid output URL setting to failed`,
+            );
+            dispatch(
+              updateSowerJobOutputError({
+                jobId: job.uid,
+                outputGUID: data.output,
+                outputError: true,
+              }),
+            );
           }
 
           if (!job.actions.outputAction) {
@@ -95,20 +88,19 @@ const useJobOutputAction: () => void = () => {
           await outputAction?.actionFunction({
             parameters: {
               ...job.actions.outputAction.parameters,
-              output: data?.output,
+              output: data.output,
               guid: job.uid,
             },
           });
         })
         .catch((err: Error) => {
-          setOutputStageError();
           console.error(
             `useJobOutputAction: failed to fetch output for job ${job.uid}`,
             err,
           );
         });
     }
-  }, [jobs, dispatch]);
+  }, [jobs, dispatch, fetchOutput]);
 };
 
 export default useJobOutputAction;

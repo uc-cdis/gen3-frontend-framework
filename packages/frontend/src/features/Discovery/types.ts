@@ -39,6 +39,7 @@ export interface SelectedTags {
 
 export interface CategoryObject {
   categoryDisplayName: string;
+  category: string;
   tags: string[];
   color: string;
 }

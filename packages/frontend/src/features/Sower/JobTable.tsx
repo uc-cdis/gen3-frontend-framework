@@ -108,6 +108,7 @@ const JobTable = ({ data }: JobTableProps) => {
               radius="sm"
             >
               {isStale ? 'Status unavailable' : row.original.status}
+              {row.original.outputError ? '!' : ''}
             </Badge>
           );
           if (row.original.status !== 'Unknown') return badge;

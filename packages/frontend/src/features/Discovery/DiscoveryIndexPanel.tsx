@@ -153,7 +153,7 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
 
     const allowedTypes = new Set(categoryTypes);
     return tagCategoryData.filter((category) =>
-      allowedTypes.has(category.categoryDisplayName),
+      allowedTypes.has(category.category),
     );
   }, [tagCategoryData, categoryTypes]);
 
@@ -204,7 +204,9 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
                   </Grid.Col>
                   {enableSearchableTags && (
                     <Grid.Col span={4}>
-                      <div className="flex justify-end items-center">
+                      <div
+                        className={`flex justify-end items-center ${discoveryConfig?.features?.search?.searchBar?.inputSubtitle ? 'pt-6' : ''}`}
+                      >
                         <Button
                           onClick={() => setSelectedTags({})}
                           variant="outline"

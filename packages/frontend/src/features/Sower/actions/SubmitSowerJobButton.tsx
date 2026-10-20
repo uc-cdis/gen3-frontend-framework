@@ -4,9 +4,15 @@ import type { ButtonProps } from '@mantine/core';
 import { Button, Tooltip } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import type { CreateAndExportOutputConfig } from '@gen3/core';
-import { useIsUserLoggedIn, useSubmitSowerJobMutation } from '@gen3/core';
+import {
+  isString,
+  useIsUserLoggedIn,
+  useSubmitSowerJobMutation,
+} from '@gen3/core';
 import { buildSubmitSowerJob } from './sowerActionUtils';
 import { hasOutputAction } from './sowerActionFactory';
+
+const DEFAULT_JOB_START_MESSAGE = 'Job Submitted Successfully';
 
 interface SubmitSowerJobButtonProps {
   actions: CreateAndExportOutputConfig;
@@ -88,13 +94,19 @@ const SubmitSowerJobButton = forwardRef<
     const isLoggedIn = useIsUserLoggedIn();
     const buttonDisabled = disabled || !isLoggedIn;
 
+    // parameters is Record<string, unknown>, so narrow before using as a message
+    const startedMessage = actions.jobAction?.parameters?.jobStartedMessage;
+    const jobStartedMessage = isString(startedMessage)
+      ? startedMessage
+      : DEFAULT_JOB_START_MESSAGE;
+
     useEffect(() => {
       if (isSuccess) {
         if (onSuccess) onSuccess();
         else
           notifications.show({
             title: 'Job Submission',
-            message: 'Job Submitted Successfully',
+            message: jobStartedMessage,
           });
       }
       if (isError) {
@@ -105,7 +117,7 @@ const SubmitSowerJobButton = forwardRef<
             message: 'Job Submission Failed',
           });
       }
-    }, [isSuccess, isError, onError, onSuccess]);
+    }, [isSuccess, isError, onError, onSuccess, jobStartedMessage]);
 
     const { jobAction, outputAction } = actions;
 

@@ -47,8 +47,6 @@ const DiscoveryProvider = ({
     [discoveryIndexConfig],
   );
 
-  console.log('supportedAccessLevels', [...supportedAccessLevels]);
-
   const [selectedTags, setSelectedTags] = useState<{ [key: string]: boolean }>(
     {},
   );

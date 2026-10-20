@@ -21,6 +21,7 @@ const RowDetailPanelTags = ({ rowTags }: RowDetailPanelProps) => {
         const { color, display, label } = getTagInfo(tag, config.tags);
 
         if (!display) return null;
+        if (!label) return null;
         const active = Object.keys(selectedTags).includes(tag.name);
 
         const handleChange = (
