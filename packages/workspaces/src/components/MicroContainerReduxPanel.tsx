@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useState, useMemo } from 'react';
-import { Alert, Button, Loader, Select, ComboboxItem } from '@mantine/core';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import type { ComboboxItem } from '@mantine/core';
+import { Alert, Button, Loader, Select } from '@mantine/core';
 import { useInterval } from '@mantine/hooks';
 import {
   selectJEGActiveWorkspaceStatus,
@@ -32,10 +33,23 @@ const icon = <Icon icon="gen3:error-outline" size={24} />;
 const PanelStyle =
   'h-full w-full flex flex-col items-center justify-start gap-6 px-6 mt-20';
 
-const MicroContainerReduxPanel = ({enableOptions = false}) => {
+interface MicroContainerReduxPanelProps {
+  enableOptions?: boolean;
+  label?: string;
+}
+
+const MicroContainerReduxPanel = ({
+  enableOptions = false,
+  label = ' Start your personal micro compute environment. Use it for light analysis, upgrade to a GPU kernel when you need to run large workflows.',
+}: MicroContainerReduxPanelProps) => {
   const { launch, terminate, containerHash } = useMicroContainerReduxContext();
-  const { data: hatcheryOptions, isLoading: isHatcheryOptionsLoading, isError: isHatcheryOptionsError} = useHatcheryOptionsQuery();
-  const [ workspaceOptionSelected, setWorkspaceOptionSelected ] = useState<ComboboxItem | null>(null);
+  const {
+    data: hatcheryOptions,
+    isLoading: isHatcheryOptionsLoading,
+    isError: isHatcheryOptionsError,
+  } = useHatcheryOptionsQuery();
+  const [workspaceOptionSelected, setWorkspaceOptionSelected] =
+    useState<ComboboxItem | null>(null);
 
   const status = useCoreSelector(selectJEGActiveWorkspaceStatus);
   const requestedStatusTimestamp: number = useCoreSelector(
@@ -76,59 +90,56 @@ const MicroContainerReduxPanel = ({enableOptions = false}) => {
   }, [status, resetStatus]);
 
   const simpleLaunchWorkspaceBtn = (
-    <Button variant="outline" color="accent.3" onClick={()=>launch()}>
+    <Button variant="outline" color="accent.3" onClick={() => launch()}>
       Launch Workspace
     </Button>
   );
 
-  const launchWorkspaceBtn = useMemo(()=>{
+  const launchWorkspaceBtn = useMemo(() => {
     if (isHatcheryOptionsLoading) {
-      return (<Loader size={24} />);
+      return <Loader size={24} />;
     }
     if (isHatcheryOptionsError) {
       return (
-          <Alert
-            variant="light"
-            color="accentWarm.4"
-            title="Options API Error"
-            icon={icon}
-          >
-            Failed to Fetch Options
-          </Alert>
-        );
+        <Alert
+          variant="light"
+          color="accentWarm.4"
+          title="Options API Error"
+          icon={icon}
+        >
+          Failed to Fetch Options
+        </Alert>
+      );
     }
-    if ( hatcheryOptions && hatcheryOptions.length > 1) {
-
+    if (hatcheryOptions && hatcheryOptions.length > 1) {
       const workspaceOptionLaunch = () => {
         if (workspaceOptionSelected?.value) {
           launch(workspaceOptionSelected.value);
         }
       };
-      const hatcheryOptionForSelect = hatcheryOptions.map((obj)=>({
+      const hatcheryOptionForSelect = hatcheryOptions.map((obj) => ({
         label: obj.name,
-        value: obj.id
+        value: obj.id,
       }));
       return (
-        <div className='flex'>
+        <div className="flex">
           <Select
             rightSection={
-              <MdExpandMore
-                className="text-accent"
-                size="1.5em"
-                aria-hidden
-              />
+              <MdExpandMore className="text-accent" size="1.5em" aria-hidden />
             }
             withCheckIcon={false}
             data={hatcheryOptionForSelect}
-            value={workspaceOptionSelected ? workspaceOptionSelected.value : null}
-            placeholder='-- Select workspace type --'
+            value={
+              workspaceOptionSelected ? workspaceOptionSelected.value : null
+            }
+            placeholder="-- Select workspace type --"
             onChange={(_value, option) => setWorkspaceOptionSelected(option)}
-            classNames={{input: 'rounded-r-none'}}
+            classNames={{ input: 'rounded-r-none' }}
             color="accent.3"
           />
-          <Button 
+          <Button
             onClick={workspaceOptionLaunch}
-            className='rounded-l-none w-64 disabled:bg-accent-lighter disabled:text-accent-contrast'
+            className="rounded-l-none w-64 disabled:bg-accent-lighter disabled:text-accent-contrast"
             disabled={!workspaceOptionSelected?.value}
             color="accent.3"
           >
@@ -167,11 +178,9 @@ const MicroContainerReduxPanel = ({enableOptions = false}) => {
             className="text-accent"
           />
 
-          <p className="mt-2 max-w-lg text-sm text-base-darker">
-            Start your personal micro compute environment. Use it for light analysis, upgrade to a GPU kernel when you need to run large workflows.
-          </p>
+          <p className="mt-2 max-w-lg text-sm text-base-darker">{label}</p>
         </div>
-        { enableOptions ? launchWorkspaceBtn: simpleLaunchWorkspaceBtn }
+        {enableOptions ? launchWorkspaceBtn : simpleLaunchWorkspaceBtn}
       </div>
     );
   }
@@ -234,7 +243,7 @@ const MicroContainerReduxPanel = ({enableOptions = false}) => {
           <Button onClick={terminate} variant="outline">
             Terminate
           </Button>
-          <Button onClick={()=>launch()} variant="default">
+          <Button onClick={() => launch()} variant="default">
             Retry
           </Button>
         </div>
