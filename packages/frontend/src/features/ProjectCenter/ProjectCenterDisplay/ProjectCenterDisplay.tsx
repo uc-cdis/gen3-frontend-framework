@@ -166,7 +166,7 @@ const ProjectCenterDisplay = ({
   }
 
   useDeepCompareEffect(() => {
-    //fetch data based on row selection state
+    // report the selected study ids to the parent (the project list has no row selection yet, so this stays empty)
     setSelection(rowSelection ? Object.keys(rowSelection) : []);
   }, [rowSelection, setSelection]);
 

@@ -26,25 +26,22 @@ import { IoIosArrowDown, IoIosArrowUp, IoIosRefresh } from 'react-icons/io';
 import { useDiscoveryContext } from '../Discovery/DiscoveryProvider';
 import { useStudyIdFromWindow } from '../Discovery/utils/useStudyIdFromWindow';
 
-export interface DiscoveryIndexPanelProps {
+export interface ProjectCenterIndexPanelProps {
   indexSelector: ReactNode | null;
 }
 
 /**
- * DiscoveryIndexPanel is a React functional component that renders a discovery panel interface.
- * It includes features such as search, sorting, filtering, charts, export functionality, and a discovery table.
- * The component uses hooks for handling state, API data loading, and interface interactions.
+ * ProjectCenterIndexPanel renders the Project Center interface: summary statistics,
+ * keyword/tag/advanced search, optional charts, AI search and export actions, and the
+ * list of projects with their details (ProjectCenterDisplay).
+ * Configuration is read from the Discovery context (see the ProjectCenter configuration guide).
  *
  * @param {Object} props - The properties object passed to the component.
- * @param {Object} props.discoveryConfig - Configuration object for setting up the discovery panel.
- * @param {Object} props.discoveryConfig.features - Defines enabled features (e.g., search, charts, export).
- * @param {Object} props.discoveryConfig.minimalFieldMapping - Field mapping configuration, such as `uid`.
- * @param {JSX.Element} props.indexSelector - React component for selecting an index in the discovery panel.
+ * @param {ReactNode | null} props.indexSelector - optional element for selecting an index, shown before the statistics.
  *
- * @return {JSX.Element} A fully featured discovery interface including search functionality, a table, charts, filters, and more.
+ * @return {JSX.Element} the Project Center panel.
  */
-
-const ProjectCenterIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
+const ProjectCenterIndexPanel = ({ indexSelector }: ProjectCenterIndexPanelProps) => {
   const {
     discoveryConfig,
     selectedTags,
@@ -72,7 +69,7 @@ const ProjectCenterIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) =>
     searchBarTerms,
     DEBOUNCE_DELAY_TIME,
   );
-  const [selections, setSelections] = useState<string[]>([]); // table selections
+  const [selections, setSelections] = useState<string[]>([]); // ids of the selected studies, used by the export actions
   const [sorting] = useState<MRT_SortingState>([]);
 
   const [advancedSearchTerms, setAdvancedSearchTerms] =

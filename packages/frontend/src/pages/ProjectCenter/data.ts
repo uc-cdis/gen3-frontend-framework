@@ -14,7 +14,7 @@ export const ProjectCenterPageGetServerSideProps: GetServerSideProps<
       await ContentSource.getContentDatabase().get(
         `${GEN3_COMMONS_NAME}/projectCenter.json`,
       );
-    // need data library config for export from discovery using the DataLibrary
+    // the data library config provides the store mode used when exporting selected studies
     const datalibraryConfig: DataLibraryConfig =
       await ContentSource.getContentDatabase().get(
         `${GEN3_COMMONS_NAME}/dataLibrary.json`,

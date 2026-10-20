@@ -33,7 +33,7 @@ export interface ProjectCenterIndexConfig {
     authorization: DataAuthorization;
   };
   aggregations: SummaryStatisticsConfig[];
-  tags?: TagsConfig; // categories shown in the Study Filters dropdown
+  tags?: TagsConfig; // categories listed in the tag filter dropdown
   studyPreviewField?: StudyDetailsField;
   detailsView?: ProjectCenterDetailsConfig;
   minimalFieldMapping: MinimalFieldMapping;
