@@ -44,6 +44,9 @@ import Gen3Provider, {
 import DiscoveryPage from './pages/Discovery/DiscoveryPage';
 import { DiscoveryPageGetServerSideProps } from './pages/Discovery/data';
 
+import ProjectCenterPage from './pages/ProjectCenter/ProjectCenterPage';
+import { ProjectCenterPageGetServerSideProps } from './pages/ProjectCenter/data';
+
 import QueryPage from './pages/Query/QueryPage';
 import { QueryPageGetServerSideProps } from './pages/Query/data';
 
@@ -215,6 +218,8 @@ export {
   type Gen3AppConfigData,
   DiscoveryPage,
   DiscoveryPageGetServerSideProps,
+  ProjectCenterPage,
+  ProjectCenterPageGetServerSideProps,
   QueryPage,
   QueryPageGetServerSideProps,
   LandingPage,
