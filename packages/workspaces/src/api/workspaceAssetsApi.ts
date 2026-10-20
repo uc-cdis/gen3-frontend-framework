@@ -19,7 +19,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
 import nodePath from 'path';
-import { GEN3_COMMONS_NAME } from '@gen3/core';
+import { GEN3_COMMONS_NAME, GEN3_FENCE_SERVICE } from '@gen3/core';
 import { getAccessToken } from '@gen3/frontend/server';
 import {
   createWorkspaceAssetsHandler,
@@ -50,6 +50,18 @@ const DEFAULT_OPTIONS: WorkspaceAssetsHandlerOptions = {
   // ingress (avoiding self-signed-cert issues). Readable from the JSON config
   // file or the WORKSPACE_PROXY_URL env var.
   serverExtensionProxyBaseUrl: process.env.WORKSPACE_PROXY_URL || undefined,
+  // Fence JWKS used to verify the caller's JWT signature before its claims are
+  // trusted for the REMOTE_USER / X-Gen3-User-ID headers. Override with
+  // WORKSPACE_JWKS_URL if Fence is not reachable at GEN3_FENCE_SERVICE.
+  jwksUrl:
+    process.env.WORKSPACE_JWKS_URL || `${GEN3_FENCE_SERVICE}/.well-known/jwks`,
+  // Hosts the proxy may target when no base URL is set (origin then comes from
+  // request headers). Comma-separated; unset → loopback only.
+  allowedHosts: process.env.WORKSPACE_ALLOWED_HOSTS
+    ? process.env.WORKSPACE_ALLOWED_HOSTS.split(',')
+        .map((h) => h.trim())
+        .filter(Boolean)
+    : undefined,
   // Direct calls to serverExtensionProxyBaseUrl bypass nginx, which normally
   // injects the X-Gen3-User-ID/REMOTE_USER headers workspace-proxy requires —
   // reuse this app's cookie extraction to inject them explicitly instead.
@@ -71,6 +83,7 @@ const STRING_OPTIONS = [
   'fullThemesUrl',
   'serverExtensionProxyPath',
   'serverExtensionProxyBaseUrl',
+  'jwksUrl',
 ] as const satisfies ReadonlyArray<keyof WorkspaceAssetsHandlerOptions>;
 
 function configFilePath(): string {
@@ -83,7 +96,7 @@ function configFilePath(): string {
 }
 
 /**
- * Pick and type-check the known option keys. Unknown keys are ignored so a
+ * Pick and type-check the known option keys. Unknown keys are ignored, so a
  * config file can carry extra metadata without reaching the factory,
  * and a wrong-typed value falls back to its default instead of throwing.
  */
@@ -110,6 +123,25 @@ function parseOptions(raw: unknown): WorkspaceAssetsHandlerOptions {
     }
   }
 
+  for (const key of [
+    'allowedHosts',
+    'forwardedHeaders',
+    'forwardedCookies',
+  ] as const) {
+    const value = source[key];
+    if (value === undefined) continue;
+    if (
+      Array.isArray(value) &&
+      value.every((entry) => typeof entry === 'string')
+    ) {
+      parsed[key] = value;
+    } else {
+      console.warn(
+        `[workspace-assets] ignoring ${key}: expected an array of strings.`,
+      );
+    }
+  }
+
   const extensions = source.additionalDisabledExtensions;
 
   // oxlint-disable-next-line no-console
@@ -129,10 +161,6 @@ function parseOptions(raw: unknown): WorkspaceAssetsHandlerOptions {
       );
     }
   }
-
-  // oxlint-disable-next-line no-console
-  console.log('parsed options', parsed);
-
   return { ...DEFAULT_OPTIONS, ...parsed };
 }
 
@@ -156,7 +184,8 @@ let loadedConfigMtimeMs: number | undefined;
 /** mtime of the config file, or undefined when it does not exist. */
 function configMtimeMs(): number | undefined {
   try {
-    return fs.statSync(configFilePath()).mtimeMs;
+    const file = configFilePath();
+    return fs.statSync(file).mtimeMs;
   } catch {
     return undefined;
   }
