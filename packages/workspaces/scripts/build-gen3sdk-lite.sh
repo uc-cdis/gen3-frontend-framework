@@ -115,7 +115,6 @@ patch_file() {
 # Format: "name|git_url|subdir"  (subdir is optional)
 REPOS=(
   "cdislogging|https://github.com/uc-cdis/cdislogging.git"
-  "cryptography|https://github.com/pyca/cryptography"
   "fastavro|https://github.com/fastavro/fastavro.git"
   "drsclient|https://github.com/uc-cdis/drsclient.git"
   "indexd|https://github.com/uc-cdis/indexd.git|indexclient"
@@ -365,6 +364,10 @@ verify_pure_python() {
       *-py3-none-any.whl|*-py2.py3-none-any.whl) ;;
       *) bad+=("${base}") ;;
     esac
+    # A retagged wheel can still carry compiled extensions; reject those too.
+    if python3 -c 'import sys,zipfile; sys.exit(0 if any(n.endswith((".so",".pyd",".dylib")) for n in zipfile.ZipFile(sys.argv[1]).namelist()) else 1)' "${whl}"; then
+      bad+=("${base} (contains native extension)")
+    fi
   done
 
   if (( ${#bad[@]} > 0 )); then
