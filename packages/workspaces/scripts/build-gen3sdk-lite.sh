@@ -115,6 +115,7 @@ patch_file() {
 # Format: "name|git_url|subdir"  (subdir is optional)
 REPOS=(
   "cdislogging|https://github.com/uc-cdis/cdislogging.git"
+  "authutils|https://github.com/uc-cdis/authutils.git"
   "fastavro|https://github.com/fastavro/fastavro.git"
   "drsclient|https://github.com/uc-cdis/drsclient.git"
   "indexd|https://github.com/uc-cdis/indexd.git|indexclient"
@@ -187,6 +188,15 @@ apply_patches() {
     "${SOURCES_DIR}/dictionaryutils/pyproject.toml"
 
 
+
+  # authutils: PyPI's 9.x requires cryptography>=50, but Pyodide bundles an older
+  # wasm build (47.x) and micropip cannot satisfy the pin ("Can't find a pure
+  # Python 3 wheel for 'cryptography>=50.0.0'"). cryptography can't be built for
+  # the browser here (Rust/C), so relax the floor to what Pyodide provides.
+  # gen3 only uses authutils.dpop (JWT/DPoP signing), which works on 47.x.
+  patch_file "Patched authutils: cryptography constraint relaxed to >=45.0.0" \
+    's/cryptography = ">=50\.0\.0"/cryptography = ">=45.0.0"/' \
+    "${SOURCES_DIR}/authutils/pyproject.toml"
 
   # fastavro: force setup.py to skip building the Cython/C extensions.
   #
