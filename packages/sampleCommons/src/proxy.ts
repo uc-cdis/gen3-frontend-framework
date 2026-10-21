@@ -7,6 +7,7 @@ export const config = {
   "/DataLibrary",
   "/Workspaces",
   "/WorkspaceRequestAccess",
-  "/Profile"
+  "/Profile",
+  "/FHIRQuery"
 ],
 };

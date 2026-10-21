@@ -47,6 +47,8 @@ export const GEN3_REQUESTOR_API =
   process.env.NEXT_PUBLIC_GEN3_REQUESTOR_API || `${GEN3_API}/requestor`;
 export const GEN3_ANALYSIS_API =
   process.env.NEXT_PUBLIC_GEN3_ANALYSIS_API || `${GEN3_API}/analysis/v0`;
+export const GEN3_FHIR_API =
+  process.env.NEXT_PUBLIC_GEN3_FHIR_API || `${GEN3_API}/fhir`;
 
 export enum Accessibility {
   ACCESSIBLE = 'accessible',
