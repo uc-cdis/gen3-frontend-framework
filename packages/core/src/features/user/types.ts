@@ -1,4 +1,4 @@
-import { AuthzMapping } from '../authz';
+import type { AuthzMapping } from '../authz';
 
 export interface NamedURL {
   name: string;
@@ -48,17 +48,10 @@ export interface UserProfile {
 export type Gen3User = Partial<UserProfile>;
 
 export type LoginStatus =
-  | 'authenticated'
-  | 'unauthenticated'
-  | 'pending'
-  | 'not present';
+  'authenticated' | 'unauthenticated' | 'pending' | 'not present';
 
 export type JWTSessionStatus =
-  | 'not present'
-  | 'issued'
-  | 'expired'
-  | 'invalid'
-  | 'error';
+  'not present' | 'issued' | 'expired' | 'invalid' | 'error';
 
 export interface ExistingSession {
   expires: number;

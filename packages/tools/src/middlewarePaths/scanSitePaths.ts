@@ -10,12 +10,49 @@ const dev = process.env.NODE_ENV !== 'production';
 loadEnvConfig(process.cwd(), dev);
 
 const GEN3_COMMONS_NAME = process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME || 'gen3';
+const LOGIN_ROUTE = '/Login';
+// Paths the match-all proxy must not intercept: Next internals, static assets and the
+// backend services that the dev server proxies to the commons via rewrites (see
+// next.config.js). Redirecting those to /Login would break API calls such as /_status.
+const BACKEND_PROXY_PATHS = [
+  '_status',
+  'user',
+  'guppy',
+  'job',
+  'mds',
+  'ai-search',
+  'authz',
+  'lw-workspace',
+  'wts',
+  'library',
+  'manifests',
+  'dashboard',
+  'requestor',
+  'index',
+  'workspace-api',
+];
+const MATCH_ALL_EXCLUSIONS = [
+  '_next/static',
+  '_next/image',
+  '_next/data',
+  'api',
+  '403',
+  '404',
+  'no-workspace-access',
+  'favicon.ico',
+  '.*\\.ico$',
+  '.*\\.png$',
+  '.*\\.jpg$',
+  '.*\\.svg$',
+  '.*\\.json$',
+  ...BACKEND_PROXY_PATHS.map((p) => `${p}(?:/|$)`),
+];
+
 const PAGE_EXT_RE = /\.(tsx|ts|jsx|js)$/;
 
 const DEFAULT_EXCLUDED_ROUTES = [
   '/403',
   '/404',
-  '/Login',
   '/*',
   '/api',
   '/no-workspace-access',
@@ -187,10 +224,11 @@ const createMiddlewareRoutes = (
   let matcher = (routes || []).map(routeToMiddlewareMatcher);
 
   if (matcher.length === 0) {
-    matcher = [
-      '/((?!_next/static|_next/image|_next/data|Login|api|403|404|no-workspace-access|favicon.ico|.*\\.ico$|.*\\.png$|.*\\.jpg$|.*\\.svg$|.*\\.json$).*)',
-    ];
+    matcher = [`/((?!${MATCH_ALL_EXCLUSIONS.join('|')}).*)`];
   }
+  
+  // The proxy redirects logged in users away from the Login page, so it must see /Login
+  matcher.push(LOGIN_ROUTE);
 
   console.log(`proxy matcher entries:\n${matcher.join('\n')}`);
   writeGeneratedMiddlewareEntryTs(matcher);

@@ -1,40 +1,68 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { JSONPath } from 'jsonpath-plus';
-import {
+import type {
   AggregationsData,
   CoreState,
   JSONObject,
   MetadataPaginationParams,
+} from '@gen3/core';
+import {
+  type ResourceAuthzMapping,
   selectAuthzMappingData,
+  selectMeshAuthzMapping,
   useCoreSelector,
   useGetAggMDSQuery,
   useGetMDSQuery,
 } from '@gen3/core';
 import { useMiniSearch } from 'react-minisearch';
-import MiniSearch, { Suggestion } from 'minisearch';
-import {
+import type {
   AdvancedSearchFilters,
   DiscoverDataHookResponse,
   DiscoveryDataLoaderProps,
   KeyValueSearchFilter,
   SearchTerms,
+  SelectedTags,
 } from '../../types';
-import filterByAdvSearch from './filterByAdvSearch';
+import filterByAdvSearch from './../processData/filterByAdvSearch';
 import { hasSearchTerms } from '../../Search/utils';
 import {
+  addCommonsToTags,
   processAdvancedSearchTerms,
   processAllSummaries,
   processAuthorizations,
   processChartData,
 } from '../utils';
-import { SummaryStatisticsConfig } from '../../Statistics';
-import { SummaryStatistics } from '../../Statistics/types';
+import type { SummaryStatisticsConfig } from '../../Statistics';
+import type { SummaryStatistics } from '../../Statistics/types';
 import { useDeepCompareEffect } from 'use-deep-compare';
-import { GetDataProps, GetDataResponse, MetadataDataHook } from '../types';
+import type { GetDataProps, GetDataResponse, MetadataDataHook } from '../types';
 import { getManualSortingAndPagination } from '../../utils';
+import { useStudiesWithIds } from '../useStudiesWithIds';
+import filterByAccessLevels from '../processData/filterByAccessLevels';
+import { filterByTags, processTagCategoryData } from '../processData';
+
+const EMPTY_MESH_AUTHZ: ResourceAuthzMapping = {};
+
+// module-level so the reference is stable; an inline literal is a new object
+// every render and re-runs effects that depend on it
+const DISABLED_ADV_SEARCH_FILTERS: AdvancedSearchFilters = {
+  enabled: false,
+  field: '',
+  displayName: '',
+  filters: [],
+};
+
+const NO_SELECTED_TAGS: SelectedTags = {};
 
 // TODO remove after debugging
 // import { reactWhatChanged as RWC } from 'react-what-changed';
+
+// Lowercase and remove punctuation/symbols; returning null makes MiniSearch
+// discard terms that are nothing but punctuation.
+const stripPunctuation = (term: string): string | null => {
+  const cleaned = term.toLowerCase().replace(/[\p{P}\p{S}]/gu, '');
+  return cleaned.length > 0 ? cleaned : null;
+};
 
 const buildMiniSearchKeywordQuery = (terms: SearchTerms) => {
   const keywords = terms.keyword.keywords?.filter((x) => x.length > 0) ?? [];
@@ -101,7 +129,6 @@ const useGetMDSData = ({
   discoveryConfig,
 }: Partial<GetDataProps>): GetDataResponse => {
   const [mdsData, setMDSData] = useState<Array<JSONObject>>([]);
-  const [isError, setIsError] = useState(false);
 
   const {
     data,
@@ -117,43 +144,78 @@ const useGetMDSData = ({
     pageSize: maxStudies,
   });
 
+  const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
+
+  const studies = useMemo(
+    () =>
+      data
+        ? Object.values(data.data)
+            .map((entry) => entry[studyField] as JSONObject | undefined)
+            .filter((study): study is JSONObject => !!study)
+        : undefined,
+    [data, studyField],
+  );
+  const { studiesWithIds, missingIdCount } = useStudiesWithIds(
+    studies,
+    uidField,
+  );
+  const studyData = useMemo(
+    () => studiesWithIds.map((study) => addCommonsToTags(study)),
+    [studiesWithIds],
+  );
+
   const authMapping = useCoreSelector((state: CoreState) =>
     selectAuthzMappingData(state),
   );
 
-  useEffect(() => {
-    if (data && isSuccess) {
-      const studyData = Object.values(data.data).reduce(
-        (acc: JSONObject[], cur: JSONObject) => {
-          return cur[studyField]
-            ? [...acc, cur[studyField] as JSONObject]
-            : acc;
-        },
-        [],
-      );
+  const isMesh = !!discoveryConfig?.features?.authorization?.isMesh;
+  // the mapping is fetched once at app level (Gen3ModalsProvider), so read it from the store
+  const meshAuthz = useCoreSelector((state: CoreState) =>
+    selectMeshAuthzMapping(state),
+  );
 
+  // non-mesh commons use the empty mapping right away;
+  // mesh commons wait for the query to succeed; a failure sets isError
+  const meshAuthzMapping =
+    isMesh && meshAuthz.data ? meshAuthz.data : EMPTY_MESH_AUTHZ;
+  const isMeshAuthzResolved = !isMesh || meshAuthz.isSuccess;
+
+  // derived, not stored: stays in sync with the queries and clears on a successful refetch
+  const isError = queryIsError || (isMesh && meshAuthz.isError);
+
+  useDeepCompareEffect(() => {
+    if (data && isSuccess && isMeshAuthzResolved) {
       if (discoveryConfig?.features?.authorization?.enabled) {
         setMDSData(
-          processAuthorizations(studyData, discoveryConfig, {
-            default: authMapping,
-          }),
+          processAuthorizations(
+            studyData,
+            discoveryConfig,
+            {
+              default: authMapping,
+            },
+            meshAuthzMapping,
+          ),
         );
       } else setMDSData(studyData);
     }
-  }, [authMapping, data, discoveryConfig, isSuccess, studyField]);
-
-  useEffect(() => {
-    if (queryIsError) {
-      setIsError(true);
-    }
-  }, [queryIsError]);
+  }, [
+    authMapping,
+    data,
+    studyData,
+    discoveryConfig,
+    isSuccess,
+    isMeshAuthzResolved,
+    meshAuthzMapping,
+  ]);
 
   return {
     mdsData,
+    missingIdCount,
     isUninitialized,
-    isFetching,
-    isLoading,
-    isSuccess,
+    isFetching: isFetching || (isMesh && meshAuthz.isLoading),
+    isLoading:
+      isLoading || (isMesh && !isMeshAuthzResolved && !meshAuthz.isError),
+    isSuccess: isSuccess && isMeshAuthzResolved,
     isError,
   };
 };
@@ -165,7 +227,6 @@ const useGetAggMDSData = ({
   discoveryConfig,
 }: Partial<GetDataProps>): GetDataResponse => {
   const [mdsData, setMDSData] = useState<Array<JSONObject>>([]);
-  const [isError, setIsError] = useState(false);
 
   const {
     data,
@@ -181,33 +242,66 @@ const useGetAggMDSData = ({
     pageSize: maxStudies,
   });
 
+  const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
+  const { studiesWithIds, missingIdCount } = useStudiesWithIds(
+    data?.data,
+    uidField,
+  );
+
   const authMapping = useCoreSelector((state: CoreState) =>
     selectAuthzMappingData(state),
   );
-  useEffect(() => {
-    if (data && isSuccess) {
+
+  const isMesh = !!discoveryConfig?.features?.authorization?.isMesh;
+  // the mapping is fetched once at app level (Gen3ModalsProvider), so read it from the store
+  const meshAuthz = useCoreSelector((state: CoreState) =>
+    selectMeshAuthzMapping(state),
+  );
+
+  // non-mesh commons use the empty mapping right away;
+  // mesh commons wait for the query to succeed; a failure sets isError
+  const meshAuthzMapping =
+    isMesh && meshAuthz.data ? meshAuthz.data : EMPTY_MESH_AUTHZ;
+  const isMeshAuthzResolved = !isMesh || meshAuthz.isSuccess;
+
+  useDeepCompareEffect(() => {
+    if (data && isSuccess && isMeshAuthzResolved) {
+      const withCommonsTags = studiesWithIds.map((x) => addCommonsToTags(x));
+
       if (discoveryConfig?.features?.authorization.enabled) {
         setMDSData(
-          processAuthorizations(data.data, discoveryConfig, {
-            default: authMapping,
-          }),
+          processAuthorizations(
+            withCommonsTags,
+            discoveryConfig,
+            {
+              default: authMapping,
+            },
+            meshAuthzMapping,
+          ),
         );
-      } else setMDSData(data.data);
+      } else setMDSData(withCommonsTags);
     }
-  }, [authMapping, data, discoveryConfig, isSuccess, studyField]);
+  }, [
+    authMapping,
+    data,
+    studiesWithIds,
+    discoveryConfig,
+    isSuccess,
+    isMeshAuthzResolved,
+    meshAuthzMapping,
+  ]);
 
-  useEffect(() => {
-    if (queryIsError) {
-      setIsError(true);
-    }
-  }, [queryIsError]);
+  // derived, not stored: stays in sync with the queries and clears on a successful refetch
+  const isError = queryIsError || (isMesh && meshAuthz.isError);
 
   return {
     mdsData,
+    missingIdCount,
     isUninitialized,
-    isFetching,
-    isLoading,
-    isSuccess,
+    isFetching: isFetching || (isMesh && meshAuthz.isLoading),
+    isLoading:
+      isLoading || (isMesh && !isMeshAuthzResolved && !meshAuthz.isError),
+    isSuccess: isSuccess && isMeshAuthzResolved,
     isError,
   };
 };
@@ -244,11 +338,11 @@ const useSearchMetadata = ({
     fields: searchOverFields,
     storeFields: [uidField],
     idField: uidField,
-    tokenize: (string, _fieldName) => string.split(' '),
+    tokenize: (string, _fieldName) => string.split(/[\s\p{P}\p{S}]+/u),
     extractField: extractValue,
-    //  processTerm: (term) => suffixes(term, 3),
+    processTerm: stripPunctuation,
     searchOptions: {
-      processTerm: MiniSearch.getDefault('processTerm'),
+      processTerm: stripPunctuation,
     },
   });
 
@@ -263,19 +357,9 @@ const useSearchMetadata = ({
     // we have the data, so set it and build the search index and get the advanced search filter values
     if (mdsData && isSuccess && mdsData.length > 0) {
       removeAll();
-      // check if an id is missing
-      const dataWithIds = mdsData.reduce((acc, cur) => {
-        if (!cur[uidField])
-          acc.push({
-            ...cur,
-            [uidField]: Math.random().toString(36).substring(7),
-          });
-        else acc.push(cur);
-        return acc;
-      }, [] as JSONObject[]);
-      addAll(dataWithIds);
+      addAll(mdsData);
     }
-  }, [addAll, isSuccess, mdsData, removeAll, uidField]);
+  }, [addAll, isSuccess, mdsData, removeAll]);
 
   useEffect(() => {
     if (mdsData && isSearching) {
@@ -302,13 +386,13 @@ const useSearchMetadata = ({
 
     setSearchedData(filterAdvancedSearchResults(filterKeywordSearchResults()));
 
-    setSuggestions(() => {
-      return (
-        miniSearchSuggestions?.map(
-          (suggestion: Suggestion) => suggestion.suggestion,
-        ) ?? []
-      );
+    const terms = new Set<string>();
+    miniSearchSuggestions?.slice(0, 100).forEach((suggestion) => {
+      suggestion.terms.forEach((term) => {
+        terms.add(term);
+      });
     });
+    setSuggestions([...terms]);
   }, [
     discoveryConfig,
     mdsData,
@@ -406,6 +490,7 @@ export const useLoadAllData = ({
   maxStudies = 10000,
   studyField = 'gen3_discovery',
   dataHook,
+  selectedAccessLevels,
 }: DiscoveryDataLoaderProps & {
   dataHook: MetadataDataHook;
 }): DiscoverDataHookResponse => {
@@ -419,6 +504,7 @@ export const useLoadAllData = ({
 
   const {
     mdsData,
+    missingIdCount,
     isUninitialized,
     isFetching,
     isLoading,
@@ -434,14 +520,12 @@ export const useLoadAllData = ({
   const manualSortingAndPagination =
     getManualSortingAndPagination(discoveryConfig);
 
+  const tagCategoryData = processTagCategoryData(mdsData, discoveryConfig);
+
   const { advancedSearchFilterValues } = useGetAdvancedSearchFilterValues({
     data: mdsData,
-    advancedSearchFilters: discoveryConfig.features?.advSearchFilters ?? {
-      enabled: false,
-      field: '',
-      displayName: '',
-      filters: [],
-    },
+    advancedSearchFilters:
+      discoveryConfig.features?.advSearchFilters ?? DISABLED_ADV_SEARCH_FILTERS,
     uidField,
   });
 
@@ -453,40 +537,60 @@ export const useLoadAllData = ({
     isSuccess,
   });
 
+  // memoized: filter() returns a new array, and usePagination's effect depends
+  // on this reference, so recomputing it every render loops forever
+  const accessLevelFiltered = useMemo(
+    () => filterByAccessLevels(searchedData, selectedAccessLevels),
+    [searchedData, selectedAccessLevels],
+  );
+
+  // fully filtered data: search → access levels → tags
+  const filteredByTags = useMemo(
+    () =>
+      filterByTags(
+        accessLevelFiltered,
+        searchTerms.selectedTags ?? NO_SELECTED_TAGS,
+        discoveryConfig,
+      ),
+    [accessLevelFiltered, searchTerms.selectedTags, discoveryConfig],
+  );
+
   // TODO: determine if this is even needed
   const { paginatedData } = usePagination({
-    data: searchedData,
+    data: filteredByTags,
     pagination,
   });
 
   useEffect(() => {
     setSummaryStatistics(
-      processAllSummaries(searchedData, discoveryConfig?.aggregations),
+      processAllSummaries(filteredByTags, discoveryConfig?.aggregations),
     );
     if (
       discoveryConfig.features.chartsSection?.charts &&
-      searchedData.length > 0
+      filteredByTags.length > 0
     )
       setChartData(
         processChartData(
-          searchedData,
+          filteredByTags,
           Object.keys(discoveryConfig.features.chartsSection.charts),
         ),
       );
   }, [
-    searchedData,
+    filteredByTags,
     discoveryConfig?.aggregations,
     discoveryConfig.features.chartsSection?.charts,
   ]);
 
   return {
-    data: manualSortingAndPagination ? paginatedData : searchedData,
-    hits: searchedData.length ?? -1,
+    data: manualSortingAndPagination ? paginatedData : filteredByTags,
+    hits: filteredByTags.length,
+    missingIdCount: missingIdCount ?? 0,
     clearSearch: clearSearchTerms,
     suggestions: suggestions,
     advancedSearchFilterValues,
     summaryStatistics,
     charts: chartData,
+    tagCategoryData: tagCategoryData,
     dataRequestStatus: {
       isUninitialized,
       isFetching,
@@ -505,6 +609,7 @@ export const useLoadAllMDSData = ({
   guidType = 'discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
+  selectedAccessLevels,
 }: DiscoveryDataLoaderProps) =>
   useLoadAllData({
     pagination,
@@ -515,6 +620,7 @@ export const useLoadAllMDSData = ({
     maxStudies,
     studyField,
     dataHook: useGetMDSData,
+    selectedAccessLevels,
   });
 
 export const useLoadAllAggMDSData = ({
@@ -525,6 +631,7 @@ export const useLoadAllAggMDSData = ({
   guidType = 'discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
+  selectedAccessLevels,
 }: DiscoveryDataLoaderProps) =>
   useLoadAllData({
     pagination,
@@ -535,4 +642,5 @@ export const useLoadAllAggMDSData = ({
     maxStudies,
     studyField,
     dataHook: useGetAggMDSData,
+    selectedAccessLevels,
   });

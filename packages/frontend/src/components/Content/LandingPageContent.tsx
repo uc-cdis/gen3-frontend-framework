@@ -37,6 +37,7 @@ export interface LeftRightProps {
   };
 }
 export interface LandingPageProps extends Gen3AppConfigData {
+  readonly redirectPage?: string; // redirect page instead of the landing page
   readonly topTitle?: string;
   readonly body?: ReadonlyArray<{
     readonly title?: {

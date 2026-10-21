@@ -23,6 +23,7 @@ export const userAuthApi = createApi({
   reducerPath: 'userAuthApi',
   refetchOnMountOrArgChange: 1800,
   refetchOnReconnect: true,
+  tagTypes: ['User'],
   baseQuery: async ({ endpoint }, { getState }) => {
     let results;
     const csrfToken = selectCSRFToken(getState() as CoreState);
@@ -65,6 +66,7 @@ export const userAuthApi = createApi({
               : 'unauthenticated',
         };
       },
+      providesTags: ['User'],
     }),
     getCSRF: builder.query<CSRFToken, void>({
       queryFn: async () => {

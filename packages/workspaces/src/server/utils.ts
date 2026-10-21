@@ -5,11 +5,13 @@
  * Also exports two token helpers used by the proxy factories:
  *  - extractTokenFallback: minimal cookie/header extraction used when the host
  *    app has not injected its own getToken (standalone / test use).
- *  - decodeJwtClaims: base64url decode of the JWT payload for REMOTE_USER header.
- *    Crypto verification is Ambassador's job — we only need the sub/username claim.
+ *  - decodeJwtClaims: base64url decode of the JWT payload (NO signature check).
+ *  - verifyJwtClaims: signature-verified claims via a remote JWKS; use this
+ *    whenever the claims are trusted for identity headers.
  */
 
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { createRemoteJWKSet, jwtVerify, type JWTVerifyGetKey } from 'jose';
 
 /**
  * Minimal JWT extraction fallback — used only when the host app does not inject
@@ -53,6 +55,36 @@ export function decodeJwtClaims(jwt: string): Record<string, unknown> | null {
       unknown
     >;
   } catch {
+    return null;
+  }
+}
+
+const jwksCache = new Map<string, JWTVerifyGetKey>();
+
+/**
+ * Verify a JWT's RS256 signature (and exp/nbf) against a remote JWKS, e.g.
+ * Fence's `/.well-known/jwks`, and return its claims. Returns null when the
+ * token is oversized, malformed, expired, or fails verification, or the JWKS
+ * cannot be fetched. The JWKS fetch is cached and rate-limited by jose.
+ */
+export async function verifyJwtClaims(
+  jwt: string,
+  jwksUrl: string,
+): Promise<Record<string, unknown> | null> {
+  if (jwt.length > MAX_JWT_LENGTH) return null;
+  try {
+    let getKey = jwksCache.get(jwksUrl);
+    if (!getKey) {
+      getKey = createRemoteJWKSet(new URL(jwksUrl));
+      jwksCache.set(jwksUrl, getKey);
+    }
+    const { payload } = await jwtVerify(jwt, getKey, {
+      algorithms: ['RS256'],
+    });
+    return payload as Record<string, unknown>;
+  } catch (error: unknown) {
+    const reason = error instanceof Error ? error.message : String(error);
+    console.warn(`[workspace-assets] JWT verification failed: ${reason}`);
     return null;
   }
 }

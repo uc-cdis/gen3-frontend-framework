@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 import {
   LinkAuthStatus,
   NavigationButtonProps,
@@ -80,12 +80,12 @@ const NavigationBar = ({
   const { loggedIn, pending, resources, routesConfig } =
     useNavigationAuthState();
 
-  const router = useRouter();
-  const [current, setCurrent] = useState(router.pathname);
+  const pathname = usePathname();
+  const [current, setCurrent] = useState(pathname);
 
   useEffect(() => {
-    setCurrent(router.asPath);
-  }, [router.asPath]);
+    setCurrent(pathname);
+  }, [pathname]);
 
   const navigationItems = items.map((item, index) => {
     const linkAuthStatus = checkRouteAccess(

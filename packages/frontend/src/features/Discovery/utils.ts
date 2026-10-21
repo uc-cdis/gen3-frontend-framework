@@ -1,6 +1,6 @@
 import { JSONPath } from 'jsonpath-plus';
-import { JSONObject } from '@gen3/core';
-import { DiscoveryIndexConfig } from './types';
+import type { JSONObject } from '@gen3/core';
+import type { DiscoveryIndexConfig } from './types';
 import { AccessLevel } from '../../utils';
 
 export const jsonPathAccessor = (path: string) => (row: JSONObject) => {
@@ -40,4 +40,48 @@ export const getAccessLevelFromNumber = (
     default:
       return undefined;
   }
+};
+
+const StringToSupportedAccessLevels: Record<string, AccessLevel> = {
+  accessible: AccessLevel.ACCESSIBLE,
+  unaccessible: AccessLevel.UNACCESSIBLE,
+  waiting: AccessLevel.WAITING,
+  not_available: AccessLevel.NOT_AVAILABLE,
+  other: AccessLevel.OTHER,
+  mixed: AccessLevel.MIXED,
+};
+
+/**
+ * Retrieves the list of supported access levels based on the provided configuration.
+ *
+ * @param {DiscoveryIndexConfig} config - The configuration object that contains feature-specific settings,
+ *                                         including authorization and supported access levels.
+ * @returns {Array<AccessLevel>} An array of access levels that are marked as enabled in the configuration.
+ *
+ * Type Member Properties:
+ * - `config.features.authorization.supportedValues` (Object): A mapping of access level keys to their settings.
+ *   Each key corresponds to a supported access level, and its value indicates whether the access level is enabled.
+ * - `StringToSupportedAccessLevels` (Object): A predefined mapping that associates access level keys with their
+ *   respective enumerated `AccessLevel` values.
+ *
+ * Notes:
+ * - If `supportedValues` is undefined or empty in the configuration, the function returns an empty array.
+ * - Only enabled access levels (where `value.enabled` is truthy) are included in the resulting array.
+ */
+export const supportedAccessLevels = (
+  config: DiscoveryIndexConfig,
+): Array<AccessLevel> => {
+  const supportedValues = config?.features?.authorization?.supportedValues;
+  if (!supportedValues) return [];
+
+  return Object.entries(supportedValues).reduce<Array<AccessLevel>>(
+    (acc, [key, value]) => {
+      const accessLevel = StringToSupportedAccessLevels[key];
+      if (accessLevel && value?.enabled) {
+        acc.push(accessLevel);
+      }
+      return acc;
+    },
+    [],
+  );
 };

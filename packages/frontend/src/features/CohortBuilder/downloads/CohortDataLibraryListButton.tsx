@@ -95,8 +95,6 @@ const CohortDataLibraryListButton = ({
         dataPath,
       });
 
-      console.log('results', results);
-
       setSelectedDatasets(results.ok ? results.datasets : {});
       setLoading(false);
     };

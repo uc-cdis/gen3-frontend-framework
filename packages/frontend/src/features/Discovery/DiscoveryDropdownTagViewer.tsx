@@ -1,6 +1,6 @@
 import React, { JSX, useEffect, useRef, useState } from 'react';
 import { Group, MultiSelect } from '@mantine/core';
-import { categoryObject } from './types';
+import { CategoryObject } from './types';
 import { useDiscoveryContext } from './DiscoveryProvider';
 
 interface RenderMultiSelectOptionProps {
@@ -31,7 +31,7 @@ const renderMultiSelectOption = (
 };
 
 interface MultiSelectContainerProps {
-  category: categoryObject;
+  category: CategoryObject;
 }
 const MultiSelectContainer = ({ category }: MultiSelectContainerProps) => {
   const { selectedTags, setSelectedTags } = useDiscoveryContext();
@@ -101,7 +101,7 @@ const MultiSelectContainer = ({ category }: MultiSelectContainerProps) => {
 };
 
 interface DiscoveryDropdownTagViewerProps {
-  tagCategoryData: Array<categoryObject> | undefined;
+  tagCategoryData: Array<CategoryObject> | undefined;
 }
 
 const DiscoveryDropdownTagViewer = ({
@@ -114,8 +114,8 @@ const DiscoveryDropdownTagViewer = ({
       className={`grid sm:grid-cols-1
           ${tagCategoryData.length > 1 && ' md:grid-cols-2 gap-4'}`}
     >
-      {tagCategoryData.map((category, i) => (
-        <div key={i}>
+      {tagCategoryData.map((category) => (
+        <div key={category.categoryDisplayName}>
           <MultiSelectContainer category={category} />
         </div>
       ))}

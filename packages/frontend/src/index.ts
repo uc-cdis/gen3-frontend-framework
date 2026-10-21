@@ -44,6 +44,9 @@ import Gen3Provider, {
 import DiscoveryPage from './pages/Discovery/DiscoveryPage';
 import { DiscoveryPageGetServerSideProps } from './pages/Discovery/data';
 
+import ProjectCenterPage from './pages/ProjectCenter/ProjectCenterPage';
+import { ProjectCenterPageGetServerSideProps } from './pages/ProjectCenter/data';
+
 import QueryPage from './pages/Query/QueryPage';
 import { QueryPageGetServerSideProps } from './pages/Query/data';
 
@@ -142,6 +145,10 @@ import {
 
 import type { AuthorizedRoutesConfig, RouteConfig } from './lib/authz/type';
 import { DefaultAuthorizedRoutesConfig } from './lib/authz/type';
+import {
+  AuthzMappingsGate,
+  useAuthzMappingsStatus,
+} from './components/Providers/AuthzMappingsProvider';
 import OverflowTooltippedLabel from './components/OverflowTooltippedLabel';
 import type { NavigationRailItem } from './components/NavigationRail';
 import NavigationRail from './components/NavigationRail';
@@ -211,6 +218,8 @@ export {
   type Gen3AppConfigData,
   DiscoveryPage,
   DiscoveryPageGetServerSideProps,
+  ProjectCenterPage,
+  ProjectCenterPageGetServerSideProps,
   QueryPage,
   QueryPageGetServerSideProps,
   LandingPage,
@@ -277,6 +286,8 @@ export {
   analysisApiCohortDiscovery,
   // Defaults
   DefaultAuthorizedRoutesConfig,
+  AuthzMappingsGate,
+  useAuthzMappingsStatus,
   // Sower Actions
   registerBaseSowerActions,
   type SowerConfiguration,

@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import {
-  MantineReactTable,
+import type {
   MRT_Cell,
-  type MRT_PaginationState,
+  MRT_ColumnDef,
   MRT_Row,
   MRT_RowData,
+  MRT_SortingFn,
+  MRT_SortingFns,
+} from 'mantine-react-table-open';
+import {
+  MantineReactTable,
+  type MRT_PaginationState,
   type MRT_RowSelectionState,
   type MRT_SortingState,
   useMantineReactTable,
@@ -16,15 +21,15 @@ import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory
 import { useDiscoveryContext } from '../DiscoveryProvider';
 import { useStudyContext } from '../../Study/StudyProvider';
 import StudyDetails from '../../Study/StudyDetails/StudyDetails';
-import { CellRendererFunction } from './TableRenderers/types';
-import { JSONObject } from '@gen3/core';
+import type { CellRendererFunction } from './TableRenderers/types';
+import type { JSONObject } from '@gen3/core';
 import { TableIcons } from '../../../components/Tables/TableIcons';
-import {
+import type {
   OnChangeFn,
   PaginationState,
   SortingState,
 } from '@tanstack/table-core';
-import {
+import type {
   DataRequestStatus,
   DiscoveryIndexConfig,
   RowSelectCompareFunctions,
@@ -34,6 +39,7 @@ import HighlightSearchTerm from './SearchHighlighting/HighlightSearchTerm';
 import RowDetailPanel from './TableRenderers/RowDetailPanel';
 import { IsColumnSearchable } from './SearchHighlighting/IsColumnSearchable';
 import DataAccessFilterDropdown from './DataAccessFilterDropdown';
+import { createNumericSort, defaultStringSort } from './sorting';
 
 const CompareFn = (
   fieldValue: string,
@@ -46,6 +52,14 @@ const CompareFn = (
     case 'arrayNotEmpty':
       return Array.isArray(fieldValue) && fieldValue.length > 0;
   }
+};
+
+const getSortingFunction = <TData extends MRT_RowData>(
+  type?: string,
+): keyof typeof MRT_SortingFns | MRT_SortingFn<TData> => {
+  if (!type) return defaultStringSort();
+  if (type === 'number') return createNumericSort();
+  return defaultStringSort();
 };
 
 const isSelectable = (
@@ -91,6 +105,7 @@ const DiscoveryTable = ({
   const { isLoading, isError, isFetching } = dataRequestStatus;
   const manualSortingAndPagination = getManualSortingAndPagination(config);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({}); //ts type available
+  const size = discoveryConfig.tableConfig.size || 'sm';
 
   useEffect(() => {
     if (!studyIdFromWindow || !data) return;
@@ -101,7 +116,12 @@ const DiscoveryTable = ({
       );
       if (foundStudy) setStudyDetails(foundStudy);
     }
-  }, [studyIdFromWindow, data]);
+  }, [
+    studyIdFromWindow,
+    data,
+    setStudyDetails,
+    config.minimalFieldMapping.uid,
+  ]);
 
   const extractCellValue =
     (func: CellRendererFunction) =>
@@ -126,28 +146,34 @@ const DiscoveryTable = ({
         : func({ value: cell.getValue() as never, cell, row });
     };
 
+  // TODO: Note when adding serverside sorting, filtering, and pagination this config will need to be updated
   const cols = useDeepCompareMemo(() => {
     const studyColumns = config.studyColumns ?? [];
     return studyColumns.map((columnDef, idx) => {
+      const sortingFn = getSortingFunction(columnDef?.contentType);
       const isDataAccessFilter = columnDef?.contentType === 'dataAccess';
       return {
         key: `${columnDef.field}-${idx}`,
         field: columnDef.field,
         accessorKey: columnDef.field,
-        header: (
+        header: columnDef.name,
+        Header: (
           <>
             {columnDef.name}
             {isDataAccessFilter && <DataAccessFilterDropdown />}
           </>
         ),
         accessorFn: jsonPathAccessor(columnDef.field),
-        Cell: columnDef?.contentType
+        enableSorting: columnDef.sortable ?? true,
+        sortingFn: sortingFn,
+        Cell: columnDef.contentType
           ? extractCellValue(
               DiscoveryTableCellRenderer(
                 columnDef?.contentType,
                 columnDef?.cellRenderFunction ?? 'default',
                 {
                   ...columnDef?.params,
+                  size: size,
                   valueIfNotAvailable: columnDef?.valueIfNotAvailable ?? '',
                 },
               ),
@@ -155,14 +181,15 @@ const DiscoveryTable = ({
           : extractCellValue(
               DiscoveryTableCellRenderer(
                 'string',
-                columnDef?.cellRenderFunction ?? 'default',
+                columnDef.cellRenderFunction ?? 'default',
                 {
-                  ...columnDef?.params,
-                  valueIfNotAvailable: columnDef?.valueIfNotAvailable ?? '',
+                  ...columnDef.params,
+                  size: size,
+                  valueIfNotAvailable: columnDef.valueIfNotAvailable ?? '',
                 },
               ),
             ),
-      };
+      } as MRT_ColumnDef<any>;
     });
   }, [config.studyColumns, searchTerm, selectedFieldsForSearchIndexing]);
 
@@ -204,6 +231,7 @@ const DiscoveryTable = ({
     ),
     onRowSelectionChange: setRowSelection,
     state: {
+      density: 'xs',
       rowSelection,
       isLoading,
       ...(manualSortingAndPagination
@@ -214,15 +242,17 @@ const DiscoveryTable = ({
         : {}),
       showProgressBars: isFetching,
       showAlertBanner: isError,
-      expanded: config.tableConfig?.expandableRows === true ? true : undefined,
+      expanded: config.tableConfig.expandableRows === true ? true : undefined,
       columnVisibility: {
         'mrt-row-expand': false,
       },
     },
-    layoutMode: 'semantic',
+    layoutMode: 'grid',
     mantineDetailPanelProps: {
       style: {
         boxShadow: '0 -2px 0px 0px var(--table-border-color) inset',
+        width: '100%',
+        fontSize: `var(--mantine-font-size-${size})`,
       },
     },
     mantineTableHeadCellProps: {
@@ -232,10 +262,13 @@ const DiscoveryTable = ({
         textAlign: 'center',
         padding: 'var(--mantine-spacing-md)',
         fontWeight: 600,
-        fontSize: 'var(--mantine-font-size-sm)',
+        fontSize: `var(--mantine-font-size-${size})`,
         textTransform: 'uppercase',
       },
     },
+    mantineSelectCheckboxProps: ({ row }) => ({
+      title: 'Click to select item for download or open in workspace',
+    }),
     mantineTableBodyRowProps: ({ row }) => ({
       onClick: () => {
         setStudyDetails(() => {
@@ -244,13 +277,21 @@ const DiscoveryTable = ({
       },
       style: {
         borderWidth: 0,
-        fontSize: 'var(--mantine-font-size-sm)',
+        fontSize: `var(--mantine-font-size-${size})`,
       },
     }),
     mantineTableProps: {
       style: {
         backgroundColor: 'var(--mantine-color-base-1)',
         '--mrt-striped-row-background-color': 'var(--mantine-color-base-3)',
+        width: '100%',
+        fontSize: `var(--mantine-font-size-${size})`,
+      },
+    },
+    mantineTableBodyCellProps: {
+      style: {
+        fontSize: `var(--mantine-font-size-${size})`,
+        wrap: 'break-word',
       },
     },
   });
@@ -270,7 +311,7 @@ const DiscoveryTable = ({
   if (dataRequestStatus.isError) {
     return (
       <div className="flex w-full py-24 h-100 relative justify-center">
-        <Text size={'xl'}>Error loading discovery data</Text>
+        <Text size="xl">Error loading discovery data</Text>
       </div>
     );
   }

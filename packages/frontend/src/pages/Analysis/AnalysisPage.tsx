@@ -11,6 +11,7 @@ import AnalysisWithCloseButton from '../../features/Analysis/AnalysisCenterWithB
 const AnalysisPage = ({
   headerProps,
   footerProps,
+  headerMetadata,
   tools,
   sections,
   classNames,
@@ -26,6 +27,7 @@ const AnalysisPage = ({
           title: 'Gen3 Analysis Center',
           content: 'Analysis Center',
           key: 'gen3-analysis-center',
+          ...(headerMetadata ? headerMetadata : {}),
         }}
       >
         <AnalysisWithCloseButton

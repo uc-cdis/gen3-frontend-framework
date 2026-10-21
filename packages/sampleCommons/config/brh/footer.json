@@ -3,34 +3,34 @@
     "root": "bg-primary",
     "layout": "flex items-center justify-end"
   },
-  "rightSection":
-    {
-      "columns": [
-        {
-          "rows": [
-            {
-              "Icon": {
-                "logo": "/images/gen3.png",
-                "width": 132,
-                "height": 60,
-                "description": "Gen3 Logo"
-              }
+  "rightSection": {
+    "columns": [
+      {
+        "rows": [
+          {
+            "Icon": {
+              "logo": "/icons/gen3-white.svg",
+              "width": 132,
+              "height": 60,
+              "description": "Gen3 Logo",
+              "href": "https://gen3.org"
             }
-          ]
-        },
-        {
-          "rows": [
-            {
-              "Icon": {
-                "logo": "/images/createdby.png",
-                "width": 170,
-                "height": 60,
-                "description": "Created by CTDS"
-              }
+          }
+        ]
+      },
+      {
+        "rows": [
+          {
+            "Icon": {
+              "logo": "/images/createdby.png",
+              "width": 170,
+              "height": 60,
+              "description": "Created by CTDS",
+              "href": "https://ctds.uchicago.edu/"
             }
-          ]
-        }
-      ]
-    }
-
+          }
+        ]
+      }
+    ]
+  }
 }
