@@ -274,6 +274,41 @@ Download a file manifest from a explorer table requires the following configurat
 ```
 This is similar to the configuration for Gen3's data-portal except the `actionArgs` member now contains the information that was in the `manifestMapping` member of `gitops.json`
 
+### Table Column Headers
+
+By default, the column headers of the explorer table are generated from the field names listed in `table.fields`:
+underscores are replaced with spaces and each word is capitalized (e.g. `project_id` becomes `Project Id`).
+To set a custom header for a field, add a `fieldMapping` array to the `table` configuration:
+
+```json
+"table": {
+  "enabled": true,
+  "fields": [
+    "hdp_id",
+    "project_id"
+  ],
+  "fieldMapping": [
+    {
+      "field": "hdp_id",
+      "name": "HDP ID"
+    }
+  ]
+}
+```
+
+Each entry has the following members:
+
+* field - name of a field in `table.fields`
+* name - header to display for the field's column
+
+The header for each column is chosen in the following order:
+
+1. `title` of the field's entry in `table.columns`, if set
+2. `name` of the matching entry in `table.fieldMapping`
+3. the generated header described above
+
+Fields without a matching entry use the generated header.
+
 ### Details Modal
 
 There is support for a details modal that appears when the table is clicked. The modal's content is rendered using the
@@ -352,6 +387,7 @@ The configuration has the following members:
 * defaultIfEmpty - value for empty fields defaults to ''
 * fields - fields to use for columns
 * columns - (Optional) table columns field to match fields above title to override what's displayed
+* fieldMapping - (Optional) list of `{ "field", "name" }` entries used as column headers. See [Table Column Headers](#table-column-headers)
 
 ### Selection Facet
 

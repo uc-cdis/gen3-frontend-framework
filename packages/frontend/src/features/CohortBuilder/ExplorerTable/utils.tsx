@@ -33,6 +33,19 @@ export const isRecordAny = (obj: unknown): obj is Record<string, any> => {
   return obj !== null && typeof obj === 'object';
 };
 
+/**
+ * Returns the column header for a field. Uses the column's title if defined,
+ * then the matching entry in fieldMapping, otherwise the field name converted to a label.
+ */
+export const getColumnHeader = (
+  field: string,
+  tableConfig: TableColumnsAndFields,
+): string =>
+  tableConfig?.columns?.[field]?.title ??
+  tableConfig?.fieldMapping?.find((mapping) => mapping.field === field)
+    ?.name ??
+  fieldNameToLabel(field);
+
 export const createTableColumns = (tableConfig: TableColumnsAndFields) => {
   const tableColumns = tableConfig.fields.map((field) => {
     const columnDef = tableConfig?.columns?.[field];
@@ -52,7 +65,7 @@ export const createTableColumns = (tableConfig: TableColumnsAndFields) => {
       id: field,
       field: field,
       accessorKey: field as never,
-      header: columnDef?.title ?? fieldNameToLabel(field),
+      header: getColumnHeader(field, tableConfig),
       accessorFn: columnDef?.accessorPath
         ? jsonPathAccessor(columnDef.accessorPath)
         : undefined,
@@ -111,7 +124,7 @@ export const createArrayTableColumns = (
       id: field,
       field: field,
       accessorKey: field as never,
-      header: columnDef?.title ?? fieldNameToLabel(field),
+      header: getColumnHeader(field, tableConfig),
       accessorFn: columnDef?.accessorPath
         ? jsonPathAccessor(columnDef.accessorPath)
         : undefined,

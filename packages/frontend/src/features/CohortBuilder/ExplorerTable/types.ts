@@ -14,6 +14,7 @@ import {
   useGetRawDataAndTotalCountsQuery,
 } from '@gen3/core';
 import React, { ReactNode, RefObject } from 'react';
+import type { FieldToName } from '../../../components/facets/types';
 
 export interface ColumnDefinition {
   header: string; // title of column
@@ -52,6 +53,7 @@ export interface TableColumnsAndFields {
   fields: ReadonlyArray<string>;
   defaultIfEmpty?: string;
   columns: Record<string, SummaryTableColumn>;
+  fieldMapping?: ReadonlyArray<FieldToName>; // field to column title mapping
 }
 
 export interface FieldSubtableClassnames extends Record<string, string> {
