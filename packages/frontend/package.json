@@ -52,6 +52,7 @@
       "import": "./dist/pages/esm/index.js",
       "require": "./dist/pages/cjs/index.js"
     },
+    "./lib/*": "./src/lib/*",
     "./dist/styles.css": "./dist/styles.css"
   },
   "style": "dist/styles.css",
