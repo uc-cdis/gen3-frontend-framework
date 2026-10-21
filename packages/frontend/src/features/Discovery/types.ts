@@ -231,6 +231,7 @@ export interface DiscoveryIndexConfig {
   simpleDetailsView?: StudyPageConfig;
   detailView?: StudyDetailView;
   minimalFieldMapping: MinimalFieldMapping;
+  variableMetadataFieldName?: string;
 }
 
 export interface DiscoveryConfig extends Gen3AppConfigData {

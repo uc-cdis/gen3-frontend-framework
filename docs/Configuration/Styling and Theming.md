@@ -11,9 +11,10 @@ The font can be imported in the ```styles/globals.css``` file by adding the line
 import '@fontsource/roboto/400.css'
 ```
 
-Once installed fonts cane be configured by editing ```config/themeFonts.json```
-The current theme support heading and body fonts. They can be specified as a google font or a local font in standary css format (e.x. "Arial, Helvetica, sans-serif")
-The```fontFamily``` member is used to set the font for the component library (e.g. Mantine.dev)
+Once installed fonts can be configured by editing ```config/themeFonts.json```
+The current theme support heading and body fonts. They can be specified as a google font or a local font in standard css
+format (e.x. "Arial, Helvetica, sans-serif")
+The```fontFamily``` member is used to set the font for the component library (e.g., Mantine.dev)
 
 ```json
 {
@@ -23,11 +24,12 @@ The```fontFamily``` member is used to set the font for the component library (e.
 }
 ```
 
-you will need to also install the font to your project:
+you will need to also install the font in your project:
 ```bash
 npm i @fontsource/montserrat
 ```
-and added to the ```src/styles/globals.css```:
+
+and add it to the ```src/styles/globals.css```:
 ```bash
 ...
 @import '~@fontsource/montserrat/700.css';
@@ -67,14 +69,23 @@ Colors can be configured by editing ```config/<commonsName>/colors.json```. The 
 }
 ```
 
-Once the colors are edited they need to be process with the command
+Once the colors are edited, they need to be processed with the command
 ```
-npm run build:colors --commons=<commonsName>
+npm run build:colors
 ```
 in the commons (for now ```sampleCommons```) source directory.
 
+Note that  ```npm run build:colors``` writes to the ```config/gen3``` directory by default.
+To set another commons, use the GEN3_COMMONS_NAME environment variable:
+
+```bash
+GEN3_COMMONS_NAME=brh npm run build:colors uses another commons.
+```
+
+If GEN3_COMMONS_NAME is already exported in your shell or .env, that value is used.
+
 You can test the color them by going to the commons web portal Color page.
-For example http://localhost:3000/Colors
+For example http://localhost:3000/admin/Colors
 
 
 ### Icons
@@ -87,17 +98,17 @@ npm run build:icons
 
 ### Navigation Bar
 
-The navigation bar support extra styling using tailwind css tokens to
+The navigation bar supports extra styling using Tailwind CSS tokens to
 configure the navigation bar layout and styling. The navigation bar
-is configured by editing ```config/<commonsName>/navbar.json```
+is configured by editing ```config/<commonsName>/navigation.json```
 
 #### Navigation Bar Styling
 
 The navigation bar styling is configured adding a className object to the
-navbar.json file. The className object is a dictionary of tailwind css
+navbar.json file. The className object is a dictionary of Tailwind CSS
 style tokens. The members of the className object are:
 
-* root: The root style for the navigation bar this can include background color, border, etc.
+* root: The root style for the navigation bar; this can include background color, border, etc.
 * navigationBar: styling for the container holding the navigation buttons
 * login: styling for the login button container
 
@@ -114,8 +125,8 @@ the current default is:
 #### Navigation Bar Buttons Styling
 
 The navigation bar buttons are configured by defining a classNames object
-containing the tailwind css tokens for the button styling. The classNames
-object is a dictionary of tailwind css style tokens. The members of the
+containing the Tailwind CSS tokens for the button styling. The classNames
+object is a dictionary of Tailwind CSS style tokens. The members of the
 classNames object are:
 
 * root: The root style for the navigation bar button this can include background color, border, etc.
@@ -140,4 +151,4 @@ The footer styling is also configured by defining a classNames object. The membe
 
 * root: The root style for the footer this can include background color, border, etc.
 
-other elements of the Footer styling will be added in the future.
+We will add other footer styling elements in the future.

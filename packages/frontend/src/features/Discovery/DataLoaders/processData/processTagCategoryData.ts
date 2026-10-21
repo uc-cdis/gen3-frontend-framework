@@ -30,9 +30,9 @@ const processTagCategoryData = (
     const tagMap: { [key: string]: number } = {};
     const tagField = discoveryConfig.minimalFieldMapping.tagsListField;
     data.forEach((study) => {
-      if (study[tagField]) {
-        (study[tagField] as []).forEach((tag: tag) => {
-          if (tag.category === category.name) {
+      if (Array.isArray(study[tagField])) {
+        (study[tagField] as unknown as tag[]).forEach((tag: tag | null | undefined) => {
+          if (tag && tag.category === category.name) {
             tagMap[tag.name] = 1;
           }
         });
@@ -42,7 +42,7 @@ const processTagCategoryData = (
     return tagArray;
   };
 
-  discoveryConfig.tags.tagCategories.map((category: Category) => {
+  (discoveryConfig.tags?.tagCategories ?? []).map((category: Category) => {
     let categoryDisplayName = category.displayName;
     if (!categoryDisplayName) {
       // Capitalize category name
