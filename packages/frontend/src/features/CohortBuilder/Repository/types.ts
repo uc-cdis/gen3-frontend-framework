@@ -2,6 +2,7 @@ import {
   DataTypeConfigWithManifest,
   DownloadButtonConfig,
   DropdownsWithButtonsProps,
+  LoginForDownloadMode,
   TabsConfig,
 } from '../types';
 import { SummaryTable } from '../ExplorerTable/types';
@@ -72,7 +73,7 @@ export interface RepositoryConfiguration extends Gen3AppConfigData {
   table?: SummaryTable; // table configuration
   dropdowns?: Record<string, DropdownsWithButtonsProps>; // dropdown menu of action buttons
   buttons?: ReadonlyArray<DownloadButtonConfig>; // row of action buttons
-  loginForDownload?: boolean; // login required for download
+  loginForDownload?: LoginForDownloadMode; // login required for download
   fileStatsConfiguration: FileStatsConfiguration;
 }
 

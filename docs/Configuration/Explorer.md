@@ -274,6 +274,28 @@ Download a file manifest from a explorer table requires the following configurat
 ```
 This is similar to the configuration for Gen3's data-portal except the `actionArgs` member now contains the information that was in the `manifestMapping` member of `gitops.json`
 
+### Require Login for Downloads
+
+The `loginForDownload` member of an explorer tab controls whether users must log in before using the tab's download
+buttons and dropdowns:
+
+```json
+{
+  "tabTitle": "Data Files",
+  "loginForDownload": "redirect",
+  "buttons": [ ... ],
+  "dropdowns": { ... }
+}
+```
+
+* `false` (default) - no login required.
+* `true` - buttons and dropdown items are disabled until the user logs in.
+* `"redirect"` - when the user is not logged in, buttons stay enabled and are labeled `Login to <title>` (e.g.
+  `Login to Download Manifest`). Clicking one sends the user to the Login page; after logging in, the user is returned
+  to the explorer page they came from. A dropdown is shown as a single `Login to <dropdown title>` button.
+
+Any other value (including the strings `"true"` or `"false"`) is ignored and treats the tab as not requiring login.
+
 ### Table Column Headers
 
 By default, the column headers of the explorer table are generated from the field names listed in `table.fields`:
