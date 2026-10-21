@@ -1,12 +1,14 @@
 # Login Configuration Guide
 
 The login page configuration consists of three main sections:
-* Top Content
-* Login Provider Extra Details 
-* Bottom Content
 
-and example configuration:
-```json
+- Top Content
+- Login Provider Extra Details
+- Bottom Content
+
+An example configuration:
+
+```
 {
   "topContent": [
     {
@@ -41,13 +43,18 @@ and example configuration:
   "loginBtnHorizontal" : true,
   "showCredentialsLogin" : true
 }
-
 ```
 
-Both topContent and bottomContent are arrays of the [TextContent](../../packages/frontend/docs/components/TextContent.md) component.
-loginProviderExtra is an object with keys matching provider name; value is arrays of the [TextContent](../../packages/frontend/docs/components/TextContent.md) component.
+Both topContent and bottomContent are arrays of
+the [TextContent](https://github.com/uc-cdis/gen3-frontend-framework/blob/develop/packages/frontend/docs/components/TextContent.md)
+component.
 
-* image: the side image for the login page
-* loginBtnHorizontal: Optional Display login buttons group horizontally defalts to false 
-* showCredentialsLogin: is for development and allows logins using a credentials file instead of logging in which
-usually will not work because fence will not allow redirects back to https://localhost
+- **loginProviderExtra** is an object with keys matching provider names; values are arrays of
+  the [TextContent](http://../../packages/frontend/docs/components/TextContent.md) component.
+
+Additional configuration items.
+
+- **image**: the side image for the login page
+- **loginBtnHorizontal**: Optional. Display login buttons group horizontally; defaults to false.
+- **showCredentialsLogin**: is for development and allows logins using a credentials file instead of logging in, which
+  usually will not work because fence will not allow redirects back to <https://localhost>

@@ -3,7 +3,7 @@
 The Query page configuration allows you to add multiple GraphQL endpoints to the GraphQL client.
 If there is no query configuration, the default endpoint (guppy) will be used.
 
-To configure a new endpoint, add eadch endpoint as a member of the `endpoints` array:
+To configure a new endpoint, add each endpoint as a member of the `endpoints` array:
 
 ```json
 {
