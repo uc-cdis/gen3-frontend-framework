@@ -1,6 +1,6 @@
 {
   "name": "@gen3/samplecommons",
-  "version": "0.12.88",
+  "version": "0.13.0",
   "private": true,
   "scripts": {
     "analyze": "ANALYZE=true npm run build",
@@ -15,9 +15,9 @@
     "clean": "rm -rf .next && rm -rf out",
     "prebuild": "node ../../node_modules/@gen3/toolsff/dist/scanSitePaths.esm.js",
     "start": "next start",
-    "build:colors": "node ../../node_modules/@gen3/toolsff/dist/buildColors.esm.js --themeFile=config/$npm_config_commons/colors.json --out=config/$npm_config_commons",
-    "build:colors:noshift": "node ../../node_modules/@gen3/toolsff/dist/buildColors.esm.js --themeFile=config/$npm_config_commons/colors.json --out=config/$npm_config_commons --colorShift=0 --colorSaturation=100",
-    "build:colors:vars": "node ../../node_modules/@gen3/toolsff/dist/buildColors.esm.js --themeFile=config/$npm_config_commons/colors.json --out=config/ --vars",
+    "build:colors": "node ../../node_modules/@gen3/toolsff/dist/buildColors.esm.js --themeFile=config/${GEN3_COMMONS_NAME:-gen3}/colors.json --out=config/${GEN3_COMMONS_NAME:-gen3}",
+    "build:colors:noshift": "node ../../node_modules/@gen3/toolsff/dist/buildColors.esm.js --themeFile=config/${GEN3_COMMONS_NAME:-gen3}/colors.json --out=config/${GEN3_COMMONS_NAME:-gen3} --colorShift=0 --colorSaturation=100",
+    "build:colors:vars": "node ../../node_modules/@gen3/toolsff/dist/buildColors.esm.js --themeFile=config/${GEN3_COMMONS_NAME:-gen3}/colors.json --out=config/ --vars",
     "build:icons": "node ../../node_modules/@gen3/toolsff/dist/bundleIcons.esm.js --inpath=config/icons --outpath=config/icons",
     "getSchema": "node ../../node_modules/@gen3/toolsff/dist/getSchema.esm.js --out=config/",
     "getDRSToHostname": "node ../../node_modules/@gen3/toolsff/dist/getDRSToHostname.esm.js --out=config/",
