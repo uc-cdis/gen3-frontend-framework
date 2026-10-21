@@ -1,1 +1,2 @@
-export { default } from '../../../../../frontend/src/lib/Discovery/discoveryMDSProxy';
+import { discoveryMDSProxy } from '@gen3/frontend/server';
+export default discoveryMDSProxy;

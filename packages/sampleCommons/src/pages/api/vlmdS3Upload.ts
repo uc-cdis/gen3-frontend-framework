@@ -1,7 +1,8 @@
+import { vlmdS3UploadProxy } from '@gen3/frontend/server';
 export const config = {
   api: {
     bodyParser: false,
   },
 };
 
-export { default } from '../../../../frontend/src/lib/VLMDSubmission/vlmdS3UploadProxy';
+export default vlmdS3UploadProxy;

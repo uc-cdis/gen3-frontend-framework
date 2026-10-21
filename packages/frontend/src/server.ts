@@ -6,6 +6,7 @@ import sessionToken from './api/auth/sessionToken';
 import sessionLogout from './api/auth/sessionLogout';
 import credentialsLogin from './api/auth/credentialsLogin';
 import { default as discoveryMDSProxy } from './lib/Discovery/discoveryMDSProxy';
+import { default as vlmdS3UploadProxy } from './lib/VLMDSubmission/vlmdS3UploadProxy';
 
 export {
   type RouteConfig,
@@ -18,4 +19,5 @@ export {
   sessionLogout,
   credentialsLogin,
   discoveryMDSProxy,
+  vlmdS3UploadProxy,
 };
