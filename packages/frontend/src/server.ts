@@ -18,6 +18,6 @@ export {
   sessionToken,
   sessionLogout,
   credentialsLogin,
-  discoveryMDSProxy,
   vlmdS3UploadProxy,
+  discoveryMDSProxy,
 };
