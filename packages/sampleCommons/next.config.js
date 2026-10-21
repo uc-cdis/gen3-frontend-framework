@@ -187,6 +187,8 @@ const nextConfig = {
           source: '/index/:path*',
           destination: `${GEN3_TARGET}/index/:path*`,
         },
+        { source: '/fhir/:path*',
+          destination: `${GEN3_TARGET}/fhir/:path*` },
         {
           source: '/login',
           destination: `${GEN3_TARGET}/login`,

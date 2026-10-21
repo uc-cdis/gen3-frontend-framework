@@ -13,6 +13,7 @@ import {
   GEN3_DOWNLOADS_ENDPOINT,
   GEN3_FENCE_API,
   GEN3_FENCE_SERVICE,
+  GEN3_FHIR_API,
   GEN3_GUPPY_API,
   GEN3_INDEXD_API,
   GEN3_MANIFEST_API,
@@ -58,6 +59,7 @@ export * from './features/config';
 export * from './features/cohortComparison';
 export * from './features/indexd';
 export * from './features/notifications';
+export * from './features/FHIR';
 
 export {
   type CoreState,
@@ -79,6 +81,7 @@ export {
   GEN3_SOWER_API,
   GEN3_MANIFEST_API,
   GEN3_ANALYSIS_API,
+  GEN3_FHIR_API,
   CART_LIMIT,
   FILE_DELIMITERS,
   FILE_FORMATS,

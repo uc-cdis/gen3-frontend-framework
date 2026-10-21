@@ -15,6 +15,9 @@
     "/Profile": {
       "loginRequired": true
     },
+    "/FHIRQuery": {
+      "loginRequired": true
+    },
     "*": {
       "loginRequired": false
     }
