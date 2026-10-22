@@ -35,7 +35,7 @@ data commons repository.
 
 then in the datacommons application (e.g. cadc-datacommons):
 ```bash
- yalc add @gen3/frontend
+ yalc add @gen3/frontend @gen3/core @gen3/tools @gen3/workspaces
 ```
 This will then use the local copy of the Gen3.2 frontend and core packages
 in the datacommons application, without the overhead of publishing new

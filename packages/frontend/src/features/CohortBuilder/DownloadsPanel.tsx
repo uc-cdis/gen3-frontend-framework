@@ -19,6 +19,7 @@ import CohortDropdownActionButton from './downloads/CohortDropdownActionButton';
 import CohortDataLibraryListButton from './downloads/CohortDataLibraryListButton';
 import { useSession } from '../../lib/session/session';
 import SubmitSowerJobButton from '../Sower/actions/SubmitSowerJobButton';
+import { LoginGate } from '../../components/Login/LoginGate';
 
 const resolveAction = (buttonAction?: string) => {
   let actionFunction = NullButtonAction;
@@ -77,6 +78,7 @@ interface DownloadsPanelProps {
   readonly dropdowns: Record<string, DropdownsWithButtonsProps>;
   readonly buttons: ReadonlyArray<DownloadButtonProps>;
   readonly loginForDownload?: boolean;
+  readonly enableRedirectToLogin?: boolean;
   readonly accessibility?: Accessibility;
   readonly index: string;
   readonly totalCount: number;
@@ -90,13 +92,14 @@ const DownloadsPanel = ({
   dropdowns,
   buttons,
   loginForDownload,
+  enableRedirectToLogin,
   index,
   totalCount,
   fields,
   filter,
   accessibility,
   indexPrefix = '',
-}: DownloadsPanelProps): JSX.Element => {
+}: Readonly<DownloadsPanelProps>): JSX.Element => {
   const { status } = useSession(false);
 
   const isUserLoggedIn = useMemo(() => status === 'issued', [status]);
@@ -151,26 +154,10 @@ const DownloadsPanel = ({
       const buttonAction = button.action ?? button.type;
 
       const disabled = loginRequired && !isUserLoggedIn;
-
-      // sower action contains additional parameters in the actionArgs member
-      /*
-       actionArgs :{
-          createAction : {
-             action: "export"
-             parameters: {
-             job parameters
-             }
-           outputAction: {
-             action: "export"
-             parameters: {
-             }
-        }
-       }
-       */
       if (buttonAction === 'sower') {
         if (isCreateAndExportOutputConfig(button.actionArgs)) {
           const { jobAction, outputAction } = button.actionArgs;
-          return (
+          const btn = (
             <SubmitSowerJobButton
               label={button.title}
               tooltipText={button.tooltipText}
@@ -190,6 +177,13 @@ const DownloadsPanel = ({
               key={button.title}
             />
           );
+          if (enableRedirectToLogin) {
+            return (
+              <LoginGate key={`${button.title}-login-gate`}>{btn}</LoginGate>
+            );
+          } else {
+            return btn;
+          }
         }
         console.warn(
           `DownloadsPanel: sower button "${button.title}" has invalid or missing actionArgs — skipping`,
@@ -199,7 +193,7 @@ const DownloadsPanel = ({
 
       const { actionFunction, actionArgs } = resolveAction(buttonAction);
       if (actionFunction && buttonAction === 'cohortDataFilesToDataLibrary') {
-        return (
+        const btn = (
           <CohortDataLibraryListButton
             activeText=""
             inactiveText={button.title}
@@ -214,9 +208,16 @@ const DownloadsPanel = ({
             key={button.title}
           />
         );
+        if (enableRedirectToLogin) {
+          return (
+            <LoginGate key={`${button.title}-login-gate`}>{btn}</LoginGate>
+          );
+        } else {
+          return btn;
+        }
       }
 
-      return (
+      const btn = (
         <CohortActionButton
           activeText="Cancel"
           inactiveText={button.title}
@@ -231,8 +232,19 @@ const DownloadsPanel = ({
           key={button.title}
         />
       );
+      if (enableRedirectToLogin) {
+        return <LoginGate key={`${button.title}-login-gate`}>{btn}</LoginGate>;
+      } else {
+        return btn;
+      }
     });
-  }, [buttons, cohortActionArgs, loginRequired, isUserLoggedIn]);
+  }, [
+    buttons,
+    cohortActionArgs,
+    loginRequired,
+    isUserLoggedIn,
+    enableRedirectToLogin,
+  ]);
 
   return dropdowns || buttons ? (
     <div className="flex space-x-2 items-center">
