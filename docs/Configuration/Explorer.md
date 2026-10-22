@@ -18,26 +18,23 @@ The configuration for the explorer is stored an array of objects. Each object in
       "pageLimit": {
         "limit": 10000
       },
-      "columns": [
-        {
-          "name": "case_id",
-          "label": "Case ID",
+      "columns": {
+        "case_id": {
+          "title": "Case ID",
           "visible": true,
           "sortable": true
         },
-        {
-          "name": "project_id",
-          "label": "Project ID",
+        "project_id": {
+          "title": "Project ID",
           "visible": true,
           "sortable": true
         },
-        {
-          "name": "disease_type",
-          "label": "Disease Type",
+        "disease_type": {
+          "title": "Disease Type",
           "visible": true,
           "sortable": true
         }
-      ]
+      }
     }
   }
 ]
@@ -273,6 +270,12 @@ Download a file manifest from a explorer table requires the following configurat
 }
 ```
 This is similar to the configuration for Gen3's data-portal except the `actionArgs` member now contains the information that was in the `manifestMapping` member of `gitops.json`
+
+### Requiring login for Downloads
+
+To require that a user is logged inorder to download, set: ```"loginForDownload": true``` in the configuration file.
+If you want to direct the user to the login page so that they log in and then are returned to the page set:
+```"enableRedirectToLogin": true```
 
 ### Details Modal
 
