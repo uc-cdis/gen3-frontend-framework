@@ -21,6 +21,7 @@ import type {
 import type { DataAuthorization } from '../../utils';
 import type { Gen3AppConfigData } from '../../lib/content/types';
 import type { SearchMode } from './constants';
+import type { ActionButtonConfig } from '../../components/Buttons/types';
 
 interface KeywordSearch {
   keywords?: string[];
@@ -140,14 +141,6 @@ interface DiscoveryTableConfig {
 export interface DiscoveryPageTitle {
   enabled: boolean;
   text: string;
-}
-
-export interface ActionButtonConfig {
-  label?: string; // label for the action button
-  icon?: string; // optional icon for the action button
-  requiresLogin?: boolean; // set to true if the action requires login
-  tooltip?: string; // tooltip text
-  disabled?: boolean;
 }
 
 export type ActionButtonType =

@@ -71,7 +71,8 @@
             {
               "type": "manifest",
               "label": "Manifest",
-              "requiresLogin": true
+              "requiresLogin": true,
+              "enableRedirectToLogin": true
             },
             {
               "type": "exportToWorkspace",
