@@ -75,17 +75,17 @@ const createDownloadMenuButton = (
 };
 
 interface DownloadsPanelProps {
-  dropdowns: Record<string, DropdownsWithButtonsProps>;
-  buttons: Array<DownloadButtonProps>;
-  loginForDownload?: boolean;
-  enableRedirectToLogin?: boolean;
-  accessibility?: Accessibility;
-  index: string;
-  totalCount: number;
-  fields: Array<string>;
-  filter: FilterSet;
-  sort?: string[];
-  indexPrefix?: string;
+  readonly dropdowns: Record<string, DropdownsWithButtonsProps>;
+  readonly buttons: ReadonlyArray<DownloadButtonProps>;
+  readonly loginForDownload?: boolean;
+  readonly enableRedirectToLogin?: boolean;
+  readonly accessibility?: Accessibility;
+  readonly index: string;
+  readonly totalCount: number;
+  readonly fields: ReadonlyArray<string>;
+  readonly filter: FilterSet;
+  readonly sort?: string[];
+  readonly indexPrefix?: string;
 }
 
 const DownloadsPanel = ({
