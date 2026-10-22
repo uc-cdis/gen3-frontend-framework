@@ -65,6 +65,15 @@ export interface DropdownsWithButtonsProps extends DropdownButtonsConfig {
   dropdownItems: ReadonlyArray<DownloadButtonProps>;
 }
 
+/**
+ * Controls whether login is required to use the download buttons:
+ *  - true: buttons are disabled until the user logs in
+ *  - false: no login required
+ *  - 'redirect': buttons stay enabled, are labeled "Login to <label>", and redirect to the Login page
+ *  Any other value is treated as false.
+ */
+export type LoginForDownloadMode = boolean | 'redirect';
+
 export interface CohortPanelConfiguration {
   guppyConfig: DataTypeConfigWithManifest; // guppy config
   tabTitle: string; // title of the tab
@@ -75,7 +84,7 @@ export interface CohortPanelConfiguration {
   filters?: TabsConfig; // filters for the fields
   dropdowns?: Record<string, DropdownsWithButtonsProps>; // dropdown menu of action buttons
   buttons?: ReadonlyArray<DownloadButtonConfig>; // row of action buttons
-  loginForDownload?: boolean; // login required for download
+  loginForDownload?: LoginForDownloadMode; // login required for download
   sharedFiltersMap?: SharedFieldMapping;
   fieldsAreFlat?: boolean; // set to true to flatten the fields query
 }

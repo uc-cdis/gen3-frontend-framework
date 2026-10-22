@@ -1,14 +1,17 @@
 import type { JSX } from 'react';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
+import { useRouter } from 'next/router';
 import type {
   DownloadButtonPropsWithAction,
   DropdownsWithButtonsProps,
+  LoginForDownloadMode,
 } from './types';
 import type { DownloadButtonProps } from '../../components/Buttons/DropdownButtons';
 import { type DropdownButtonProps } from '../../components/Buttons/DropdownButtons';
 import type { FilterSet } from '@gen3/core';
 import { Accessibility, isCreateAndExportOutputConfig } from '@gen3/core';
 import CohortActionButton from './downloads/CohortActionButton';
+import ActionButton from './downloads/ActionButton';
 import {
   findButtonAction,
   NullButtonAction,
@@ -31,6 +34,18 @@ const resolveAction = (buttonAction?: string) => {
     }
   }
   return { actionFunction, actionArgs };
+};
+
+/**
+ * Normalizes the loginForDownload config value. Only true and 'redirect' are
+ * accepted; anything else falls back to no login requirement.
+ */
+const resolveLoginMode = (
+  loginForDownload?: LoginForDownloadMode,
+): 'disable' | 'redirect' | 'none' => {
+  if (loginForDownload === true) return 'disable';
+  if (loginForDownload === 'redirect') return 'redirect';
+  return 'none';
 };
 
 const createDownloadMenuButton = (
@@ -76,7 +91,7 @@ const createDownloadMenuButton = (
 interface DownloadsPanelProps {
   readonly dropdowns: Record<string, DropdownsWithButtonsProps>;
   readonly buttons: ReadonlyArray<DownloadButtonProps>;
-  readonly loginForDownload?: boolean;
+  readonly loginForDownload?: LoginForDownloadMode;
   readonly accessibility?: Accessibility;
   readonly index: string;
   readonly totalCount: number;
@@ -101,7 +116,15 @@ const DownloadsPanel = ({
 
   const isUserLoggedIn = useMemo(() => status === 'issued', [status]);
 
-  const loginRequired = !!loginForDownload;
+  const router = useRouter();
+
+  const loginMode = resolveLoginMode(loginForDownload);
+  const loginRequired = loginMode === 'disable';
+  const loginRedirect = loginMode === 'redirect' && !isUserLoggedIn;
+
+  const redirectToLogin = useCallback(() => {
+    void router.push(`/Login?redirect=${encodeURIComponent(router.asPath)}`);
+  }, [router]);
 
   const cohortActionArgs = useMemo(
     () => ({
@@ -140,17 +163,50 @@ const DownloadsPanel = ({
   }, [dropdowns, loginRequired, isUserLoggedIn]);
 
   const dropdownElements = useMemo(() => {
+    if (loginRedirect) {
+      return Object.values(dropdowns ?? {}).map((dropdown) => (
+        <ActionButton
+          activeText=""
+          inactiveText={`Login to ${dropdown.title}`}
+          active={false}
+          icon={<DownloadIcon />}
+          handleClick={redirectToLogin}
+          key={dropdown.title}
+        />
+      ));
+    }
     return Object.values(dropdownsToRender).map(
       (dropdown: DropdownsWithButtonsProps) =>
         createDownloadMenuButton(dropdown, cohortActionArgs),
     );
-  }, [dropdownsToRender, cohortActionArgs]);
+  }, [
+    dropdowns,
+    dropdownsToRender,
+    cohortActionArgs,
+    loginRedirect,
+    redirectToLogin,
+  ]);
 
   const buttonElements = useMemo(() => {
     return buttons.map((button) => {
       const buttonAction = button.action ?? button.type;
 
       const disabled = loginRequired && !isUserLoggedIn;
+
+      if (loginRedirect) {
+        return (
+          <ActionButton
+            activeText=""
+            inactiveText={`Login to ${button.title}`}
+            active={false}
+            icon={<DownloadIcon />}
+            tooltipText={button.tooltipText}
+            disabled={!button.enabled}
+            handleClick={redirectToLogin}
+            key={button.title}
+          />
+        );
+      }
 
       // sower action contains additional parameters in the actionArgs member
       /*
@@ -232,7 +288,14 @@ const DownloadsPanel = ({
         />
       );
     });
-  }, [buttons, cohortActionArgs, loginRequired, isUserLoggedIn]);
+  }, [
+    buttons,
+    cohortActionArgs,
+    loginRequired,
+    isUserLoggedIn,
+    loginRedirect,
+    redirectToLogin,
+  ]);
 
   return dropdowns || buttons ? (
     <div className="flex space-x-2 items-center">
