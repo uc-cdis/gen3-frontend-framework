@@ -75,7 +75,9 @@ export interface CohortPanelConfiguration {
   filters?: TabsConfig; // filters for the fields
   dropdowns?: Record<string, DropdownsWithButtonsProps>; // dropdown menu of action buttons
   buttons?: ReadonlyArray<DownloadButtonConfig>; // row of action buttons
+  // TODO: move this to individual buttons https://ctds-planx.atlassian.net/browse/GFF-610
   loginForDownload?: boolean; // login required for download
+  enableRedirectToLogin?: boolean; // show login to download with redirect
   sharedFiltersMap?: SharedFieldMapping;
   fieldsAreFlat?: boolean; // set to true to flatten the fields query
 }
