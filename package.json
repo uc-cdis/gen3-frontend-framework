@@ -1,6 +1,6 @@
 {
   "name": "gen3-frontend-framework",
-  "version": "0.12.83",
+  "version": "0.13.00",
   "description": "The Gen3 Frontend Framework mono repo for Gen 3.2 development",
   "private": true,
   "workspaces": [
@@ -12,8 +12,8 @@
     "packages/workspaces"
   ],
   "engines": {
-    "npm": ">=11.16.0",
-    "node": ">=24.18.1"
+    "npm": ">=11.19.1",
+    "node": ">=24.22.1"
   },
   "scripts": {
     "lint": "oxlint --quiet .",
@@ -167,7 +167,7 @@
     "nx": true,
     "uuid@8.3.2": true,
     "uuid@11.1.1": true,
-    "@parcel/watcher@2.6.0": true,
-    "esbuild@0.28.2": true
+    "esbuild": true,
+    "@parcel/watcher": true
   }
 }
