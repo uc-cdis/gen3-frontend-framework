@@ -1,6 +1,6 @@
 {
   "name": "@gen3/samplecommons",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "private": true,
   "scripts": {
     "analyze": "ANALYZE=true npm run build",
