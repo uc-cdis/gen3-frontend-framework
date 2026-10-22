@@ -18,26 +18,23 @@ The configuration for the explorer is stored an array of objects. Each object in
       "pageLimit": {
         "limit": 10000
       },
-      "columns": [
-        {
-          "name": "case_id",
-          "label": "Case ID",
+      "columns": {
+        "case_id": {
+          "title": "Case ID",
           "visible": true,
           "sortable": true
         },
-        {
-          "name": "project_id",
-          "label": "Project ID",
+        "project_id": {
+          "title": "Project ID",
           "visible": true,
           "sortable": true
         },
-        {
-          "name": "disease_type",
-          "label": "Disease Type",
+        "disease_type": {
+          "title": "Disease Type",
           "visible": true,
           "sortable": true
         }
-      ]
+      }
     }
   }
 ]
