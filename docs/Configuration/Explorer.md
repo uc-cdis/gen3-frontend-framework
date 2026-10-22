@@ -274,6 +274,12 @@ Download a file manifest from a explorer table requires the following configurat
 ```
 This is similar to the configuration for Gen3's data-portal except the `actionArgs` member now contains the information that was in the `manifestMapping` member of `gitops.json`
 
+### Requiring login for Downloads
+
+To require that a user is logged inorder to download, set: ```"loginForDownload": true``` in the configuration file.
+If you want to direct the user to the login page so that they log in and then are returned to the page set:
+```"enableRedirectToLogin": true```
+
 ### Details Modal
 
 There is support for a details modal that appears when the table is clicked. The modal's content is rendered using the
