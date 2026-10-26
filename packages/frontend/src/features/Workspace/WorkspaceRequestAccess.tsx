@@ -43,9 +43,10 @@ const WorkspaceRequestForm = ({
         'Unable to load data from Requester, form may not submit correctly. Try refreshing this page',
       );
     }
-    if (data && data.length > 0) {
-      setFormSuccess(true);
-    }
+    // TEMP: skipped so the default form shows for users with an existing request. Restore before merging.
+    // if (data && data.length > 0) {
+    //   setFormSuccess(true);
+    // }
   }, [isLoading, isError]);
 
   const [requestQuery] = useCreateRequestMutation();

@@ -91,6 +91,7 @@
     "jose": "^6.1.0",
     "js-cookie": "^3.0.5",
     "json-file-database": "^2.0.3",
+    "jszip": "^3.10.1",
     "minisearch": "^7.1.2",
     "next-compose-plugins": "^2.2.1",
     "postcss-selector-parser": "^6.1.4",

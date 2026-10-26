@@ -1,6 +1,12 @@
 import { JSONObject } from '@gen3/core';
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { Button } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
+import { useDiscoveryContext } from '../../../../Discovery/DiscoveryProvider';
+import {
+  downloadVariableMetadata,
+  getVariableMetadataRecords,
+} from '../Utils/downloadVariableMetadata';
 
 interface DownloadButtonsRowProps {
   readonly data: JSONObject;
@@ -25,16 +31,39 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
   const verifyExternalLoginsNeeded = Boolean(
     discoveryConfig?.features?.exportToWorkspace?.verifyExternalLogins,
   );
-  const showDownloadVariableMetadataButton = Boolean(
-    discoveryConfig.features?.exportToWorkspace?.variableMetadataFieldName &&
-    discoveryConfig.features?.exportToWorkspace?.enableDownloadVariableMetadata,n n
-  );
   */
 
-  const onDownloadVariableLevelMetadata = () =>
-    alert(
-      `called onDownloadVariableLevelMetadata with resource  ${JSON.stringify(data)}`,
-    );
+  const { discoveryConfig } = useDiscoveryContext();
+  const variableMetadataFieldName = discoveryConfig.variableMetadataFieldName;
+  const uidField = discoveryConfig.minimalFieldMapping?.uid;
+  const studyUID = uidField ? String(data[uidField] ?? '') : '';
+
+  const variableMetadataRecords = useMemo(
+    () => getVariableMetadataRecords(data, variableMetadataFieldName),
+    [data, variableMetadataFieldName],
+  );
+  const [downloadingVariableMetadata, setDownloadingVariableMetadata] =
+    useState(false);
+
+  const onDownloadVariableLevelMetadata = async () => {
+    if (!variableMetadataRecords) return;
+    setDownloadingVariableMetadata(true);
+    try {
+      await downloadVariableMetadata(variableMetadataRecords, studyUID);
+    } catch (error) {
+      console.error('Variable-level metadata download failed:', error);
+      notifications.show({
+        title: 'Download failed',
+        color: 'red',
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Unable to download variable-level metadata. Please try again later.',
+      });
+    } finally {
+      setDownloadingVariableMetadata(false);
+    }
+  };
   const onDownloadStudyLevelMetadata = () =>
     alert(
       `called onDownloadStudyLevelMetadata with resource ${JSON.stringify(data)}`,
@@ -46,15 +75,20 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
 
   return (
     <div className="flex flex-wrap gap-3 mt-3 mb-5">
-      <Button
-        onClick={onDownloadVariableLevelMetadata}
-        variant="outline"
-        size="md"
-      >
-        Download
-        <br />
-        Variable-Level Metadata
-      </Button>
+      {variableMetadataFieldName && (
+        <Button
+          onClick={onDownloadVariableLevelMetadata}
+          variant="outline"
+          size="md"
+          disabled={!variableMetadataRecords}
+          loading={downloadingVariableMetadata}
+          data-testid="download-variable-level-metadata"
+        >
+          Download
+          <br />
+          Variable-Level Metadata
+        </Button>
+      )}
       <Button
         onClick={onDownloadStudyLevelMetadata}
         variant="outline"
