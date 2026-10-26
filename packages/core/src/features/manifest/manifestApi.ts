@@ -21,7 +21,7 @@ export const manifestApi = manifestTags.injectEndpoints({
     }),
     addFileManifest: builder.mutation<string, Manifest>({
       query: (manifest) => ({
-        url: `${GEN3_MANIFEST_API}`,
+        url: `${GEN3_MANIFEST_API}/`,
         method: 'POST',
         body: manifest,
       }),
