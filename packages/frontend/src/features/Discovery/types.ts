@@ -205,6 +205,12 @@ interface DataLoader {
   sortingAndPagination?: 'client' | 'server';
 }
 
+export interface ExportToWorkspaceConfig {
+  enabled?: boolean;
+  enableDownloadVariableMetadata?: boolean;
+  [key: string]: unknown;
+}
+
 // TODO: Type the rest of the config
 export interface DiscoveryIndexConfig {
   guidType?: string;
@@ -231,6 +237,7 @@ export interface DiscoveryIndexConfig {
   detailView?: StudyDetailView;
   minimalFieldMapping: MinimalFieldMapping;
   variableMetadataFieldName?: string;
+  exportToWorkspace?: ExportToWorkspaceConfig;
 }
 
 export interface DiscoveryConfig extends Gen3AppConfigData {

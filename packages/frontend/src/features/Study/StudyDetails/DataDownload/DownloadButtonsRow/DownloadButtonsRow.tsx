@@ -35,8 +35,17 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
 
   const { discoveryConfig } = useDiscoveryContext();
   const variableMetadataFieldName = discoveryConfig.variableMetadataFieldName;
+  const showDownloadVariableMetadataButton = Boolean(
+    variableMetadataFieldName &&
+    discoveryConfig.exportToWorkspace?.enableDownloadVariableMetadata,
+  );
   const uidField = discoveryConfig.minimalFieldMapping?.uid;
   const studyUID = uidField ? String(data[uidField] ?? '') : '';
+  const studyName = (
+    data.study_metadata as
+      | { minimal_info?: { study_name?: string } }
+      | undefined
+  )?.minimal_info?.study_name;
 
   const variableMetadataRecords = useMemo(
     () => getVariableMetadataRecords(data, variableMetadataFieldName),
@@ -49,7 +58,11 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
     if (!variableMetadataRecords) return;
     setDownloadingVariableMetadata(true);
     try {
-      await downloadVariableMetadata(variableMetadataRecords, studyUID);
+      await downloadVariableMetadata(
+        variableMetadataRecords,
+        studyUID,
+        studyName,
+      );
     } catch (error) {
       console.error('Variable-level metadata download failed:', error);
       notifications.show({
@@ -75,7 +88,7 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
 
   return (
     <div className="flex flex-wrap gap-3 mt-3 mb-5">
-      {variableMetadataFieldName && (
+      {showDownloadVariableMetadataButton && (
         <Button
           onClick={onDownloadVariableLevelMetadata}
           variant="outline"

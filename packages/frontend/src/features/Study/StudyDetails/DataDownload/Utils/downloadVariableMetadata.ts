@@ -8,23 +8,22 @@ export interface VariableMetadataRecords {
   cdeMetadata: Record<string, string>;
 }
 
-const MAX_FILE_NAME_LENGTH = 255;
+const MAX_FILE_NAME_LENGTH = 250;
 const FILE_EXTENSION = '.json';
-const INVALID_FILE_NAME_CHARS = /[^a-zA-Z0-9[\]()\s._-]/g;
+const INVALID_FILE_NAME_CHARS = /[^a-zA-Z0-9[\]() ._-]+/g;
 const INVALID_WINDOWS_FILE_NAMES = [
   'CON',
   'PRN',
   'AUX',
   'NUL',
-  ...[1, 2, 3, 4, 5, 6, 7, 8, 9].flatMap((n) => [`COM${n}`, `LPT${n}`]),
+  ...[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].flatMap((n) => [`COM${n}`, `LPT${n}`]),
 ];
 
 export const sanitizeFileName = (name: string): string => {
   let baseName = name
     .replace(INVALID_FILE_NAME_CHARS, '')
     .substring(0, MAX_FILE_NAME_LENGTH - FILE_EXTENSION.length);
-  if (!baseName) baseName = 'unnamed';
-  if (INVALID_WINDOWS_FILE_NAMES.includes(baseName.toUpperCase())) {
+  if (INVALID_WINDOWS_FILE_NAMES.includes(baseName)) {
     baseName += '_';
   }
   return `${baseName}${FILE_EXTENSION}`;
@@ -68,21 +67,16 @@ const addRecordsToZip = (
   records: Record<string, string>,
   fetched: Record<string, unknown>,
   contentField: string,
+  recordKind: string,
   failed: string[],
 ) => {
-  const usedNames = new Set<string>();
   for (const [name, guid] of Object.entries(records)) {
     const content = (fetched[guid] as JSONObject | undefined)?.[contentField];
     if (content === undefined) {
-      failed.push(name);
+      failed.push(`${recordKind} with name "${name}"`);
       continue;
     }
-    let fileName = sanitizeFileName(name);
-    for (let n = 1; usedNames.has(fileName.toLowerCase()); n++) {
-      fileName = sanitizeFileName(`${name}_${n}`);
-    }
-    usedNames.add(fileName.toLowerCase());
-    zip.file(`${folder}/${fileName}`, JSON.stringify(content));
+    zip.file(`${folder}/${sanitizeFileName(name)}`, JSON.stringify(content));
   }
 };
 
@@ -94,6 +88,7 @@ const addRecordsToZip = (
 export const downloadVariableMetadata = async (
   records: VariableMetadataRecords,
   studyUID?: string,
+  studyName?: string,
 ): Promise<void> => {
   const guids = [
     ...Object.values(records.dataDictionaries),
@@ -109,6 +104,7 @@ export const downloadVariableMetadata = async (
     records.dataDictionaries,
     fetched,
     'data_dictionary',
+    'data dictionary',
     failed,
   );
   addRecordsToZip(
@@ -117,10 +113,13 @@ export const downloadVariableMetadata = async (
     records.cdeMetadata,
     fetched,
     'cde_metadata',
+    'common data element',
     failed,
   );
   if (failed.length > 0) {
-    throw new Error(`Unable to retrieve: ${failed.join(', ')}`);
+    throw new Error(
+      `Study with name ${studyName || 'N/A'} cannot download ${failed.join(' and ')}. Please try again later and contact support.`,
+    );
   }
 
   const blob = await zip.generateAsync({ type: 'blob' });
