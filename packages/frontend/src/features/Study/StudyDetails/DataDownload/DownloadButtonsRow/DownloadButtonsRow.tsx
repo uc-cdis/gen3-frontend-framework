@@ -7,6 +7,7 @@ import {
   downloadVariableMetadata,
   getVariableMetadataRecords,
 } from '../Utils/downloadVariableMetadata';
+import { toString } from 'lodash';
 
 interface DownloadButtonsRowProps {
   readonly data: JSONObject;
@@ -39,12 +40,11 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
     variableMetadataFieldName &&
     discoveryConfig.exportToWorkspace?.enableDownloadVariableMetadata,
   );
-  const uidField = discoveryConfig.minimalFieldMapping?.uid;
-  const studyUID = uidField ? String(data[uidField] ?? '') : '';
+  const uidField = discoveryConfig.minimalFieldMapping.uid;
+  const studyUID = uidField ? toString(data[uidField] ?? '') : '';
   const studyName = (
     data.study_metadata as
-      | { minimal_info?: { study_name?: string } }
-      | undefined
+      { minimal_info?: { study_name?: string } } | undefined
   )?.minimal_info?.study_name;
 
   const variableMetadataRecords = useMemo(
