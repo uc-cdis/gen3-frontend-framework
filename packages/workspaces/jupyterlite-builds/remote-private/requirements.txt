@@ -7,4 +7,4 @@ jupyterlmod>=5.3.2
 jupyter-server>=2.21.1
 nbconvert>=7.17.2
 beautifulsoup4>=4.15.0
-soupsieve>=3.0.4
+soupsieve>=2.8.4
