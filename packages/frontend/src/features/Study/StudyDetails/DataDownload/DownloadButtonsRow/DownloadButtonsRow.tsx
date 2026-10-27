@@ -1,4 +1,3 @@
-import { JSONObject } from '@gen3/core';
 import React, { useMemo, useState } from 'react';
 import { Button } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
@@ -8,6 +7,7 @@ import {
   getVariableMetadataRecords,
 } from '../Utils/downloadVariableMetadata';
 import { toString } from 'lodash';
+import type { JSONObject } from '@gen3/core';
 
 interface DownloadButtonsRowProps {
   readonly data: JSONObject;
