@@ -25,6 +25,7 @@ import CostTracker from '../../components/CostTracker';
 
 import { WorkspaceTier } from '../../types';
 import { useMicroContainerReduxContext } from '../../providers/MicroContainerReduxProvider';
+import { useHatcheryOptionsQuery } from '../../core/hatcheryApi';
 
 interface WorkspaceToolbarProps {
   toolbarConfiguration?: TierToolbarConfiguration;
@@ -56,7 +57,13 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
       coreDispatch(setWorkspaceTier(null));
     };
 
-    const { terminate } = useMicroContainerReduxContext();
+    const { terminate, containerHash } = useMicroContainerReduxContext();
+    const { data: hatcheryOptions } = useHatcheryOptionsQuery();
+    // title of the workspace that is launching or running, shown under the status
+    const activeWorkspaceName =
+      workspaceStatus === WorkspaceStatus.NotFound
+        ? undefined
+        : hatcheryOptions?.find((option) => option.id === containerHash)?.name;
 
     const fullscreenLabel = isFullscreen
       ? 'Exit Fullscreen'
@@ -107,19 +114,24 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
         </div>
         <div className="flex items-center gap-4 mr-8">
           {showStatus && (
-            <Group gap="xs" role="status" aria-label="Workspace status">
-              <Text size="md" c="base-contrast.4" aria-hidden="true">
-                Workspace Status:
+            <Stack gap={2} role="status" aria-label="Workspace status">
+              <Group gap="xs">
+                <Text size="md" c="base-contrast.4" aria-hidden="true">
+                  Workspace Status:
+                </Text>
+                <Badge
+                  size="md"
+                  radius="md"
+                  aria-live="polite"
+                  aria-atomic="true"
+                >
+                  {statusLabel}
+                </Badge>
+              </Group>
+              <Text size="sm" c="base-contrast.4" className='min-h-4'>
+                {activeWorkspaceName ? activeWorkspaceName: ''}
               </Text>
-              <Badge
-                size="md"
-                radius="md"
-                aria-live="polite"
-                aria-atomic="true"
-              >
-                {statusLabel}
-              </Badge>
-            </Group>
+            </Stack>
           )}
           {showStop && (
             <Button
