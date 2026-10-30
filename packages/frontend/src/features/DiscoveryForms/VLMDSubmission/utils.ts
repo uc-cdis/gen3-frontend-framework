@@ -1,6 +1,7 @@
 import { GEN3_FENCE_API, GEN3_MDS_API } from '@gen3/core';
 import { getCookie } from 'cookies-next';
 import type { CDEInfo } from './types';
+import { validateFileName } from '../../../utils/fileNames';
 import { toString } from 'lodash';
 import {
   CDE_METADATA_GUID_TYPE,
@@ -12,42 +13,9 @@ import {
   MDS_PAGE_SIZE,
 } from './constants';
 
-const MAX_FILENAME_LENGTH = 255;
-const INVALID_WINDOWS_FILENAMES = [
-  'CON',
-  'PRN',
-  'AUX',
-  'NUL',
-  'COM1',
-  'COM2',
-  'COM3',
-  'COM4',
-  'COM5',
-  'COM6',
-  'COM7',
-  'COM8',
-  'COM9',
-  'LPT1',
-  'LPT2',
-  'LPT3',
-  'LPT4',
-  'LPT5',
-  'LPT6',
-  'LPT7',
-  'LPT8',
-  'LPT9',
-];
-const INVALID_FILENAME_CHARS = /[^a-zA-Z0-9[\]()\s._-]/;
-
 export const validateDataDictionaryName = (name: string): string | null => {
   if (!name.trim()) return 'Data Dictionary Name is required';
-  if (name.length > MAX_FILENAME_LENGTH)
-    return `Name cannot exceed ${MAX_FILENAME_LENGTH} characters`;
-  if (INVALID_WINDOWS_FILENAMES.includes(name.toUpperCase()))
-    return 'Name is a reserved file name, please choose a different one';
-  if (INVALID_FILENAME_CHARS.test(name))
-    return 'Name can only use alphanumeric characters and []() ._-';
-  return null;
+  return validateFileName(name);
 };
 
 export interface PresignedUploadResponse {

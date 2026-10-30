@@ -206,6 +206,8 @@ interface DataLoader {
 export interface ExportToWorkspaceConfig {
   enabled?: boolean;
   enableDownloadVariableMetadata?: boolean;
+  enableDownloadStudyMetadata?: boolean;
+  studyMetadataFieldName?: string;
   [key: string]: unknown;
 }
 

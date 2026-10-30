@@ -6,6 +6,8 @@ import {
   downloadVariableMetadata,
   getVariableMetadataRecords,
 } from '../Utils/downloadVariableMetadata';
+import { downloadJsonFile } from '../Utils/downloadJsonFile';
+import { generateFilenameWithoutPrefix } from '../Utils/generateFilenameWithoutPrefix';
 import { toString } from 'lodash';
 import type { JSONObject } from '@gen3/core';
 
@@ -18,11 +20,6 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
   Showing, disabling and downloading logic will addressed: HP-2379, HP-2380, HP-2381, HP-2382
 
   const { discoveryConfig: discoveryConfig } = useDiscoveryContext();
-  const showDownloadStudyLevelMetadataButton = Boolean(
-    discoveryConfig?.features?.exportToWorkspace?.enableDownloadStudyMetadata &&
-    studyMetadataFieldNameReference &&
-    resourceInfo?.[studyMetadataFieldNameReference],
-  );
   const showDownloadFileManifestButtons = Boolean(
     discoveryConfig?.features?.exportToWorkspace?.enableDownloadManifest,
   );
@@ -77,10 +74,23 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
       setDownloadingVariableMetadata(false);
     }
   };
-  const onDownloadStudyLevelMetadata = () =>
-    alert(
-      `called onDownloadStudyLevelMetadata with resource ${JSON.stringify(data)}`,
+  const studyMetadataFieldName =
+    discoveryConfig.exportToWorkspace?.studyMetadataFieldName;
+  const studyMetadata = studyMetadataFieldName
+    ? data[studyMetadataFieldName]
+    : undefined;
+  const showDownloadStudyLevelMetadataButton = Boolean(
+    discoveryConfig.exportToWorkspace?.enableDownloadStudyMetadata &&
+    studyMetadata,
+  );
+
+  const onDownloadStudyLevelMetadata = () => {
+    if (!studyMetadata) return;
+    downloadJsonFile(
+      `${generateFilenameWithoutPrefix('metadata', studyUID)}.json`,
+      studyMetadata,
     );
+  };
   const onDownloadManifest = () =>
     alert(`called onDownloadManifest with resource ${JSON.stringify(data)}`);
   const onDownloadAllFiles = () =>
@@ -102,15 +112,19 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
           Variable-Level Metadata
         </Button>
       )}
-      <Button
-        onClick={onDownloadStudyLevelMetadata}
-        variant="outline"
-        size="md"
-      >
-        Download
-        <br />
-        Study-level Metadata
-      </Button>
+      {showDownloadStudyLevelMetadataButton && (
+        <Button
+          onClick={onDownloadStudyLevelMetadata}
+          variant="outline"
+          size="md"
+          disabled={downloadingVariableMetadata}
+          data-testid="download-study-level-metadata"
+        >
+          Download
+          <br />
+          Study-Level Metadata
+        </Button>
+      )}
       <Button onClick={onDownloadManifest} variant="outline" size="md">
         Download Manifest
       </Button>

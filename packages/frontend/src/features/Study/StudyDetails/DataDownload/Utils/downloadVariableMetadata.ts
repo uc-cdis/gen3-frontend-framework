@@ -2,32 +2,15 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { queryMultipleMDSRecords } from '@gen3/core';
 import type { JSONObject } from '@gen3/core';
+import { generateFilenameWithoutPrefix } from './generateFilenameWithoutPrefix';
+import { sanitizeFileName } from '../../../../../utils/fileNames';
 
 export interface VariableMetadataRecords {
   dataDictionaries: Record<string, string>;
   cdeMetadata: Record<string, string>;
 }
 
-const MAX_FILE_NAME_LENGTH = 250;
 const FILE_EXTENSION = '.json';
-const INVALID_FILE_NAME_CHARS = /[^a-zA-Z0-9[\]() ._-]+/g;
-const INVALID_WINDOWS_FILE_NAMES = [
-  'CON',
-  'PRN',
-  'AUX',
-  'NUL',
-  ...[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].flatMap((n) => [`COM${n}`, `LPT${n}`]),
-];
-
-export const sanitizeFileName = (name: string): string => {
-  let baseName = name
-    .replace(INVALID_FILE_NAME_CHARS, '')
-    .substring(0, MAX_FILE_NAME_LENGTH - FILE_EXTENSION.length);
-  if (INVALID_WINDOWS_FILE_NAMES.includes(baseName)) {
-    baseName += '_';
-  }
-  return `${baseName}${FILE_EXTENSION}`;
-};
 
 /**
  * Reads the data dictionary and CDE name -> MDS guid maps from the study's
@@ -55,12 +38,6 @@ export const getVariableMetadataRecords = (
   return { dataDictionaries, cdeMetadata };
 };
 
-const today = (): string => {
-  const now = new Date();
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
-};
-
 const addRecordsToZip = (
   zip: JSZip,
   folder: string,
@@ -76,7 +53,10 @@ const addRecordsToZip = (
       failed.push(`${recordKind} with name "${name}"`);
       continue;
     }
-    zip.file(`${folder}/${sanitizeFileName(name)}`, JSON.stringify(content));
+    zip.file(
+      `${folder}/${sanitizeFileName(name, FILE_EXTENSION)}`,
+      JSON.stringify(content),
+    );
   }
 };
 
@@ -123,6 +103,5 @@ export const downloadVariableMetadata = async (
   }
 
   const blob = await zip.generateAsync({ type: 'blob' });
-  const prefix = `${window.location.hostname}${studyUID ? `-${studyUID}` : ''}-${today()}`;
-  saveAs(blob, `${prefix}-vars.zip`);
+  saveAs(blob, `${generateFilenameWithoutPrefix('vlmd', studyUID)}.zip`);
 };
