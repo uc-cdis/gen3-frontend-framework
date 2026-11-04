@@ -2,27 +2,27 @@ import { downloadJsonFile } from './downloadJsonFile';
 import { generateDownloadFilename } from './generateDownloadFilename';
 import type { JSONObject } from '@gen3/core';
 import type { DiscoveryIndexConfig } from '../../../../Discovery/types';
+import { toString } from 'lodash';
 
 const downloadManifest = (
   config: DiscoveryIndexConfig,
   selectedResource: JSONObject,
   missingRequiredIdentityProviders: string[],
 ) => {
-  const manifestFieldName = config?.exportToWorkspace?.manifestFieldName;
+  const manifestFieldName = config.exportToWorkspace?.manifestFieldName;
   if (!manifestFieldName) {
     throw new Error(
       'Missing required configuration field `exportToWorkspace.manifestFieldName`',
     );
   }
-  const uidFieldName = config.minimalFieldMapping?.uid || '';
+  const uidFieldName = config.minimalFieldMapping.uid || '';
 
   if (missingRequiredIdentityProviders.length) {
     return;
   }
 
   const resourceManifest = selectedResource[manifestFieldName] as
-    | JSONObject[]
-    | undefined;
+    JSONObject[] | undefined;
   if (!resourceManifest) {
     return;
   }
@@ -38,7 +38,7 @@ const downloadManifest = (
   const manifest: unknown[] = [];
   if (
     'commons_url' in selectedResource &&
-    !hostname.includes(String(selectedResource.commons_url))
+    !hostname.includes(toString(selectedResource.commons_url))
   ) {
     // PlanX addition to allow hostname based DRS in manifest download clients
     manifest.push(
