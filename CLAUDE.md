@@ -123,7 +123,7 @@ JupyterLite workspace UI — components, hooks, API layer, and auth integration 
 | Testing        | Jest 30 + ts-jest + React Testing Library |
 | Linter         | **oxlint** (not ESLint)                   |
 | Formatter      | Prettier 3                                |
-| Node           | >= 24.18.0 (enforced, see `.nvmrc`)       |
+| Node           | >= 24.22.1 (enforced, see `.nvmrc`)       |
 
 ## Code Conventions
 
@@ -148,7 +148,7 @@ Key env vars for `packages/sampleCommons`:
 
 ## CI
 
-GitHub Actions (`.github/workflows/ci.yaml`) runs on Node 24.18.0: `npm ci --include=optional` → `npm run build` →
+GitHub Actions (`.github/workflows/ci.yaml`) runs on Node 24.22.1: `npm ci --include=optional` → `npm run build` →
 `npm run lint`.
 
 Pre-commit hooks block commits to `develop`, `main`, and `release/*` branches and run secrets scanning and oxlint.

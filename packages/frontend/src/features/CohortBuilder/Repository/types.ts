@@ -1,12 +1,12 @@
-import {
+import type {
   DataTypeConfigWithManifest,
   DownloadButtonConfig,
   DropdownsWithButtonsProps,
   TabsConfig,
 } from '../types';
-import { SummaryTable } from '../ExplorerTable/types';
-import { Gen3AppConfigData } from '../../../lib/content/types';
-import { Accessibility, AggregationsData, FilterSet } from '@gen3/core';
+import type { SummaryTable } from '../ExplorerTable/types';
+import type { Gen3AppConfigData } from '../../../lib/content/types';
+import type { Accessibility, AggregationsData, FilterSet } from '@gen3/core';
 import React from 'react';
 
 export interface FacetQueryParameters {
@@ -73,6 +73,7 @@ export interface RepositoryConfiguration extends Gen3AppConfigData {
   dropdowns?: Record<string, DropdownsWithButtonsProps>; // dropdown menu of action buttons
   buttons?: ReadonlyArray<DownloadButtonConfig>; // row of action buttons
   loginForDownload?: boolean; // login required for download
+  enableRedirectToLogin?: boolean;
   fileStatsConfiguration: FileStatsConfiguration;
 }
 

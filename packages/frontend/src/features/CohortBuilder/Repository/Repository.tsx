@@ -2,7 +2,7 @@ import React from 'react';
 import RepositoryPanel from './RepositoryPanel';
 import { validateObjectHasRequiredFields } from '../../../utils/validators';
 import { ErrorCard, MessagePage } from '../../../components/MessageCards';
-import { RepositoryProps } from './types';
+import type { RepositoryProps } from './types';
 
 const Repository = ({
   filters,
@@ -10,6 +10,7 @@ const Repository = ({
   table,
   buttons,
   loginForDownload,
+  enableRedirectToLogin,
   dropdowns,
   fileStatsConfiguration,
   additionalControls = null,
@@ -37,6 +38,7 @@ const Repository = ({
       dropdowns={dropdowns}
       buttons={buttons}
       loginForDownload={loginForDownload}
+      enableRedirectToLogin={enableRedirectToLogin}
       fileStatsConfiguration={fileStatsConfiguration}
       additionalControls={additionalControls}
     />

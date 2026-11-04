@@ -13,7 +13,7 @@ repos:
         -   id: no-commit-to-branch
             args: [--branch, develop, --branch, main, --pattern, release/.*]
     - repo: https://github.com/oxc-project/mirrors-oxlint
-      rev: v1.76.0
+      rev: v1.89.0
       hooks:
           - id: oxlint
             verbose: true
