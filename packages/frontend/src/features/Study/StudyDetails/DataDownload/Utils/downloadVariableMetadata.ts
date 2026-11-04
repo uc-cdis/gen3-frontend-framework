@@ -2,7 +2,7 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { queryMultipleMDSRecords } from '@gen3/core';
 import type { JSONObject } from '@gen3/core';
-import { generateFilenameWithoutPrefix } from './generateFilenameWithoutPrefix';
+import { generateDownloadFilename } from './generateDownloadFilename';
 import { sanitizeFileName } from '../../../../../utils/fileNames';
 
 export interface VariableMetadataRecords {
@@ -103,5 +103,5 @@ export const downloadVariableMetadata = async (
   }
 
   const blob = await zip.generateAsync({ type: 'blob' });
-  saveAs(blob, `${generateFilenameWithoutPrefix('vlmd', studyUID)}.zip`);
+  saveAs(blob, `${generateDownloadFilename('vlmd', studyUID)}.zip`);
 };

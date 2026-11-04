@@ -208,6 +208,9 @@ export interface ExportToWorkspaceConfig {
   enableDownloadVariableMetadata?: boolean;
   enableDownloadStudyMetadata?: boolean;
   studyMetadataFieldName?: string;
+  manifestFieldName?: string;
+  enableDownloadManifest: boolean;
+  downloadManifestButtonText?: string;
   [key: string]: unknown;
 }
 

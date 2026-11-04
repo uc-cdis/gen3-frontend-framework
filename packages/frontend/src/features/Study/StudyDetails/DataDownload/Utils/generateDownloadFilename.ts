@@ -1,8 +1,9 @@
-type DownloadFileCategory = 'metadata' | 'vlmd';
+type DownloadFileCategory = 'metadata' | 'vlmd' | 'manifest';
 
 const FILE_CATEGORY_SUFFIX: Record<DownloadFileCategory, string> = {
   metadata: 'meta',
   vlmd: 'vars',
+  manifest: 'manifest',
 };
 
 const today = (): string => {
@@ -15,7 +16,7 @@ const today = (): string => {
  * Builds a download file name, without extension, of the form
  * {hostname}-{studyUID}-{YYYY-MM-DD}-{suffix}
  */
-export const generateFilenameWithoutPrefix = (
+export const generateDownloadFilename = (
   fileCategory: DownloadFileCategory,
   studyUID?: string,
 ): string => {

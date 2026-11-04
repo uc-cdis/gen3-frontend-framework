@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Button } from '@mantine/core';
+import { Button, Popover } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useDiscoveryContext } from '../../../../Discovery/DiscoveryProvider';
 import {
@@ -7,30 +7,26 @@ import {
   getVariableMetadataRecords,
 } from '../Utils/downloadVariableMetadata';
 import { downloadJsonFile } from '../Utils/downloadJsonFile';
-import { generateFilenameWithoutPrefix } from '../Utils/generateFilenameWithoutPrefix';
+import { generateDownloadFilename } from '../Utils/generateDownloadFilename';
 import { toString } from 'lodash';
-import type { JSONObject } from '@gen3/core';
+import {
+  type CoreState,
+  type UserProfile,
+  type JSONObject,
+  selectUserDetails,
+  useCoreSelector,
+} from '@gen3/core';
+import GetMissingRequiredIdentityProviders from '../Utils/GetMissingRequiredIdentityProviders';
+import { useDisclosure } from '@mantine/hooks';
+import downloadManifestClick from '../Utils/downloadManifest';
+import { useRouter } from 'next/router';
 
 interface DownloadButtonsRowProps {
   readonly data: JSONObject;
 }
 
 const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
-  /*
-  Showing, disabling and downloading logic will addressed: HP-2379, HP-2380, HP-2381, HP-2382
-
-  const { discoveryConfig: discoveryConfig } = useDiscoveryContext();
-  const showDownloadFileManifestButtons = Boolean(
-    discoveryConfig?.features?.exportToWorkspace?.enableDownloadManifest,
-  );
-  const showDownloadAllFilesButtons = Boolean(
-    discoveryConfig?.features?.exportToWorkspace?.enableDownloadZip,
-  );
-  const verifyExternalLoginsNeeded = Boolean(
-    discoveryConfig?.features?.exportToWorkspace?.verifyExternalLogins,
-  );
-  */
-
+  const router = useRouter();
   const { discoveryConfig } = useDiscoveryContext();
   const variableMetadataFieldName = discoveryConfig.variableMetadataFieldName;
   const showDownloadVariableMetadataButton = Boolean(
@@ -43,6 +39,50 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
     data.study_metadata as
       { minimal_info?: { study_name?: string } } | undefined
   )?.minimal_info?.study_name;
+  const accessibleFieldName = '__accessible';
+  let userHasAccessToDownload = true;
+  enum AccessLevel {
+    ACCESSIBLE = 1,
+    UNACCESSIBLE = 2,
+    WAITING = 3,
+    NOT_AVAILABLE = 4,
+    OTHER = 5,
+    MIXED = 6,
+  }
+  // if auth is enabled, check if user have access to this study
+  if (discoveryConfig.features.authorization?.enabled) {
+    userHasAccessToDownload =
+      data[accessibleFieldName] === AccessLevel.ACCESSIBLE;
+  }
+  const showDownloadFileManifestButton =
+    discoveryConfig.exportToWorkspace?.enableDownloadManifest;
+
+  type ActiveUser = Partial<UserProfile> & {
+    active?: boolean;
+    fence_idp?: string;
+  };
+  const userInfo = useCoreSelector(
+    (state: CoreState) => selectUserDetails(state) as ActiveUser,
+  );
+
+  const missingRequiredIdentityProviders = GetMissingRequiredIdentityProviders(
+    [data],
+    userInfo.fence_idp,
+  );
+
+  const [opened, { close, open }] = useDisclosure(false);
+
+  /*
+  Showing, disabling and downloading logic will addressed: HP-2379, HP-2380, HP-2381, HP-2382
+
+    const showDownloadAllFilesButtons = Boolean(
+    discoveryConfig?.features?.exportToWorkspace?.enableDownloadZip,
+  );
+  */
+  // const { discoveryConfig } = useDiscoveryContext();
+  /* const showDownloadFileManifestButtons = Boolean(
+    discoveryConfig?.features?.exportToWorkspace?.enableDownloadManifest,
+  ); */
 
   const variableMetadataRecords = useMemo(
     () => getVariableMetadataRecords(data, variableMetadataFieldName),
@@ -83,16 +123,33 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
     discoveryConfig.exportToWorkspace?.enableDownloadStudyMetadata &&
     studyMetadata,
   );
+  const downloadManifestButtonText = userInfo.active ? (
+    <>Download Manifest</>
+  ) : (
+    <>
+      Login to <br /> Download Manifest
+    </>
+  );
+
+  const conditionalPopoverText = (() => {
+    if (!userHasAccessToDownload) {
+      return "You don't have access to this data";
+    }
+    if (missingRequiredIdentityProviders.length) {
+      return missingRequiredIdentityProviders.length > 1
+        ? `Data selection requires [${missingRequiredIdentityProviders.join(', ')}] credentials to access. Please change selection to only need one set of credentials and log in using appropriate credentials`
+        : `This dataset is only accessible to users who have authenticated via ${missingRequiredIdentityProviders[0]}. Please log in using the ${missingRequiredIdentityProviders[0]} option.`;
+    }
+    return 'The file is not available for the selected study';
+  })();
 
   const onDownloadStudyLevelMetadata = () => {
     if (!studyMetadata) return;
     downloadJsonFile(
-      `${generateFilenameWithoutPrefix('metadata', studyUID)}.json`,
+      `${generateDownloadFilename('metadata', studyUID)}.json`,
       studyMetadata,
     );
   };
-  const onDownloadManifest = () =>
-    alert(`called onDownloadManifest with resource ${JSON.stringify(data)}`);
   const onDownloadAllFiles = () =>
     alert(`called onDownloadAllFiles with resource ${JSON.stringify(data)}`);
 
@@ -102,7 +159,7 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
         <Button
           onClick={onDownloadVariableLevelMetadata}
           variant="outline"
-          size="md"
+          size="sm"
           disabled={!variableMetadataRecords}
           loading={downloadingVariableMetadata}
           data-testid="download-variable-level-metadata"
@@ -116,7 +173,7 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
         <Button
           onClick={onDownloadStudyLevelMetadata}
           variant="outline"
-          size="md"
+          size="sm"
           disabled={downloadingVariableMetadata}
           data-testid="download-study-level-metadata"
         >
@@ -125,10 +182,56 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
           Study-Level Metadata
         </Button>
       )}
-      <Button onClick={onDownloadManifest} variant="outline" size="md">
-        Download Manifest
-      </Button>
-      <Button onClick={onDownloadAllFiles} variant="outline" size="md">
+
+      {Boolean(showDownloadFileManifestButton) &&
+        !missingRequiredIdentityProviders[0] && (
+          <>
+            <Popover
+              width={200}
+              position="bottom"
+              withArrow
+              shadow="md"
+              opened={opened}
+            >
+              <Popover.Target>
+                <Button
+                  className="discovery-action-bar-button"
+                  data-testid="download-manifest"
+                  onMouseEnter={open}
+                  onMouseLeave={close}
+                  onClick={() => {
+                    if (!userInfo.active) {
+                      // return to this study's details page after logging in
+                      void router.push(
+                        `/Login?redirect=/Discovery/${encodeURI(studyUID)}`,
+                      );
+                      return;
+                    }
+                    downloadManifestClick(
+                      discoveryConfig,
+                      data,
+                      missingRequiredIdentityProviders,
+                    );
+                  }}
+                  disabled={
+                    Boolean(userInfo.active) && !userHasAccessToDownload
+                  }
+                  variant="outline"
+                  size="sm"
+                >
+                  {downloadManifestButtonText}
+                </Button>
+              </Popover.Target>
+              {!userInfo.active && conditionalPopoverText && (
+                <Popover.Dropdown style={{ pointerEvents: 'none' }}>
+                  {String(conditionalPopoverText)}
+                </Popover.Dropdown>
+              )}
+            </Popover>
+          </>
+        )}
+
+      <Button onClick={onDownloadAllFiles} variant="outline" size="sm">
         Download All Files
       </Button>
     </div>

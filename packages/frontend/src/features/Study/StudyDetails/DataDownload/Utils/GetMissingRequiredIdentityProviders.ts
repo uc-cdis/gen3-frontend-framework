@@ -1,0 +1,37 @@
+const GetMissingRequiredIdentityProviders = (
+  selectedResources: ReadonlyArray<Record<string, unknown>>,
+  fenceIdentityProvider: string | undefined,
+): string[] => {
+  const missingRequiredIdentityProvider: string[] = [];
+  if (Array.isArray(selectedResources) && selectedResources.length > 0) {
+    selectedResources.forEach((resource) => {
+      if (resource && Array.isArray(resource.tags)) {
+        (resource.tags as { name: string; category: string }[]).forEach((tag) => {
+          if (tag && tag.category === 'RequiredIDP' && tag.name) {
+            // If any resources RequiredIDP check if logged in
+            switch (tag.name) {
+              case 'InCommon':
+                if (
+                  fenceIdentityProvider &&
+                  fenceIdentityProvider === 'shibboleth'
+                ) {
+                  return; // do not add tag to list
+                }
+                break;
+              default:
+                console.error(
+                  `Required Identity Provider does not expect: ${tag.name}`,
+                );
+                return; // do not add tag to list
+            }
+            if (!missingRequiredIdentityProvider.includes(tag.name)) {
+              missingRequiredIdentityProvider.push(tag.name);
+            }
+          }
+        });
+      }
+    });
+  }
+  return missingRequiredIdentityProvider;
+};
+export default GetMissingRequiredIdentityProviders;

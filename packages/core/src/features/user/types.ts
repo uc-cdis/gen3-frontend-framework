@@ -42,6 +42,7 @@ export interface UserProfile {
   message: string;
   sub: string;
   idp: string;
+  fence_idp?: string;
   azp: string[] | null;
 }
 
