@@ -4,6 +4,7 @@ import Footer from './Footer/Footer';
 import Header from './Header';
 import { NavPageLayoutProps } from './types';
 import LeftSidePanel from './Vertical/LeftSidePanel';
+import { AuthzMappingsGate } from '../../components/Providers/AuthzMappingsProvider';
 
 const NavPageLayout = ({
   headerProps,
@@ -18,7 +19,7 @@ const NavPageLayout = ({
     ? 'flex-1 flex overflow-hidden relative'
     : 'flex grow relative';
   return (
-    <div className="flex flex-col justify-between h-screen">
+    <div className="flex flex-col justify-between h-full min-h-dvh">
       <Head>
         <title>{headerMetadata.title}</title>
         <meta
@@ -45,10 +46,14 @@ const NavPageLayout = ({
             items={headerProps.navigation.items}
             classNames={headerProps.navigation.classNames}
           />
-          <main className={mainContentStyle}>{children}</main>
+          <main className={mainContentStyle}>
+            <AuthzMappingsGate>{children}</AuthzMappingsGate>
+          </main>
         </div>
       ) : (
-        <main className={mainContentStyle}>{children}</main>
+        <main className={mainContentStyle}>
+          <AuthzMappingsGate>{children}</AuthzMappingsGate>
+        </main>
       )}
       {CustomFooterComponent ? (
         <CustomFooterComponent {...footerProps} />

@@ -6,12 +6,12 @@ export default function Document() {
   return (
     <Html lang="en" {...mantineHtmlProps}>
       <Head>
-        <link rel="shortcut icon" href="/icons/favicon.ico" />
+        <link rel="icon" href="/icons/favicon.ico" />
         <ColorSchemeScript defaultColorScheme="auto" />
       </Head>
       <body>
-        <Main />
-        <NextScript />
+      <Main />
+      <NextScript />
       </body>
     </Html>
   );

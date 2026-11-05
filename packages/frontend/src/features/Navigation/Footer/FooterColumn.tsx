@@ -1,13 +1,14 @@
 import React from 'react';
 import Image from 'next/image';
-import {
+import { useRouter } from 'next/router';
+import type {
   FooterColumnProps,
-  FooterRow,
   FooterLink,
-  FooterLogo,
-  FooterText,
   FooterLinks,
+  FooterLogo,
+  FooterRow,
   FooterSectionProps,
+  FooterText,
 } from './types';
 import {
   mergeDefaultTailwindClassnames,
@@ -15,6 +16,7 @@ import {
 } from '../../../utils/mergeDefaultTailwindClassnames';
 import { extractClassName } from '../utils';
 import { extractObjectKey } from '../../../utils/values';
+import { withBasePath } from '../../../utils/strings';
 
 interface FooterRowComponentProps {
   item: Record<string, FooterRow>;
@@ -27,6 +29,7 @@ const FooterRowComponent: React.FC<FooterRowComponentProps> = ({
   item,
   rowClassname,
 }) => {
+  const { basePath } = useRouter();
   const itemType = extractObjectKey(item);
   if (!itemType) return null;
 
@@ -96,7 +99,7 @@ const FooterRowComponent: React.FC<FooterRowComponentProps> = ({
             className={className}
           >
             <Image
-              src={`${logo.logo}`}
+              src={withBasePath(basePath, logo.logo)}
               width={logo.width}
               height={logo.height}
               alt={logo.description}
@@ -107,7 +110,7 @@ const FooterRowComponent: React.FC<FooterRowComponentProps> = ({
       return (
         <Image
           key={`icons-${logo.logo}`}
-          src={`${logo.logo}`}
+          src={withBasePath(basePath, logo.logo)}
           width={logo.width}
           height={logo.height}
           alt={logo.description}
@@ -165,7 +168,7 @@ const FooterColumn: React.FC<FooterColumnProps> = ({
 
 const FooterSection: React.FC<FooterSectionProps> = ({
   columns,
-  className = undefined,
+  className,
 }: FooterSectionProps) => {
   return (
     <div className={`${className ?? 'flex items-center justify-center'}`}>

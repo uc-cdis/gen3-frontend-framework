@@ -1,12 +1,10 @@
-import {
-  JSONValue,
-  JSONObject,
-} from '@gen3/core';
-import { AccessLevel, accessibleFieldName } from '../../utils';
+import type { JSONObject, JSONValue } from '@gen3/core';
+import type { accessibleFieldName, AccessLevel } from '../../utils';
 
 export interface StudyDetailsField {
   name: string;
   field: string;
+  label?: string; // Optional label for the field
   contentType?: string;
   includeLabel?: boolean;
   includeIfNotAvailable?: boolean;
@@ -28,10 +26,12 @@ export interface StudyPageConfig {
     field: string;
     className?: string;
   };
+  showSubmitButton?: boolean;
   downloadLinks?: DataDownloadLinks;
   downloadLinkFields?: DownloadLinkFields;
   classNames?: Record<string, string>;
   fieldsToShow: Array<StudyPageGroup>; // render multiple groups of fields
+  routeToStudyURL?: boolean;
 }
 
 export interface StudyColumn {
@@ -42,6 +42,7 @@ export interface StudyColumn {
   params?: JSONObject;
   errorIfNotAvailable?: boolean;
   valueIfNotAvailable?: string | number;
+  sortable?: boolean; // default is true if not set
 }
 
 export type StudyColumnContentTypes =
@@ -81,11 +82,11 @@ export interface StudyDetailTab {
 }
 
 export interface StudyDetailView {
-  header: {
-    field: string;
-    className?: string;
-  };
+  showSubmitButton?: boolean;
+  headerField: string;
+  subHeaderField: string;
   tabs: StudyDetailTab[];
+  routeToStudyURL?: boolean;
 }
 
 export interface TagData {
@@ -99,7 +100,7 @@ export interface TagInfo {
 }
 
 export const isTagInfo = (obj: any): obj is TagInfo => {
-  return obj && obj.name && obj.category;
+  return obj?.name && obj.category;
 };
 
 export const isTagInfoArray = (obj: any): obj is TagInfo[] => {
@@ -117,7 +118,10 @@ export interface TagsConfig {
   showUnknownTags?: boolean;
 }
 
-export interface StudyResource extends Record<string, JSONValue | AccessLevel | TagInfo[] | undefined> {
+export interface StudyResource extends Record<
+  string,
+  JSONValue | AccessLevel | TagInfo[] | undefined
+> {
   [accessibleFieldName]?: AccessLevel;
   tags?: Array<TagInfo>;
 }

@@ -1,0 +1,18 @@
+{
+  "pageTitle": "Gen3 Test Workspaces",
+  "assetRoot": "jupyter-workspaces/assets",
+  "allowedHosts": ["localhost", "gen3.datacommons.io", "gen3dev.local.io"],
+  "faviconUrl": "/icons/favicon.ico",
+  "gatewayBaseUrl": "/lw-workspace/proxy/",
+  "remoteKernelsPath": "/lw-workspace/proxy/jeg-proxy",
+  "additionalDisabledExtensions": [
+    "@jupyterlab/docmanager-extension:download",
+    "@jupyterlab/filebrowser-extension:download",
+    "@jupyterlab/notebook-extension:export",
+    "@jupyterlab/docmanager-extension:download",
+    "@jupyterlab/filebrowser-extension:download",
+    "@jupyterlab/notebook-extension:export",
+    "@jupyterlab/workspaces-extension:menu",
+    "@jupyterlab/workspaces-extension:commands"
+  ]
+}

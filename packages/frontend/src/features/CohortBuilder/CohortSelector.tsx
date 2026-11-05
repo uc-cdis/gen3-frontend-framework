@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { Group, Select, Tooltip } from '@mantine/core';
 import { Icon } from '@iconify-icon/react';
 import JSONObjectDownloadButton from '../../components/Buttons/DownloadButtons/JSONObjectDownloadButton';

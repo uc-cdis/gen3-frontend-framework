@@ -4,6 +4,7 @@ import { Badge } from '@mantine/core';
 import Link from 'next/link';
 import { CellRendererFunction, CellRendererFunctionProps } from './types';
 
+// oxlint-disable-next-line no-unused-vars
 const NullCell = (): ReactElement => <span>NULL</span>;
 
 export const RenderArrayCell: CellRendererFunction = ({

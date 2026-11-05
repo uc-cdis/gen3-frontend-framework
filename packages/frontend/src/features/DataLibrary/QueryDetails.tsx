@@ -1,8 +1,8 @@
 import React from 'react';
 import {
   CohortItem,
-  isFilterSet,
   extractIndexFromDataLibraryCohort,
+  isFilterSet,
 } from '@gen3/core';
 import { Group, Text } from '@mantine/core';
 import { ErrorCard } from '../../components/MessageCards';
@@ -56,7 +56,7 @@ const QueryDetails: React.FC<CohortItem> = ({
             index={index}
             displayOnly={true}
             showTitle={false}
-          ></QueryExpressionSection>
+          />
         ) : (
           <Text fw={400}>{JSON.stringify(data, null, 2)}</Text>
         )}

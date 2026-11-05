@@ -1,4 +1,4 @@
-import React, { useContext, ReactNode } from 'react';
+import React, { useContext } from 'react';
 import { AnalysisToolConfiguration, AnalysisToolsProviderProps } from './types';
 
 // Default context value for consistency and clarity

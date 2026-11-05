@@ -1,4 +1,7 @@
-import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
+import {
+  MantineReactTable,
+  useMantineReactTable,
+} from 'mantine-react-table-open';
 import { CrosswalkMapping } from './types';
 import React, { useMemo } from 'react';
 import { Text } from '@mantine/core';

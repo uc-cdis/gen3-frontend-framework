@@ -1,4 +1,4 @@
-import { JSONObject } from '../../types';
+import type { JSONObject } from '../../types';
 
 export interface FetchError<T> {
   readonly url: string;

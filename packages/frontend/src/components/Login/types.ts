@@ -15,12 +15,18 @@ export interface LoginConfig
   extends Partial<Gen3LoginPanelConfig>,
     Gen3AppConfigData {
   topContent?: ReadonlyArray<TextContentProps>;
+  loginProviderExtra?: {
+    [key: string]: ReadonlyArray<TextContentProps>;
+  }
   bottomContent?: ReadonlyArray<TextContentProps>;
   showCredentialsLogin?: boolean;
+  loginBtnHorizontal?: boolean;
 }
 
 export interface LoginSelectedProps {
   readonly handleLoginSelected: (_url: string) => void;
+  readonly loginProviderExtra?: LoginConfig["loginProviderExtra"];
+  readonly loginBtnHorizontal?: boolean;
 }
 
 export enum LoginButtonVisibility {

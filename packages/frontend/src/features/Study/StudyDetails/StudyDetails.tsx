@@ -1,73 +1,101 @@
-import { Button, CopyButton, Drawer } from '@mantine/core';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { Drawer } from '@mantine/core';
 import StudyDetailsPanel from './StudyDetailsPanel';
-import React, { useEffect } from 'react';
 import { useDisclosure } from '@mantine/hooks';
-import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
 import SinglePageStudyDetailsPanel from './SinglePageStudyDetailsPanel';
 import { useStudyContext } from '../StudyProvider';
-import { StudyDetailView, StudyPageConfig } from '../types';
-import { DataAuthorization } from '../../../utils';
+import StudyDetailsHeaderButtons from './StudyDetailsHeaderButtons';
+import { toString } from 'lodash';
+import { useDiscoveryContext } from '../../Discovery/DiscoveryProvider';
 
-const StudyDetails = ({
-  index,
-  detailView,
-  simpleDetailsView,
-  authz
-}: {
-  index: string,
-  detailView: StudyDetailView,
-  simpleDetailsView?: StudyPageConfig,
-  authz: DataAuthorization
-}) => {
-  const { studyDetails } = useStudyContext();
+const StudyDetails = () => {
+  const { discoveryConfig: config } = useDiscoveryContext();
+  const index = config.minimalFieldMapping.uid ?? 'unknown';
+  const detailView = config.detailView;
+  const simpleDetailsView = config.simpleDetailsView;
+  const authz = config.features.authorization;
+  const { studyDetails, setStudyDetails } = useStudyContext();
+  const router = useRouter();
   const [opened, { open, close }] = useDisclosure(false);
-  let permalink = 'Discovery/notfound';
-
-  if (studyDetails) {
-    const studyId = studyDetails[index];
-    const pagePath = `/discovery/${encodeURIComponent(
-      typeof studyId == 'string' ? 'string' :  'unknown',
-    )}`;
-    permalink = `/${pagePath}`;
-  }
+  const hasStudyDetails = Object.keys(studyDetails).length > 0;
+  const origin = window.location.origin;
+  const defaultPath = 'Discovery';
+  const defaultPermaLinkValue = `${origin}/${defaultPath}/notfound`;
+  const [permalink, setPermalink] = useState(defaultPermaLinkValue);
+  const pushUrl = useCallback(
+    (path: string) => router.push(path, undefined, { shallow: true }),
+    [router],
+  );
+  const studyId = toString(studyDetails[index]);
+  const shouldRouteToStudy =
+    (detailView?.routeToStudyURL || simpleDetailsView?.routeToStudyURL) ??
+    false;
 
   useEffect(() => {
-    if (Object.keys(studyDetails).length > 0) {
+    if (studyId) {
+      if (opened) {
+        if (shouldRouteToStudy) {
+          void pushUrl(`/${defaultPath}/${encodeURI(studyId)}`);
+        }
+        setPermalink(`${origin}/${defaultPath}/${encodeURI(studyId)}`);
+      } else {
+        if (shouldRouteToStudy) {
+          void pushUrl(`/${defaultPath}`);
+        }
+        setPermalink(defaultPermaLinkValue);
+      }
+    }
+  }, [
+    opened,
+    studyId,
+    origin,
+    pushUrl,
+    shouldRouteToStudy,
+    defaultPermaLinkValue,
+  ]);
+
+  const handleClose = () => {
+    close();
+  };
+
+  useEffect(() => {
+    if (hasStudyDetails) {
       open();
     }
-  }, [studyDetails, open]);
-
-  if (!studyDetails) {
-    return null;
-  }
+  }, [hasStudyDetails, open]);
 
   return (
-    <Drawer.Root opened={opened} onClose={close} size="50%" position="right">
+    <Drawer.Root
+      opened={opened}
+      onClose={handleClose}
+      size="50%"
+      position="right"
+      // reset study details only after the close transition finishes,
+      // so the content stays mounted while the drawer slides out
+      transitionProps={{ onExited: () => setStudyDetails({}) }}
+    >
       <Drawer.Overlay opacity={0.5} blur={4} />
-      <Drawer.Content>
-        <Drawer.Header>
-          <Button leftSection={<BackIcon />} onClick={close} variant="outline">
-            {' '}
-            Back{' '}
-          </Button>
-          <CopyButton value={permalink}>
-            {({ copied, copy }) => (
-              <Button color={copied ? 'primary' : 'secondary'} onClick={copy}>
-                {copied ? 'Copied Permalink' : 'Permalink'}
-              </Button>
+      {hasStudyDetails && (
+        <Drawer.Content className="pl-2">
+          <Drawer.Header>
+            <StudyDetailsHeaderButtons onClose={close} permalink={permalink} />
+          </Drawer.Header>
+          <Drawer.Body>
+            {detailView ? (
+              <StudyDetailsPanel data={studyDetails} studyConfig={detailView} />
+            ) : simpleDetailsView ? (
+              <SinglePageStudyDetailsPanel
+                data={studyDetails}
+                studyConfig={simpleDetailsView!}
+                authorization={authz}
+              />
+            ) : (
+              <div>Study Details Panel not configured</div>
             )}
-          </CopyButton>
-        </Drawer.Header>
-        <Drawer.Body>
-          {detailView ?
-          <StudyDetailsPanel
-            data={studyDetails ?? {}}
-            studyConfig={detailView}
-          /> : simpleDetailsView ?
-          <SinglePageStudyDetailsPanel data={studyDetails ?? {}} studyConfig={simpleDetailsView} authorization={authz} /> :
-          <div>Study Details Panel not configured</div>}
-        </Drawer.Body>
-      </Drawer.Content>
+          </Drawer.Body>
+        </Drawer.Content>
+      )}
     </Drawer.Root>
   );
 };

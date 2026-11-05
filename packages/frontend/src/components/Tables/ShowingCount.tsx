@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { DataStatus } from '@gen3/core';
 
 function ShowingCount({

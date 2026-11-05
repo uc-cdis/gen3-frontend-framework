@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { MdSearch as SearchIcon, MdClose as CloseIcon } from 'react-icons/md';
+import React from 'react';
+import { MdClose as CloseIcon, MdSearch as SearchIcon } from 'react-icons/md';
 import { Autocomplete } from '@mantine/core';
-import { SearchInputProps } from './types';
+import type { SearchInputProps } from './types';
 
 interface SearchInputWithAutoSuggestProps extends SearchInputProps {
   suggestions: string[];
@@ -27,7 +27,7 @@ const SearchInputWithSuggestions = ({
         leftSection={<SearchIcon size={24} />}
         placeholder={placeholder || 'Search...'}
         data-testid="discovery-textbox-search-bar"
-        aria-label="DiscoverySearch Input"
+        aria-label="Search"
         value={searchBarTerms.join(' ')}
         onChange={(value) => {
           searchChanged(value);

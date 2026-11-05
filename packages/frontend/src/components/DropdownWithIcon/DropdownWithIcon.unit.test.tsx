@@ -1,5 +1,6 @@
 import React from 'react';
-import { render, waitFor } from '@testing-library/react';
+import { render } from '../../utils/testing/index';
+import { waitFor } from '@testing-library/react';
 import { DropdownWithIcon } from './DropdownWithIcon';
 import userEvent from '@testing-library/user-event';
 
@@ -50,7 +51,7 @@ describe('<DropdownWithIcon />', () => {
     expect(getByRole('button', { name: 'test' })).not.toBeDisabled();
   });
 
-  it('menu label should be present when menuLabelText is provided ', async () => {
+  it('menu label should be present when menuLabelText is provided', async () => {
     const { getByText, getByRole, getByTestId } = render(
       <DropdownWithIcon
         TargetButtonChildren="test"
@@ -66,7 +67,7 @@ describe('<DropdownWithIcon />', () => {
     expect(getByText('test menu label text')).toBeInTheDocument();
   });
 
-  it('menu label should NOT be present when menuLabelText is NOT provided ', async () => {
+  it('menu label should NOT be present when menuLabelText is NOT provided', async () => {
     const { queryByTestId, getByRole } = render(
       <DropdownWithIcon
         TargetButtonChildren="test"
@@ -96,7 +97,7 @@ describe('<DropdownWithIcon />', () => {
     const firstMenuItem = getByTestId('test-0');
     await userEvent.click(firstMenuItem);
 
-    expect(mockOnClickCallBack1).toBeCalled();
+    expect(mockOnClickCallBack1).toHaveBeenCalled();
   });
 
   it('test menu item disabled', async () => {

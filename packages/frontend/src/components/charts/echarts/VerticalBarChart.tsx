@@ -247,14 +247,16 @@ const VerticalBarChart = ({
             </Table>
           </div>
 
-          <div className="mt-2 flex items-center justify-between text-sm">
-            <Pagination
-              value={page}
-              onChange={setPage}
-              total={pageCount}
-              size="sm"
-            />
-          </div>
+          {pageCount > 1 && (
+            <div className="mt-2 flex items-center justify-between text-sm">
+              <Pagination
+                value={page}
+                onChange={setPage}
+                total={pageCount}
+                size="sm"
+              />
+            </div>
+          )}
         </div>
       )}
     </div>

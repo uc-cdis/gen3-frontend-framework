@@ -1,4 +1,7 @@
-import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
+import {
+  MantineReactTable,
+  useMantineReactTable,
+} from 'mantine-react-table-open';
 import { commonTableSettings } from './tableSettings';
 import { Text } from '@mantine/core';
 import React from 'react';

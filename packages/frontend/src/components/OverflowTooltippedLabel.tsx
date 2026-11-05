@@ -1,18 +1,38 @@
-import React, { ReactNode, useState } from 'react';
+import React, { JSX, ReactNode, useState } from 'react';
 import { Tooltip } from '@mantine/core';
 
 type OverflowTooltippedLabelProps = {
   children: ReactNode;
   label: string;
   className?: string;
+  color?: string;
+  tooltipClassNames?: typeof DEFAULT_TOOLTIP_CLASSNAMES;
+  noTruncate?: boolean;
+};
+
+const DEFAULT_TOOLTIP_CLASSNAMES = {
+  tooltip:
+    'bg-base-min bg-opacity-90 text-base-contrast-min shadow-lg font-content font-medium text-xs',
+  arrow: 'bg-base-min bg-opacity-90',
 };
 
 const OverflowTooltippedLabel = ({
   children,
   label,
   className = 'flex-grow font-heading text-md pt-0.5',
+  color = 'base-min',
+  noTruncate = false,
 }: OverflowTooltippedLabelProps): JSX.Element => {
   const [showTooltip, setShowTooltip] = useState(false);
+
+  // const mergedClassnames = useMemo(
+  //   () =>
+  //     mergeDefaultTailwindClassnames(
+  //       DEFAULT_TOOLTIP_CLASSNAMES,
+  //       tooltipClassNames ?? {},
+  //     ),
+  //   [tooltipClassNames],
+  // );
 
   return (
     <Tooltip
@@ -24,13 +44,12 @@ const OverflowTooltippedLabel = ({
       withArrow
       arrowOffset={20}
       classNames={{
-        tooltip:
-          'bg-base-min bg-opacity-90 text-base-contrast-min shadow-lg font-content font-medium text-xs',
-        arrow: 'bg-base-min bg-opacity-90',
+        tooltip: `bg-${color} bg-opacity-90 text-base-contrast-min shadow-lg font-content font-medium text-xs`,
+        arrow: `bg-${color} bg-opacity-90`,
       }}
     >
       <div
-        className={`${className} truncate ... `}
+        className={`${className} ${noTruncate ? '' : 'truncate ...'}`}
         ref={(el) => {
           if (el) {
             if (el.clientWidth < el.scrollWidth) {

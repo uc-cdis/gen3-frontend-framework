@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   AggregationsData,
-  fieldNameToTitle,
+  fieldNameToLabel,
   HistogramDataArray,
 } from '@gen3/core';
 import { Icon } from '@iconify-icon/react';
@@ -202,7 +202,7 @@ const Charts = ({
         ? Object.keys(data[field][0])
         : [];
 
-    const chartTitle = charts[field].title ?? fieldNameToTitle(field);
+    const chartTitle = charts[field].title ?? fieldNameToLabel(field);
 
     const numberOfDataItems = data?.[field] && data[field].length;
     const moreThanMaxRows = numberOfDataItems > MAX_LEGEND_ROWS;

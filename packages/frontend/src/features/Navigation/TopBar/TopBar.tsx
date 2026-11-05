@@ -1,27 +1,38 @@
-import React, { ReactElement } from 'react';
+import type { ReactElement } from 'react';
+import React from 'react';
 import { Divider } from '@mantine/core';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
 import { extractClassName } from '../utils';
 import { LoginButtonVisibility } from '../../../components/Login/types';
-import { StylingOverrideWithMergeControl } from '../../../types';
-import { IconButton, TopIconButtonPropsWithLink } from './IconButton';
+import type { StylingOverrideWithMergeControl } from '../../../types';
+import { IconButton } from './IconButton';
 import { AccountButton } from './AccountButton';
 import { LoginButton } from './LoginButton';
-import { TopBarProps } from './types';
+import type { TopBarItems, TopBarProps } from './types';
+import { isTopBarLinkButton } from './types';
+import { modals } from '@mantine/modals';
+import { useIsUserLoggedIn } from '@gen3/core';
+import NavigationIndicator from './NavigationIndicator';
 
 const processTopBarItems = (
-  items: TopIconButtonPropsWithLink[],
+  items: TopBarItems[],
+  isLoggedIn: boolean,
   classNames: StylingOverrideWithMergeControl,
   dividerClassname: string,
 ): ReactElement[] => {
-  return items.reduce(
-    (acc: ReactElement[], item: TopIconButtonPropsWithLink) => {
-      const mergedClassnames = item?.classNames
-        ? mergeDefaultTailwindClassnames(classNames, item.classNames)
-        : classNames;
+  return items.reduce((acc: ReactElement[], item: TopBarItems) => {
+    // check to see if item requires login
+    if (item.requireLogin && !isLoggedIn) {
+      return acc;
+    }
 
-      const Custom = item.component;
-      acc.push(
+    const mergedClassnames = item?.classNames
+      ? mergeDefaultTailwindClassnames(classNames, item.classNames)
+      : classNames;
+
+    const Custom = item.component;
+    acc.push(
+      isTopBarLinkButton(item) ? (
         <React.Fragment key={`${item.href}_${item.name}-topbar-item`}>
           <a
             className="flex"
@@ -38,6 +49,7 @@ const processTopBarItems = (
                 leftIcon={item.leftIcon}
                 rightIcon={item.rightIcon}
                 classNames={mergedClassnames}
+                tooltip={item.tooltip}
               />
             )}
           </a>
@@ -46,12 +58,41 @@ const processTopBarItems = (
             orientation="vertical"
             classNames={{ root: dividerClassname }}
           />
-        </React.Fragment>,
-      );
-      return acc;
-    },
-    [],
-  );
+        </React.Fragment>
+      ) : (
+        <React.Fragment key={`${item.name}-topbar-item`}>
+          {Custom ? (
+            Custom
+          ) : (
+            <NavigationIndicator>
+              <IconButton
+                name={item.name}
+                iconSize={item.iconSize}
+                leftIcon={item.leftIcon}
+                rightIcon={item.rightIcon}
+                classNames={mergedClassnames}
+                tooltip={item.tooltip}
+                clickHandler={() =>
+                  item?.modal &&
+                  modals.openContextModal({
+                    modal: item.modal,
+                    innerProps: {},
+                    size: '90vw',
+                  })
+                }
+              />
+            </NavigationIndicator>
+          )}
+          <Divider
+            size="md"
+            orientation="vertical"
+            classNames={{ root: dividerClassname }}
+          />
+        </React.Fragment>
+      ),
+    );
+    return acc;
+  }, []);
 };
 
 const TopBar = ({
@@ -62,7 +103,7 @@ const TopBar = ({
   itemClassnames = {},
 }: TopBarProps) => {
   const classNamesDefaults = {
-    root: 'flex justify-end items-center align-middle w-100 bg-secondary-lighter',
+    root: 'flex justify-end items-center align-middle w-full bg-secondary-lighter',
     login: 'font-content hover:border-accent',
     divider: 'border-accent my-2',
   };
@@ -75,6 +116,8 @@ const TopBar = ({
     label: 'font-content text-secondary-contrast-lighter block',
     rightIcon: 'text-secondary-contrast-lighter pl-1',
   };
+
+  const isLoggedIn = useIsUserLoggedIn();
 
   const mergedClassnames = mergeDefaultTailwindClassnames(
     classNamesDefaults,
@@ -96,6 +139,7 @@ const TopBar = ({
         >
           {processTopBarItems(
             items,
+            isLoggedIn,
             mergedItemClassnames,
             extractClassName('divider', mergedClassnames),
           )}

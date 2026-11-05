@@ -1,6 +1,7 @@
 import { showNotification } from '@mantine/notifications';
-import { fireEvent, render } from '@testing-library/react';
-import { CartItem } from '@gen3/core';
+import { fireEvent } from '@testing-library/react';
+import { render } from '../../utils/testing';
+import type { CartItem } from '@gen3/core';
 import { addToCart, removeFromCart } from './updateCart';
 
 jest.mock('@mantine/notifications');
@@ -38,7 +39,7 @@ describe('updateCart, addToCart', () => {
     expect(dispatchMock).not.toHaveBeenCalled();
   });
 
-  it('add mutiple files', () => {
+  it('add multiple files', () => {
     const dispatchMock = jest.fn();
     addToCart(
       [

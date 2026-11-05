@@ -63,7 +63,7 @@ const GuppyDropdownMenuItem = ({
   });
   const clickHandler = useCallback(() => {
     if (disabled) return;
-    if (!active) handleClick();
+    if (!active) void handleClick();
     else cancel();
   }, [active, disabled, handleClick, cancel]);
   return (
@@ -211,7 +211,7 @@ const CohortDropdownActionButton = ({
             <GuppyDropdownMenuItem
               key={`${title}-${idx}`}
               data-testid={`${title}-${idx}`}
-              leftSection={icon && icon}
+              leftSection={icon}
               disabled={disabled}
               title={title}
               idx={idx}

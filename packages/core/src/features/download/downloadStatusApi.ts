@@ -121,7 +121,8 @@ export const loadingStatusApi = gen3Api.injectEndpoints({
                 uid: arg,
               } as DownloadStatus,
             };
-          } catch (e) {
+            // oxlint-disable-next-line no-unused-vars
+          } catch (e: unknown) {
             return {
               data: {
                 ...DOWNLOAD_FAIL_STATUS,

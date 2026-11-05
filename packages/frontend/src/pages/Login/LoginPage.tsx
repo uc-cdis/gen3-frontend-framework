@@ -6,6 +6,7 @@ import { LoginPageLayoutProps } from './types';
 const LoginPage = ({
   headerProps,
   footerProps,
+  headerMetadata,
   loginConfig,
 }: LoginPageLayoutProps) => {
   return (
@@ -15,7 +16,8 @@ const LoginPage = ({
         title: 'Gen3 Login Page',
         content: 'Login page',
         key: 'gen3-login-page',
-        ...(loginConfig?.headerMetadata ? loginConfig.headerMetadata : {}),
+        ...(headerMetadata ? headerMetadata : {}),
+        ...(loginConfig.headerMetadata ? loginConfig.headerMetadata : {}),
       }}
     >
       <LoginPanel {...loginConfig} />

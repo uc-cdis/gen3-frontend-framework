@@ -1,9 +1,10 @@
 import AnalysisCenter from './AnalysisCenter';
 import AnalysisCenterWithSections from './AnalysisCenterWithSections';
+import AnalysisWithCloseButton from './AnalysisCenterWithBackButton';
 import {
-  type AnalysisToolConfiguration,
   type AnalysisCenterSection,
   type AnalysisCenterWithSectionsConfiguration,
+  type AnalysisToolConfiguration,
 } from './types';
 
 export {
@@ -12,4 +13,5 @@ export {
   type AnalysisCenterWithSectionsConfiguration,
   AnalysisCenter,
   AnalysisCenterWithSections,
+  AnalysisWithCloseButton,
 };

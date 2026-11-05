@@ -111,11 +111,6 @@ export const requestorApi = gen3Api.injectEndpoints({
       query: (queryBody: RequestQueryBody) => ({
         url: `${GEN3_REQUESTOR_API}/request`,
         method: 'POST',
-        credentials: 'include',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(queryBody),
       }),
     }),

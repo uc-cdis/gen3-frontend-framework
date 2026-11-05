@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { NavPageLayout } from '../../features/Navigation';
 import type { NavPageLayoutProps } from '../../features/Navigation';
 import AiSearch from '../../features/Discovery/Search/AiSearch';

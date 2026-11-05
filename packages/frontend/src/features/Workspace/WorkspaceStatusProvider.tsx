@@ -8,6 +8,8 @@ import React, {
 import {
   getCurrentTimestamp,
   isFetchBaseQueryError,
+  isSerializedError,
+  normalizeRtkError,
   RequestedWorkspaceStatus,
   selectActiveWorkspaceStatus,
   setActiveWorkspace,
@@ -22,7 +24,7 @@ import {
 } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { notifications } from '@mantine/notifications';
-import { useFullscreen } from '@mantine/hooks';
+import { useFullscreenDocument } from '@mantine/hooks';
 import { PayModelStatus } from './types';
 import { useWorkspaceContext } from './WorkspaceProvider';
 
@@ -30,8 +32,10 @@ const getWorkspaceErrorMessage = (
   error: unknown,
   defaultMessage: string,
 ): string => {
-  if (isFetchBaseQueryError(error)) {
-    return error.data as string;
+  if (isFetchBaseQueryError(error) || isSerializedError(error)) {
+    // before we return the error, check to see what it actually is
+    const normalizeError = normalizeRtkError(error);
+    return normalizeError.message;
   }
   return defaultMessage;
 };
@@ -79,7 +83,7 @@ export const useWorkspaceStatusContext = () => {
 
 const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
   const { toggle: switchScreenMode, fullscreen: isFullscreen } =
-    useFullscreen();
+    useFullscreenDocument();
   const [payModelStatus, setPayModelStatus] = useState<PayModelStatus>(
     PayModelStatus.INVALID,
   );
@@ -162,7 +166,7 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
 
   const status = useMemo(() => {
     const startWorkspace = (id: string) => {
-      launchTrigger(id);
+      void launchTrigger(id);
       dispatch(setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Launch));
       dispatch(
         setActiveWorkspace({
@@ -177,7 +181,7 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
     const toggleFullscreen = () => switchScreenMode();
 
     const stopWorkspace = () => {
-      terminateWorkspace();
+      void terminateWorkspace();
       dispatch(setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate));
       dispatch(setActiveWorkspaceStatus(WorkspaceStatus.Terminating));
     };

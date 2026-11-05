@@ -1,9 +1,11 @@
-import React, { ReactElement } from 'react';
+import type { ReactElement } from 'react';
+import React from 'react';
 import { Text, ThemeIcon } from '@mantine/core';
 import CardContainer from './CardContainer';
 
 export interface MessageTextProps {
   message: string;
+  width?: string;
 }
 
 interface MessageTextColorProps extends MessageTextProps {

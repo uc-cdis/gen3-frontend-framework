@@ -66,7 +66,7 @@ const Dictionary = () => {
       </div>
       <div
         className="w-3/4 overflow-auto bg-base-lighter"
-        ref={scrollableRef}
+        ref={scrollableRef as React.Ref<HTMLDivElement>}
       >
         <div className="h-full">
           {config?.showGraph ? (

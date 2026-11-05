@@ -47,7 +47,7 @@ export const userHasDataUpload = (
   const actionIsFileUpload = (x: { method: string }): boolean =>
     x.method === 'file_upload';
   const resource = userAuthMapping['/data_file'];
-  return resource !== undefined && resource.some(actionIsFileUpload);
+  return resource !== resource && resource.some(actionIsFileUpload);
 };
 
 export const userHasMethodForServiceOnResource = (

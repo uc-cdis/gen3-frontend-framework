@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   MantineReactTable,
-  useMantineReactTable,
-  MRT_ColumnDef,
   MRT_Cell,
-} from 'mantine-react-table';
+  MRT_ColumnDef,
+  useMantineReactTable,
+} from 'mantine-react-table-open';
 import { useUserRequestQuery } from '@gen3/core';
 import { selectCohortIdToNameMap } from '../CohortManagment/CohortManagerSelectors';
 import { selectAllDataAccessRequests } from '../RequestManagerSlice';
@@ -14,8 +14,7 @@ import { DataAccessRequest, DataAccessRequestStatus } from '../types';
 import { Text } from '@mantine/core';
 import { formatDate } from '../../../utils/date';
 import { commonTableSettings } from '../tableSettings';
-import { ErrorCard } from '../../../components/MessageCards';
-import { EmptyTableMessage } from '../../../components/MessageCards';
+import { EmptyTableMessage, ErrorCard } from '../../../components/MessageCards';
 
 const useGetCohortRequests = (resources: string[] = []) => {
   const [isLoading, setIsLoading] = useState(false);

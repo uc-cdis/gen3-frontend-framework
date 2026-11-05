@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import { CoreState, rootReducer } from './reducers';
+import type { CoreState } from './reducers';
+import { rootReducer } from './reducers';
 import { gen3ServicesReducerMiddleware } from './features/gen3/gen3Api';
 import { guppyAPISliceMiddleware } from './features/guppy/guppyApi';
 import { userAuthApiMiddleware } from './features/user/userSliceRTK';
@@ -36,9 +37,16 @@ declare module 'redux-persist' {
 
 const persistConfig = {
   key: `${GEN3_COMMONS_NAME}-root`, // stored by domain name but name added for development using localhost which will share store across multiple configurations
-  version: 1,
+  version: 2,
   storage,
-  whitelist: ['cohorts', 'activeWorkspace', 'cart'],
+  whitelist: [
+    'cohorts',
+    'activeWorkspace',
+    'cart',
+    'workspaceKernels',
+    'tieredWorkspace',
+    // sower.sowerJobsList is user specific, so it is persisted per user in features/sower/sowerJobsPersistence.ts
+  ],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

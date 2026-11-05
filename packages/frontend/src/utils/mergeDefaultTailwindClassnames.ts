@@ -1,8 +1,7 @@
 import { twMerge } from 'tailwind-merge';
-import {
-  StylingOverrideWithMergeControl,
-  StylingMergeMode,
+import type {
   StylingOverride,
+  StylingOverrideWithMergeControl,
 } from '../types';
 
 /**

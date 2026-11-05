@@ -7,10 +7,21 @@ import {
   HTTPErrorMessages,
   HttpMethod,
 } from './fetch';
-import { getCurrentTimestamp, isTimeGreaterThan } from './time';
+import {
+  formatUptimeInMinutes,
+  getCurrentTimestamp,
+  isTimeGreaterThan,
+} from './time';
 import { ExtractValueFromObject } from './extractvalues';
+import {
+  type NormalizedError,
+  type NormalizedErrorType,
+  normalizeRtkError,
+} from './normalizeRtkError';
 
 export * from './conversions';
+
+export * from './httpUserFriendlyErrorMessages';
 
 export {
   isObject,
@@ -25,6 +36,10 @@ export {
   HTTPErrorMessages,
   getCurrentTimestamp,
   isTimeGreaterThan,
+  formatUptimeInMinutes,
   ExtractValueFromObject,
+  normalizeRtkError,
+  type NormalizedErrorType,
+  type NormalizedError,
 };
 export { getTimestamp } from './time';

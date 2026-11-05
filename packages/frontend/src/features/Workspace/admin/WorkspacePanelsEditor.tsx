@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Group, Stack } from '@mantine/core';
+import { Button, Stack } from '@mantine/core';
 
 const WorkspacePanelsEditor = () => {
   return (

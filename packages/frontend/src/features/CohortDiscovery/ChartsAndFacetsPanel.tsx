@@ -5,7 +5,7 @@ import {
   CombineMode,
   extractEnumFilterValue,
   FacetDefinition,
-  fieldNameToTitle,
+  fieldNameToLabel,
 } from '@gen3/core';
 import { AppState, useAppSelector } from './appApi';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
@@ -20,7 +20,7 @@ import { SupportedFacetTypes } from './types';
 import { createFacetPanel } from './FilterPanels/createFacetPanel';
 import { selectCurrentCohortIndexFilters } from './CohortManagment/CohortManagerSelectors';
 import { useClearFilters, useGetFacetFilters, useUpdateFilters } from './hooks';
-import { useFieldNameToTitle } from '../../components/facets/hooks';
+import { useFieldNameToLabel } from '../../components/facets/hooks';
 
 interface ChartsAndFacetsPanelProps {
   index: string;
@@ -92,7 +92,7 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
           useGetFacetFilters: partial(useGetFacetFilters, index),
           useClearFilter: partial(useClearFilters, index),
           useTotalCounts: undefined,
-          useFieldNameToTitle: useFieldNameToTitle,
+          useFieldNameToLabel: useFieldNameToLabel,
           useUpdateCombineMode: (field: string, mode: CombineMode) => null,
           useGetCombineMode: (field: string) => 'and',
         }, // TODO: range facets
@@ -108,7 +108,7 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
 
   const panels = useDeepCompareMemo(() => {
     return facets.map((facet) =>
-      createFacetPanel(facet, 'bar', fieldNameToTitle(index), facetHooks.enum),
+      createFacetPanel(facet, 'bar', fieldNameToLabel(index), facetHooks.enum),
     );
   }, [facets, index, facetHooks.enum]);
 

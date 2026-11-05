@@ -1,7 +1,7 @@
-import React from 'react';
-import { NavPageLayout } from '../../features/Navigation';
-import { NavPageLayoutProps } from '../../features/Navigation';
+import React, { JSX } from 'react';
+import { NavPageLayout, NavPageLayoutProps } from '../../features/Navigation';
 import { CardContainer } from '../../components/MessageCards';
+import { Center } from '@mantine/core';
 
 const WorkspaceNoAccessPage = ({
   headerProps,
@@ -18,14 +18,16 @@ const WorkspaceNoAccessPage = ({
         key: 'gen3-workspace-no-access-page',
       }}
     >
-      <CardContainer>
-        <h1>Error opening workspace...</h1>
-        <p>
-          Workspace access requires authorization. Please contact{' '}
-          <a href={`mailto:${supportEmail}`}>{supportEmail}</a> for more
-          information.
-        </p>
-      </CardContainer>
+      <Center maw={400} h={100} mx="auto">
+        <CardContainer>
+          <h1>Error opening workspace...</h1>
+          <p>
+            Workspace access requires authorization. Please contact{' '}
+            <a href={`mailto:${supportEmail}`}>{supportEmail}</a> for more
+            information.
+          </p>
+        </CardContainer>
+      </Center>
     </NavPageLayout>
   );
 };

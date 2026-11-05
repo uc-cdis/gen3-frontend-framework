@@ -1,19 +1,20 @@
 import React, { useEffect } from 'react';
 import { ActionIcon, Badge, Text, Tooltip } from '@mantine/core';
 import {
-  MdFlip as FlipIcon,
-  MdSearch as SearchIcon,
   MdClose as CloseIcon,
   MdExpandLess as ExpandLessIcon,
   MdExpandMore as ExpandMoreIcon,
+  MdFlip as FlipIcon,
+  MdSearch as SearchIcon,
+  MdSettings as SettingsIcon,
 } from 'react-icons/md';
 import { FaUndo as UndoIcon } from 'react-icons/fa';
-import { fieldNameToTitle } from '@gen3/core';
+import { fieldNameToLabel } from '@gen3/core';
 import {
-  FacetIconButton,
   controlsIconStyle,
-  FacetText,
   FacetHeader,
+  FacetIconButton,
+  FacetText,
 } from './components';
 import { FacetCardProps, FacetCommonHooks } from './types';
 import { Icon } from '@iconify-icon/react';
@@ -156,7 +157,7 @@ const FacetControlsHeader = ({
           disabled={!description}
         >
           <header.Label>
-            {facetName ? facetName : fieldNameToTitle(field)}
+            {facetName ? facetName : fieldNameToLabel(field)}
           </header.Label>
         </Tooltip>
       </div>
@@ -168,13 +169,12 @@ const FacetControlsHeader = ({
                 if (toggleExpandFilter) toggleExpandFilter(field, true);
                 if (toggleSettings) toggleSettings();
               }}
-              aria-label="Search"
+              aria-label="Filter settings"
               className={header.iconStyle}
             >
-              <Icon
-                width={12}
-                height={12}
-                icon="gen3:settings"
+              <SettingsIcon
+                size="1.35em"
+                className={header.iconStyle}
                 aria-hidden="true"
               />
             </FacetIconButton>

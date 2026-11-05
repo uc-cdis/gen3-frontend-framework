@@ -1,5 +1,9 @@
 import React, { useContext, useMemo } from 'react';
-import { MantineReactTable, type MRT_ColumnDef, useMantineReactTable, } from 'mantine-react-table';
+import {
+  MantineReactTable,
+  type MRT_ColumnDef,
+  useMantineReactTable,
+} from 'mantine-react-table-open';
 
 import { Role } from '../types';
 import { AuthzContext } from '../AuthzAdminProvider';
@@ -37,7 +41,7 @@ const RolesTable = () => {
     positionActionsColumn: 'last',
     renderRowActionMenuItems: ({ row }) => (
       <React.Fragment>
-        <Menu.Item onClick={() => console.info('Delete')}>Delete</Menu.Item>
+        <Menu.Item onClick={() => {}}>Delete</Menu.Item>
       </React.Fragment>
     ),
     enableRowSelection: true,

@@ -2,11 +2,10 @@ import React from 'react';
 
 // if we want to use MDX
 // import LandingPageMDX from "../../content/landing.mdx"
-import LandingPageContent, {
-  LandingPageProps,
-} from '../../components/Content/LandingPageContent';
+import type { LandingPageProps } from '../../components/Content/LandingPageContent';
+import LandingPageContent from '../../components/Content/LandingPageContent';
 import NavPageLayout from '../../features/Navigation/NavPageLayout';
-import { NavPageLayoutProps } from '../../features/Navigation';
+import type { NavPageLayoutProps } from '../../features/Navigation';
 
 interface Props extends NavPageLayoutProps {
   landingPage: LandingPageProps;

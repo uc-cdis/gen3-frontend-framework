@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React from 'react';
 import tw from 'tailwind-styled-components';
 import { Button, ButtonProps, Loader, Tooltip } from '@mantine/core';
 import { DownloadIcon } from '../../types/icons';
@@ -15,7 +15,7 @@ export type FunctionButtonVariants =
 interface FunctionButtonProps extends ButtonProps {
   disabled?: boolean;
   $variant?: FunctionButtonVariants;
-  ref?: any;
+  ref?: React.RefObject<HTMLButtonElement>;
   onClick?: () => void;
   tooltip?: string;
   multilineTooltip?: boolean;
@@ -67,75 +67,71 @@ ${(p: FunctionButtonProps) =>
  * @param downloadIconSize - size of the download icon (defaults to 16)
  * @category Buttons
  */
-const FunctionButton = forwardRef<HTMLButtonElement, FunctionButtonProps>(
-  (
-    {
-      tooltip,
-      multilineTooltip = false,
-      isActive = false,
-      isDownload = false,
-      showDownloadIcon = false,
-      loaderSize = 16,
-      downloadIconSize = 16,
-      leftSection,
-      ...props
-    },
+const FunctionButton = (
+  {
     ref,
-  ) => {
-    const tooltipLabel = tooltip
-      ? tooltip
-      : isDownload && isActive
-        ? ADDITIONAL_DOWNLOAD_MESSAGE
-        : undefined;
+    tooltip,
+    multilineTooltip = false,
+    isActive = false,
+    isDownload = false,
+    showDownloadIcon = false,
+    loaderSize = 16,
+    downloadIconSize = 16,
+    leftSection,
+    ...props
+  }: FunctionButtonProps
+) => {
+  const tooltipLabel = tooltip
+    ? tooltip
+    : isDownload && isActive
+      ? ADDITIONAL_DOWNLOAD_MESSAGE
+      : undefined;
 
-    const getLeftSection = () => {
-      if (leftSection !== undefined) {
-        return leftSection;
-      }
+  const getLeftSection = () => {
+    if (leftSection !== undefined) {
+      return leftSection;
+    }
 
-      if (isActive) {
-        return <Loader size={loaderSize} color="currentColor" />;
-      }
+    if (isActive) {
+      return <Loader size={loaderSize} color="currentColor" />;
+    }
 
-      if (showDownloadIcon) {
-        return (
-          <DownloadIcon
-            size={downloadIconSize}
-            aria-label="download"
-            className="hidden xl:block"
-          />
-        );
-      }
-
-      return null;
-    };
-    const button = (
-      <StyledButton
-        ref={ref}
-        leftSection={getLeftSection()}
-        classNames={{
-          section: `mr-0 ${isActive ? 'mr-2' : 'xl:mr-2'}`,
-          ...props.classNames,
-        }}
-        {...props}
-      />
-    );
-
-    if (tooltipLabel) {
+    if (showDownloadIcon) {
       return (
-        <Tooltip
-          label={tooltipLabel}
-          multiline={multilineTooltip}
-          w={multilineTooltip ? '400' : 'auto'}
-        >
-          {button}
-        </Tooltip>
+        <DownloadIcon
+          size={downloadIconSize}
+          aria-label="download"
+          className="hidden xl:block"
+        />
       );
     }
-    return button;
-  },
-);
+
+    return null;
+  };
+  const button = (
+    <StyledButton
+      ref={ref}
+      leftSection={getLeftSection()}
+      classNames={{
+        section: `mr-0 ${isActive ? 'mr-2' : 'xl:mr-2'}`,
+        ...props.classNames,
+      }}
+      {...props}
+    />
+  );
+
+  if (tooltipLabel) {
+    return (
+      <Tooltip
+        label={tooltipLabel}
+        multiline={multilineTooltip}
+        w={multilineTooltip ? '400' : 'auto'}
+      >
+        {button}
+      </Tooltip>
+    );
+  }
+  return button;
+};
 
 export default FunctionButton;
-
-FunctionButton.displayName = 'FunctionButton';

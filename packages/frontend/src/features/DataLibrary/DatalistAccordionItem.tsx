@@ -1,16 +1,18 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { DataItemSelectedState, DatasetContents } from './types';
-import {
+import React, { JSX, useEffect, useMemo, useState } from 'react';
+import type { DataItemSelectedState, DatasetContents } from './types';
+import type {
   AdditionalDataItem,
   CohortItem,
   Datalist,
+  DataListUpdate,
   FileItem,
+  StorageOperationResults,
+} from '@gen3/core';
+import {
   getNumberOfItemsInDatalist,
   isAdditionalDataItem,
   isCohortItem,
   isFileItem,
-  DataListUpdate,
-  StorageOperationResults,
 } from '@gen3/core';
 import {
   getNumberOfSelectedItemsInList,
@@ -30,6 +32,7 @@ interface DatalistAccordionProps {
   deleteListFromDataLibrary: (id: string) => Promise<StorageOperationResults>;
   isUpdating: string | null;
   size?: string;
+  additionalControls?: JSX.Element;
 }
 
 /**
@@ -46,6 +49,7 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
   deleteListFromDataLibrary,
   isUpdating,
   size = 'sm',
+  additionalControls,
 }) => {
   const [selectedState, setSelectedState] =
     useState<DataItemSelectedState>('unchecked');
@@ -60,7 +64,8 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
 
   const updateList = async (update: Record<string, any>) => {
     return await updateListInDataLibrary({
-      ...{ name: listName, items: dataList.items },
+      name: listName,
+      items: dataList.items,
       ...update,
       id: listId,
     });
@@ -184,6 +189,7 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
         selectListHandler={handleSelectList}
         selectedState={selectedState}
         size={size}
+        additionalControls={additionalControls}
       />
       <Accordion.Panel>
         <DataSetContentsTable

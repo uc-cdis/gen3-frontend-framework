@@ -1,17 +1,17 @@
-import React, { useMemo } from "react";
-import { Badge } from "@mantine/core";
-import { TableIcons } from "../../components/Tables/TableIcons";
+import React, { JSX, useMemo } from 'react';
+import { Badge } from '@mantine/core';
+import { TableIcons } from '../../components/Tables/TableIcons';
 
 import {
   MantineReactTable,
   MRT_Cell,
   MRT_ColumnDef,
   useMantineReactTable,
-} from "mantine-react-table";
-import { useResourcesContext } from "./ResourcesProvider";
-import { useProfileContext } from "./ProfileProvider";
-import { ServiceColorAndLabel } from "./types";
-import { convertToRecordMethodToResource } from "./utils";
+} from 'mantine-react-table-open';
+import { useResourcesContext } from './ResourcesProvider';
+import { useProfileContext } from './ProfileProvider';
+import { ServiceColorAndLabel } from './types';
+import { convertToRecordMethodToResource } from './utils';
 
 interface ItemResource {
   resource: string;
@@ -27,7 +27,7 @@ interface ResourceBadgeProps {
 const ResourceBadge = ({
   resource,
   serviceBadgeStyle,
-  defaultColor = "primary",
+  defaultColor = 'primary',
 }: ResourceBadgeProps): JSX.Element => {
   const { color, label } =
     resource in serviceBadgeStyle
@@ -74,22 +74,22 @@ const ResourcesTable = ({ filters }: ResourcesTableProps) => {
   const columns = useMemo(() => {
     return [
       {
-        header: "Resource(s)",
-        accessorKey: "resource",
+        header: 'Resource(s)',
+        accessorKey: 'resource',
         Cell: ({ row }: MRT_Cell<ItemResource>) => (
           <div>{row.original.resource}</div>
         ),
         mantineTableHeadCellProps: {
-          align: "left",
+          align: 'left',
         },
         mantineTableBodyCellProps: {
-          align: "left",
+          align: 'left',
         },
       },
       ...servicesAndMethods.methods.map((method) => {
         return {
           header: method,
-          accessor: "methods",
+          accessor: 'methods',
           size: 150,
           Cell: ({ row }: MRT_Cell<ItemResource>) => {
             return (
@@ -105,7 +105,7 @@ const ResourcesTable = ({ filters }: ResourcesTableProps) => {
                     />
                   ))
                 ) : (
-                  <span className="w-4 h-4"></span>
+                  <span className="w-4 h-4" />
                 )}
               </div>
             );
@@ -120,29 +120,29 @@ const ResourcesTable = ({ filters }: ResourcesTableProps) => {
     data: rows,
     enableColumnResizing: true,
     enableTopToolbar: false,
-    layoutMode: "grid",
+    layoutMode: 'grid',
     icons: TableIcons,
     //Disables the default flex-grow behavior of the table cells
     mantineTableHeadRowProps: {
       style: {
-        "--mrt-base-background-color": "var(--mantine-color-secondary-2)",
-        borderColor: "var(--mantine-color-secondary-2)",
-        borderWidth: "1px",
-        boxShadow: "none",
-        align: "center",
-        fontSize: "var(--mantine-font-size-sm)",
+        '--mrt-base-background-color': 'var(--mantine-color-secondary-2)',
+        borderColor: 'var(--mantine-color-secondary-2)',
+        borderWidth: '1px',
+        boxShadow: 'none',
+        align: 'center',
+        fontSize: 'var(--mantine-font-size-sm)',
         fontWeight: 600,
-        color: "var(--mantine-color-secondary-contrast-2)",
+        color: 'var(--mantine-color-secondary-contrast-2)',
       },
     },
     mantineTableHeadCellProps: {
-      align: "center",
+      align: 'center',
     },
     mantineTableBodyCellProps: {
-      align: "center",
+      align: 'center',
     },
-    paginationDisplayMode: "pages",
-    positionToolbarAlertBanner: "bottom",
+    paginationDisplayMode: 'pages',
+    positionToolbarAlertBanner: 'bottom',
   });
 
   return (

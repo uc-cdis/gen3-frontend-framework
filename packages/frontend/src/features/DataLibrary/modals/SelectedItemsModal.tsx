@@ -11,9 +11,7 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { Icon } from '@iconify-icon/react';
-import { HTTPError } from '@gen3/core';
-import { HTTPUserFriendlyErrorMessages } from './utils';
-
+import { HTTPError, HTTPUserFriendlyErrorMessages } from '@gen3/core';
 import SelectedItemsTable from '../tables/SelectedItemsTable';
 import {
   doesGroupFailRule,
@@ -22,7 +20,7 @@ import {
 } from '../selection/selectedItemActions';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { useDataLibrarySelection } from '../selection/SelectionContext';
-import { MRT_RowSelectionState } from 'mantine-react-table';
+import { MRT_RowSelectionState } from 'mantine-react-table-open';
 import { ValidatedSelectedItem } from '../types';
 import {
   DataLibraryActionConfig,
@@ -45,7 +43,7 @@ const ModalHeader = () => {
 };
 
 const bindAction = (action: DataLibraryActionConfig) => {
-  const actionFunction = findAction(action.actionFunction);
+  const actionFunction = findAction(action.actionName);
   if (!actionFunction) {
     return NullAction;
   }
@@ -70,7 +68,6 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
   const [actionConfig, setActionConfig] =
     useState<DataLibraryActionConfig | null>(null);
   const [isRunning, setIsRunning] = useState(false);
-
   const destinations = useMemo(() => {
     return actions.map((action) => {
       return { label: action.label, value: action.id };
@@ -178,7 +175,6 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
       {...props}
       closeOnEscape
       centered
-      withinPortal={false}
       title={<ModalHeader />}
       classNames={{
         header: 'm-0 p-2 min-h-10 bg-secondary',
@@ -198,6 +194,7 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
             <Select
               data={destinations}
               value={value ? value.value : null}
+              comboboxProps={{ zIndex: 500 }}
               onChange={(value, option) => {
                 setValue(option);
                 if (value) setSelectionAction(value);

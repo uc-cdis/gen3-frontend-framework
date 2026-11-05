@@ -1,5 +1,5 @@
 import React from 'react';
-import { Group, ThemeIcon, Text } from '@mantine/core';
+import { Group, Text } from '@mantine/core';
 import { IoMdInformationCircleOutline as InformIcon } from 'react-icons/io';
 
 const EmptyList: React.FC = () => {

@@ -23,11 +23,21 @@ export const buildFetchError = async <T>(
   res: Response,
   request?: T,
 ): Promise<FetchError<T>> => {
+  let text = '';
+  if (!res.bodyUsed) {
+    try {
+      text = await res.text();
+    } catch (err) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn('[buildFetchError] Failed to read response body:', err);
+      }
+    }
+  }
   return {
-    url: res.url,
+    url: res.url || '(unknown)',
     status: res.status,
     statusText: res.statusText,
-    text: await res.text(),
-    request: request,
+    text,
+    request,
   };
 };

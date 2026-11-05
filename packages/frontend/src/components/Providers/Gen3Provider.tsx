@@ -1,16 +1,22 @@
-import React, { FC, ReactNode, useEffect } from 'react';
+import type { FC, ReactNode } from 'react';
+import React, { useEffect } from 'react';
 import { CoreProvider } from '@gen3/core';
-import { createTheme, Modal, Pagination } from '@mantine/core';
-import { TenStringArray } from '../../utils';
+import { createTheme, Modal, Pagination, Tooltip } from '@mantine/core';
+import type { TenStringArray } from '../../utils';
 import { SessionProvider } from '../../lib/session/session';
 import { type Fonts, type RegisteredIcons } from '../../lib/content/types';
-import { ContextModalProps, ModalsProvider } from '@mantine/modals';
+import type { ContextModalProps } from '@mantine/modals';
+import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { addCollection } from '@iconify-icon/react';
-import { SessionConfiguration } from '../../lib/session/types';
-import { Gen3ModalsProvider, type ModalsConfig } from '../Modals';
-import { AuthorizedRoutesConfig } from '../../lib/authz/type';
+import type { SessionConfiguration } from '../../lib/session/types';
+import { gen3Modals, Gen3ModalsProvider, type ModalsConfig } from '../Modals';
+import type { AuthorizedRoutesConfig } from '../../lib/authz/type';
 import ProtectedRoutesProvider from '../AuthorizedRoutes/ProtectedRoutesProvider';
+import AuthzMappingsProvider from './AuthzMappingsProvider';
+import { SowerProvider } from '../../features/Sower/SowerContext';
+import type { SowerConfiguration } from '../../features/Sower/types';
+import { CookiesProvider } from 'react-cookie';
 
 interface Gen3ProviderProps {
   icons: Array<RegisteredIcons>;
@@ -18,6 +24,7 @@ interface Gen3ProviderProps {
   modalsConfig: ModalsConfig;
   contextModals?: Record<string, FC<ContextModalProps<any>>>;
   protectedRoutesConfig?: AuthorizedRoutesConfig;
+  sowerConfig?: SowerConfiguration;
   children?: ReactNode | undefined;
   defaultNotificationPosition?:
     | 'top-left'
@@ -29,8 +36,7 @@ interface Gen3ProviderProps {
 }
 
 // define CSS Variables for document.styleSheets[0]
-export const createCSSVariables = (colors: Record<string, TenStringArray>) => {
-  const root = document.querySelector(':root');
+export const createCSSVariables = (colors: Record<string, string>) => {
   Object.entries(colors).forEach(([key, values]) => {
     Object.entries(values).forEach(([name, color]) => {
       if (color) {
@@ -39,13 +45,12 @@ export const createCSSVariables = (colors: Record<string, TenStringArray>) => {
           `--${key}${colorName}`,
           color,
         );
-        console.log(`--${key}${colorName}: ${color}`);
       }
     });
   });
 };
 
-// Define theme for mantine v7
+// Define theme for mantine v9
 export const createMantineTheme = (
   fonts: Fonts,
   colors: Record<string, TenStringArray>,
@@ -69,8 +74,50 @@ export const createMantineTheme = (
     components: {
       Modal: Modal.extend({
         defaultProps: {
-          classNames: {
-            title: 'font-bold',
+          zIndex: 400,
+          radius: 'md',
+          closeButtonProps: { 'aria-label': 'Close Modal' },
+          styles: {
+            header: {
+              backgroundColor: 'var(--mantine-color-primary-3)',
+              borderColor: 'var(--mantine-color-base-3)',
+              borderStyle: 'solid',
+              borderWidth: '0px 0px 2px 0px',
+              padding: '15px 15px 15px 15px',
+              minHeight: '0',
+            },
+            title: {
+              color: 'var(--mantine-color-primary-contrast-3)',
+              fontFamily: '"Montserrat", "sans-serif"',
+              fontSize: '1.05em',
+              fontWeight: 500,
+              letterSpacing: '.1rem',
+              textTransform: 'uppercase',
+            },
+            body: {
+              padding: '0.5rem',
+            },
+            close: {
+              backgroundColor: 'var(--mantine-color-accent-3)',
+              color: 'var(--mantine-color-accent-contrast-3)',
+            },
+          },
+        },
+      }),
+      Tooltip: Tooltip.extend({
+        styles: {
+          tooltip: {
+            color: 'var(--mantine-color-accent-contrast-1)',
+            textColor: 'var(--mantine-color-accent-contrast-1)',
+            backgroundColor: 'var(--mantine-color-accent-1)',
+            opacity: 0.75,
+            fontFamily: '"Montserrat", "sans-serif"',
+            fontWeight: 500,
+          },
+          arrow: {
+            color: 'var(--mantine-color-accent-1)',
+            backgroundColor: 'var(--mantine-color-accent-1)',
+            opacity: 0.75,
           },
         },
       }),
@@ -102,15 +149,16 @@ export const createMantineTheme = (
 
 /**
  * Gen3Provider wraps around the entire app and provides general configurations
- * for the whole website like color scheme, icons, fonts, and sessionConfigs like
+ * for the whole website like a color scheme, icons, fonts, and sessionConfigs like
  * inactivity limits for session timeouts.
  */
 const Gen3Provider = ({
   icons,
   sessionConfig,
   modalsConfig,
-  contextModals,
+  contextModals = {},
   protectedRoutesConfig,
+  sowerConfig,
   defaultNotificationPosition = 'top-center',
   children,
 }: Gen3ProviderProps) => {
@@ -120,35 +168,41 @@ const Gen3Provider = ({
 
   return (
     <CoreProvider>
-      <ModalsProvider modals={contextModals}>
-        <Notifications position={defaultNotificationPosition} />
-        <SessionProvider {...sessionConfig}>
-          <ProtectedRoutesProvider
-            config={
-              protectedRoutesConfig ?? {
-                routes: {
-                  '/DataLibrary': {
-                    loginRequired: true,
-                  },
-                  '/Workspace': {
-                    loginRequired: true,
-                  },
-                  '/Profile': {
-                    loginRequired: true,
-                  },
-                  '*': {
-                    loginRequired: false,
-                  },
-                },
-              }
-            }
-          >
-            <Gen3ModalsProvider config={modalsConfig}>
-              {children}
-            </Gen3ModalsProvider>
-          </ProtectedRoutesProvider>
-        </SessionProvider>
-      </ModalsProvider>
+      <CookiesProvider>
+        <ModalsProvider modals={{ ...contextModals, ...gen3Modals }}>
+          <Notifications position={defaultNotificationPosition} />
+          <SessionProvider {...sessionConfig}>
+            <AuthzMappingsProvider enableWTS={sessionConfig.enableWTS}>
+              <SowerProvider config={sowerConfig}>
+                <ProtectedRoutesProvider
+                  config={
+                    protectedRoutesConfig ?? {
+                      routes: {
+                        '/DataLibrary': {
+                          loginRequired: true,
+                        },
+                        '/Workspace': {
+                          loginRequired: true,
+                        },
+                        '/Profile': {
+                          loginRequired: true,
+                        },
+                        '*': {
+                          loginRequired: false,
+                        },
+                      },
+                    }
+                  }
+                >
+                  <Gen3ModalsProvider config={modalsConfig}>
+                    {children}
+                  </Gen3ModalsProvider>
+                </ProtectedRoutesProvider>
+              </SowerProvider>
+            </AuthzMappingsProvider>
+          </SessionProvider>
+        </ModalsProvider>
+      </CookiesProvider>
     </CoreProvider>
   );
 };

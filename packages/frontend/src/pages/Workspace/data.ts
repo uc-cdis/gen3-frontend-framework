@@ -21,7 +21,7 @@ export const WorkspacePageGetServerSideProps: GetServerSideProps<
         workspaceProps,
       },
     };
-  } catch (err: unknown) {
+  } catch {
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),

@@ -17,7 +17,6 @@ import {
   OperationHandler,
   Union,
 } from './types';
-import { CoreState } from '../../reducers';
 import {
   buildNestedGQLFilter,
   convertFilterToGqlFilter,
@@ -40,8 +39,6 @@ import {
   isGQLIntersection,
   isGQLUnion,
 } from './filters';
-
-import { selectIndexFilters } from '../cohort/cohortManagerSelector';
 
 /**
  * Constructs a nested operation object based on the provided field and leaf operand.
@@ -149,11 +146,6 @@ export const buildCohortGqlOperator = (
       };
   }
 };
-
-export const selectCurrentCohortCaseFilters = (
-  state: CoreState,
-  index: string = 'cases',
-): FilterSet => selectIndexFilters(state, index);
 
 /**
  * Merged two FilterSets returning the merged pair.

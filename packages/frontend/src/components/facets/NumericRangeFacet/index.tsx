@@ -35,6 +35,7 @@ const NumericRangeFacet: React.FC<NumericFacetCardProps> = ({
   step = undefined,
   facetName,
   dismissCallback = undefined,
+  showSettings = false,
   queryOptions,
   Chart,
 }) => {
@@ -76,6 +77,7 @@ const NumericRangeFacet: React.FC<NumericFacetCardProps> = ({
         isFacetView={isFacetView}
         toggleFlip={toggleFlip}
         showFlip={rangeDatatype !== 'range' && Chart !== undefined}
+        showSettings={showSettings}
       />
       <div
         className={showFilters ? 'h-full' : 'h-0 invisible'}

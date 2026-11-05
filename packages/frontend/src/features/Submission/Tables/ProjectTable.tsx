@@ -3,7 +3,7 @@ import {
   MantineReactTable,
   type MRT_PaginationState,
   useMantineReactTable,
-} from 'mantine-react-table';
+} from 'mantine-react-table-open';
 import { Loader, Text } from '@mantine/core';
 import { useGetProjectsDetailsQuery } from '@gen3/core';
 import { ProjectTableConfig } from '../types';
@@ -41,11 +41,12 @@ const ProjectTable = ({ columns }: ProjectTableConfig) => {
   };
 
   const { data, isLoading, isFetching, isError } = useGetProjectsDetailsQuery({
-    size: 10,
+    size: pagination.pageSize,
+    offset: pagination.pageSize * pagination.pageIndex,
     projectQuery: projectQuery,
     projectDetailsQuery: detailQuery,
-    mapping: mapping,
   });
+
   const cols = useMemo(() => {
     return [
       {
@@ -66,7 +67,9 @@ const ProjectTable = ({ columns }: ProjectTableConfig) => {
   const table = useMantineReactTable({
     columns: cols,
     data: data?.details ?? [],
-    manualSorting: true,
+    enableSorting: false,
+    enableColumnActions: false,
+    manualSorting: false,
     manualPagination: true,
     paginateExpandedRows: false,
     onPaginationChange: setPagination,
@@ -80,22 +83,6 @@ const ProjectTable = ({ columns }: ProjectTableConfig) => {
       showAlertBanner: isError,
       columnVisibility: {
         'mrt-row-expand': false,
-      },
-    },
-    mantineTableHeadCellProps: {
-      style: {
-        backgroundColor: 'var(--mantine-color-table-8)',
-        color: 'var(--mantine-color-table-0)',
-        textAlign: 'center',
-        padding: 'var(--mantine-spacing-md)',
-        fontWeight: 'bold',
-        fontSize: 'var(--mantine-font-size-lg)',
-        textTransform: 'uppercase',
-      },
-    },
-    mantineTableProps: {
-      style: {
-        backgroundColor: 'var(--mantine-color-base-9)',
       },
     },
   });
@@ -117,7 +104,7 @@ const ProjectTable = ({ columns }: ProjectTableConfig) => {
   }
 
   return (
-    <div className="flex w-full bg-base-max p-4 rounded-lg">
+    <div className="flex w-full bg-base-max pt-4 rounded-lg">
       <div className="grow w-auto inline-block overflow-x-scroll">
         <MantineReactTable table={table} />
       </div>

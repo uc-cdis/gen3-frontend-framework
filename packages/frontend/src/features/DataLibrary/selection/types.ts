@@ -5,12 +5,7 @@ import {
 } from '../types';
 
 type RuleOperator =
-  | 'equals'
-  | 'not'
-  | 'includes'
-  | 'excludes'
-  | 'greater'
-  | 'less';
+  'equals' | 'not' | 'includes' | 'excludes' | 'greater' | 'less';
 type GroupOperator = 'count' | 'greater';
 // Enforce type safety for rule values
 type RuleValue = string | number | boolean;
@@ -37,7 +32,8 @@ export interface DataLibraryActionConfig {
   rightIcon?: string;
   leftIcon?: string;
   buttonLabel: string;
-  actionFunction: string;
+  actionName: string;
+  actionFunction?: string; // deprecated
   parameters?: Record<string, unknown>;
   itemRules?: ItemRule[];
   groupRules?: GroupRule[];
@@ -47,6 +43,15 @@ export type DataLibraryActionsConfig = ReadonlyArray<DataLibraryActionConfig>;
 
 export type DataActionFunction<T = void> = (
   validatedSelections: ReadonlyArray<ValidatedSelectedItem>,
+  params?: Record<string, any>, // function options from the config
+  onDone?: (arg0?: string) => void,
+  onError?: (error: HTTPError | Error) => void,
+  onAbort?: () => void,
+  signal?: AbortSignal,
+) => Promise<T>;
+
+export type ListActionFunction<T = void> = (
+  listId: string,
   params?: Record<string, any>, // function options from the config
   onDone?: (arg0?: string) => void,
   onError?: (error: HTTPError | Error) => void,

@@ -6,6 +6,7 @@ import { CoreState } from './reducers';
 import { updateCohortIndexCountById } from './features/cohort/cohortManagerSlice';
 
 import { explorerApi } from './features/guppy/guppySlice';
+import { registerSowerJobsPersistence } from './features/sower/sowerJobsPersistence';
 
 /**
  * Defines coreListeners for adding middleware.
@@ -38,3 +39,5 @@ startCoreListening({
     }
   },
 });
+
+registerSowerJobsPersistence(startCoreListening);

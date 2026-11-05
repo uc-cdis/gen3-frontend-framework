@@ -28,6 +28,7 @@ export interface ProjectDetailsResponse {
 
 export interface ProjectsListRequestParams {
   size: number;
+  offset: number;
   projectQuery: JSONObject;
   projectDetailsQuery: JSONObject;
   mapping?: {

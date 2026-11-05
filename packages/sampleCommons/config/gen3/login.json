@@ -11,9 +11,9 @@
   ],
   "bottomContent": [
     {
-      "text": "If you have any questions about access or the registration process, please contact",
-      "email": "support@gen3.org",
-      "className": "text-center text-sm mt-20 py-10"
+      "type": "markdown",
+      "text": "If you have any questions about access or the registration process, please contact [gen3@datacommons.io](mailto:gen3@datacommons.io)",
+      "className": "text-center text-sm"
     }
   ],
   "image": "images/gene_side_texture.svg",

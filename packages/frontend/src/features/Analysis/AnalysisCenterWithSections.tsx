@@ -59,38 +59,39 @@ const AnalysisCenterWithSections: React.FC<
               classNames={{ root: sectionClassnames['divider'] }}
             />
             <div className="flex flex-wrap gap-4 items-stretch">
-  {section.tools.map((tool, idx) => {
-    if (section.core) {
-
-      return (
-        <div key={tool.title} className="w-1/4">
-        <AnaylsisCardCore {...tool} key={tool.title} />
-        </div>
-          )
-    } else {
-      return (
-        <div key={tool.title} className="max-w-[12em]">
-          <AnalysisCardCollapsible
-            {...tool}
-            descriptionVisible={activeAnalysisCard === `${section_idx}-${idx}`}
-            setDescriptionVisible={() =>
-              setActiveAnalysisCard(
-                `${section_idx}-${idx}` === activeAnalysisCard
-                  ? null
-                  : `${section_idx}-${idx}`,
-              )
-            }
-            useCountHook={() => ({
-              data: 1000,
-              isFetching: false,
-              isSuccess: true,
-            })}
-          />
-        </div>
-      );
-    }
-  })}
-</div>
+              {section.tools.map((tool, idx) => {
+                if (section.core) {
+                  return (
+                    <div key={tool.title} className="w-1/4">
+                      <AnaylsisCardCore {...tool} key={tool.title} />
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div key={tool.title} className="max-w-[12em]">
+                      <AnalysisCardCollapsible
+                        {...tool}
+                        descriptionVisible={
+                          activeAnalysisCard === `${section_idx}-${idx}`
+                        }
+                        setDescriptionVisible={() =>
+                          setActiveAnalysisCard(
+                            `${section_idx}-${idx}` === activeAnalysisCard
+                              ? null
+                              : `${section_idx}-${idx}`,
+                          )
+                        }
+                        useCountHook={() => ({
+                          data: 1000,
+                          isFetching: false,
+                          isSuccess: true,
+                        })}
+                      />
+                    </div>
+                  );
+                }
+              })}
+            </div>
           </Stack>
         );
       }),

@@ -9,7 +9,7 @@ import {
   Excludes,
   Includes,
   Operation,
-  trimFirstFieldNameToTitle,
+  trimFirstfieldNameToLabel,
 } from '@gen3/core';
 import FacetControlsHeader from './FacetControlsHeader';
 
@@ -64,7 +64,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
   const updateFacetFilters = hooks.useUpdateFacetFilters();
   const facetTitle = facetName
     ? facetName
-    : trimFirstFieldNameToTitle(field, true);
+    : trimFirstfieldNameToLabel(field, true);
   const facetValue = hooks.useGetFacetFilters(field);
   const textValues = useMemo(() => extractValues(facetValue), [facetValue]);
   const isFilterExpanded =

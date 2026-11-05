@@ -29,8 +29,14 @@ A configuration file is shown below:
   "name": "CohortDiscovery",
   "remoteSupportService": {
     "service": "zenDesk",
-    "configuration" : {
-      "zendeskSubdomainName": "self-22514"
+    "configuration": {
+      "zendeskSubdomainName": "gen3support",
+      "custom_fields": [
+        {
+          "id": 32585806184851, // ID for Gen3 Platform
+          "value": "test" // must match zendesk value
+        }
+      ]
     }
   },
   "emptySelection": {
@@ -155,12 +161,19 @@ field is the study id which is `gen3_discovery.study_id`
 ### Request ticket service configuration
 The `remoteService` configuration defines where the user's request for access is sent. Currently, we only support zendDesk
 so the only field to set is `zendeskSubdomainName` which should be the zendDesk subdomain for your commons.
+custom_fields passes any custom fields and their values this is currently used to define the platform
 
 ```json
   "remoteSupportService": {
     "service": "zenDesk",
     "configuration" : {
-      "zendeskSubdomainName": "self-22514"
+      "zendeskSubdomainName": "gen3support",
+      "custom_fields": [
+        {
+          "id": 32585806184851, // ID for Gen3 Platform
+          "value": "test" // must match zendesk value
+        }
+      ]
     }
   },
 ```

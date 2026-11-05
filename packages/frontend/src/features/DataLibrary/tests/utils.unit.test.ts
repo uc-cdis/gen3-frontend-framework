@@ -14,7 +14,7 @@ describe('FormatDate Function', () => {
     const invalidDate = 'This is not a date string';
     expect(() => {
       formatDate(invalidDate);
-    }).toThrowError(new Error('Invalid date string'));
+    }).toThrow(new Error('Invalid date string'));
   });
 });
 

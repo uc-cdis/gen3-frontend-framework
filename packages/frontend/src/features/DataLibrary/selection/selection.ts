@@ -1,12 +1,7 @@
-import { ListMembers, SelectedMembers } from './SelectionContext';
-import { DatalistMembers, DatasetContents } from '../types';
-import {
-  CohortItem,
-  Datalist,
-  isCohortItem,
-  isFileItem,
-  DataLibraryDataset,
-} from '@gen3/core';
+import type { ListMembers, SelectedMembers } from './SelectionContext';
+import type { DatalistMembers, DatasetContents } from '../types';
+import type { CohortItem, DataLibraryDataset, Datalist } from '@gen3/core';
+import { isCohortItem, isFileItem } from '@gen3/core';
 
 /**
  * Extracts and consolidates GUIDs and IDs from dataset contents into a single object.

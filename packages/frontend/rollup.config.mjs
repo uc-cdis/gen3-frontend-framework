@@ -43,7 +43,6 @@ const globals = {
   'react-icons/bs': 'reactIcons',
   'react-icons/fi': 'reactIcons',
   'react-icons/lu': 'reactIcons',
-  'react-icons/md': 'reactIcons',
   'react-icons/io': 'reactIcons',
   'react-icons/ri': 'reactIcons',
   'react-icons/ti': 'reactIcons',
@@ -72,11 +71,14 @@ const globals = {
   graphql: 'graphql',
   'isomorphic-dompurify': 'isomorphic-dompurify',
   '@iconify-icon/react': 'iconify-iconReact',
+  'igv/dist/igv.esm.min.js': 'igv',
 };
 
 const external = [
   ...Object.keys(globals),
   'tailwindcss/plugin',
+  'tailwindcss/colors',
+  'postcss-selector-parser',
   '@iconify/react',
   'next/router',
   'next/dynamic',
@@ -89,6 +91,7 @@ const external = [
   'tinycolor2',
   'tailwind-styled-components',
   '@graphiql/plugin-explorer',
+  'graphiql/setup-workers/webpack',
   'mantine-react-table',
   'victory',
   'echarts',
@@ -98,6 +101,12 @@ const external = [
   '@dnd-kit/utilities',
   '@dnd-kit/modifiers',
   '@gen3/core/server',
+  'graphiql/setup-workers/webpack',
+  '@theothergothamdev/pluralize-ts',
+  '@tanstack/react-table',
+  'rehype-sanitize',
+  'react-icons/fa6',
+  'react-icons/md',
 ];
 
 const jsBundle = (input, baseName, additionalExternal) => ({
@@ -107,6 +116,7 @@ const jsBundle = (input, baseName, additionalExternal) => ({
       dir: `dist/${baseName}/cjs`,
       format: 'cjs',
       globals,
+      interop: 'auto',
       sourcemap: true,
     },
     {

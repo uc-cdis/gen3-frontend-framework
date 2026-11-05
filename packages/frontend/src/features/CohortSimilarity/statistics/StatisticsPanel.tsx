@@ -1,6 +1,6 @@
 import React from 'react';
-import { AggregationsData, fieldNameToTitle } from '@gen3/core';
-import { SimilarityChart, GroundWithComparisonDatasets } from '../types';
+import { AggregationsData, fieldNameToLabel } from '@gen3/core';
+import { GroundWithComparisonDatasets, SimilarityChart } from '../types';
 import { Card, Grid, Text } from '@mantine/core';
 import { computeRowSpan } from '../../../components/charts';
 import StatisticsCard from './StatisticsCard';
@@ -36,7 +36,7 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({
           >
             <Card shadow="sm" padding="lg" radius="md" withBorder>
               <Text size="lg" fw={700} mb="md">
-                {fieldNameToTitle(field)}
+                {fieldNameToLabel(field)}
               </Text>
               <StatisticsCard
                 baseData={ground[field]}

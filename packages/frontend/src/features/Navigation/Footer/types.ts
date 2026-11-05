@@ -1,8 +1,5 @@
 import { ReactElement } from 'react';
-import {
-  StylingMergeMode,
-  StylingOverrideWithMergeControl,
-} from '../../../types';
+import { StylingOverrideWithMergeControl } from '../../../types';
 
 export interface ColumnLinks {
   heading: string;
@@ -52,30 +49,30 @@ export interface FooterLogo {
 }
 
 export type FooterRow =
-  | FooterLogo
-  | FooterText
-  | FooterLink
-  | FooterLinks
-  | FooterSectionProps;
+  FooterLogo | FooterText | FooterLink | FooterLinks | FooterSectionProps;
 
 export interface FooterColumnProps {
   heading?: string;
-  rows: Array<Record<string, FooterRow>>;
+  rows?: Array<Record<string, FooterRow>>;
   classNames?: StylingOverrideWithMergeControl;
 }
 
 export interface FooterSectionProps {
-  columns: ReadonlyArray<FooterColumnProps>;
+  columns?: ReadonlyArray<FooterColumnProps>;
   className?: string;
 }
 
+export type FooterClassnames = StylingOverrideWithMergeControl & {
+  root: string;
+  layout: string;
+  version: string;
+};
+
 export interface FooterProps {
-  bottomLinks?: ReadonlyArray<BottomLinks>;
-  columnLinks?: ReadonlyArray<ColumnLinks>;
-  footerLogos?: ReadonlyArray<FooterLogo>;
-  footerRightLogos?: ReadonlyArray<FooterLogo>;
-  rightSection?: FooterSectionProps;
-  leftSection?: FooterSectionProps;
-  classNames?: StylingOverrideWithMergeControl;
-  customFooter?: ReactElement;
+  rightSection?: FooterSectionProps; // right footer section
+  leftSection?: FooterSectionProps; // left footer section
+  classNames?: FooterClassnames; // tailwind styling classNames
+  customFooter?: ReactElement; // if custom footer is provided, it will override the default footer
+  hideFooter?: boolean; // hide the footer
+  showVersion?: boolean; // if true, show the Gen3 package version
 }

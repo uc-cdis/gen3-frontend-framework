@@ -5,7 +5,7 @@
     }
     ready
     hosts {
-        host.docker.internal gen3.local.io
+        host.docker.internal gen3dev.local.io
         fallthrough
     }
     kubernetes cluster.local in-addr.arpa ip6.arpa {

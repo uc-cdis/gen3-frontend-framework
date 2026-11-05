@@ -5,8 +5,6 @@ For example, "Cases", "Images", "Data Files".
 
 ## Configuration
 
-
-
 The configuration for the explorer is stored an array of objects. Each object in the array represents a tab in the explorer. The following is an example of a tab configuration:
 
 ```json
@@ -20,26 +18,23 @@ The configuration for the explorer is stored an array of objects. Each object in
       "pageLimit": {
         "limit": 10000
       },
-      "columns": [
-        {
-          "name": "case_id",
-          "label": "Case ID",
+      "columns": {
+        "case_id": {
+          "title": "Case ID",
           "visible": true,
           "sortable": true
         },
-        {
-          "name": "project_id",
-          "label": "Project ID",
+        "project_id": {
+          "title": "Project ID",
           "visible": true,
           "sortable": true
         },
-        {
-          "name": "disease_type",
-          "label": "Disease Type",
+        "disease_type": {
+          "title": "Disease Type",
           "visible": true,
           "sortable": true
         }
-      ]
+      }
     }
   }
 ]
@@ -125,6 +120,31 @@ To see the other tabs for a shared filters, hover over the share icon:
 
 ![Shared filters tooltip](./images/Explorer/Explorer_shared_filters_tooltip.png)
 
+### Flatten Fields
+
+A query of the form root.subroot.field, by default is expanded into root.subroot and root.subroot.subfield.
+
+```
+root {
+  { subroot:
+     {  field }
+  }
+```
+
+This can be disabled by setting the `flattenFields` option to `true`. In this case the field will be queried
+as `root.subroot.field`.
+
+To enable this set `flattenFields` to `true`. in the explore config for an index:
+
+```json
+  {
+  "tabTitle": "Subjects",
+  "flattenFields": true,
+  "charts": {
+  }
+}
+
+```
 
 ### Charts
 The charts section configures data visualizations for the explorer page. Each chart is defined by its `chartType` and `title`.
@@ -251,6 +271,12 @@ Download a file manifest from a explorer table requires the following configurat
 ```
 This is similar to the configuration for Gen3's data-portal except the `actionArgs` member now contains the information that was in the `manifestMapping` member of `gitops.json`
 
+### Requiring login for Downloads
+
+To require that a user is logged inorder to download, set: ```"loginForDownload": true``` in the configuration file.
+If you want to direct the user to the login page so that they log in and then are returned to the page set:
+```"enableRedirectToLogin": true```
+
 ### Details Modal
 
 There is support for a details modal that appears when the table is clicked. The modal's content is rendered using the
@@ -288,7 +314,49 @@ The details configuration has the following members:
 * closeOnClickOutside - close when anywhere outside the modal is closed
 * size - size of the modal
 
-## Selection Facet
+### Sub Tables
+
+There is support for a sub tables that appear under the row when its clicked. The tables content is rendered using ```subTables```.
+
+![Explorer SubTable Collapsed](images/Explorer/Explorer_sub_table_collapsed.png)
+![Explorer SubTable Open](images/Explorer/Explorer_sub_table_open.png)
+
+The basic configuration is:
+
+```json
+"subTables": [
+        {
+          "root": "subRows",
+          "label": "Oncology Primary",
+          "defaultIfEmpty": "NULL",
+          "fields": [
+            "CancerStages",
+            "ICDOSites"
+          ],
+          "columns":{
+            "ICDOSites": {
+              "field": "ICDOSites",
+              "title": "ICDOSites"
+            },
+            "CancerStages": {
+              "field": "CancerStages",
+              "title": "CancerStages"
+            }
+          }
+        }
+      ]
+
+```
+
+The configuration has the following members:
+
+* root - parents feild that containes the data that is displayed in the Sub Table
+* label - title at top of table
+* defaultIfEmpty - value for empty fields defaults to ''
+* fields - fields to use for columns
+* columns - (Optional) table columns field to match fields above title to override what's displayed
+
+### Selection Facet
 
 A new facet UI is available instead of the enumerated facet, which can be used when the number of facet keys becomes
 quite large. To enable it, in the filters->tabs section of the config file:
@@ -325,6 +393,132 @@ quite large. To enable it, in the filters->tabs section of the config file:
 add a ```fieldsConfig``` entry. The format is _field_ name then _type_. In the example above the```gender``` field is
 switch to use ```multiselect```. Note that ```multiselect``` is the only type supported. The selection is a dropdown that
 is also searchable.
+
+### Range Facets
+
+There are a number of Continuous Range Facets that can handle a variey of contiuous values. These include:
+
+* **age**: in days or years can switch between age in days or years
+* **age_in_years**: years only age
+* **years**: years in decades
+* **year**
+* **percent**: 0 - 100%
+* **numeric_range**: generic_numeric range
+
+![Age of Enrollment](./images/Explorer/RangeFacet.png)
+
+These range facets require setting the minimum, maximum, and step values, in the facet definition section of the
+configuration file.
+For example the `age_in_years` is set with:
+
+```json
+"fieldsConfig": {
+  "age_at_enrollment": {
+    "type": "age_in_years",
+    "range": {
+      "maximum": 32507,
+      "minimum": 0,
+      "step": 10
+    }
+  }
+}
+}
+```
+
+Note that age in years needs to be specified in day units. The above setup 10 pre-defined ranges from in
+increments of 10 years from age 0 to 89.
+
+### Default Facet Sorting
+
+Enum facets are sorted by value count descending by default. To use a different initial sort order for an individual
+facet, set `defaultSort` in that field's `fieldsConfig` entry within the relevant `filters.tabs` entry:
+
+```json
+{
+  "filters": {
+    "tabs": [
+      {
+        "title": "Subjects",
+        "fields": ["bmi"],
+        "fieldsConfig": {
+          "bmi": {
+            "defaultSort": "label-asc"
+          }
+        }
+      }
+    ]
+  }
+}
+```
+
+The supported values are:
+
+* `value-asc` - value count ascending
+* `value-dsc` - value count descending
+* `label-asc` - label ascending
+* `label-desc` - label descending
+
+Facets without `defaultSort` continue to use `value-dsc`.
+
+### Enum Facet Match Mode
+
+Enum facets combine multiple selected values with OR logic by default: a case
+matches when it contains any selected value. For a multivalued enum field, an
+individual facet can optionally let users switch between **Match any** (OR) and
+**Match all** (AND). Enable the selector with `showMatchModeSelector` in that
+field's `fieldsConfig` entry:
+
+```json
+{
+  "filters": {
+    "tabs": [
+      {
+        "title": "Clinical Criteria",
+        "fields": ["risk_criteria"],
+        "fieldsConfig": {
+          "risk_criteria": {
+            "showMatchModeSelector": true
+          }
+        }
+      }
+    ]
+  }
+}
+```
+
+The selector is disabled by default, and facets without this setting retain the
+existing Match any behavior. Match all is most useful for multivalued fields; on
+a single-valued field, distinct values cannot normally match simultaneously.
+
+### Configuring Facet Name and Description
+
+To override the Facet label and description (or to add a description), you will need to add to the `fieldsConfig`:
+
+```json
+ "fieldsConfig": {
+  "exposure": {
+    "label": "Exposure Type",
+    "description": "Type of exposure"
+  }
+}
+}
+```
+
+### Logical Operators in the Query Expression
+
+The cohort query expression can optionally display the logical operator between
+facets and between values within a facet. Set `showLogicalOperators` when
+rendering `QueryExpression`:
+
+```tsx
+<QueryExpression index="case" showLogicalOperators />
+```
+
+The option is disabled by default to preserve the existing appearance. When it
+is enabled, the expression reflects the filter structure: for example,
+`Sex: Female OR Male AND Race: White`. Parentheses are implicit in the facet
+grouping, so values within each facet are evaluated together before the operator
+between facets.
 
 ![MultiSelectFacet](images/Explorer/MultiSelectFacet.png)
 

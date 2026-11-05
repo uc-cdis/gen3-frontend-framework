@@ -1,36 +1,44 @@
 import whyDidYouRender from '@welldone-software/why-did-you-render';
-import App, { AppContext, AppInitialProps, AppProps } from 'next/app';
+import type { AppContext, AppInitialProps, AppProps } from 'next/app';
+import App from 'next/app';
+import Head from 'next/head';
 import React, { Suspense, useEffect, useRef, useState } from 'react';
-import { MantineProvider } from '@mantine/core';
-import mantinetheme, { registerCSSVariables } from '../mantineTheme';
+import { MantineProvider, mergeThemeOverrides } from '@mantine/core';
 
+import type {
+  Fonts,
+  RegisteredIcons,
+  SessionConfiguration,
+  TenStringArray,
+} from '@gen3/frontend';
 import {
   type AuthorizedRoutesConfig,
+  createMantineTheme,
   DefaultAuthorizedRoutesConfig,
   Gen3Provider,
   type ModalsConfig,
+  registerBaseSowerActions,
   registerCohortBuilderDefaultPreviewRenderers,
-  RegisteredIcons,
+  registerCohortDiscoveryApp,
+  registerCohortSowerActions,
   registerExplorerDefaultCellRenderers,
+  registerIGVApp,
   registerMetadataSchemaApp,
-  SessionConfiguration,
 } from '@gen3/frontend/app';
 import { registerDefaultRemoteSupport, setDRSHostnames } from '@gen3/core';
-
 import { registerCohortTableCustomCellRenderers } from '@/lib/CohortBuilder/CustomCellRenderers';
 import { registerCustomExplorerDetailsPanels } from '@/lib/CohortBuilder/FileDetailsPanel';
 
 import '../styles/globals.css';
 import '@fontsource/montserrat';
-import '@fontsource/source-sans-pro';
+// source-sans-pro is frozen at a fontsource build that ships no `types`/`exports`,
+// unlike montserrat/poppins — import the stylesheet directly so it type-resolves.
+import '@fontsource/source-sans-pro/index.css';
 import '@fontsource/poppins';
+
 import drsHostnames from '../../config/drsHostnames.json';
 import { loadContent } from '@/lib/content/loadContent';
 import Loading from '../components/Loading';
-
-console.log('Loading sample commons app', process.env.NEXT_PUBLIC_USE_CSS_VARS);
-
-const USE_CSS_VARS = process.env.NEXT_PUBLIC_USE_CSS_VARS;
 
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   whyDidYouRender(React);
@@ -44,66 +52,84 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
   axe(React, ReactDOM, 1000);
 }
 
+type PublicConfig = {
+  dataDogAppId: string | null;
+  dataDogClientToken: string | null;
+  dataCommons: string;
+};
+
 interface Gen3AppProps {
   icons: Array<RegisteredIcons>;
   modalsConfig: ModalsConfig;
   sessionConfig: SessionConfiguration;
   protectedRoutes: AuthorizedRoutesConfig;
+  publicConfig?: PublicConfig;
+  colors: Record<string, TenStringArray>;
+  fonts: Fonts;
 }
 
 const Gen3App = ({
   Component,
   pageProps,
   icons,
+  colors,
+  fonts,
   sessionConfig,
   modalsConfig,
   protectedRoutes,
+  publicConfig,
 }: AppProps & Gen3AppProps) => {
   const isFirstRender = useRef(true);
+  const [mantineTheme, setMantineTheme] =
+    useState<Partial<ReturnType<typeof mergeThemeOverrides>>>();
 
   useEffect(() => {
     if (isFirstRender.current) {
       setDRSHostnames(drsHostnames);
       registerDefaultRemoteSupport();
       registerMetadataSchemaApp();
-      // registerCohortDiscoveryApp();
+      registerCohortDiscoveryApp();
+      registerIGVApp();
       registerExplorerDefaultCellRenderers();
       registerCohortBuilderDefaultPreviewRenderers();
+      registerBaseSowerActions();
+      registerCohortSowerActions();
       registerCohortTableCustomCellRenderers();
       registerCustomExplorerDetailsPanels();
       isFirstRender.current = false;
+      const gen3ThemeDynamic = createMantineTheme(fonts, colors);
+      const mergedTheme = mergeThemeOverrides(gen3ThemeDynamic);
+      setMantineTheme(mergedTheme);
       console.log('Gen3 App initialized');
-      if (USE_CSS_VARS) {
-        console.log('Registering CSS variables');
-        registerCSSVariables();
-      }
     }
   }, []);
 
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true); // Only on client-side
-  }, []);
   return (
     <React.Fragment>
-      {isClient ? (
-        <Suspense fallback={<Loading />}>
-          <MantineProvider theme={mantinetheme}>
-            <Gen3Provider
-              icons={icons}
-              sessionConfig={sessionConfig}
-              modalsConfig={modalsConfig}
-              protectedRoutesConfig={protectedRoutes}
-            >
-              <Component {...pageProps} />
-            </Gen3Provider>
-          </MantineProvider>
-        </Suspense>
-      ) : (
-        // Show some fallback UI while waiting for the client to load
-        <Loading />
-      )}
+      <Head>
+        {/* fallback title; pages override it via their layout's <Head> */}
+        <title>Gen3 Data Commons</title>
+      </Head>
+      <Suspense fallback={<Loading />}>
+        {/*publicConfig?.dataDogAppId != null &&
+          publicConfig?.dataDogClientToken != null && (
+            <DatadogInit
+              appId={publicConfig.dataDogAppId}
+              clientToken={publicConfig.dataDogClientToken}
+              dataCommons={publicConfig.dataCommons}
+            />
+          )*/}
+        <MantineProvider theme={mantineTheme}>
+          <Gen3Provider
+            icons={icons}
+            sessionConfig={sessionConfig}
+            modalsConfig={modalsConfig}
+            protectedRoutesConfig={protectedRoutes}
+          >
+            <Component {...pageProps} />
+          </Gen3Provider>
+        </MantineProvider>
+      </Suspense>
     </React.Fragment>
   );
 };
@@ -113,12 +139,18 @@ Gen3App.getInitialProps = async (
   context: AppContext,
 ): Promise<Gen3AppProps & AppInitialProps> => {
   const ctx = await App.getInitialProps(context);
+  const publicConfig: PublicConfig = {
+    dataDogAppId: process.env.DATADOG_APPLICATION_ID || null,
+    dataDogClientToken: process.env.DATADOG_CLIENT_TOKEN || null,
+    dataCommons: process.env.DATACOMMONS || 'commons_frontend_app',
+  };
 
   try {
     const res = await loadContent();
     return {
       ...ctx,
       ...res,
+      publicConfig,
     };
   } catch (error: any) {
     console.error('Provider Wrapper error loading config', error.toString());
@@ -135,9 +167,16 @@ Gen3App.getInitialProps = async (
         height: 0,
       },
     ],
+    colors: {},
+    fonts: {
+      heading: ['Poppins', 'sans-serif'],
+      content: ['Poppins', 'sans-serif'],
+      fontFamily: 'Poppins',
+    },
     modalsConfig: {},
     sessionConfig: {},
     protectedRoutes: DefaultAuthorizedRoutesConfig,
+    publicConfig,
   };
 };
 export default Gen3App;

@@ -10,24 +10,22 @@ import {
   OpenControlledAccessCellRenderer,
   ProjectAccessCellRenderer,
 } from './AccessCellRenderers';
+import { RenderOpenAppLink } from './LinkRenderers';
 
 export interface CellRendererFunctionCatalogEntry {
   [key: string]: CellRendererFunction;
 }
 
-export const RenderArrayCellSimple: CellRendererFunction = ({
-  cell,
-}: CellRendererFunctionProps, defaultIfEmpty: string = '') => {
+export const RenderArrayCellSimple: CellRendererFunction = (
+  { cell }: CellRendererFunctionProps,
+  defaultIfEmpty: string = '',
+) => {
   const value = cell.getValue();
   if (isArray(value)) {
     const tempValue = value.map((x) => (x == null ? defaultIfEmpty : x));
-    return (
-      <span>
-        {tempValue.join(', ')}
-      </span>
-    );
+    return <span>{tempValue.join(', ')}</span>;
   }
-  return (<span>{value? value as string: defaultIfEmpty}</span>);
+  return <span>{value ? (value as string) : defaultIfEmpty}</span>;
 };
 
 // TODO need to type this
@@ -243,6 +241,7 @@ const LinkCellFunctionCatalog = {
   default: RenderLinkCell,
   linkWithValueMap: RenderLinkCellUsingValueMap,
   linkWithIcon: RenderLinkCellWithIcon,
+  linkOpenApp: RenderOpenAppLink,
 };
 
 let instance: RenderFactoryTypedInstance<CellRendererFunctionProps>;

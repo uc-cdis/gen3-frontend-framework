@@ -1,9 +1,9 @@
-import React, { HTMLAttributes, useEffect } from 'react';
-import { Card, Text, Stack, Button, Center } from '@mantine/core';
+import React, { HTMLAttributes } from 'react';
+import { Button, Card, Center, Stack, Text } from '@mantine/core';
 import { type ExternalProvider, type NamedURL } from '@gen3/core';
 import {
-  IoMdRefresh as ReloadIcon,
   IoMdLogIn as LoginIcon,
+  IoMdRefresh as ReloadIcon,
 } from 'react-icons/io';
 import Link from 'next/link';
 import { useDisclosure } from '@mantine/hooks';
@@ -62,7 +62,7 @@ const openAuthWindow = (
               reject('login_error');
               return;
             }
-            refetch();
+            void refetch();
             resolve('success');
           }
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -140,7 +140,7 @@ const ExternalProviderCard: React.FunctionComponent<
             onClick={async () => {
               const queryChar = providerUrl.url.includes('?') ? '&' : '?';
               handler.open();
-              openAuthWindow(
+              void openAuthWindow(
                 `${providerUrl.url}${queryChar}redirect=${window.location.pathname}`,
                 provider.name,
                 refetch,

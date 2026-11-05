@@ -35,6 +35,7 @@ const SearchAndActions: React.FC<SearchAndActionsProps> = ({
             disabled={retrieveDisabled}
             // disabled={Object.keys(selections).length === 0}
             size={`compact-${size}`}
+            radius="sm"
             variant="outline"
             onClick={() => gatherData()}
             aria-label="Retrieve Selected Data"
@@ -47,6 +48,7 @@ const SearchAndActions: React.FC<SearchAndActionsProps> = ({
           <ActionIcon
             disabled={retrieveDisabled}
             variant="outline"
+            radius="sm"
             size={size}
             onClick={() => {
               clearSelections();

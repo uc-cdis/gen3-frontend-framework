@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { NavPageLayout } from '../../features/Navigation';
 import { CrosswalkPanel } from '../../features/Crosswalk';
 import { CrosswalkPageLayoutProps } from './types';

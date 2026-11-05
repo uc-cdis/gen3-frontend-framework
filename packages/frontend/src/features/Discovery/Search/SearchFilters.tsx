@@ -45,7 +45,7 @@ const SearchFilters = ({
                 }
                 setFilterState(newFilterState);
               }}
-            ></Checkbox>
+            />
           );
         })}
       </Paper>

@@ -1,25 +1,23 @@
-import { GetServerSideProps } from 'next';
+import type { GetServerSideProps } from 'next';
 import { getNavPageLayoutPropsFromConfig } from '../../lib/common/staticProps';
 import ContentSource from '../../lib/content';
-import {
+import type {
   CohortBuilderConfiguration,
   CohortBuilderProps,
   CohortPanelConfiguration,
 } from '../../features/CohortBuilder';
+import type { SharedFieldMapping } from '@gen3/core';
 import {
   fetchJSONDataFromURL,
   GEN3_COMMONS_NAME,
   GEN3_GUPPY_API,
   groupSharedFields,
   HttpMethod,
-  SharedFieldMapping,
 } from '@gen3/core';
 import { isArray } from 'lodash';
 import type { NavPageLayoutProps } from '../../features/Navigation';
-import {
-  AccessControlConfiguration,
-  GuppyDataAccessMode,
-} from '../../features/CohortBuilder/types';
+import type { AccessControlConfiguration } from '../../features/CohortBuilder/types';
+import { GuppyDataAccessMode } from '../../features/CohortBuilder/types';
 
 const DefaultHeaderMetadata = {
   title: 'Gen3 Explorer Page',
@@ -126,7 +124,7 @@ export const ExplorerPageGetServerSideProps: GetServerSideProps<
         //  headerMetadata: cohortBuilderConfiguration.headerMetadata,
         accessControl: {
           ...DefaultAccessControlConfiguration,
-          ...(cohortBuilderConfiguration.accessControl ?? {}),
+          ...cohortBuilderConfiguration.accessControl,
         },
       },
     };
@@ -167,6 +165,8 @@ export const ExplorerPageGetServerSidePropsForConfigId: GetServerSideProps<
       };
     }
 
+    console.log('cohortBuilderConfiguration', cohortBuilderConfiguration);
+
     const sharedFiltersMap = await GetSharedFieldMapping(
       cohortBuilderConfiguration,
     );
@@ -180,7 +180,7 @@ export const ExplorerPageGetServerSidePropsForConfigId: GetServerSideProps<
         // headerMetadata: { ...(cohortBuilderConfiguration?.headerMetadata ? cohortBuilderConfiguration.headerMetadata : {}) },
         accessControl: {
           ...DefaultAccessControlConfiguration,
-          ...(cohortBuilderConfiguration.accessControl ?? {}),
+          ...cohortBuilderConfiguration.accessControl,
         },
       },
     };

@@ -5,17 +5,15 @@ import { Stack, StackProps, Text } from '@mantine/core';
 interface StatisticRendererProps extends StackProps {
   value: any;
   label: string;
-  key: string;
 }
 
 const defaultStatisticRenderer = ({
   value,
   label,
-  key,
   ...props
 }: StatisticRendererProps) => {
   return (
-    <Stack {...props} key={key} align="center">
+    <Stack {...props} align="center">
       <Text size="2rem" c="accent">
         {value}
       </Text>

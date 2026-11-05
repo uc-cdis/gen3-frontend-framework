@@ -1,18 +1,15 @@
 /** @type {import('tailwindcss').Config} */
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-require-imports */
 const plugin = require('tailwindcss/plugin');
+// Vendored copy of @tailwindcss/typography re-exported by @gen3/frontend so this
+// config doesn't pull the vulnerable postcss-selector-parser@6.0.10 pinned by the
+// real @tailwindcss/typography package (CVE-2026-9358).
+const { typographyPlugin } = require('@gen3/frontend');
 
 const GEN3_COMMONS_NAME = process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME || 'gen3';
-const USE_CSS_VARS = process.env.NEXT_PUBLIC_USE_CSS_VARS;
 
-const themeColors = require(`./config/${GEN3_COMMONS_NAME}/themeColors.json`);
 const themeFonts = require(`./config/${GEN3_COMMONS_NAME}/themeFonts.json`);
 const themeColorCSSVars = require(`./config/themeColorCSSVars.json`);
-console.log('Using CSS variables:', GEN3_COMMONS_NAME);
-console.log('Using CSS variables:', USE_CSS_VARS);
-console.log('Gen3 Colors:', {
-  ...(USE_CSS_VARS ? themeColorCSSVars : themeColors),
-});
 
 module.exports = {
   // important: '#__next', // Uncommenting this affects tailwind styling in Modals
@@ -21,6 +18,7 @@ module.exports = {
     './src/components/**/*.{js,ts,jsx,tsx}',
     './src/features/**/*.{js,ts,jsx,tsx}',
     '../frontend/src/**/*.{js,ts,jsx,tsx}',
+    '../workspaces/src/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
@@ -65,7 +63,7 @@ module.exports = {
           titanium: '#707070',
           obsidian: '#757575',
         },
-        ...(USE_CSS_VARS ? themeColorCSSVars : themeColors),
+        ...themeColorCSSVars,
       },
       fontFamily: {
         heading: themeFonts.heading,
@@ -106,7 +104,7 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/forms'),
-    require('@tailwindcss/typography'),
+    typographyPlugin,
     require('@tailwindcss/forms')({
       strategy: 'class',
     }),
@@ -193,6 +191,9 @@ module.exports = {
     'text-tiny',
     'text-xxs',
     'text-xxxs',
+    'text-md',
+    'text-lg',
+    'text-xl',
     'h-20',
     'mt-10',
     'mb-10',
@@ -202,30 +203,33 @@ module.exports = {
     'focus-visible:ring-inset',
     'focus-visible:ring-2',
     'focus-visible:ring-focusColor',
+    'pl-[25%]',
+    'pl-[33%]',
+    'pl-[50%]',
     {
       pattern:
-        /bg-(primary|secondary|accent|accent-warm|accent-cool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
-    },
-    {
-      pattern:
-        /text-(primary|secondary|accent|accent-warm|accent-cool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
-    },
-    {
-      pattern:
-        /text-(primary|secondary|accent|accent-warm|accent-cool|base)-contrast-(min|lightest|lighter|light|dark|darker|darkest|max)/,
+        /bg-(primary|secondary|accent|accentWarm|accentCool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
     },
     {
       pattern:
-        /border-(primary|secondary|accent|accent-warm|accent-cool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
+        /text-(primary|secondary|accent|accentWarm|accentCool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
     },
     {
-      pattern: /bg-(primary|secondary|accent|accent-warm|accent-cool|base)/,
+      pattern:
+        /text-(primary|secondary|accent|accentWarm|accentCool|base)-contrast-(min|lightest|lighter|light|dark|darker|darkest|max)/,
     },
     {
-      pattern: /text-(primary|secondary|accent|accent-warm|accent-cool|base)/,
+      pattern:
+        /border-(primary|secondary|accent|accentWarm|accentCool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
     },
     {
-      pattern: /border-(primary|secondary|accent|accent-warm|accent-cool|base)/,
+      pattern: /bg-(primary|secondary|accent|accentWarm|accentCool|base)/,
+    },
+    {
+      pattern: /text-(primary|secondary|accent|accentWarm|accentCool|base)/,
+    },
+    {
+      pattern: /border-(primary|secondary|accent|accentWarm|accentCool|base)/,
     },
   ],
 };

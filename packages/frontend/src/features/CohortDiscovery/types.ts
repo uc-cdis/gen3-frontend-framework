@@ -111,8 +111,8 @@ export const newDataAccessRequest = (
   status: string,
   userInformation: DataAccessRequestUserInformation,
   cohortId: CohortId,
-  createdTime?: string | undefined,
-  updatedTime?: string | undefined,
+  createdTime?: string,
+  updatedTime?: string,
 ) => {
   const now = new Date().toISOString();
   return {

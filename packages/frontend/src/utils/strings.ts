@@ -1,5 +1,4 @@
 import { capitalize } from 'lodash';
-import { NodeCountConfiguration } from '../features/CohortBuilder/types';
 
 export const stripTrailingSlash = (str: string): string => {
   return str.endsWith('/') ? str.slice(0, -1) : str;
@@ -21,42 +20,16 @@ export const toDisplayName = (field: string): string => {
     .join(' ');
 };
 
-/*
-  Function to convert counts to a string with units
-  For example, count = 100 units = 'cases' => '100 Cases'
-  Function should handle pluralization
- */
-export const toCountsString = (
-  counts: number | undefined,
-  units: string,
-  configuration?: NodeCountConfiguration,
-): string => {
-  if (configuration) {
-    if (!counts) return `No ${configuration.none}`;
-    if (counts === 1) return `${counts.toLocaleString()} ${configuration.one}`;
-    return `${counts.toLocaleString()} ${configuration.multiple}`;
-  }
-
-  if (!counts) return `No ${capitalize(pluralize(units))}`;
-  // return a string with counts and units handling pluralization
-  const unitDisplay = counts === 1 ? units : pluralize(units);
-  return `${counts.toLocaleString()} ${capitalize(unitDisplay)}`;
+export const removeMultipleSlashes = (str: string): string => {
+  return str.replace(/\/+/g, '/');
 };
 
-// Helper function to handle basic pluralization
-const pluralize = (word: string): string => {
-  // Handle special cases
-  if (word.endsWith('y')) {
-    return word.slice(0, -1) + 'ies';
-  } else if (
-    word.endsWith('s') ||
-    word.endsWith('x') ||
-    word.endsWith('z') ||
-    word.endsWith('ch') ||
-    word.endsWith('sh')
-  ) {
-    return word + 'es';
-  } else {
-    return word + 's';
-  }
+// next/image does not automatically prepend basePath to local image sources,
+// so config-driven paths (e.g. "/images/foo.png") need it added explicitly.
+export const withBasePath = (basePath: string, src: string): string => {
+  if (!src) return basePath;
+  if (/^https?:\/\//.test(src)) return src;
+  if (basePath && src.includes(basePath)) return src;
+  if (basePath.includes(src)) return basePath;
+  return removeMultipleSlashes(`${basePath}/${src}`);
 };

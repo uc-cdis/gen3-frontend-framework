@@ -2,6 +2,7 @@ import {
   type Gen3LoginProvider,
   logoutFence,
   type NameUrl,
+  type PresignedUrlResponse,
   useGetDownloadQuery,
   useGetLoginProvidersQuery,
   useGetPresignedUrlQuery,
@@ -18,7 +19,7 @@ import {
   useRemoveCredentialMutation,
 } from './credentialsApi';
 
-import { useGetJWKKeysQuery } from './jwtApi';
+import { useGetJWKKeysQuery, useLazyGetJWKKeysQuery } from './jwtApi';
 import { FetchError, FetchRequest, Gen3FenceResponse } from './types';
 import { isFetchError } from './utils';
 import { fetchFence } from './fetchFence';
@@ -31,6 +32,7 @@ export {
   type Gen3FenceCredentials,
   type Gen3LoginProvider,
   type NameUrl,
+  type PresignedUrlResponse,
   fetchFence,
   logoutFence,
   isFetchError,
@@ -41,6 +43,7 @@ export {
   useRemoveCredentialMutation,
   useGetLoginProvidersQuery,
   useGetJWKKeysQuery,
+  useLazyGetJWKKeysQuery,
   useAuthorizeFromCredentialsMutation,
   useGetPresignedUrlQuery,
   useLazyGetPresignedUrlQuery,

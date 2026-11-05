@@ -30,7 +30,7 @@ export const CrosswalkPageGetServerSideProps: GetServerSideProps<
       );
     const regex = /->/g;
     const processedConfig = {
-      showSubmittedIdInTable: initialConfig.showSubmittedIdInTable,
+      showSubmittedIdInTable: initialConfig.showSubmittedIdInTable ?? false,
       idEntryPlaceholderText:
         initialConfig?.idEntryPlaceholderText ||
         'Enter IDs, one per line.\nExample:\nD334343\nC343433',

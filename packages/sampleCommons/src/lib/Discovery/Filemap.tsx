@@ -3,7 +3,7 @@ import ReactECharts, {
   ReactEChartsProps,
 } from '@gen3/frontend/components/charts/echarts/ReactECharts';
 
-import { CellRenderFunctionProps } from '@gen3/frontend/features/Discovery/TableRenderers/types';
+import { CellRenderFunctionProps } from '@gen3/frontend/features/Discovery/DiscoveryTable/TableRenderers/types';
 
 import { Button, Popover, Text } from '@mantine/core';
 import { isArray } from 'lodash';

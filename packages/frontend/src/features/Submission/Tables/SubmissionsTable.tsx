@@ -1,10 +1,13 @@
 import React, { useMemo } from 'react';
-import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
+import {
+  MantineReactTable,
+  useMantineReactTable,
+} from 'mantine-react-table-open';
 import { filesize } from 'filesize';
 import {
-  useGetSubmissionsQuery,
-  SubmissionInfo,
   SubmissionDocument,
+  SubmissionInfo,
+  useGetSubmissionsQuery,
 } from '@gen3/core';
 import { Loader, Text } from '@mantine/core';
 
@@ -28,6 +31,11 @@ const cols = [
     field: 'created_datetime',
     accessorKey: 'created_datetime',
     header: 'Created Date',
+  },
+  {
+    field: 'file_size',
+    accessorKey: 'fileSize',
+    header: 'File Size',
   },
   {
     field: 'state',
@@ -79,22 +87,6 @@ const SubmissionsTable = () => {
         'mrt-row-expand': false,
       },
     },
-    mantineTableHeadCellProps: {
-      style: {
-        backgroundColor: 'var(--mantine-color-secondary-8)',
-        color: 'var(--mantine-color-table-0)',
-        textAlign: 'center',
-        padding: 'var(--mantine-spacing-md)',
-        fontWeight: 'bold',
-        fontSize: 'var(--mantine-font-size-lg)',
-        textTransform: 'uppercase',
-      },
-    },
-    mantineTableProps: {
-      style: {
-        backgroundColor: 'var(--mantine-color-base-9)',
-      },
-    },
   });
 
   if (isLoading) {
@@ -114,7 +106,7 @@ const SubmissionsTable = () => {
   }
 
   return (
-    <div className="flex w-full bg-base-max p-4 rounded-lg">
+    <div className="flex w-full bg-base-max rounded-lg">
       <div className="grow w-auto inline-block overflow-x-scroll">
         <MantineReactTable table={table} />
       </div>

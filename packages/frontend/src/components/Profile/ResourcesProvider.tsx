@@ -1,19 +1,15 @@
-import React, {
-  createContext,
-  PropsWithChildren,
-  useState,
-} from 'react';
+import type { PropsWithChildren } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 import {
-  useDeepCompareEffect,
-  useDeepCompareMemo
-} from 'use-deep-compare';
-import {
-  AuthzMapping, type CoreState,
-  ServiceAndMethod,
+  type AuthzMapping,
+  type CoreState,
+  type ResourceAuthzMapping,
+  selectUserDetails,
+  type ServiceAndMethod,
   useCoreSelector,
+  useGetAggregateWTSResourceAuthzMappingQuery,
   useGetAuthzMappingsQuery,
-  UserProfile,
-  selectUserDetails
+  type UserProfile,
 } from '@gen3/core';
 
 interface ServicesAndMethodsTypes {
@@ -21,88 +17,87 @@ interface ServicesAndMethodsTypes {
   methods: string[];
 }
 
-interface ServicesAndMethodsTypesAsSets {
-  services: Set<string>;
-  methods: Set<string>;
-}
-
 interface ResourcesProviderValue {
   userProfile?: Partial<UserProfile>;
   authzMapping?: AuthzMapping;
+  meshAuthzMapping?: ResourceAuthzMapping;
   servicesAndMethods: ServicesAndMethodsTypes;
 }
 
+const EMPTY_SERVICES_AND_METHODS: ServicesAndMethodsTypes = {
+  services: [],
+  methods: [],
+};
+const EMPTY_AUTHZ: AuthzMapping = {};
+const EMPTY_MESH_AUTHZ: ResourceAuthzMapping = {};
+
 const ResourcesContext = createContext<ResourcesProviderValue>({
-  authzMapping: {} as AuthzMapping,
-  userProfile: {} as UserProfile,
-  servicesAndMethods: { services: [], methods: [] } as ServicesAndMethodsTypes,
+  authzMapping: EMPTY_AUTHZ,
+  meshAuthzMapping: EMPTY_MESH_AUTHZ,
+  userProfile: {},
+  servicesAndMethods: EMPTY_SERVICES_AND_METHODS,
 });
 
-// Creates a React context hook from AuthzMapping and UserProfile APIs
 export const useResourcesContext = () => {
-  const context = React.useContext(ResourcesContext);
-  if (context === undefined) {
-    throw Error(
-      'Resources must be used  must be used inside of a ResourcesContext',
+  const context = useContext(ResourcesContext);
+  if (!context) {
+    throw new Error(
+      'useResourcesContext must be used within a ResourcesProvider',
     );
   }
   return context;
 };
 
-/**
- * ResourcesProvider fetches permissions data via the authzApi and caches this data
- * for use in other components
- * @param children - List all the API keys for the current user
- * @returns: A provider element that can pass data to other child elements.
- */
 const ResourcesProvider = ({ children }: PropsWithChildren) => {
-  const  userProfile = useCoreSelector((state: CoreState) => selectUserDetails(state));
-  const { data: authzMapping = {}, isLoading: isAuthZLoading } =
+  const userProfile = useCoreSelector((state: CoreState) =>
+    selectUserDetails(state),
+  );
+  const { data: authzMapping = EMPTY_AUTHZ, isLoading: isAuthZLoading } =
     useGetAuthzMappingsQuery();
+  const {
+    data: meshAuthzMapping = EMPTY_MESH_AUTHZ,
+    isError: isMeshAuthZError,
+  } = useGetAggregateWTSResourceAuthzMappingQuery();
 
-  const [userProfileState, setUserProfileState] = useState<
-    Partial<UserProfile>
-  >({});
-  const [authzMappingState, setAuthzMappingState] = useState<AuthzMapping>({});
+  const resolvedMeshAuthzMapping = isMeshAuthZError
+    ? EMPTY_MESH_AUTHZ
+    : meshAuthzMapping;
 
-  useDeepCompareEffect(() => {
-    setUserProfileState(userProfile);
-  }, [userProfile]);
+  const servicesAndMethods = useMemo<ServicesAndMethodsTypes>(() => {
+    if (isAuthZLoading || !authzMapping) {
+      return EMPTY_SERVICES_AND_METHODS;
+    }
 
-  useDeepCompareEffect(() => {
-    setAuthzMappingState(authzMapping);
-  }, [authzMapping]);
+    const services = new Set<string>();
+    const methods = new Set<string>();
 
-  const servicesAndMethods = useDeepCompareMemo(() => {
-    if (isAuthZLoading) return { services: [], methods: [] };
-    if (!authzMappingState) return { services: [], methods: [] };
-    const results = Object.values<ServiceAndMethod[]>(authzMappingState).reduce(
-      (acc, resource) => {
-        return resource.reduce((acc: ServicesAndMethodsTypesAsSets, entry) => {
-          acc.services.add(entry.service);
-          acc.methods.add(entry.method);
-          return acc;
-        }, acc);
-      },
-      {
-        services: new Set<string>(),
-        methods: new Set<string>(),
-      } as ServicesAndMethodsTypesAsSets,
-    );
+    Object.values(authzMapping).forEach((resource) => {
+      if (Array.isArray(resource)) {
+        resource.forEach((entry: ServiceAndMethod) => {
+          if (entry?.service) services.add(entry.service);
+          if (entry?.method) methods.add(entry.method);
+        });
+      }
+    });
+
     return {
-      services: Array.from(results.services),
-      methods: Array.from(results.methods),
+      services: Array.from(services),
+      methods: Array.from(methods),
     };
-  }, [authzMappingState, isAuthZLoading]);
+  }, [authzMapping, isAuthZLoading]);
+
+  const contextValue = useMemo<ResourcesProviderValue>(
+    () => ({
+      userProfile,
+      authzMapping,
+      meshAuthzMapping: resolvedMeshAuthzMapping,
+      servicesAndMethods,
+    }),
+    [userProfile, authzMapping, resolvedMeshAuthzMapping, servicesAndMethods],
+  );
 
   return (
-    <ResourcesContext.Provider
-      value={{
-        userProfile: userProfileState,
-        authzMapping: authzMappingState,
-        servicesAndMethods,
-      }}
-    >
+    <ResourcesContext.Provider value={contextValue}>
       {children}
     </ResourcesContext.Provider>
   );

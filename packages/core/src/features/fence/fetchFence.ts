@@ -17,36 +17,44 @@ import { buildFetchError } from './utils';
  *                                          or rejects with an error if the request fails.
  * @throws {Error} Throws an error if the fetch request fails or the response is not successful.
  */
+
+const SESSION_DEBUG_LOGGING = process.env.NEXT_PUBLIC_SESSION_DEBUG === 'true';
+
 export const fetchFence = async <T>(
-  { endpoint, headers, body = {}, method = 'GET', isJSON = true }: FetchRequest,
-  useService: boolean = false,
+  {
+    endpoint,
+    headers,
+    body = undefined,
+    method = 'GET',
+    isJSON = true,
+  }: FetchRequest,
+  useService = false,
 ): Promise<Gen3FenceResponse<T>> => {
-  let url = `${GEN3_FENCE_API}${endpoint}`;
-  if (useService) {
-    url = `${GEN3_FENCE_SERVICE}/${endpoint}`;
+  const base = useService ? GEN3_FENCE_SERVICE : GEN3_FENCE_API;
+  const url = `${base.replace(/\/$/, '')}/${endpoint.replace(/^\//, '')}`;
+
+  if (SESSION_DEBUG_LOGGING) {
+    // oxlint-disable-next-line no-console
+    console.log(`fetchFence Fetching from ${url} with method ${method}`);
   }
 
   const res = await fetch(url, {
-    method: method,
+    method,
     credentials: 'include',
     headers: {
       // Ensure Content-Type is set for JSON POSTs, but allow overrides via 'headers'
       ...(method === 'POST' ? { 'Content-Type': 'application/json' } : {}),
       ...headers,
     },
-    body: 'POST' === method ? JSON.stringify(body) : null,
-    // REMOVED: next: { revalidate: 360 } - Auth requests should not be cached by default
+    ...(method === 'POST' && body ? { body: JSON.stringify(body) } : {}),
   });
 
-  if (res.ok)
+  if (res.ok) {
     return {
       data: isJSON ? await res.json() : await res.text(),
       status: res.status,
     };
-  throw await buildFetchError(res, {
-    endpoint,
-    method,
-    headers,
-    body,
-  });
+  }
+
+  throw await buildFetchError(res, { endpoint, method, headers, body });
 };

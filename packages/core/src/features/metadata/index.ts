@@ -1,15 +1,16 @@
 import {
-  useGetAggMDSQuery,
-  useGetMDSQuery,
-  useGetTagsQuery,
-  useGetDataQuery,
-  useGetMetadataByIdQuery,
-  useGetCrosswalkDataQuery,
-  useLazyGetCrosswalkDataQuery,
-  useGetIndexAggMDSQuery,
   type MetadataPaginationParams,
   type MetadataRequestParams,
   type MetadataResponse,
+  useGetAggMDSQuery,
+  useGetCrosswalkDataQuery,
+  useGetDataQuery,
+  useGetIndexAggMDSQuery,
+  useGetMDSQuery,
+  useGetMetadataByIdQuery,
+  useGetMetadataByUrlQuery,
+  useGetTagsQuery,
+  useLazyGetCrosswalkDataQuery,
 } from './metadataSlice';
 
 import {
@@ -32,6 +33,7 @@ export {
   useGetTagsQuery,
   useGetDataQuery,
   useGetMetadataByIdQuery,
+  useGetMetadataByUrlQuery,
   useGetCrosswalkDataQuery,
   useLazyGetCrosswalkDataQuery,
   useGetIndexAggMDSQuery,

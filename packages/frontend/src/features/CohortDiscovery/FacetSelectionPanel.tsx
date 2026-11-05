@@ -32,7 +32,7 @@ const FacetSelectionPanel: React.FC<FacetSelectionPanelProps> = ({
           hooks={{
             ...hooks,
           }}
-        ></FacetSelector>
+        />
       );
     });
   }, [categories, selectedFields, updateSelectedField, hooks]);

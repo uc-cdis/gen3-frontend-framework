@@ -1,12 +1,6 @@
 // if true, means user has unaccessible fields in aggsData
-import {
-  JSONValue,
-  JSONObject,
-  isJSONValueArray,
-  isHistogramData,
-  GuppyAggregationData,
-} from '@gen3/core';
-import { difference, isArray } from 'lodash';
+import { GuppyAggregationData, isHistogramData, JSONObject } from '@gen3/core';
+import { difference } from 'lodash';
 
 export function checkForAnySelectedUnaccessibleField(
   aggsData: GuppyAggregationData,
@@ -20,8 +14,7 @@ export function checkForAnySelectedUnaccessibleField(
 
   const accessibleValues = accessibleFieldObject[fieldToCheck];
   if (
-    aggsData &&
-    aggsData[fieldToCheck] &&
+    aggsData?.[fieldToCheck] &&
     'histogram' in aggsData[fieldToCheck] &&
     aggsData[fieldToCheck].histogram &&
     isHistogramData(aggsData[fieldToCheck])

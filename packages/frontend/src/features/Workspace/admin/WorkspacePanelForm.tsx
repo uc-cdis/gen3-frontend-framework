@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
-  TextInput,
-  Textarea,
-  Select,
-  FileInput,
   Button,
+  FileInput,
   Group,
+  Select,
+  Textarea,
+  TextInput,
 } from '@mantine/core';
-import { WorkspaceAdditionalInfo } from '../types';
 import { useForm } from '@mantine/form';
 
 interface FormValue {
@@ -18,11 +17,6 @@ interface FormValue {
 }
 
 const WorkspacePanelForm: React.FC = () => {
-  const [workspaceInfo, setWorkspaceInfo] = useState<WorkspaceAdditionalInfo>(
-    {},
-  );
-  const [imageFile, setImageFile] = useState<File | null>(null);
-
   const form = useForm<FormValue>({
     mode: 'uncontrolled',
     initialValues: {
@@ -33,9 +27,7 @@ const WorkspacePanelForm: React.FC = () => {
     },
   });
 
-  const handleSubmit = () => {
-    console.log('Submission');
-  };
+  const handleSubmit = () => {};
 
   const iconOptions = [
     { value: 'icon1', label: 'Icon 1' },

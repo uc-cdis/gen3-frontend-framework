@@ -1,29 +1,28 @@
 import React, { useCallback, useState } from 'react';
 import {
   ActionIcon,
-  Card,
-  TextInput,
-  Textarea,
-  Select,
-  Switch,
   Button,
+  Card,
   FileInput,
-  Stack,
-  Title,
   Group,
-  Text,
-  Tabs,
   MultiSelect,
+  Select,
+  Stack,
+  Switch,
+  Tabs,
+  Text,
+  Textarea,
+  TextInput,
+  Title,
 } from '@mantine/core';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import { AnalysisToolConfiguration } from './types';
-import { FiAlertTriangle as AlertTriangle } from 'react-icons/fi';
 import {
+  FaDownload as Download,
+  FaRedo as Redo,
   FaSearch as Search,
   FaUndo as Undo,
-  FaRedo as Redo,
   FaUpload as Upload,
-  FaDownload as Download,
 } from 'react-icons/fa';
 import Image from 'next/image';
 import TextDescription from './TextDescription';
@@ -114,10 +113,7 @@ const AnalysisCardEditor = () => {
     });
   }, []);
 
-  const validateFile = (
-    file: File | null,
-    type: 'icon' | 'image',
-  ): string | null => {
+  const validateFile = (file: File | null): string | null => {
     if (!file) return null;
     if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
       return 'Invalid file type. Please upload a JPEG, PNG, or SVG file.';
@@ -129,7 +125,7 @@ const AnalysisCardEditor = () => {
   };
 
   const handleFileChange = (file: File | null, field: 'icon' | 'image') => {
-    const error = validateFile(file, field);
+    const error = validateFile(file);
     if (error) {
       setErrors({ ...errors, [field]: error });
       return;
@@ -205,7 +201,9 @@ const AnalysisCardEditor = () => {
         if (Array.isArray(withImages)) {
           updateHistory(withImages);
         }
-      } catch (error) {
+      } catch (error: unknown) {
+        if (error instanceof Error)
+          console.error('Invalid file format:', error.message);
         alert('Invalid file format');
       }
     };
@@ -221,19 +219,6 @@ const AnalysisCardEditor = () => {
     link.href = url;
     link.click();
   };
-
-  // Filter cards
-  const filteredCards = history.present.filter((card) => {
-    const matchesSearch =
-      card.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      card.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType =
-      filters.type.length === 0 || filters.type.includes(card.type);
-    const matchesLogin =
-      filters.loginRequired === null ||
-      card.loginRequired === filters.loginRequired;
-    return matchesSearch && matchesType && matchesLogin;
-  });
 
   // Enhanced drag and drop handling with history
   const handleDragEnd = (result: any) => {
@@ -304,37 +289,7 @@ const AnalysisCardEditor = () => {
     setEditingIndex(null);
     setErrors({});
   };
-
-  const BatchOperations = () => (
-    <Group gap="xs">
-      <Button
-        size="xs"
-        variant="light"
-        color="red"
-        onClick={() => handleDelete(selectedCards)}
-        disabled={selectedCards.length === 0}
-      >
-        Delete Selected
-      </Button>
-      <Button
-        size="xs"
-        variant="light"
-        onClick={() => handleDuplicate(selectedCards)}
-        disabled={selectedCards.length === 0}
-      >
-        Duplicate Selected
-      </Button>
-      <Button
-        size="xs"
-        variant="light"
-        onClick={() => setSelectedCards([])}
-        disabled={selectedCards.length === 0}
-      >
-        Clear Selection
-      </Button>
-    </Group>
-  );
-
+  // oxlint-disable-next-line no-unused-vars
   const FilterControls = () => (
     <Card shadow="xs" p="md">
       <Stack gap="xs">

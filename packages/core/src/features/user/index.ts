@@ -1,41 +1,45 @@
 import {
-  useUserAuth,
-  resetUserState,
   fetchUserState,
   isAuthenticated,
   isPending,
+  resetUserState,
   selectUser,
   selectUserData,
-  selectUserLoginStatus,
-  useIsUserLoggedIn,
+  useUserAuth,
 } from './userSlice';
 
 import {
-  useFetchUserDetailsQuery,
-  useLazyFetchUserDetailsQuery,
-  selectUserDetails,
-  selectUserAuthStatus,
-  useGetCSRFQuery,
-  useLazyGetCSRFQuery,
+  type CSRFToken,
   selectCSRFToken,
   selectCSRFTokenData,
   selectHeadersWithCSRFToken,
-  type CSRFToken,
+  selectUserAuthStatus,
+  selectUserDetails,
+  selectUserLoginStatus,
+  useFetchUserDetailsQuery,
+  useGetCSRFQuery,
+  useGetUserDetailsRequestStatus,
+  useIsUserLoggedIn,
+  useLazyFetchUserDetailsQuery,
+  useLazyGetCSRFQuery,
 } from './userSliceRTK';
 
 import {
+  selectMeshAuthzMapping,
+  useGetAggregateWTSResourceAuthzMappingQuery,
   useGetExternalLoginsQuery,
+  useIsExternalConnectedQuery,
+  useLazyGetAggregateWTSResourceAuthzMappingQuery,
   useLazyGetExternalLoginsQuery,
   useLazyIsExternalConnectedQuery,
-  useIsExternalConnectedQuery,
 } from './externalLoginsSlice';
 import {
-  type UserProfile,
-  type LoginStatus,
-  type Gen3User,
   type ExternalProvider,
-  type NamedURL,
+  type Gen3User,
   type JWTSessionStatus,
+  type LoginStatus,
+  type NamedURL,
+  type UserProfile,
 } from './types';
 
 import { getFederatedLoginStatus, useGetFederatedLoginStatus } from './hooks';
@@ -62,9 +66,12 @@ export {
   useLazyFetchUserDetailsQuery,
   useLazyGetExternalLoginsQuery,
   useLazyIsExternalConnectedQuery,
+  useGetAggregateWTSResourceAuthzMappingQuery,
+  useLazyGetAggregateWTSResourceAuthzMappingQuery,
   useIsExternalConnectedQuery,
   selectUserDetails,
   selectUserAuthStatus,
+  selectMeshAuthzMapping,
   useGetCSRFQuery,
   useLazyGetCSRFQuery,
   selectCSRFToken,
@@ -72,4 +79,5 @@ export {
   selectHeadersWithCSRFToken,
   getFederatedLoginStatus,
   useGetFederatedLoginStatus,
+  useGetUserDetailsRequestStatus,
 };

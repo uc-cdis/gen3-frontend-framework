@@ -6,6 +6,9 @@
     "moduleResolution": "bundler",
     "outDir": "./src/buildColors/dist",
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
-  },
+    "allowSyntheticDefaultImports": true,
+    // oxlint's type-aware pass (tsgolint) does not auto-include node_modules/@types
+    // the way tsc does; these are all Node CLI scripts.
+    "types": ["node", "jest"]
+  }
 }

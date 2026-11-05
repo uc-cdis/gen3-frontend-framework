@@ -3,10 +3,11 @@ import { Menu, Text, Tooltip } from '@mantine/core';
 import { PiDotsThreeCircleThin as DotsIcon } from 'react-icons/pi';
 import Link from 'next/link';
 import { TooltipStyle } from './style';
-import { TopIconButtonPropsWithLink } from './TopBar/IconButton';
+import { isTopBarLinkButton, TopBarItems } from './TopBar/types';
+import { modals } from '@mantine/modals';
 
 interface ActionMenuProps {
-  items: TopIconButtonPropsWithLink[];
+  items: TopBarItems[];
 }
 
 const ActionMenu = ({ items }: ActionMenuProps) => {
@@ -29,13 +30,10 @@ const ActionMenu = ({ items }: ActionMenuProps) => {
         </Menu.Target>
         <Menu.Dropdown>
           {items.map((x, index) => {
-            return (
+            return isTopBarLinkButton(x) ? (
               <Menu.Item key={`${x.name}-${index}`}>
                 {x.newWindow === true ? (
-                  <Link
-                    href={x.href}
-                    target="_blank"
-                  >
+                  <Link href={x.href} target="_blank">
                     <Text>{x.name}</Text>
                   </Link>
                 ) : (
@@ -43,6 +41,20 @@ const ActionMenu = ({ items }: ActionMenuProps) => {
                     <Text>{x.name}</Text>
                   </Link>
                 )}
+              </Menu.Item>
+            ) : (
+              <Menu.Item
+                key={`${x.name}-${index}`}
+                onClick={() =>
+                  x?.modal &&
+                  modals.openContextModal({
+                    modal: x.modal,
+                    innerProps: {},
+                    size: 'xl',
+                  })
+                }
+              >
+                <Text>{x.name}</Text>
               </Menu.Item>
             );
           })}

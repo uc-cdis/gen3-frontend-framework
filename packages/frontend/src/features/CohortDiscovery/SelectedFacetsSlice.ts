@@ -16,7 +16,7 @@ const selectIndexFacets = createSlice({
       if (!(action.payload.index in state)) {
         return {
           ...state,
-          ...{ [action.payload.index]: [action.payload.field] },
+          [action.payload.index]: [action.payload.field],
         };
       } else
         return {
@@ -35,11 +35,9 @@ const selectIndexFacets = createSlice({
 
       return {
         ...state,
-        ...{
-          [action.payload.index]: state[action.payload.index].filter(
-            (x) => x != action.payload.field,
-          ),
-        },
+        [action.payload.index]: state[action.payload.index].filter(
+          (x) => x != action.payload.field,
+        ),
       };
     },
   },

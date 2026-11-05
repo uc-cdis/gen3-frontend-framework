@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, JSX } from 'react';
 import { Button, Loader, Tooltip } from '@mantine/core';
 import { FiDownload } from 'react-icons/fi';
 

@@ -2,8 +2,11 @@ import React from 'react';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import { Loader, Tabs, Title } from '@mantine/core';
-import { ContextModalProps } from '@mantine/modals';
-import { CohortDiscoveryConfig, DataAccessRequestUserInformation, } from './types';
+import type { ContextModalProps } from '@mantine/modals';
+import type {
+  CohortDiscoveryConfig,
+  DataAccessRequestUserInformation,
+} from './types';
 import IndexPanel from './IndexPanel';
 import { AppStore, useAppDispatch } from './appApi';
 import Image from 'next/image';
@@ -13,11 +16,15 @@ import DataAccessRequestForm from './Requests/DataAccessRequestForm';
 import TabbedIndex from './TabbedIndex';
 import { extractIndexResourceFromConfiguration } from './utils';
 import { loadCohortsFromStorage } from './CohortManagment/CohortManagerSlice';
+import { useRouter } from 'next/router';
+import { withBasePath } from '../../utils';
 
 const persistor = persistStore(AppStore);
 
+// oxlint-disable-next-line no-unused-vars
 const useGetDefinitions = (config: CohortDiscoveryConfig) => {};
 
+// oxlint-disable-next-line no-unused-vars
 const DataRequestModal = ({
   context,
   id,
@@ -41,77 +48,75 @@ const DataRequestModal = ({
 const CohortDiscovery = (config: CohortDiscoveryConfig) => {
   const indexResources = extractIndexResourceFromConfiguration(config);
   useAppDispatch(loadCohortsFromStorage());
+
+  const { basePath } = useRouter();
+
   return (
     <React.Fragment>
+      <PersistGate persistor={persistor} loading={<Loader variant="dots" />}>
+        <Title order={3} className="absolute top-6 left-[154px]">
+          Cohort Discovery
+        </Title>
+        <Tabs
+          keepMounted={false}
+          defaultValue="build"
+          orientation="vertical"
+          classNames={{
+            root: 'w-full h-full',
+            list: 'bg-base-light before:content-none pt-20',
+            tab: 'border-0 border-l-4 rounded-none data-[active=true]:border-accentWarm data-[active=true]:bg-base-max text-center',
+            tabLabel: 'w-full',
+            panel: 'pt-16',
+          }}
+        >
+          <Tabs.List>
+            {(
+              Object.keys(config.leftNav) as Array<keyof typeof config.leftNav>
+            ).map((key) => {
+              return (
+                <Tabs.Tab value={key} key={key}>
+                  <Image
+                    src={withBasePath(basePath, config.leftNav[key].image)}
+                    alt={config.leftNav[key].imageAlt}
+                    width={40}
+                    height={40}
+                    className="inline-block mb-1"
+                  />
+                  <strong className="block">{config.leftNav[key].title}</strong>
+                </Tabs.Tab>
+              );
+            })}
+          </Tabs.List>
 
-        <PersistGate persistor={persistor} loading={<Loader variant="dots" />}>
-          <Title order={3} className="absolute top-6 left-[154px]">
-            Cohort Discovery
-          </Title>
-          <Tabs
-            keepMounted={false}
-            defaultValue="build"
-            orientation="vertical"
-            classNames={{
-              root: 'w-full h-full',
-              list: 'bg-base-light before:content-none pt-20',
-              tab: 'border-0 border-l-4 rounded-none data-[active=true]:border-accent-warm data-[active=true]:bg-base-max text-center',
-              tabLabel: 'w-full',
-              panel: 'pt-16',
-            }}
-          >
-            <Tabs.List>
-              {(
-                Object.keys(config.leftNav) as Array<
-                  keyof typeof config.leftNav
-                >
-              ).map((key) => {
-                return (
-                  <Tabs.Tab value={key} key={key}>
-                    <Image
-                      src={config.leftNav[key].image}
-                      alt={config.leftNav[key].imageAlt}
-                      width={40}
-                      height={40}
-                      className="inline-block mb-1"
-                    />
-                    <strong className="block">
-                      {config.leftNav[key].title}
-                    </strong>
-                  </Tabs.Tab>
-                );
-              })}
-            </Tabs.List>
-
-            <Tabs.Panel value="build">
-              {config.dataIndexes.length === 1 ? (
-                <IndexPanel
-                  dataConfig={config.dataIndexes[0].dataConfig}
-                  tabTitle={config.dataIndexes[0].tabTitle}
-                  tabs={config.dataIndexes[0].tabs}
-                  emptySelection={config.emptySelection}
-                  resourceField={config.dataIndexes[0].resourceField}
-                  numColumns={config.dataIndexes[0].numColumns ?? 2}
-                  indexResources={indexResources}
-                  remoteSupportService={config.remoteSupportService}
-                />
-              ) : (
-                <TabbedIndex config={config} indexResources={indexResources} />
-              )}
-            </Tabs.Panel>
-
-            <Tabs.Panel value="saved">
-              <SavedCohortsPanel
+          <Tabs.Panel value="build">
+            {config.dataIndexes.length === 1 ? (
+              <IndexPanel
+                dataConfig={config.dataIndexes[0].dataConfig}
+                tabTitle={config.dataIndexes[0].tabTitle}
+                tabs={config.dataIndexes[0].tabs}
+                emptySelection={config.emptySelection}
+                resourceField={config.dataIndexes[0].resourceField}
+                numColumns={config.dataIndexes[0].numColumns ?? 2}
                 indexResources={indexResources}
                 remoteSupportService={config.remoteSupportService}
               />
-            </Tabs.Panel>
+            ) : (
+              <TabbedIndex config={config} indexResources={indexResources} />
+            )}
+          </Tabs.Panel>
 
-            <Tabs.Panel value="request">
-              <RequestsPanel />
-            </Tabs.Panel>
-          </Tabs>
-        </PersistGate>
+          <Tabs.Panel value="saved">
+            <SavedCohortsPanel
+              indexResources={indexResources}
+              remoteSupportService={config.remoteSupportService}
+            />
+          </Tabs.Panel>
+
+          <Tabs.Panel value="request">
+            <RequestsPanel />
+          </Tabs.Panel>
+        </Tabs>
+      </PersistGate>
     </React.Fragment>
   );
 };

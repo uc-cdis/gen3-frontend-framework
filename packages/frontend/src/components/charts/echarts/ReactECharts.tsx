@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import React, { useState } from 'react';
+import React, { JSX, useImperativeHandle, useState, useRef } from 'react';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import type { ECharts, EChartsOption, SetOptionOpts } from 'echarts';
 import { getInstanceByDom, init } from 'echarts';
@@ -12,20 +12,39 @@ export interface ReactEChartsProps {
   loading?: boolean;
   theme?: 'light' | 'dark' | 'gen3';
   events?: { [key: string]: (e: any) => void };
+  ref?:  React.RefObject<ReactEChartsHandle | null>;
 }
 
-const ReactECharts = ({
-  option,
-  style,
-  settings,
-  loading,
-  theme = 'gen3',
-  events,
-}: ReactEChartsProps): JSX.Element => {
+export interface ReactEChartsHandle {
+  getEchartsInstance: () => ECharts | undefined;
+  getContainerElement: () => HTMLDivElement | null;
+}
+
+const ReactECharts = (
+  {
+    option,
+    style,
+    settings,
+    loading,
+    theme = 'gen3',
+    events,
+    ref
+  } : ReactEChartsProps ): JSX.Element => {
   const [chartRoot, setChartRoot] = useState<ECharts | undefined>(undefined);
-  const [chartRef, rect] = useResizeObserver();
+  const [containerRef, rect] = useResizeObserver<HTMLDivElement>();
+  const chartRef = useRef<HTMLDivElement>(null);
+
+  useImperativeHandle(ref, () => ({
+    getEchartsInstance: () => {
+      if (chartRef.current) {
+        return getInstanceByDom(chartRef.current);
+      }
+      return undefined;
+    },
+    getContainerElement: () => chartRef.current,
+  }));
+
   useDeepCompareEffect(() => {
-    // Initialize chart
     let chart: ECharts | undefined;
     if (chartRoot === undefined && chartRef.current !== null) {
       chart = init(chartRef.current, theme);
@@ -65,12 +84,14 @@ const ReactECharts = ({
   }, [rect]);
 
   return (
-    <div
-      role="figure"
-      aria-label="Data Chart"
-      ref={chartRef}
-      style={{ width: '100%', height: '100%', ...style }}
-    />
+    <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
+      <div
+        style={{ width: '100%', height: '100%', ...style }}
+        role="figure"
+        aria-label="Data Chart"
+        ref={chartRef}
+      />
+    </div>
   );
 };
 

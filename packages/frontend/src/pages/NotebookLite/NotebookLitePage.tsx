@@ -14,8 +14,8 @@ const NotebookLitePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
         ? notebook[0]
         : undefined;
   const url = path
-    ? `${router.basePath}/jupyter/index.html?path=${path}`
-    : `${router.basePath}/jupyter/index.html`;
+    ? `${router.basePath}/site/index.html?path=${path}`
+    : `${router.basePath}/site/index.html`;
 
   return (
     <NavPageLayout
@@ -33,7 +33,8 @@ const NotebookLitePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
           width="100%"
           height="100%"
           title="client notebook"
-        ></iframe>
+          style={{ border: 'none' }}
+        />
       </div>
     </NavPageLayout>
   );

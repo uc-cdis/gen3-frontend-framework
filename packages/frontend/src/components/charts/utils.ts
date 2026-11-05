@@ -57,7 +57,9 @@ export const computeRowSpan = (
   // compute the row span for the last row
   const numLastRow = numItems % numCols;
 
+  // oxlint-disable-next-line unicorn/no-new-array
   let spans = new Array(numItems - numLastRow).fill(Math.floor(12 / numCols));
+  // oxlint-disable-next-line unicorn/no-new-array
   spans = spans.concat(new Array(numLastRow).fill(Math.floor(12 / numLastRow)));
   return spans;
 };

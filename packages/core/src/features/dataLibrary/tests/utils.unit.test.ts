@@ -28,27 +28,36 @@ describe('groupDatasetItems', () => {
     const expectedResult = {
       file1: {
         dataset_guid: 'dataset1',
-        fileId: 'file1',
         guid: 'file1',
         id: 'file1',
         itemType: 'Data',
+        md5sum: 'N/A',
         name: 'file1.txt',
+        size: 'N/A',
+        type: 'GA4GH_DRS',
+        url: 'N/A',
       },
       file2: {
         dataset_guid: 'dataset1',
-        fileId: 'file2',
         guid: 'file2',
         id: 'file2',
         itemType: 'Data',
+        md5sum: 'N/A',
         name: 'file2.txt',
+        size: 'N/A',
+        type: 'GA4GH_DRS',
+        url: 'N/A',
       },
       file3: {
         dataset_guid: 'dataset2',
-        fileId: 'file3',
         guid: 'file3',
         id: 'file3',
         itemType: 'Data',
+        md5sum: 'N/A',
         name: 'file3.txt',
+        size: 'N/A',
+        type: 'GA4GH_DRS',
+        url: 'N/A',
       },
     };
 
@@ -69,7 +78,7 @@ describe('groupDatasetItems', () => {
     expect(result).toEqual({});
   });
 
-  it('should skip data objects without a datasetIdFieldName or dataObjectFieldName', () => {
+  it('should skip data objects without a datasetIdFieldName', () => {
     const data = [
       {
         datasetId: 'dataset1',

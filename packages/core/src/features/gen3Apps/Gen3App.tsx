@@ -2,12 +2,7 @@ import React, { ComponentType, useEffect } from 'react';
 import { coreStore } from '../../store';
 import { v5 as uuidv5 } from 'uuid';
 import { addGen3AppMetadata, EntityType } from './gen3AppsSlice';
-import {
-  configureStore,
-  Dispatch,
-  Middleware,
-  UnknownAction,
-} from '@reduxjs/toolkit';
+import { configureStore, Dispatch, Middleware, UnknownAction, } from '@reduxjs/toolkit';
 import { Action, Store } from 'redux';
 import {
   createDispatchHook,
@@ -17,14 +12,7 @@ import {
   ReactReduxContextValue,
   TypedUseSelectorHook,
 } from 'react-redux';
-import {
-  FLUSH,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-  REHYDRATE,
-} from 'redux-persist';
+import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE, } from 'redux-persist';
 import { registerGen3App } from './gen3AppRegistry';
 import { DataStatus } from '../../dataAccess';
 import { CookiesProvider } from 'react-cookie';
@@ -90,6 +78,8 @@ export const createGen3App = <
       requiredEntityTypes,
     }),
   );
+
+  console.log(`Registered Gen3 app: ${name} v${version}`);
   registerGen3App(name, Gen3AppWrapper as unknown as React.ReactNode);
 
   return Gen3AppWrapper;

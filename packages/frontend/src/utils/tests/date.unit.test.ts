@@ -27,6 +27,7 @@ describe('getFormattedTimestamp', () => {
     expectedWithTime: string,
     description: string,
   ): void => {
+    // oxlint-disable-next-line jest/valid-title
     test(description, () => {
       setupMockDate(dateString);
       setupMockIntl();

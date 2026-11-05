@@ -28,15 +28,15 @@ const COMMON_PREPOSITIONS = [
 const capitalize = (s: string): string =>
   s.length > 0 ? s[0].toUpperCase() + s.slice(1) : '';
 
-export const trimFirstFieldNameToTitle = (
+export const trimFirstfieldNameToLabel = (
   fieldName: string,
   trim = false,
 ): string => {
   if (trim) {
     const source = fieldName.slice(fieldName.indexOf('.') + 1);
-    return fieldNameToTitle(source ? source : fieldName, 0);
+    return fieldNameToLabel(source ? source : fieldName, 0);
   }
-  return fieldNameToTitle(fieldName);
+  return fieldNameToLabel(fieldName);
 };
 
 /**
@@ -47,10 +47,7 @@ export const trimFirstFieldNameToTitle = (
  * @param sections number of "sections" string.string.string to got back from the end of the field
  */
 
-export const fieldNameToTitle = (fieldName: string, sections = 1): string => {
-  if (fieldName in FieldNameOverrides) {
-    return FieldNameOverrides[fieldName];
-  }
+export const fieldNameToLabel = (fieldName: string, sections = 1): string => {
   if (fieldName === undefined) return 'No Title';
 
   return fieldName
@@ -60,6 +57,9 @@ export const fieldNameToTitle = (fieldName: string, sections = 1): string => {
     .flat()
     .map((word) =>
       COMMON_PREPOSITIONS.includes(word) ? word : capitalize(word),
+    )
+    .map((word) =>
+      word in FieldNameOverrides ? FieldNameOverrides[word] : word,
     )
     .join(' ');
 };

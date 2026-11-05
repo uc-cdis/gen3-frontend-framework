@@ -39,8 +39,8 @@ export interface NodeCountConfiguration {
 
 export interface DataTypeConfig {
   dataType: string;
+  uniqueIdField: string;
   nodeCountTitle?: string;
-  nodeCountConfiguration?: NodeCountConfiguration;
   accessibleFieldCheckList?: string[];
   accessibleValidationField?: string;
   tierAccessLevel?: 'libre' | 'regular' | 'private'; // TODO See if guppy can serve this
@@ -75,8 +75,11 @@ export interface CohortPanelConfiguration {
   filters?: TabsConfig; // filters for the fields
   dropdowns?: Record<string, DropdownsWithButtonsProps>; // dropdown menu of action buttons
   buttons?: ReadonlyArray<DownloadButtonConfig>; // row of action buttons
+  // TODO: move this to individual buttons https://ctds-planx.atlassian.net/browse/GFF-610
   loginForDownload?: boolean; // login required for download
+  enableRedirectToLogin?: boolean; // show login to download with redirect
   sharedFiltersMap?: SharedFieldMapping;
+  fieldsAreFlat?: boolean; // set to true to flatten the fields query
 }
 
 export interface SharedFieldConfiguration {
@@ -109,6 +112,7 @@ export interface CohortBuilderProps extends Omit<
   'sharedFilters'
 > {
   sharedFiltersMap: SharedFieldMapping | null;
+  activeTab?: string;
 }
 
 export enum DownloadFileFormats {

@@ -1,11 +1,12 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import useSWR from 'swr';
-import { AuthTokenData } from './types';
+import type { AuthTokenData } from './types';
 import type { IncomingMessage } from 'http';
 import { getCookie } from 'cookies-next';
-import { decodeJwt, importSPKI, jwtVerify } from 'jose';
-import { isExpired, JWTPayloadAndUser } from '../../api/auth/sessionToken';
+import { decodeJwt, errors as joseErrors, importSPKI, jwtVerify } from 'jose';
+import type { JWTPayloadAndUser } from '../../api/auth/sessionToken';
 import { fetchJWTKey } from '../auth/utils';
 import { type JWTSessionStatus, type LoginStatus } from '@gen3/core';
 
@@ -13,8 +14,11 @@ const fetcher = (url: string) =>
   fetch(url).then((r) => r.json() as Promise<AuthTokenData>);
 
 export const useAuthSession = (): AuthTokenData => {
+  // router.basePath is '' when unset and already leading-slashed when set, so the
+  // API route resolves under a basePath deployment as well as at the root.
+  const { basePath } = useRouter();
   const { data: sessionToken, error } = useSWR<AuthTokenData>(
-    '/api/auth/sessionToken',
+    `${basePath}/api/auth/sessionToken`,
     fetcher,
   );
   return error || sessionToken === undefined
@@ -60,18 +64,31 @@ export const getAuthSession = async (
         }
         // validate the token
         const publicKey = await importSPKI(jwtKey, 'RS256');
-        await jwtVerify(access_token, publicKey);
-        const decodedAccessToken = decodeJwt(access_token) as JWTPayloadAndUser;
+        try {
+          await jwtVerify(access_token, publicKey);
+        } catch (error: unknown) {
+          // jwtVerify checks the signature before the claims, so an expired token
+          // has proven its signature and its claims can be reported. Without this
+          // an expired token was indistinguishable from no token at all.
+          if (error instanceof joseErrors.JWTExpired) {
+            const expiredToken = decodeJwt(access_token) as JWTPayloadAndUser;
+            return {
+              issued: expiredToken.iat,
+              expires: expiredToken.exp,
+              user: expiredToken.context?.user,
+              status: 'expired',
+            };
+          }
+          throw error;
+        }
 
+        const decodedAccessToken = decodeJwt(access_token) as JWTPayloadAndUser;
         return {
           issued: decodedAccessToken.iat,
           expires: decodedAccessToken.exp,
-          user: decodedAccessToken.context.user,
-          status: decodedAccessToken.exp
-            ? isExpired(decodedAccessToken.exp)
-              ? 'expired'
-              : 'issued'
-            : 'invalid',
+          user: decodedAccessToken.context?.user,
+          // A token with no expiry never expires, which we do not honour
+          status: decodedAccessToken.exp ? 'issued' : 'invalid',
         };
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (_error: unknown) {
@@ -117,13 +134,21 @@ export const useManageSession = (
         pending: true,
       }));
     } else if (userStatus === 'pending') {
-      setSession((prev) => ({
-        ...prev,
-        pending: true,
-        status: 'not present',
-        userStatus: 'pending',
-      }));
-    } else if (userStatus === 'unauthenticated') {
+      setSession((prev) =>
+        // A /user refetch (token refresh, tab refocus) is revalidation, not a
+        // logout: keep an established session so consumers don't flip back to
+        // "not logged in" / loading on every refresh.
+        prev.status === 'issued'
+          ? prev
+          : {
+              ...prev,
+              pending: true,
+              status: 'not present',
+              userStatus: 'pending',
+            },
+      );
+    } else {
+      // last case 'unauthenticated'
       setSession((prev) => ({
         ...prev,
         pending: false,

@@ -3,6 +3,7 @@ import {
   CART_LIMIT,
   FILE_DELIMITERS,
   FILE_FORMATS,
+  GEN3_ANALYSIS_API,
   GEN3_API,
   GEN3_AUTHZ_API,
   GEN3_AUTHZ_SERVICE,
@@ -12,7 +13,9 @@ import {
   GEN3_DOWNLOADS_ENDPOINT,
   GEN3_FENCE_API,
   GEN3_FENCE_SERVICE,
+  GEN3_FHIR_API,
   GEN3_GUPPY_API,
+  GEN3_INDEXD_API,
   GEN3_MANIFEST_API,
   GEN3_MDS_API,
   GEN3_REDIRECT_URL,
@@ -32,6 +35,8 @@ export * from './dataAccess';
 // Gen3 services API's
 export * from './features/aiSearch';
 export * from './features/authz';
+export * from './features/cedar';
+export * from './features/updateStudyInMDS';
 export * from './features/cohort';
 export * from './features/dataLibrary';
 export * from './features/drsResolver';
@@ -51,6 +56,10 @@ export * from './features/submission';
 export * from './features/workspace';
 export * from './features/cart';
 export * from './features/config';
+export * from './features/cohortComparison';
+export * from './features/indexd';
+export * from './features/notifications';
+export * from './features/FHIR';
 
 export {
   type CoreState,
@@ -61,6 +70,7 @@ export {
   GEN3_GUPPY_API,
   GEN3_FENCE_API,
   GEN3_FENCE_SERVICE,
+  GEN3_INDEXD_API,
   GEN3_AUTHZ_API,
   GEN3_AUTHZ_SERVICE,
   GEN3_MDS_API,
@@ -70,6 +80,8 @@ export {
   GEN3_CROSSWALK_API,
   GEN3_SOWER_API,
   GEN3_MANIFEST_API,
+  GEN3_ANALYSIS_API,
+  GEN3_FHIR_API,
   CART_LIMIT,
   FILE_DELIMITERS,
   FILE_FORMATS,

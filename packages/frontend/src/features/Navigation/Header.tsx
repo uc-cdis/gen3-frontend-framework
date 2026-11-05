@@ -14,14 +14,15 @@ import HorizontalNavigationBar from './HorizontalClean/HorizontalNavigationBar';
  * @param {string} props.type - The type of header to render. Default value is 'original'.
  * @returns {JSX.Element} - The rendered Header component.
  */
-const Header = ({
+const Header =  React.forwardRef<HTMLDivElement, HeaderProps>(
+  ({
   topBar,
   navigation,
   banners,
   type = 'original',
-}: HeaderProps) => {
+}, ref) => {
   return type === 'horizontal' ? (
-    <div className="w-full">
+    <div className="w-full" ref={ref}>
       {banners?.map((banner) => (
         <Banner {...banner} key={banner.id} />
       ))}
@@ -34,7 +35,7 @@ const Header = ({
       />
     </div>
   ) : type === 'vertical' ? (
-    <div>
+    <div ref={ref}>
       {banners?.map((banner) => (
         <Banner {...banner} key={banner.id} />
       ))}
@@ -46,7 +47,7 @@ const Header = ({
       />
     </div>
   ) : (
-    <div className="w-full">
+    <div className="w-full" ref={ref}>
       <TopBar
         items={topBar.items}
         loginButtonVisibility={topBar?.loginButtonVisibility}
@@ -66,6 +67,8 @@ const Header = ({
       />
     </div>
   );
-};
+});
+
+Header.displayName = 'Header';
 
 export default Header;

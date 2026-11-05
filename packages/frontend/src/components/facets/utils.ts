@@ -6,7 +6,7 @@ import {
   EnumFilterValue,
   extractEnumFilterValue,
   FacetDefinition,
-  fieldNameToTitle,
+  fieldNameToLabel,
   HistogramData,
   HistogramDataArray,
   Includes,
@@ -187,7 +187,7 @@ export const classifyFacets = (
         value.length === 1 && isArray(value[0].key) ? 'range' : 'enum';
       const facetName =
         fieldMapping.find((x) => x.field === fieldKey)?.name ??
-        fieldNameToTitle(fieldKey);
+        fieldNameToLabel(fieldKey);
 
       const facetDef = facetDefinitionsFromConfig[fieldKey] ?? {};
 
@@ -209,6 +209,9 @@ export const classifyFacets = (
             undefined,
           moveValuesToBottom: facetDef?.moveValuesToBottom,
           excludeValues: facetDef?.excludeValues,
+          defaultSort: facetDef?.defaultSort,
+          showMatchModeSelector: facetDef?.showMatchModeSelector,
+          valueLabel: facetDef?.valueLabel,
           range: facetDef?.range
             ? {
                 minimum:
@@ -217,6 +220,7 @@ export const classifyFacets = (
                 maximum:
                   facetDef?.range?.maximum ??
                   Math.floor(Number(value[0].key[1])),
+                step: facetDef?.range?.step ?? 10,
               } // prefer config-defined range (if any)
             : type === 'range' // if computed type is range use that
               ? {
@@ -458,21 +462,21 @@ export const mapFacetSortToSortType = (facetSort: FacetSortType): SortType => {
     return defaultSort;
   }
 
-  const parts = facetSort.split('-');
-
-  // Check if we have exactly 2 parts
-  if (parts.length !== 2) {
-    console.warn(
-      `Invalid facetSort format: expected 'type-direction', got '${facetSort}'. Using default.`,
-    );
-    return defaultSort;
+  switch (facetSort) {
+    case 'value-asc':
+      return { type: 'value', direction: 'asc' };
+    case 'value-dsc':
+      return { type: 'value', direction: 'dsc' };
+    case 'label-asc':
+      return { type: 'alpha', direction: 'asc' };
+    case 'label-desc':
+      return { type: 'alpha', direction: 'dsc' };
+    default:
+      console.warn(
+        `Invalid facetSort value: got '${facetSort}'. Using default.`,
+      );
+      return defaultSort;
   }
-
-  const [type, direction] = facetSort.split('-');
-  return {
-    type: type === 'label' ? 'alpha' : 'value',
-    direction: direction as 'asc' | 'dsc',
-  };
 };
 
 export const compareKeysAscending = (

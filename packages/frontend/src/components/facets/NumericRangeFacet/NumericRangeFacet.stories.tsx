@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import NumericRangeFacet from './index';
 import { NumericFacetCardProps } from '../types';
@@ -19,7 +19,7 @@ export const Default: Story = {
     description: 'Age range panel',
     hooks: {
       useClearFilter: (() => {}) as any,
-      useFieldNameToTitle: ((field: string) => field) as any,
+      useFieldNameToLabel: ((field: string) => field) as any,
       useUpdateFacetFilters: (() => {}) as any,
       useGetFacetFilters: (() => {}) as any,
       useGetFacetData: (() => ({

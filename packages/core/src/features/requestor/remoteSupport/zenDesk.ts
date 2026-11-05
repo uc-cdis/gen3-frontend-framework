@@ -13,7 +13,7 @@ export const createZendeskTicket: RemoteSupportRequestAction = async (
   { subject, fullName, email, contents }: RemoteSupportRequest,
   configuration: RemoteSupportConfiguration,
 ) => {
-  const { zendeskSubdomainName } = configuration;
+  const { zendeskSubdomainName, custom_fields } = configuration;
   try {
     let zendeskTicketCreationURL = `${ZENDESK_DOMAIN}/api/v2/requests`;
     if (zendeskSubdomainName) {
@@ -48,6 +48,7 @@ export const createZendeskTicket: RemoteSupportRequestAction = async (
             name: fullName,
             email,
           },
+          custom_fields,
         },
       }),
     }).then((response) => {

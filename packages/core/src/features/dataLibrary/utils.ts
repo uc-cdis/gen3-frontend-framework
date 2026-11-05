@@ -307,12 +307,12 @@ export const extractFileDatasetsInRecords = (
             ] as string) ?? 'N/A';
 
           let fileType = 'GA4GH_DRS';
-          if (dataFieldMapping?.dataObjectFileTypeValue)
+          if (dataFieldMapping.dataObjectFileTypeValue)
             fileType = dataFieldMapping.dataObjectFileTypeValue;
 
-          if (dataFieldMapping?.dataObjectFileTypeField)
+          if (dataFieldMapping.dataObjectFileTypeField)
             fileType = dataObject[
-              dataFieldMapping?.dataObjectFileTypeField
+              dataFieldMapping.dataObjectFileTypeField
             ] as string;
 
           return {

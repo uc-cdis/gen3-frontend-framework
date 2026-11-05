@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
-import { CohortBuilderProps, CohortPanelConfiguration } from './types';
+import type { CohortBuilderProps, CohortPanelConfiguration } from './types';
 import { Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
 import {
@@ -18,9 +18,10 @@ export const useGetCurrentCohort = () => {
 
 const CohortBuilder = ({
   explorerConfig,
-  sharedFiltersMap = null,
+  sharedFiltersMap,
   tabsLayout = 'left',
   enableCohortManager = true,
+  activeTab,
 }: CohortBuilderProps) => {
   const dispatch = useCoreDispatch();
   dispatch(setSharedFilters(sharedFiltersMap ?? {}));
@@ -37,7 +38,7 @@ const CohortBuilder = ({
         color="primary.5"
         variant={explorerConfig[0]?.tabType}
         keepMounted={true}
-        defaultValue={explorerConfig[0].tabTitle}
+        defaultValue={activeTab ?? explorerConfig[0].tabTitle}
       >
         <Tabs.List
           className="w-full"
@@ -69,6 +70,7 @@ const CohortBuilder = ({
               dropdowns={panelConfig.dropdowns}
               buttons={panelConfig.buttons}
               loginForDownload={panelConfig.loginForDownload}
+              enableRedirectToLogin={panelConfig.enableRedirectToLogin}
               sharedFiltersMap={panelConfig.sharedFiltersMap}
             />
           </Tabs.Panel>

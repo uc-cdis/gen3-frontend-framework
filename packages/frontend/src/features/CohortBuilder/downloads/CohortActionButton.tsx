@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import useGuppyActionButton from './downloadActionHook';
-import { GuppyActionButtonProps } from '../types';
+import type { GuppyActionButtonProps } from '../types';
 import { Modals } from '@gen3/core';
 import ActionButton from './ActionButton';
 
@@ -32,7 +32,7 @@ const CohortActionButton = ({
 
   const clickHandler = useCallback(() => {
     if (disabled) return;
-    if (!active) handleClick();
+    if (!active) void handleClick();
     else cancel();
   }, [active, disabled, handleClick, cancel]);
 

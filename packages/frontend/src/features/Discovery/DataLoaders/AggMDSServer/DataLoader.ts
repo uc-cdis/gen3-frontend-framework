@@ -1,11 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import {
-  JSONObject,
-  MetadataPaginationParams,
-  useGetAggMDSQuery,
-} from '@gen3/core';
-import {
+import type { JSONObject, MetadataPaginationParams } from '@gen3/core';
+import { useGetAggMDSQuery } from '@gen3/core';
+import type {
   AdvancedSearchFilters,
   DiscoverDataHookResponse,
   DiscoveryDataLoaderProps,
@@ -13,7 +10,7 @@ import {
   SearchTerms,
 } from '../../types';
 
-import { getFilterValuesByKey, hasSearchTerms } from '../../Search/utils';
+import { getFilterValuesByKey } from '../../Search/utils';
 
 // TODO remove after debugging
 // import { reactWhatChanged as RWC } from 'react-what-changed';

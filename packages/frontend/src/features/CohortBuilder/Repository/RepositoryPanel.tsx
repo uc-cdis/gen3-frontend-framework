@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { useMediaQuery } from '@mantine/hooks';
 import { getAllFieldsFromFilterConfigs } from '../../../components/facets';
+import type { CoreState } from '@gen3/core';
 import {
   Accessibility,
-  CoreState,
   EmptyFilterSet,
   selectIndexFilters,
   useCoreSelector,
@@ -14,7 +14,7 @@ import ExplorerTable from '../ExplorerTable/ExplorerTable';
 import DownloadsPanel from '../DownloadsPanel';
 import { TableXPositionContext } from '../ExplorerTable/context';
 import FileFacetPanel from './FileFacetPanel';
-import { RepositoryProps } from './types';
+import type { RepositoryProps } from './types';
 
 export const RepositoryPanel = ({
   guppyConfig,
@@ -23,6 +23,7 @@ export const RepositoryPanel = ({
   dropdowns,
   buttons,
   loginForDownload,
+  enableRedirectToLogin,
   fileStatsConfiguration,
   additionalControls = null,
 }: RepositoryProps) => {
@@ -100,6 +101,7 @@ export const RepositoryPanel = ({
                       dropdowns={defaultDropdowns}
                       buttons={defaultButtons}
                       loginForDownload={loginForDownload}
+                      enableRedirectToLogin={enableRedirectToLogin}
                       index={index}
                       totalCount={fileSizeSliceData.totalCaseCount ?? 0}
                       fields={table?.fields ?? []}

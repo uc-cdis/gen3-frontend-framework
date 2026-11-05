@@ -1,24 +1,10 @@
-import { parse } from 'cookie';
 import { decodeJwt, importSPKI, JWTPayload, jwtVerify } from 'jose';
-import { fetchJWTKey } from '@gen3/frontend/server';
+import { fetchJWTKey, getAccessToken } from '@gen3/frontend/server';
 
 export const isExpired = (value: number) => value * 1000 < Date.now();
 export interface JWTPayloadAndUser extends JWTPayload {
   context: Record<string, any>;
 }
-
-export const getAccessToken = (cookie?: string): string | undefined => {
-  const cookies = cookie ? parse(cookie) : {};
-
-  let accessToken = cookies.access_token;
-  // in development mode we support "credentials login"
-  if (!accessToken && process.env.NODE_ENV === 'development') {
-    // NOTE: This cookie can only be accessed from the client side
-    // in development mode. Otherwise, the cookie is set as httpOnly
-    accessToken = cookies.credentials_token;
-  }
-  return accessToken;
-};
 
 /**
  * returns the access_token expiration, user, and status

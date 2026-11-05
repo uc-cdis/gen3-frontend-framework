@@ -10,10 +10,7 @@ import ActionMenu from '../ActionMenu';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
 import { LoginButtonVisibility } from '../../../components/Login/types';
 import { TopBarProps } from '../TopBar/types';
-import { useSession } from '../../../lib/session/session';
-import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
-import { useProtectedRoutesContext } from '../../../components/AuthorizedRoutes/ProtectedRoutesProvider';
-import { useGetAuthzResourcesQuery } from '@gen3/core';
+import { useNavigationAuthState } from '../hooks';
 
 export interface HorizontalNavigationBarProps extends NavigationProps {
   readonly actions: TopBarProps;
@@ -40,22 +37,8 @@ const HorizontalNavigationBar = ({
     classNames,
   );
 
-  const { status, pending } = useSession(false); // no redirect side-effects here
-  const loggedIn = useDeepCompareMemo(() => status === 'issued', [status]);
-  const routesConfig = useProtectedRoutesContext();
-  const {
-    data: resources,
-    error: authzResourceError,
-    isFetching: isAuthzResourcesFetching,
-    isError: isAuthzResourcesError,
-    refetch,
-  } = useGetAuthzResourcesQuery();
-
-  useDeepCompareEffect(() => {
-    if (loggedIn && !isAuthzResourcesFetching && !isAuthzResourcesError) {
-      refetch();
-    }
-  }, [loggedIn, isAuthzResourcesFetching, isAuthzResourcesError, refetch]);
+  const { loggedIn, pending, resources, routesConfig } =
+    useNavigationAuthState();
 
   return (
     <div
@@ -81,10 +64,10 @@ const HorizontalNavigationBar = ({
         {items?.map((x, index) => {
           const linkAuthStatus = checkRouteAccess(
             x.href,
-            resources?.resources ?? [],
+            resources,
             routesConfig,
             loggedIn,
-            pending || isAuthzResourcesFetching,
+            pending,
           );
           if (
             hideUnauthorizedLinks &&
@@ -101,7 +84,9 @@ const HorizontalNavigationBar = ({
                 href={x.href}
                 name={x.name}
                 classNames={x.classNames}
+                noBasePath={x?.noBasePath}
                 authStatus={LinkAuthStatus.Authorized}
+                enabledWithNoAccess={x?.enabledWithNoAccess}
               />
             </div>
           );

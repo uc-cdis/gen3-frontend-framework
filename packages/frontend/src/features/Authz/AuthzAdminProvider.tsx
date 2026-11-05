@@ -1,18 +1,17 @@
-import React from 'react';
-import {
+import React, {
   createContext,
-  useContext,
   Dispatch,
   ReactElement,
+  useContext,
   useReducer,
 } from 'react';
 import {
   Authz,
   Group,
-  Role,
-  Policy,
   Permission,
+  Policy,
   Resource,
+  Role,
   User,
 } from './types';
 
@@ -70,16 +69,7 @@ interface AuthzProviderProps {
   authz: Authz;
 }
 
-export const AuthzAdminProvider = ({
-  children,
-  authz = {
-    users: [],
-    groups: [],
-    roles: [],
-    policies: [],
-    resources: [],
-  },
-}: AuthzProviderProps) => {
+export const AuthzAdminProvider = ({ children, authz }: AuthzProviderProps) => {
   const [state, dispatch] = useReducer(authzReducer, authz);
   return (
     <AuthzContext.Provider value={{ state, dispatch }}>

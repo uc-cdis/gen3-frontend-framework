@@ -42,23 +42,14 @@
           "downloadZipButtonText": "Download Zip",
           "downloadManifestButtonText": "Download Manifest",
           "documentationLinks": {
-            "gen3Client": "https://gen3.org/resources/user/gen3-client/",
-            "gen3Workspaces": "https://gen3.org/resources/user/analyze-data/"
+            "gen3Client": "https://docs.gen3.org/gen3-resources/tools/data-client/",
+            "gen3Workspaces": "https://docs.gen3.org/gen3-resources/user-guide/analyze-data/"
           },
           "verifyExternalLogins": true
         },
         "pageTitle": {
           "enabled": true,
           "title": "Discover Datasets"
-        },
-        "exportToDataLibrary": {
-          "enabled" : true,
-          "buttons" : [
-            {
-              "type" : "add-to-data-library",
-              "label" : "Add to Data Library"
-            }
-          ]
         },
         "search": {
           "searchBar": {
@@ -256,7 +247,8 @@
             "color": "#982568",
             "display": false
           }
-        ]
+        ],
+        "showUnknownTags": false
       }
     }
   ]

@@ -23,9 +23,9 @@ interface RendererFactoryInterface<T> {
   ): void;
 }
 
-export class RenderFactoryTypedInstance<T>
-  implements RendererFactoryInterface<T>
-{
+export class RenderFactoryTypedInstance<
+  T,
+> implements RendererFactoryInterface<T> {
   private catalog: Record<string, RendererFunctionCatalogEntry<T>>;
   private defaultRenderer: RendererFunction<T>;
 
@@ -97,8 +97,8 @@ export class RenderFactoryTypedInstance<T>
         }
         return true;
       } catch (error) {
-        console.error(
-          `Error registering renderer ${functionName} for type ${type}: ${error}`,
+        console.warn(
+          `Warning registering renderer ${functionName} for type ${type}: ${error}`,
         );
         return false;
       }
@@ -124,7 +124,7 @@ export class RenderFactoryTypedInstance<T>
               try {
                 this.registerRenderer(type, name, func);
               } catch (error) {
-                new Error(
+                console.error(
                   `Error registering renderer ${name} for type ${type}: ${error}`,
                 );
                 return false;

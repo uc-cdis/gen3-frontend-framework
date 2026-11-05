@@ -1,18 +1,20 @@
 import React, { useMemo } from 'react';
-import {
-  MantineReactTable,
+import type {
+  MRT_Cell,
+  MRT_Row,
   MRT_RowSelectionState,
   MRT_Updater,
-  MRT_Cell,
+} from 'mantine-react-table-open';
+import {
+  MantineReactTable,
   useMantineReactTable,
-  MRT_Row,
-} from 'mantine-react-table';
+} from 'mantine-react-table-open';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { Text, Tooltip } from '@mantine/core';
 import { Icon } from '@iconify-icon/react';
 import { isCohortItem } from '@gen3/core';
 import { TableIcons } from '../../../components/Tables/TableIcons';
-import { ValidatedSelectedItem } from '../types';
+import type { ValidatedSelectedItem } from '../types';
 
 import { IconSize } from '../../../utils/sizes';
 
@@ -55,7 +57,7 @@ const SelectedItemsTableHeader: React.FC<SelectedItemsTableHeaderProps> = ({
             width={iconSize}
             height={iconSize}
             className="text-utility-warning m-1"
-          ></Icon>
+          />
           <Text
             fw={600}
             size={size}
@@ -220,7 +222,7 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
       hasInvalidRows,
     };
   }, [validatedItems]);
-
+  //TODO: get table to work better in modal
   const table = useMantineReactTable<SelectedItemsTableRow>({
     columns,
     data: tableRows.rows,
@@ -235,6 +237,7 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
     enableStickyHeader: true,
     enableStickyFooter: true,
     enableHiding: true,
+    enableColumnActions: false,
     onRowSelectionChange: handleRowSelectionChange,
     state: { rowSelection },
     initialState: {

@@ -212,8 +212,7 @@ const cohortManagerSlice = createSlice({
               mode:
                 state.entities[currentCohortId]?.filters[index]?.mode ?? 'and',
               root: {
-                ...(state.entities[currentCohortId]?.filters[index]?.root ??
-                  {}),
+                ...state.entities[currentCohortId]?.filters[index]?.root,
                 [field]: filter,
               },
             },
@@ -378,7 +377,7 @@ const cohortManagerSlice = createSlice({
         changes: {
           counts: {
             ...cohort.counts,
-            ...{ [index]: counts },
+            [index]: counts,
           },
         },
       });

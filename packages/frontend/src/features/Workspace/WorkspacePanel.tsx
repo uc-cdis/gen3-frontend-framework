@@ -41,7 +41,7 @@ const WorkspacePanel = () => {
             <Grid
               justify="center"
               align="stretch"
-              gutter="sm"
+              gap="sm"
               overflow="hidden"
             >
               {data?.map((card: WorkspaceInfo) => {

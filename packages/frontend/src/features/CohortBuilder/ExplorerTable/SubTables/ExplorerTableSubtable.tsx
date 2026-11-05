@@ -1,5 +1,8 @@
-import React, { useEffect, useRef } from 'react';
-import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
+import React, { useEffect } from 'react';
+import {
+  MantineReactTable,
+  useMantineReactTable,
+} from 'mantine-react-table-open';
 import { JSONObject } from '@gen3/core';
 import type { ExplorerTableSubTableProps } from './types';
 import { TableIcons } from '../../../../components/Tables/TableIcons';
@@ -32,7 +35,8 @@ const ExplorerTableSubTable = ({
       className: 'relative z-[1]',
     },
     mantineTableHeadCellProps: {
-      className: 'border-r border-accent-max bg-secondary-lightest font-color-secondary-contrast-lightest',
+      className:
+        'border-r border-accent-max bg-secondary-lightest font-color-secondary-contrast-lightest',
     },
     mantineTableBodyCellProps: {
       className: 'border-r border-accent-max',

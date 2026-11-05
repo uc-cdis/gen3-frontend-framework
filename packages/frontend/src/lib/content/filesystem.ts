@@ -6,9 +6,7 @@ const myGlob = (dir: string, filter: string) => {
   try {
     const files = fs.readdirSync(dir);
     return files.filter((file) => file.search(filter) !== -1);
-  } catch (error: any) {
-    console.log('myGlob error', error, dir);
-  }
+  } catch (error: any) {}
   return [];
 };
 
@@ -21,12 +19,18 @@ export class FilesystemContent implements ContentSourceInterface {
   public async get<T extends Record<string, any>>(
     filepath: string,
   ): Promise<T> {
+    const fullPath = path.join(this.rootPath, filepath);
+    let raw: string;
     try {
-      return await JSON.parse(
-        fs.readFileSync(path.join(this.rootPath, filepath)).toString('utf8'),
-      );
-    } catch (err: unknown) {
-      throw new Error(`Cannot process ${path.join(this.rootPath, filepath)} `);
+      raw = fs.readFileSync(fullPath).toString('utf8');
+    } catch {
+      throw new Error(`Cannot read ${fullPath}`);
+    }
+    try {
+      return JSON.parse(raw);
+    } catch (err) {
+      const syntaxMsg = err instanceof SyntaxError ? `: ${err.message}` : '';
+      throw new Error(`Cannot parse JSON in ${fullPath}${syntaxMsg}`);
     }
   }
   public async getAll<T extends Record<string, any>>(
@@ -38,7 +42,7 @@ export class FilesystemContent implements ContentSourceInterface {
       return Promise.all(
         files.map((file) => this.get<T>(path.join(filepath, file))),
       );
-    } catch (_err: unknown) {
+    } catch {
       throw new Error(
         `getAllCannot process ${path.join(this.rootPath, filepath)}/${filter}`,
       );
