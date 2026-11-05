@@ -5,6 +5,7 @@ import CardContainer from './CardContainer';
 
 export interface MessageTextProps {
   message: string;
+  width?: string;
 }
 
 interface MessageTextColorProps extends MessageTextProps {
