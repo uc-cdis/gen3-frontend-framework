@@ -97,7 +97,6 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
                       rangeLabelsAndValues[b].from,
           )
           .map((rangeKey, i) => {
-            console.log('range', rangeKey, 'field', field, selected);
             return (
               <div
                 key={`${field}_${rangeKey}`}

@@ -713,9 +713,6 @@ export const buildNestedFilterForOperation = (
     // at the end of the path
     if (ifOperationWithField(leafOperand)) {
       // update the field for operations with a field
-      console.log('field path:', field);
-      console.log('leafOperand', leafOperand);
-      console.log('return:', { ...leafOperand, field: field });
       return { ...leafOperand, field: field };
     }
     if (isOperandsType(leafOperand)) {

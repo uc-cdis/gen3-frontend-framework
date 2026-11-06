@@ -454,7 +454,7 @@ export const CohortPanel = ({
 
   return (
     <div className="flex flex-col mt-3 relative px-4 bg-base-lightest w-full">
-      <QueryExpression index={index} />
+      <QueryExpression index={index} fieldsAreFlat={fieldsAreFlat} />
 
       {/* Flex container to ensure proper 25/75 split */}
       <div className="flex w-full">
