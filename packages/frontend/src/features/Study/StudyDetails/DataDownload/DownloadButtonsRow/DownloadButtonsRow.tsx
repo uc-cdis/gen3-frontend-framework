@@ -17,16 +17,16 @@ import {
   useCoreSelector,
 } from '@gen3/core';
 import GetMissingRequiredIdentityProviders from '../Utils/GetMissingRequiredIdentityProviders';
-import { useDisclosure } from '@mantine/hooks';
 import downloadManifestClick from '../Utils/downloadManifest';
-import { useRouter } from 'next/router';
+import ConditionalPopover from './ConditionalPopover';
+import isManifestDataMissing from '../Utils/isManifestDataMissing';
+import handleRedirectFromDiscoveryDetailsToLoginClick from '../Utils/handleRedirectFromDiscoveryDetailsToLoginClick';
 
 interface DownloadButtonsRowProps {
   readonly data: JSONObject;
 }
 
 const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
-  const router = useRouter();
   const { discoveryConfig } = useDiscoveryContext();
   const variableMetadataFieldName = discoveryConfig.variableMetadataFieldName;
   const showDownloadVariableMetadataButton = Boolean(
@@ -39,6 +39,9 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
     data.study_metadata as
       { minimal_info?: { study_name?: string } } | undefined
   )?.minimal_info?.study_name;
+
+  /* LOGIC FOR DOWNLOAD MANIFEST */
+  const noData = data.length === 0;
   const accessibleFieldName = '__accessible';
   let userHasAccessToDownload = true;
   enum AccessLevel {
@@ -50,12 +53,14 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
     MIXED = 6,
   }
   // if auth is enabled, check if user have access to this study
-  if (discoveryConfig.features.authorization.enabled) {
+  if (discoveryConfig.features.authorization?.enabled) {
     userHasAccessToDownload =
       data[accessibleFieldName] === AccessLevel.ACCESSIBLE;
   }
-  const showDownloadFileManifestButton =
+  const showDownloadManifestButton =
     discoveryConfig.exportToWorkspace?.enableDownloadManifest;
+  const manifestFieldName =
+    discoveryConfig.exportToWorkspace?.manifestFieldName;
 
   type ActiveUser = Partial<UserProfile> & {
     active?: boolean;
@@ -64,25 +69,20 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
   const userInfo = useCoreSelector(
     (state: CoreState) => selectUserDetails(state) as ActiveUser,
   );
-
+  const isUserLoggedIn = userInfo.active;
   const missingRequiredIdentityProviders = GetMissingRequiredIdentityProviders(
     [data],
     userInfo.fence_idp,
   );
-
-  const [opened, { close, open }] = useDisclosure(false);
-
-  /*
-  Showing, disabling and downloading logic will addressed: HP-2379, HP-2380, HP-2381, HP-2382
-
-    const showDownloadAllFilesButtons = Boolean(
-    discoveryConfig?.features?.exportToWorkspace?.enableDownloadZip,
-  );
-  */
-  // const { discoveryConfig } = useDiscoveryContext();
-  /* const showDownloadFileManifestButtons = Boolean(
-    discoveryConfig?.features?.exportToWorkspace?.enableDownloadManifest,
-  ); */
+  const isHEALLoginNeeded = Boolean(missingRequiredIdentityProviders.length);
+  const downloadManifestButtonText =
+    discoveryConfig.exportToWorkspace?.downloadManifestButtonText ||
+    'Download Manifest';
+  let uid = '';
+  if (data) {
+    uid = String(data[discoveryConfig.minimalFieldMapping.uid]);
+  }
+  /* END FOR DOWNLOAD MANIFEST */
 
   const variableMetadataRecords = useMemo(
     () => getVariableMetadataRecords(data, variableMetadataFieldName),
@@ -123,26 +123,6 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
     discoveryConfig.exportToWorkspace?.enableDownloadStudyMetadata &&
     studyMetadata,
   );
-  const downloadManifestButtonText = userInfo.active ? (
-    <>Download Manifest</>
-  ) : (
-    <>
-      Login to <br /> Download Manifest
-    </>
-  );
-
-  const conditionalPopoverText = (() => {
-    if (!userHasAccessToDownload) {
-      return "You don't have access to this data";
-    }
-    if (missingRequiredIdentityProviders.length) {
-      return missingRequiredIdentityProviders.length > 1
-        ? `Data selection requires [${missingRequiredIdentityProviders.join(', ')}] credentials to access. Please change selection to only need one set of credentials and log in using appropriate credentials`
-        : `This dataset is only accessible to users who have authenticated via ${missingRequiredIdentityProviders[0]}. Please log in using the ${missingRequiredIdentityProviders[0]} option.`;
-    }
-    return 'The file is not available for the selected study';
-  })();
-
   const onDownloadStudyLevelMetadata = () => {
     if (!studyMetadata) return;
     downloadJsonFile(
@@ -152,6 +132,9 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
   };
   const onDownloadAllFiles = () =>
     alert(`called onDownloadAllFiles with resource ${JSON.stringify(data)}`);
+
+  // This is a placeholder -> will likely need to be implemented as part of download all files
+  const [downloadStatus, setDownloadStatus] = useState({ inProgress: false });
 
   return (
     <div className="flex flex-wrap gap-3 mt-3 mb-5">
@@ -182,55 +165,68 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
           Study-Level Metadata
         </Button>
       )}
-
-      {Boolean(showDownloadFileManifestButton) &&
-        !missingRequiredIdentityProviders[0] && (
-          <>
-            <Popover
-              width={200}
-              position="bottom"
-              withArrow
-              shadow="md"
-              opened={opened}
-            >
-              <Popover.Target>
+      {Boolean(showDownloadManifestButton) && (
+        <>
+          {isUserLoggedIn && !isHEALLoginNeeded && (
+            <>
+              <ConditionalPopover
+                noData={noData}
+                userHasAccessToDownload={userHasAccessToDownload}
+                missingRequiredIdentityProviders={
+                  missingRequiredIdentityProviders
+                }
+              >
                 <Button
                   className="discovery-action-bar-button"
                   data-testid="download-manifest"
-                  onMouseEnter={open}
-                  onMouseLeave={close}
+                  variant="outline"
+                  size="sm"
+                  disabled={
+                    isManifestDataMissing(data, String(manifestFieldName)) ||
+                    noData ||
+                    downloadStatus.inProgress ||
+                    !userHasAccessToDownload
+                  }
                   onClick={() => {
-                    if (!userInfo.active) {
-                      // return to this study's details page after logging in
-                      void router.push(
-                        `/Login?redirect=/Discovery/${encodeURI(studyUID)}`,
-                      );
-                      return;
-                    }
                     downloadManifestClick(
                       discoveryConfig,
                       data,
                       missingRequiredIdentityProviders,
                     );
                   }}
-                  disabled={
-                    Boolean(userInfo.active) && !userHasAccessToDownload
-                  }
-                  variant="outline"
-                  size="sm"
                 >
                   {downloadManifestButtonText}
                 </Button>
-              </Popover.Target>
-              {!userInfo.active && conditionalPopoverText && (
-                <Popover.Dropdown style={{ pointerEvents: 'none' }}>
-                  {String(conditionalPopoverText)}
-                </Popover.Dropdown>
-              )}
-            </Popover>
-          </>
-        )}
-
+              </ConditionalPopover>
+            </>
+          )}
+          {(!isUserLoggedIn || isHEALLoginNeeded) && (
+            <>
+              <ConditionalPopover
+                noData={noData}
+                userHasAccessToDownload={userHasAccessToDownload}
+                missingRequiredIdentityProviders={
+                  missingRequiredIdentityProviders
+                }
+              >
+                <Button
+                  className="discovery-action-bar-button"
+                  data-testid="login-to-download-manifest"
+                  variant="outline"
+                  size="sm"
+                  disabled={Boolean(noData) || downloadStatus.inProgress}
+                  onClick={() => {
+                    handleRedirectFromDiscoveryDetailsToLoginClick(uid);
+                  }}
+                >
+                  Login to
+                  <br /> {downloadManifestButtonText}
+                </Button>
+              </ConditionalPopover>
+            </>
+          )}
+        </>
+      )}
       <Button onClick={onDownloadAllFiles} variant="outline" size="sm">
         Download All Files
       </Button>
