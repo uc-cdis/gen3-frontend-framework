@@ -250,6 +250,7 @@ export const useUpdateFilters = (index: string) => {
   const sharedFilters = useCoreSelector((state) => selectSharedFilters(state));
 
   return (field: string, filter: Operation) => {
+    console.log('update facets', field, filter);
     if (shouldShareFilters && field in sharedFilters) {
       sharedFilters[field].forEach((x: IndexAndField) => {
         dispatch(

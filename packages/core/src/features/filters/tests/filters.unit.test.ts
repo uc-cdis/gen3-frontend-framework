@@ -428,4 +428,42 @@ describe('convertGqlFilterToFilter', () => {
 
     expect(result).toEqual(expected);
   });
+
+  it('text range filters as nested', () => {
+    const result = buildNestedFilterForOperation('demographic.age', {
+      operator: 'and',
+      operands: [
+        {
+          field: 'demographic.age',
+          operator: '>=',
+          operand: 40,
+        },
+        {
+          field: 'demographic.age',
+          operator: '<',
+          operand: 50,
+        },
+      ],
+    });
+    const expected = {
+      operator: 'nested',
+      path: 'demographic',
+      operand: {
+        operator: 'and',
+        operands: [
+          {
+            field: 'age',
+            operator: '>=',
+            operand: 40,
+          },
+          {
+            field: 'age',
+            operator: '<',
+            operand: 50,
+          },
+        ],
+      },
+    };
+    expect(result).toEqual(expected);
+  });
 });

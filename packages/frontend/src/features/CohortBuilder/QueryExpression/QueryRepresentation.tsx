@@ -1,18 +1,15 @@
-import React, { PropsWithChildren, ReactElement, useContext } from 'react';
+import type { PropsWithChildren, ReactElement } from 'react';
+import React, { useContext } from 'react';
 import { get, isArray } from 'lodash';
-import {
-  buildNestedFilterForOperation,
+import type {
   Equals,
   ExcludeIfAny,
   Excludes,
   Exists,
-  fieldNameToLabel,
   GreaterThan,
   GreaterThanOrEquals,
-  handleOperation,
   Includes,
   Intersection,
-  isIncludes,
   LessThan,
   LessThanOrEquals,
   Missing,
@@ -21,6 +18,12 @@ import {
   Operation,
   OperationHandler,
   Union,
+} from '@gen3/core';
+import {
+  buildNestedFilterForOperation,
+  fieldNameToLabel,
+  handleOperation,
+  isIncludes,
 } from '@gen3/core';
 import { ActionIcon, Badge, Divider, Group } from '@mantine/core';
 import {
@@ -87,10 +90,7 @@ bg-base-max
 `;
 
 type RangeOperation =
-  | LessThan
-  | LessThanOrEquals
-  | GreaterThanOrEquals
-  | GreaterThan;
+  LessThan | LessThanOrEquals | GreaterThanOrEquals | GreaterThan;
 
 type ValueOperation = RangeOperation | Equals | NotEquals;
 type ComparisonOperation = RangeOperation | Equals | NotEquals;
