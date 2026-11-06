@@ -97,7 +97,11 @@ export default async function handler(
       // Parse the JSON data from both responses
       const mdsAggregateData = await mdsAggregateResponse.json();
       const mdsMetadataData = await mdsMetadataResponse.json();
-      const combinedData = combineData(mdsAggregateData, mdsMetadataData);
+      const combinedData = combineData(
+        mdsAggregateData,
+        mdsMetadataData,
+        req.body?.discoveryConfig?.minimalFieldMapping?.uid,
+      );
       // Update the cache
       cachedData = combinedData;
       cacheTime = currentTime;
