@@ -24,9 +24,7 @@ import {
 } from './types';
 
 export type OperatorWithFieldAndArrayOfOperands =
-  | Includes
-  | Excludes
-  | ExcludeIfAny;
+  Includes | Excludes | ExcludeIfAny;
 
 export const isOperationWithField = (
   operation: OperationWithField | Operation,
@@ -585,9 +583,9 @@ export class ValueExtractorHandler implements OperationHandler<FilterValue> {
 /**
  * Extract the operand values, if operands themselves have values, otherwise undefined.
  */
-export class EnumValueExtractorHandler
-  implements OperationHandler<EnumFilterValue | undefined>
-{
+export class EnumValueExtractorHandler implements OperationHandler<
+  EnumFilterValue | undefined
+> {
   handleEquals: (_: Equals) => undefined = (_: Equals) => undefined;
   handleNotEquals: (_: NotEquals) => undefined = (_: NotEquals) => undefined;
   handleIncludes: (op: Includes) => ReadonlyArray<string | number> = (
@@ -629,8 +627,7 @@ export const appendFilterToOperation = (
   if (addition === undefined && filter) return filter;
   if (filter === undefined && addition) return addition;
   return { ...filter, operands: [...(filter?.operands || []), addition] } as
-    | Intersection
-    | Union;
+    Intersection | Union;
 };
 
 export const filterSetToOperation = (
@@ -696,6 +693,29 @@ export const buildNestedGQLFilter = (
 };
 
 /**
+ * For compound operations (and / or) used as the leaf of a nested filter, rewrite the
+ * operands' dotted field names ("Testing.age") to the leaf name relative to the nested
+ * path ("age"). Operations that are not and/or are returned unchanged.
+ */
+const relativizeCompoundOperandFields = (operation: Operation): Operation => {
+  if (operation.operator === 'and' || operation.operator === 'or') {
+    return {
+      ...operation,
+      operands: operation.operands.map((operand) => {
+        if (ifOperationWithField(operand)) {
+          return {
+            ...operand,
+            field: operand.field.split('.').at(-1) ?? operand.field,
+          };
+        }
+        return relativizeCompoundOperandFields(operand);
+      }),
+    } as Operation;
+  }
+  return operation;
+};
+
+/**
  * Constructs a nested operation object based on the provided field and leaf operand.
  * If the field does not contain a dot '.', it either assigns the field to the leaf operand (if applicable)
  * or returns the leaf operand as is. When the field contains dots, it splits the field into parts,
@@ -718,7 +738,9 @@ export const buildNestedFilterForOperation = (
       // update the field for operations with a field
       return { ...leafOperand, field };
     }
-    return leafOperand;
+    // compound leaf (e.g. a range built as and[>=, <=]): its operands still carry
+    // the full dotted field name, but Guppy expects names relative to the nested path
+    return relativizeCompoundOperandFields(leafOperand);
   }
 
   const splitFieldArray = field.split('.');
