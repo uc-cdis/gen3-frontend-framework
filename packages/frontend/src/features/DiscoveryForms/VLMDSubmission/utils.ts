@@ -84,7 +84,7 @@ export const uploadToS3 = (
           onProgress((progressEvent.loaded / file.size) * 100);
       };
     }
-    xhr.open('POST', `/api/vlmdS3Upload?presignedUrl=${encodeURIComponent(s3URL)}`);
+    xhr.open('POST', `/frontend-api/vlmdS3Upload?presignedUrl=${encodeURIComponent(s3URL)}`);
     xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
     xhr.send(file);
   });

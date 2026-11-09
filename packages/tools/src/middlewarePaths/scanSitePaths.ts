@@ -30,6 +30,7 @@ const BACKEND_PROXY_PATHS = [
   'requestor',
   'index',
   'workspace-api',
+  'frontend-api',
 ];
 const MATCH_ALL_EXCLUSIONS = [
   '_next/static',
@@ -226,7 +227,7 @@ const createMiddlewareRoutes = (
   if (matcher.length === 0) {
     matcher = [`/((?!${MATCH_ALL_EXCLUSIONS.join('|')}).*)`];
   }
-  
+
   // The proxy redirects logged in users away from the Login page, so it must see /Login
   matcher.push(LOGIN_ROUTE);
 
