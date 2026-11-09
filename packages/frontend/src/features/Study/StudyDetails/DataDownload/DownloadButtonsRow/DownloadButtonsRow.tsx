@@ -96,10 +96,6 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
   const downloadManifestButtonText =
     discoveryConfig.exportToWorkspace?.downloadManifestButtonText ||
     'Download Manifest';
-  let uid = '';
-  if (data) {
-    uid = String(data[discoveryConfig.minimalFieldMapping.uid]);
-  }
   /* Download Study level Metadata Logic */
   const studyMetadataFieldName =
     discoveryConfig.exportToWorkspace?.studyMetadataFieldName;
@@ -203,7 +199,7 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
                   size="sm"
                   disabled={Boolean(noData) || downloadStatus.inProgress}
                   onClick={() => {
-                    handleRedirectFromDiscoveryDetailsToLoginClick(uid);
+                    handleRedirectFromDiscoveryDetailsToLoginClick(studyUID);
                   }}
                 >
                   Login to
