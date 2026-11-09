@@ -305,8 +305,6 @@ const IncludeExcludeQueryElement = ({
                             newOperands,
                             combineMode,
                           );
-
-                          console.log('updatedOperation', updatedOperation);
                           updateCohortFilter(
                             index,
                             fieldToUpdate,
@@ -369,8 +367,6 @@ const ComparisonElement = ({
   // Comparisons have a parent "and" Operation that we need to modify or remove
 
   const handleRemove = (remove: ValueOperation) => {
-    console.log('remove[0]', remove);
-
     const parentOperation = findParentOfOperation(
       remove,
       filters.root[fieldToUpdate],
@@ -392,9 +388,6 @@ const ComparisonElement = ({
           operand.operator !== remove.operator,
       );
 
-      console.log('remove', remove);
-      console.log('remainingOperands', remainingOperands);
-
       if (remainingOperands.length > 0) {
         const [keep] = remainingOperands;
 
@@ -403,16 +396,8 @@ const ComparisonElement = ({
             fieldToUpdate,
             keep,
           );
-          console.log('updatedFilter:nested', updatedFilter);
           updateCohortFilter(index, fieldToUpdate, updatedFilter);
         } else {
-          console.log(
-            'handleKeepMember',
-            index,
-            keep.field,
-            keep,
-            fieldToUpdate,
-          );
           updateCohortFilter(index, fieldToUpdate, keep);
         }
       } else {
@@ -794,9 +779,8 @@ class CohortFilterToComponent implements OperationHandler<ReactElement> {
     if (isNestedFilter(op.operand)) {
       const newOp = {
         ...op.operand,
-        path: [op.path, op.operand.path].join('.'),
+        path: op.operand.path,
       } as NestedFilter;
-      console.log('handleNestedFilter isNestedFilter', op, newOp);
       return convertFilterToComponent(
         newOp,
         this.index,

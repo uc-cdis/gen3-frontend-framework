@@ -158,8 +158,6 @@ export const CohortPanel = ({
     selectIndexFilters(state, index),
   );
 
-  console.log('CohortFilters', cohortFilters);
-
   const cohortId = useCoreSelector((state: CoreState) =>
     selectCurrentCohortId(state),
   );

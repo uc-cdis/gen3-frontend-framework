@@ -57,7 +57,6 @@ export const QueryExpressionContext =
     useUpdateFilters: () => {
       const dispatch = useCoreDispatch();
       return (index: string, field: string, filter: Operation) => {
-        console.log('useUpdateFilters', field, filter);
         dispatch(
           updateCohortFilter({
             index,

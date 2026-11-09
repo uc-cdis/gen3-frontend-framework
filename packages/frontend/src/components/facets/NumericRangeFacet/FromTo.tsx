@@ -252,7 +252,6 @@ const FromTo: React.FC<FromToProps> = ({
           : undefined,
     };
     const rangeFilters = buildRangeOperator(field, data);
-
     if (rangeFilters === undefined) {
       clearFilter(field);
     } else {

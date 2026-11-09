@@ -55,9 +55,6 @@ const RangeInputWithPrefixedRanges: React.FC<
     return [values, key];
   }, [filter]);
 
-  console.log('filterValues', filterValues);
-  console.log('filterKey', filterKey);
-
   const queryInYears = rangeDatatype === 'age_in_years';
   // build the range for the useRangeFacet and the facet query
   const [bucketRanges, ranges] = useMemo(() => {
@@ -97,7 +94,6 @@ const RangeInputWithPrefixedRanges: React.FC<
   }, [isCustom]);
 
   useEffect(() => {
-    console.log('filter key', filterKey);
     if (!isCustom) {
       if (Object.keys(rangeLabelsAndValues).includes(filterKey))
         setSelectedRange(filterKey);

@@ -56,7 +56,6 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
     if (rangeFilters) {
       updateFilters(field, rangeFilters);
     }
-
     setSelected(rangeKey);
   };
 
