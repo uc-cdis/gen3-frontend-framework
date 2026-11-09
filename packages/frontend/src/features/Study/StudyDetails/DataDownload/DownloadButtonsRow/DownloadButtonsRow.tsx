@@ -22,7 +22,7 @@ import isManifestDataMissing from '../Utils/isManifestDataMissing';
 import handleRedirectFromDiscoveryDetailsToLoginClick from '../Utils/handleRedirectFromDiscoveryDetailsToLoginClick';
 import { AccessLevel } from '../Utils/constants';
 
-interface DownloadButtonsRowProps {
+export interface DownloadButtonsRowProps {
   readonly data: JSONObject;
 }
 const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
