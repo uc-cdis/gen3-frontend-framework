@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Button, Popover } from '@mantine/core';
+import { Button } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useDiscoveryContext } from '../../../../Discovery/DiscoveryProvider';
 import {
@@ -40,39 +40,6 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
     data.study_metadata as
       { minimal_info?: { study_name?: string } } | undefined
   )?.minimal_info?.study_name;
-
-  /* LOGIC FOR DOWNLOAD MANIFEST */
-  const noData = data.length === 0;
-  const accessibleFieldName = '__accessible';
-  let userHasAccessToDownload = true;
-
-  // if auth is enabled, check if user have access to this study
-  if (discoveryConfig.features.authorization?.enabled) {
-    userHasAccessToDownload =
-      data[accessibleFieldName] === AccessLevel.ACCESSIBLE;
-  }
-  const showDownloadManifestButton =
-    discoveryConfig.exportToWorkspace?.enableDownloadManifest;
-  const manifestFieldName =
-    discoveryConfig.exportToWorkspace?.manifestFieldName;
-
-  const userInfo = useCoreSelector((state: CoreState) =>
-    selectUserDetails(state),
-  );
-  const isUserLoggedIn = userInfo.active;
-  const missingRequiredIdentityProviders = GetMissingRequiredIdentityProviders(
-    [data],
-    userInfo.fence_idp,
-  );
-  const isHEALLoginNeeded = Boolean(missingRequiredIdentityProviders.length);
-  const downloadManifestButtonText =
-    discoveryConfig.exportToWorkspace?.downloadManifestButtonText ||
-    'Download Manifest';
-  let uid = '';
-  if (data) {
-    uid = String(data[discoveryConfig.minimalFieldMapping.uid]);
-  }
-  /* END FOR DOWNLOAD MANIFEST */
   const variableMetadataRecords = useMemo(
     () => getVariableMetadataRecords(data, variableMetadataFieldName),
     [data, variableMetadataFieldName],
@@ -103,6 +70,37 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
       setDownloadingVariableMetadata(false);
     }
   };
+
+  /* Download Manifest Logic */
+  const noData = data.length === 0;
+  const accessibleFieldName = '__accessible';
+  let userHasAccessToDownload = true;
+  // if auth is enabled, check if user have access to this study
+  if (discoveryConfig.features.authorization?.enabled) {
+    userHasAccessToDownload =
+      data[accessibleFieldName] === AccessLevel.ACCESSIBLE;
+  }
+  const showDownloadManifestButton =
+    discoveryConfig.exportToWorkspace?.enableDownloadManifest;
+  const manifestFieldName =
+    discoveryConfig.exportToWorkspace?.manifestFieldName;
+  const userInfo = useCoreSelector((state: CoreState) =>
+    selectUserDetails(state),
+  );
+  const isUserLoggedIn = userInfo.active;
+  const missingRequiredIdentityProviders = GetMissingRequiredIdentityProviders(
+    [data],
+    userInfo.fence_idp,
+  );
+  const isHEALLoginNeeded = Boolean(missingRequiredIdentityProviders.length);
+  const downloadManifestButtonText =
+    discoveryConfig.exportToWorkspace?.downloadManifestButtonText ||
+    'Download Manifest';
+  let uid = '';
+  if (data) {
+    uid = String(data[discoveryConfig.minimalFieldMapping.uid]);
+  }
+  /* Download Study level Metadata Logic */
   const studyMetadataFieldName =
     discoveryConfig.exportToWorkspace?.studyMetadataFieldName;
   const studyMetadata = studyMetadataFieldName
@@ -119,9 +117,9 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
       studyMetadata,
     );
   };
+  /* Download All Files Logic */
   const onDownloadAllFiles = () =>
     alert(`called onDownloadAllFiles with resource ${JSON.stringify(data)}`);
-
   // This is a placeholder -> will likely need to be implemented as part of download all files
   const [downloadStatus, setDownloadStatus] = useState({ inProgress: false });
 
