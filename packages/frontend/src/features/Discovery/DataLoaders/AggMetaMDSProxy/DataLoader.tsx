@@ -53,7 +53,6 @@ export const useAggMetaMDSProxy = ({
   useDeepCompareEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      console.log('apiUrl', apiUrl);
       try {
         const response = await fetch(apiUrl, {
           method: 'POST',

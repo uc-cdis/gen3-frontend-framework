@@ -1,3 +1,4 @@
+// This will possibly need to be updated in HP-2896:
 const GetMissingRequiredIdentityProviders = (
   selectedResources: ReadonlyArray<Record<string, unknown>>,
   fenceIdentityProvider: string | undefined,

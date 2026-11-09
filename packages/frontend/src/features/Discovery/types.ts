@@ -43,7 +43,7 @@ export interface CategoryObject {
   color: string;
 }
 
-export interface DiscoveryDataLoaderProps extends Record<string, unknown> {
+export interface DiscoveryDataLoaderProps extends Record<string, any> {
   pagination: MetadataPaginationParams;
   searchTerms: SearchTerms;
   discoveryConfig: DiscoveryIndexConfig;
@@ -93,7 +93,7 @@ export interface AdvancedSearchFilters {
 
 export interface SearchKV {
   key: string;
-  value: unknown;
+  value: any;
 }
 
 export const isSearchKV = (obj: unknown): obj is SearchKV => {

@@ -41,6 +41,7 @@ const ConditionalPopover = ({
     missingRequiredIdentityProviders,
   );
 
+  // Do not render the popover if there's no message
   if (!message) {
     return <>{children}</>;
   }

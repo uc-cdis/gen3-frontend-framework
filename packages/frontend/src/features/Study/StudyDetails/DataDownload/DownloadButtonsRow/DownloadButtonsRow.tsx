@@ -11,7 +11,6 @@ import { generateDownloadFilename } from '../Utils/generateDownloadFilename';
 import { toString } from 'lodash';
 import {
   type CoreState,
-  type UserProfile,
   type JSONObject,
   selectUserDetails,
   useCoreSelector,
@@ -21,20 +20,22 @@ import downloadManifestClick from '../Utils/downloadManifest';
 import ConditionalPopover from './ConditionalPopover';
 import isManifestDataMissing from '../Utils/isManifestDataMissing';
 import handleRedirectFromDiscoveryDetailsToLoginClick from '../Utils/handleRedirectFromDiscoveryDetailsToLoginClick';
+import { AccessLevel } from '../Utils/constants';
 
 interface DownloadButtonsRowProps {
   readonly data: JSONObject;
 }
-
 const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
   const { discoveryConfig } = useDiscoveryContext();
+  const uidField = discoveryConfig.minimalFieldMapping.uid;
+  const studyUID = uidField ? toString(data[uidField] ?? '') : '';
+
+  /* Variable Metadata Logic */
   const variableMetadataFieldName = discoveryConfig.variableMetadataFieldName;
   const showDownloadVariableMetadataButton = Boolean(
     variableMetadataFieldName &&
     discoveryConfig.exportToWorkspace?.enableDownloadVariableMetadata,
   );
-  const uidField = discoveryConfig.minimalFieldMapping.uid;
-  const studyUID = uidField ? toString(data[uidField] ?? '') : '';
   const studyName = (
     data.study_metadata as
       { minimal_info?: { study_name?: string } } | undefined
@@ -44,14 +45,7 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
   const noData = data.length === 0;
   const accessibleFieldName = '__accessible';
   let userHasAccessToDownload = true;
-  enum AccessLevel {
-    ACCESSIBLE = 1,
-    UNACCESSIBLE = 2,
-    WAITING = 3,
-    NOT_AVAILABLE = 4,
-    OTHER = 5,
-    MIXED = 6,
-  }
+
   // if auth is enabled, check if user have access to this study
   if (discoveryConfig.features.authorization?.enabled) {
     userHasAccessToDownload =
@@ -62,12 +56,8 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
   const manifestFieldName =
     discoveryConfig.exportToWorkspace?.manifestFieldName;
 
-  type ActiveUser = Partial<UserProfile> & {
-    active?: boolean;
-    fence_idp?: string;
-  };
-  const userInfo = useCoreSelector(
-    (state: CoreState) => selectUserDetails(state) as ActiveUser,
+  const userInfo = useCoreSelector((state: CoreState) =>
+    selectUserDetails(state),
   );
   const isUserLoggedIn = userInfo.active;
   const missingRequiredIdentityProviders = GetMissingRequiredIdentityProviders(
@@ -83,7 +73,6 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
     uid = String(data[discoveryConfig.minimalFieldMapping.uid]);
   }
   /* END FOR DOWNLOAD MANIFEST */
-
   const variableMetadataRecords = useMemo(
     () => getVariableMetadataRecords(data, variableMetadataFieldName),
     [data, variableMetadataFieldName],
