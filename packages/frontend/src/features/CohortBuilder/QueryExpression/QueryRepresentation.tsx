@@ -1,19 +1,15 @@
 import type { PropsWithChildren, ReactElement } from 'react';
 import React, { useContext } from 'react';
 import { get, isArray } from 'lodash';
-import {
-  buildNestedFilterForOperation,
+import type {
   Equals,
   ExcludeIfAny,
   Excludes,
   Exists,
-  fieldNameToLabel,
   GreaterThan,
   GreaterThanOrEquals,
-  handleOperation,
   Includes,
   Intersection,
-  isIncludes,
   LessThan,
   LessThanOrEquals,
   Missing,
@@ -22,6 +18,14 @@ import {
   Operation,
   OperationHandler,
   Union,
+} from '@gen3/core';
+import {
+  buildNestedFilterForOperation,
+  fieldNameToLabel,
+  findParentOfOperation,
+  handleOperation,
+  isIncludes,
+  isIntersectionOrUnion,
 } from '@gen3/core';
 import { ActionIcon, Badge, Divider, Group } from '@mantine/core';
 import {
@@ -200,7 +204,7 @@ const IncludeExcludeQueryElement = ({
     return `${count} input ${entityName}s`;
   };
 
-  const fieldToUpdate = path && path != '.' ? [path, field].join('.') : field;
+  const fieldToUpdate = path && path !== '.' ? [path, field].join('.') : field;
 
   return (
     <QueryContainer>
@@ -352,24 +356,44 @@ const ComparisonElement = ({
   displayOnly = false,
   path,
 }: ComparisonElementProps) => {
-  const { useUpdateFilters, useRemoveFilter, fieldsAreFlat } = useContext(
-    QueryExpressionContext,
-  );
+  const { useUpdateFilters, useRemoveFilter, useGetFilters, fieldsAreFlat } =
+    useContext(QueryExpressionContext);
   const updateCohortFilter = useUpdateFilters();
   const removeCohortFilter = useRemoveFilter();
+  const filters = useGetFilters(index);
+
   const fieldToUpdate =
-    path && path != '.' ? [path, filter.field].join('.') : filter.field;
+    path && path !== '.' ? [path, filter.field].join('.') : filter.field;
   // fix the code below
 
+  // Comparisons have a parent "and" Operation that we need to modify or remove
+
   const handleRemove = (remove: ValueOperation) => {
-    if ('operands' in remove) {
+    console.log('remove[0]', remove);
+
+    const parentOperation = findParentOfOperation(
+      remove,
+      filters.root[fieldToUpdate],
+    );
+
+    if (parentOperation === null) {
+      console.log('parentOperation is null removing operation', fieldToUpdate);
+      removeCohortFilter(index, fieldToUpdate);
+      return;
+    }
+
+    if (parentOperation && isIntersectionOrUnion(parentOperation)) {
+      // this is a bounded range comparison  i.e x >= 20 and x < 30
       const remainingOperands = (
-        remove.operands as readonly ComparisonOperation[]
+        parentOperation.operands as ComparisonOperation[]
       ).filter(
-        (operand) =>
+        (operand: ValueOperation) =>
           operand.operand !== remove.operand &&
           operand.operator !== remove.operator,
       );
+
+      console.log('remove', remove);
+      console.log('remainingOperands', remainingOperands);
 
       if (remainingOperands.length > 0) {
         const [keep] = remainingOperands;
@@ -394,22 +418,9 @@ const ComparisonElement = ({
       } else {
         removeCohortFilter(index, fieldToUpdate);
       }
-    } else {
-      removeCohortFilter(index, fieldToUpdate);
+      return;
     }
-  };
-
-  const handleKeepMember = (keep: ValueOperation) => {
-    // rebuild the range parent if nested
-
-    if (!fieldsAreFlat) {
-      const updatedFilter = buildNestedFilterForOperation(fieldToUpdate, keep);
-      console.log('updatedFilter:nested', updatedFilter);
-      updateCohortFilter(index, fieldToUpdate, updatedFilter);
-    } else {
-      console.log('handleKeepMember', index, keep.field, keep, fieldToUpdate);
-      updateCohortFilter(index, fieldToUpdate, keep);
-    }
+    removeCohortFilter(index, fieldToUpdate);
   };
 
   return (
@@ -458,8 +469,6 @@ export const ClosedRangeQueryElement = ({
   path,
 }: PropsWithChildren<ClosedRangeQueryElementProps>) => {
   const { field } = lower; // As this is a Range the field for both lower and upper will be the same
-
-  const fieldToUpdate = path && path != '.' ? [path, field].join('.') : field;
 
   return (
     <React.Fragment>
@@ -512,7 +521,7 @@ export const QueryElement = ({
   //   selectCurrentCohortId(state),
   // );
 
-  const fieldToUpdate = path && path != '.' ? [path, field].join('.') : field;
+  const fieldToUpdate = path && path !== '.' ? [path, field].join('.') : field;
 
   const handleRemoveFilter = () => {
     removeCohortFilter(index, fieldToUpdate);
@@ -652,6 +661,7 @@ class CohortFilterToComponent implements OperationHandler<ReactElement> {
         filter={f}
         index={this.index}
         displayOnly={this.displayOnly}
+        path={this.path}
       />
     </QueryElement>
   );
@@ -667,6 +677,7 @@ class CohortFilterToComponent implements OperationHandler<ReactElement> {
         filter={f}
         index={this.index}
         displayOnly={this.displayOnly}
+        path={this.path}
       />
     </QueryElement>
   );
@@ -682,6 +693,7 @@ class CohortFilterToComponent implements OperationHandler<ReactElement> {
         filter={f}
         index={this.index}
         displayOnly={this.displayOnly}
+        path={this.path}
       />
     </QueryElement>
   );

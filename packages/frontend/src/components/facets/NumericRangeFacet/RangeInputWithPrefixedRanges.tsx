@@ -7,8 +7,9 @@ import {
   buildRangeLabelsAndValues,
   classifyRangeType,
   DEFAULT_VISIBLE_ITEMS,
-  extractRangeValues,
 } from './utils';
+import { extractRangeValues } from '../utils';
+
 import FromTo from './FromTo';
 import RangeValueSelector from './RangeValueSelector';
 import { BAD_DATA_MESSAGE } from '../constants';
@@ -54,6 +55,9 @@ const RangeInputWithPrefixedRanges: React.FC<
     return [values, key];
   }, [filter]);
 
+  console.log('filterValues', filterValues);
+  console.log('filterKey', filterKey);
+
   const queryInYears = rangeDatatype === 'age_in_years';
   // build the range for the useRangeFacet and the facet query
   const [bucketRanges, ranges] = useMemo(() => {
@@ -93,10 +97,12 @@ const RangeInputWithPrefixedRanges: React.FC<
   }, [isCustom]);
 
   useEffect(() => {
-    if (!isCustom)
+    console.log('filter key', filterKey);
+    if (!isCustom) {
       if (Object.keys(rangeLabelsAndValues).includes(filterKey))
         setSelectedRange(filterKey);
       else resetToCustom();
+    }
   }, [filterKey, isCustom, rangeLabelsAndValues, resetToCustom]);
 
   const totalBuckets = Object.keys(rangeLabelsAndValues).length;

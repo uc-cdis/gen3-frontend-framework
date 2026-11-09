@@ -43,8 +43,8 @@ import {
   processRangeData,
   removeIntersectionFromEnum,
   useGetFacetFilters,
-  useUpdateFilters,
   useUpdateFiltersFlat,
+  useUpdateNestedFilters,
 } from '../../components/facets';
 import {
   useClearFilters,
@@ -320,7 +320,7 @@ export const CohortPanel = ({
   const EnumHookInstances = {
     useGetFacetData: getEnumFacetData,
     useUpdateFacetFilters: partial(
-      fieldsAreFlat ? useUpdateFiltersFlat : useUpdateFilters,
+      fieldsAreFlat ? useUpdateFiltersFlat : useUpdateNestedFilters,
       index,
     ),
     useGetFacetFilters: partial(useGetFacetFilters, index),
@@ -335,7 +335,7 @@ export const CohortPanel = ({
   const RangeHookInstances = {
     useGetFacetData: getRangeFacetData,
     useUpdateFacetFilters: partial(
-      fieldsAreFlat ? useUpdateFiltersFlat : useUpdateFilters,
+      fieldsAreFlat ? useUpdateFiltersFlat : useUpdateNestedFilters,
       index,
     ),
     useGetFacetFilters: partial(useGetFacetFilters, index),
@@ -349,7 +349,7 @@ export const CohortPanel = ({
   const ContinuousHookInstances = {
     useGetFacetData: useContinuousFacet,
     useUpdateFacetFilters: partial(
-      fieldsAreFlat ? useUpdateFiltersFlat : useUpdateFilters,
+      fieldsAreFlat ? useUpdateFiltersFlat : useUpdateNestedFilters,
       index,
     ),
     useGetFacetFilters: partial(useGetFacetFilters, index),

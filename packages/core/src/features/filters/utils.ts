@@ -1,3 +1,9 @@
+import {
+  isIntersectionOrUnion,
+  isNestedFilter,
+  type Operation,
+} from './types.ts';
+
 const FieldNameOverrides: Record<string, string> = {
   gender: 'Sex',
   Gender: 'Sex',
@@ -93,4 +99,31 @@ export const extractIndexAndFieldNameFromFullFieldName = (
 ): [string, string] => {
   const [index, ...rest] = fieldName.split('.');
   return [index, rest.join('.')];
+};
+
+/**
+ * Finds the parent of a node within an operation tree (matched by reference).
+ * Children are the `operands` of an Intersection/Union and the `operand` of a NestedFilter.
+ * @param op - the node whose parent is wanted
+ * @param root - root of the operation tree to search
+ * @returns the parent Operation, or null if op is the root or is not in the tree
+ */
+export const findParentOfOperation = (
+  op: Operation,
+  root: Operation,
+): Operation | null => {
+  if (op === root) return null;
+
+  const children: ReadonlyArray<Operation> = isIntersectionOrUnion(root)
+    ? root.operands
+    : isNestedFilter(root)
+      ? [root.operand]
+      : [];
+
+  for (const child of children) {
+    if (child === op) return root;
+    const found = findParentOfOperation(op, child);
+    if (found) return found;
+  }
+  return null;
 };

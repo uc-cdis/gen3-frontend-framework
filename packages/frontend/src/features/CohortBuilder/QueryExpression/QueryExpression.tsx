@@ -135,7 +135,6 @@ const QueryExpression = ({
                 );
               });
             } else {
-              console.log('updateCohortFilter ');
               dispatch(
                 updateCohortFilter({
                   index,
