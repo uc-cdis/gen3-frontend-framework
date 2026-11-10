@@ -1,5 +1,5 @@
 import { isEqual } from 'lodash';
-import {
+import type {
   EnumFilterValue,
   Equals,
   ExcludeIfAny,
@@ -9,7 +9,6 @@ import {
   FilterValue,
   GreaterThan,
   GreaterThanOrEquals,
-  ifOperationWithField,
   Includes,
   Intersection,
   LessThan,
@@ -22,11 +21,10 @@ import {
   OperationWithField,
   Union,
 } from './types';
+import { ifOperationWithField, isOperandsType } from './types';
 
 export type OperatorWithFieldAndArrayOfOperands =
-  | Includes
-  | Excludes
-  | ExcludeIfAny;
+  Includes | Excludes | ExcludeIfAny;
 
 export const isOperationWithField = (
   operation: OperationWithField | Operation,
@@ -585,9 +583,9 @@ export class ValueExtractorHandler implements OperationHandler<FilterValue> {
 /**
  * Extract the operand values, if operands themselves have values, otherwise undefined.
  */
-export class EnumValueExtractorHandler
-  implements OperationHandler<EnumFilterValue | undefined>
-{
+export class EnumValueExtractorHandler implements OperationHandler<
+  EnumFilterValue | undefined
+> {
   handleEquals: (_: Equals) => undefined = (_: Equals) => undefined;
   handleNotEquals: (_: NotEquals) => undefined = (_: NotEquals) => undefined;
   handleIncludes: (op: Includes) => ReadonlyArray<string | number> = (
@@ -629,8 +627,7 @@ export const appendFilterToOperation = (
   if (addition === undefined && filter) return filter;
   if (filter === undefined && addition) return addition;
   return { ...filter, operands: [...(filter?.operands || []), addition] } as
-    | Intersection
-    | Union;
+    Intersection | Union;
 };
 
 export const filterSetToOperation = (
@@ -716,9 +713,17 @@ export const buildNestedFilterForOperation = (
     // at the end of the path
     if (ifOperationWithField(leafOperand)) {
       // update the field for operations with a field
-      return { ...leafOperand, field };
+      return { ...leafOperand, field: field };
     }
-    return leafOperand;
+    if (isOperandsType(leafOperand)) {
+      // if leaf has operands, ensure process nesting
+      return {
+        ...leafOperand,
+        operands: leafOperand.operands.map((x) =>
+          buildNestedFilterForOperation(field, x, parentPath),
+        ),
+      };
+    }
   }
 
   const splitFieldArray = field.split('.');

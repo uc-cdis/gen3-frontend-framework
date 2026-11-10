@@ -1,8 +1,7 @@
 import React from 'react';
+import type { FilterSet, Operation } from '@gen3/core';
 import {
   clearCohortFilters,
-  FilterSet,
-  Operation,
   removeCohortFilter,
   setCohortFilter,
   updateCohortFilter,
@@ -28,6 +27,7 @@ export interface QueryExpressionContextProps extends QueryExpressionHooks {
   cohortName: string;
   cohortId: string | null;
   fieldsAreFlat: boolean;
+  showFullPath?: boolean;
   shouldShowSummary?: (field: string, count: number) => boolean;
 }
 
@@ -36,6 +36,7 @@ export const QueryExpressionContext =
     displayOnly: false,
     showLogicalOperators: false,
     fieldsAreFlat: true,
+    showFullPath: false,
     cohortId: null,
     cohortName: 'default',
     shouldShowSummary: () => false,
@@ -55,7 +56,7 @@ export const QueryExpressionContext =
     },
     useUpdateFilters: () => {
       const dispatch = useCoreDispatch();
-      return (index: string, field: string, filter: Operation) =>
+      return (index: string, field: string, filter: Operation) => {
         dispatch(
           updateCohortFilter({
             index,
@@ -63,6 +64,7 @@ export const QueryExpressionContext =
             filter: filter,
           }),
         );
+      };
     },
     useSetCohortFilters: () => {
       const dispatch = useCoreDispatch();

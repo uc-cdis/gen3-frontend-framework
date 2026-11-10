@@ -1,16 +1,16 @@
 // set of interfaces which follows the current explorer configuration
 
-import {
+import type {
   CollapsableChartsPanelConfiguration,
   SummaryChart,
 } from '../../components/charts';
-import { SummaryTable } from './ExplorerTable/types';
-import { FacetSortType, FieldToName } from '../../components/facets/types';
-import { DownloadButtonProps } from '../../components/Buttons/DropdownButtons';
-import { Dispatch, SetStateAction } from 'react';
-import { FacetDefinition, Modals, SharedFieldMapping } from '@gen3/core';
-import { StylingOverride } from '../../types/styling';
-import { Gen3AppConfigData } from '../../lib/content/types';
+import type { SummaryTable } from './ExplorerTable/types';
+import type { FacetSortType, FieldToName } from '../../components/facets/types';
+import type { DownloadButtonProps } from '../../components/Buttons/DropdownButtons';
+import type { Dispatch, SetStateAction } from 'react';
+import type { FacetDefinition, Modals, SharedFieldMapping } from '@gen3/core';
+import type { StylingOverride } from '../../types/styling';
+import type { Gen3AppConfigData } from '../../lib/content/types';
 
 export interface TabConfig {
   title: string;

@@ -7,8 +7,9 @@ import {
   buildRangeLabelsAndValues,
   classifyRangeType,
   DEFAULT_VISIBLE_ITEMS,
-  extractRangeValues,
 } from './utils';
+import { extractRangeValues } from '../utils';
+
 import FromTo from './FromTo';
 import RangeValueSelector from './RangeValueSelector';
 import { BAD_DATA_MESSAGE } from '../constants';
@@ -93,10 +94,11 @@ const RangeInputWithPrefixedRanges: React.FC<
   }, [isCustom]);
 
   useEffect(() => {
-    if (!isCustom)
+    if (!isCustom) {
       if (Object.keys(rangeLabelsAndValues).includes(filterKey))
         setSelectedRange(filterKey);
       else resetToCustom();
+    }
   }, [filterKey, isCustom, rangeLabelsAndValues, resetToCustom]);
 
   const totalBuckets = Object.keys(rangeLabelsAndValues).length;
