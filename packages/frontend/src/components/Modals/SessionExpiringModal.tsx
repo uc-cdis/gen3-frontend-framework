@@ -1,6 +1,7 @@
-import React, { JSX } from 'react';
+import type { JSX } from 'react';
+import React from 'react';
 import { Button } from '@mantine/core';
-import { ContextModalProps } from '@mantine/modals';
+import type { ContextModalProps } from '@mantine/modals';
 
 export interface SessionExpiringModalProps {
   readonly minutesRemaining: number;
