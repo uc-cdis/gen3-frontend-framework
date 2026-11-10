@@ -4,6 +4,11 @@ import type { DiscoveryConfig, DiscoveryIndexConfig } from './types';
 import DiscoveryIndexPanel from './DiscoveryIndexPanel';
 import MessagePanel from '../../components/MessagePanel';
 import DiscoveryProvider from './DiscoveryProvider';
+import {
+  type CoreState,
+  selectAuthzMappingData,
+  useCoreSelector,
+} from '@gen3/core';
 
 const extractLabel = (c: DiscoveryIndexConfig, idx: number) =>
   c.label ?? c.features?.pageTitle?.text ?? `Index ${idx.toString()}`;
@@ -15,17 +20,38 @@ export interface DiscoveryProps {
 const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
   const [metadataIndex, setMetadataIndex] = useState<string>('0');
 
-  const menuItems = useMemo(() => {
-    return discoveryConfig.metadataConfig.map((n, idx) => {
-      return { value: idx.toString(), label: extractLabel(n, idx) };
-    });
+  const needsAuthz = discoveryConfig.metadataConfig.some(
+    (x) => x.authz.length > 0,
+  );
+
+  const authMapping = useCoreSelector((state: CoreState) =>
+    selectAuthzMappingData(state),
+  );
+
+  // const isMesh = !!discoveryConfig?.features?.authorization?.isMesh; = useCoreSelector((state: CoreState) =>
+  //   selectMeshAuthzMapping(state),
+  // );
+
+  const tabItems = useMemo(() => {
+    return discoveryConfig.metadataConfig.reduce<
+      Array<{ value: string; label: string; config: DiscoveryIndexConfig }>
+    >((items, n, idx) => {
+      if (n.authz.length > 0) {
+      }
+      items.push({
+        value: idx.toString(),
+        label: extractLabel(n, idx),
+        config: n,
+      });
+      return items;
+    }, []);
   }, [discoveryConfig.metadataConfig]);
 
-  if (menuItems.length === 0) {
+  if (tabItems.length === 0) {
     return <MessagePanel message="No discovery configuration" />;
   }
 
-  if (menuItems.length === 1) {
+  if (tabItems.length === 1) {
     // no need for tabs
     return (
       <DiscoveryProvider
@@ -39,48 +65,48 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
   }
 
   return (
-    <DiscoveryProvider
-      discoveryIndexConfig={
-        discoveryConfig.metadataConfig[0] as DiscoveryIndexConfig
-      }
-    >
-      <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
-        <Tabs
-          className="w-full"
-          defaultValue={metadataIndex}
-          variant={discoveryConfig.metadataConfig[0]?.tabType}
-          onChange={(v: string | null) => {
-            setMetadataIndex(v ?? '0');
-          }}
-        >
-          <Tabs.List>
-            {menuItems.map((item) => (
-              <Tabs.Tab key={item.value} value={item.value}>
-                {item.label}
-              </Tabs.Tab>
-            ))}
-          </Tabs.List>
-          {menuItems.map((item, i) => (
-            <Tabs.Panel value={item.value} key={item.value}>
-              <DiscoveryIndexPanel
-                indexSelector={
-                  menuItems.length < 0 ? (
-                    <Select
-                      label="Metadata:"
-                      data={menuItems}
-                      value={metadataIndex}
-                      onChange={(v: string | null) => {
-                        setMetadataIndex(v ?? '0');
-                      }}
-                    />
-                  ) : null
-                }
-              />
-            </Tabs.Panel>
+    <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
+      <Tabs
+        className="w-full"
+        defaultValue={metadataIndex}
+        variant={discoveryConfig.metadataConfig[0]?.tabType}
+        onChange={(v: string | null) => {
+          setMetadataIndex(v ?? '0');
+        }}
+      >
+        <Tabs.List>
+          {tabItems.map((item) => (
+            <Tabs.Tab key={item.value} value={item.value}>
+              {item.label}
+            </Tabs.Tab>
           ))}
-        </Tabs>
-      </div>
-    </DiscoveryProvider>
+        </Tabs.List>
+        {tabItems.map((item, i) => {
+          return (
+            <Tabs.Panel value={item.value} key={item.value}>
+              <DiscoveryProvider
+                discoveryIndexConfig={discoveryConfig.metadataConfig[i]}
+              >
+                <DiscoveryIndexPanel
+                  indexSelector={
+                    tabItems.length < 0 ? (
+                      <Select
+                        label="Metadata:"
+                        data={tabItems}
+                        value={metadataIndex}
+                        onChange={(v: string | null) => {
+                          setMetadataIndex(v ?? '0');
+                        }}
+                      />
+                    ) : null
+                  }
+                />
+              </DiscoveryProvider>
+            </Tabs.Panel>
+          );
+        })}
+      </Tabs>
+    </div>
   );
 };
 

@@ -1,5 +1,5 @@
 import { JSONPath } from 'jsonpath-plus';
-import type { JSONObject } from '@gen3/core';
+import type { AuthzMapping, JSONObject } from '@gen3/core';
 import type { DiscoveryIndexConfig } from './types';
 import { AccessLevel } from '../../utils';
 
@@ -84,4 +84,10 @@ export const supportedAccessLevels = (
     },
     [],
   );
+};
+
+export const hasAccess = (mapping: AuthzMapping, required: Array<string>) => {
+  if (!mapping) return false;
+  if (required.length === 0) return true;
+  return true;
 };
