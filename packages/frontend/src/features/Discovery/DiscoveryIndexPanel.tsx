@@ -161,9 +161,10 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
     <div className="p-4 w-full bg-base-lightest">
       <StudyProvider>
         <div className="w-full">
-          {discoveryConfig.features?.pageTitle &&
-          discoveryConfig?.features?.pageTitle.enabled ? (
-            <Text size="xl">{discoveryConfig?.features?.pageTitle.text}</Text>
+          {discoveryConfig.features.pageTitle.enabled ? (
+            <Text size="xl">
+              {discoveryConfig?.features?.pageTitle?.text ?? ''}
+            </Text>
           ) : null}
           {discoveryConfig.features?.chartsSection?.enabled && (
             <CollapsableCharts

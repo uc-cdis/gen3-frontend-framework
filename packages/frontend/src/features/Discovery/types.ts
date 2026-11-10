@@ -139,8 +139,8 @@ interface DiscoveryTableConfig {
 }
 
 export interface DiscoveryPageTitle {
-  enabled: boolean;
-  text: string;
+  enabled?: boolean;
+  text?: string;
 }
 
 export type ActionButtonType =
@@ -200,6 +200,7 @@ interface DataLoader {
 
 // TODO: Type the rest of the config
 export interface DiscoveryIndexConfig {
+  authz: Array<string>; // list of authz resources for the Discovery page [] is default
   guidType?: string;
   studyField?: string;
   maxStudies?: number;
