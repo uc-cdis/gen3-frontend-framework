@@ -1087,6 +1087,7 @@ export const SessionProvider = ({
         );
         const innerProps = {
           minutesRemaining,
+          maxMinutes: expireWarningMinutes,
           onRenew: renewSession,
           onLogout: logoutFromWarning,
         };
