@@ -1076,40 +1076,52 @@ export const SessionProvider = ({
         warningLead > 0 &&
         timeSinceLastActivity >= activeLimit - warningLead
       ) {
-        if (!expiryWarningIdRef.current) {
-          if (SESSION_DEBUG_LOGGING) {
-            // eslint-disable-next-line no-console
-            console.log('[session-inactivity] showing expiry warning', {
-              minutesRemaining: Math.max(
-                1,
-                Math.round(warningLead / MILLISECONDS_PER_MINUTE),
-              ),
-            });
-          }
-          // Show warning before session expires, giving user a chance to act
-          expiryWarningIdRef.current = modals.openContextModal({
-            modal: 'sessionExpiringModal',
-            title: 'Session Expiring',
-            // Offer an explicit close control, but prevent accidental dismissal
-            // through Escape or a click outside the modal.
-            withCloseButton: true,
-            closeOnClickOutside: false,
-            closeOnEscape: false,
-            // Belt and braces for a close we did not initiate (modals.closeAll
-            // elsewhere, say) so the id never outlives the modal.
-            onClose: () => {
-              expiryWarningIdRef.current = null;
-            },
-            innerProps: {
-              minutesRemaining: Math.max(
-                1,
-                Math.round(warningLead / MILLISECONDS_PER_MINUTE),
-              ),
-              onRenew: renewSession,
-              onLogout: logoutFromWarning,
-            },
+        // Time actually left, not the size of the warning window: the first tick
+        // inside the window can be well after it opened, and later ticks keep
+        // counting down while the modal is open.
+        const minutesRemaining = Math.max(
+          1,
+          Math.round(
+            (activeLimit - timeSinceLastActivity) / MILLISECONDS_PER_MINUTE,
+          ),
+        );
+        const innerProps = {
+          minutesRemaining,
+          onRenew: renewSession,
+          onLogout: logoutFromWarning,
+        };
+
+        if (expiryWarningIdRef.current) {
+          // Warning is already open: keep its countdown current
+          modals.updateContextModal({
+            modalId: expiryWarningIdRef.current,
+            innerProps,
+          });
+          return;
+        }
+
+        if (SESSION_DEBUG_LOGGING) {
+          // eslint-disable-next-line no-console
+          console.log('[session-inactivity] showing expiry warning', {
+            minutesRemaining,
           });
         }
+        // Show warning before session expires, giving user a chance to act
+        expiryWarningIdRef.current = modals.openContextModal({
+          modal: 'sessionExpiringModal',
+          title: 'Session Expiring',
+          // Offer an explicit close control, but prevent accidental dismissal
+          // through Escape or a click outside the modal.
+          withCloseButton: true,
+          closeOnClickOutside: false,
+          closeOnEscape: false,
+          // Belt and braces for a close we did not initiate (modals.closeAll
+          // elsewhere, say) so the id never outlives the modal.
+          onClose: () => {
+            expiryWarningIdRef.current = null;
+          },
+          innerProps,
+        });
         return;
       }
 

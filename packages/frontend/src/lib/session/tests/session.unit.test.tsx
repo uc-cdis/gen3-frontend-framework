@@ -92,11 +92,19 @@ const mockOpenContextModal = jest.fn(
   (_args: OpenContextModalArgs) => 'expiring-modal-id',
 );
 const mockCloseModal = jest.fn((_id: string) => undefined);
+const mockUpdateContextModal = jest.fn(
+  (_args: { modalId: string; innerProps: ExpiringModalInnerProps }) =>
+    undefined,
+);
 jest.mock('@mantine/modals', () => ({
   modals: {
     openContextModal: (args: OpenContextModalArgs) =>
       mockOpenContextModal(args),
     close: (id: string) => mockCloseModal(id),
+    updateContextModal: (args: {
+      modalId: string;
+      innerProps: ExpiringModalInnerProps;
+    }) => mockUpdateContextModal(args),
   },
 }));
 
@@ -1727,6 +1735,49 @@ describe('SessionProvider – inactivity warning', () => {
     } finally {
       routerState.pathname = '/Explorer';
     }
+  });
+
+  it('counts down the minutes remaining while the warning is open', async () => {
+    // 1 minute poll, 5 minute limit, 3 minute warning -> opens at 2 minutes with
+    // 3 minutes left, then ticks at 3 and 4 minutes.
+    render(
+      <SessionProvider
+        updateSessionTime={1}
+        inactiveTimeLimit={5}
+        expireWarningMinutes={3}
+      >
+        <div />
+      </SessionProvider>,
+    );
+    await act(async () => {});
+
+    await act(async () => {
+      jest.advanceTimersByTime(2 * 60 * 1000);
+    });
+    expect(mockOpenContextModal).toHaveBeenCalledTimes(1);
+    expect(lastInnerProps().minutesRemaining).toBe(3);
+    expect(mockUpdateContextModal).not.toHaveBeenCalled();
+
+    await act(async () => {
+      jest.advanceTimersByTime(60 * 1000);
+    });
+    expect(mockUpdateContextModal).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        modalId: 'expiring-modal-id',
+        innerProps: expect.objectContaining({ minutesRemaining: 2 }),
+      }),
+    );
+
+    await act(async () => {
+      jest.advanceTimersByTime(60 * 1000);
+    });
+    expect(mockUpdateContextModal).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        innerProps: expect.objectContaining({ minutesRemaining: 1 }),
+      }),
+    );
+    // Updated in place, never re-opened
+    expect(mockOpenContextModal).toHaveBeenCalledTimes(1);
   });
 
   it('closes the warning modal when the inactivity logout fires', async () => {
