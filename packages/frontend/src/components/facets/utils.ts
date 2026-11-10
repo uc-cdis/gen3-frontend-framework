@@ -240,7 +240,7 @@ export const classifyFacets = (
  * leaf be filtered
  * @param index
  */
-export const useUpdateFilters = (index: string) => {
+export const useUpdateNestedFilters = (index: string) => {
   const dispatch = useCoreDispatch();
   // update the filter for this facet
 
@@ -322,7 +322,8 @@ export const useGetFacetFilters = (index: string, field: string): Operation => {
 
 /**
  * Given an operation, determine if range is open or closed and extract
- * the range values and operands as a NumericRange
+ * the range values and operands as a NumericRange. Nested filters are
+ * unwrapped, so a closed range inside a nested filter is also supported.
  * @param filter - operation to test
  */
 export const extractRangeValues = <T extends string | number>(
@@ -347,6 +348,8 @@ export const extractRangeValues = <T extends string | number>(
         const b = extractRangeValues<T>(filter.operands[1]);
         return a && b ? { ...a, ...b } : (a ?? b ?? undefined);
       }
+      case 'nested':
+        return extractRangeValues<T>(filter.operand);
       default:
         return undefined;
     }

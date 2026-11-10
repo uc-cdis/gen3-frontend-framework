@@ -30,8 +30,8 @@ import {
   processRangeData,
   removeIntersectionFromEnum,
   useGetFacetFilters,
-  useUpdateFilters,
   useUpdateFiltersFlat,
+  useUpdateNestedFilters,
 } from '../../components/facets';
 import type { QueryOptions } from '../../components/facets/types';
 import {
@@ -272,7 +272,7 @@ const TabbedCohortBuilder = ({
   const EnumHookInstances = {
     useGetFacetData: getEnumFacetData,
     useUpdateFacetFilters: partial(
-      fieldsAreFlat ? useUpdateFiltersFlat : useUpdateFilters,
+      fieldsAreFlat ? useUpdateFiltersFlat : useUpdateNestedFilters,
       index,
     ),
     useGetFacetFilters: partial(useGetFacetFilters, index),
@@ -287,7 +287,7 @@ const TabbedCohortBuilder = ({
   const RangeHookInstances = {
     useGetFacetData: getRangeFacetData,
     useUpdateFacetFilters: partial(
-      fieldsAreFlat ? useUpdateFiltersFlat : useUpdateFilters,
+      fieldsAreFlat ? useUpdateFiltersFlat : useUpdateNestedFilters,
       index,
     ),
     useGetFacetFilters: partial(useGetFacetFilters, index),
@@ -301,7 +301,7 @@ const TabbedCohortBuilder = ({
   const ContinuousHookInstances = {
     useGetFacetData: useContinuousFacet,
     useUpdateFacetFilters: partial(
-      fieldsAreFlat ? useUpdateFiltersFlat : useUpdateFilters,
+      fieldsAreFlat ? useUpdateFiltersFlat : useUpdateNestedFilters,
       index,
     ),
     useGetFacetFilters: partial(useGetFacetFilters, index),

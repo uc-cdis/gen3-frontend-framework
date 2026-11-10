@@ -1,11 +1,11 @@
-import {
-  buildNestedFilterForOperation,
+import type {
   FilterSet,
   Intersection,
   NumericFromTo,
   Operation,
 } from '../filters';
-import { FromToRange } from '../../types';
+import { buildNestedFilterForOperation } from '../filters';
+import type { FromToRange } from '../../types';
 
 export interface Range<T> {
   field: string;

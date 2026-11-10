@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Radio } from '@mantine/core';
 import FacetSortPanel from '../FacetSortPanel';
-import { FromToRange, SortType, UpdateFacetFilterFunction } from '../types';
-import { RangeBucketElement } from './types';
+import type {
+  FromToRange,
+  SortType,
+  UpdateFacetFilterFunction,
+} from '../types';
+import type { RangeBucketElement } from './types';
 import { buildRangeOperator } from './utils';
+import { LockOutlineIcon } from '../../../types/icons';
 
 interface RangeValueSelectorProps {
   readonly itemsToShow: number;
@@ -44,20 +49,23 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
   });
 
   // process when range is selected
-  const handleSelection = (rangeKey: string) => {
-    const data: FromToRange<number> = {
-      from: rangeLabelsAndValues[rangeKey].from,
-      to: rangeLabelsAndValues[rangeKey].to,
-      fromOp: '>=',
-      toOp: '<',
-    };
-    const rangeFilters = buildRangeOperator(field, data);
+  const handleSelection = useCallback(
+    (rangeKey: string) => {
+      const data: FromToRange<number> = {
+        from: rangeLabelsAndValues[rangeKey].from,
+        to: rangeLabelsAndValues[rangeKey].to,
+        fromOp: '>=',
+        toOp: '<',
+      };
+      const rangeFilters = buildRangeOperator(field, data);
 
-    if (rangeFilters) {
-      updateFilters(field, rangeFilters);
-    }
-    setSelected(rangeKey);
-  };
+      if (rangeFilters) {
+        updateFilters(field, rangeFilters);
+      }
+      setSelected(rangeKey);
+    },
+    [rangeLabelsAndValues, setSelected, field, updateFilters],
+  );
 
   if (rangeLabelsAndValues === undefined) return null;
 
@@ -115,7 +123,12 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
                   data-testid={`text-${rangeLabelsAndValues[rangeKey].label}`}
                   className="ml-auto"
                 >
-                  {rangeLabelsAndValues[rangeKey].valueLabel}
+                  {rangeLabelsAndValues[rangeKey].value &&
+                  rangeLabelsAndValues[rangeKey].value < 0 ? (
+                    <LockOutlineIcon />
+                  ) : (
+                    rangeLabelsAndValues[rangeKey].valueLabel
+                  )}
                 </span>
               </div>
             );

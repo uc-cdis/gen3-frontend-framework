@@ -1,5 +1,17 @@
-import { ClearFacetFunction, EnumOperandValue, FromToRange, UpdateFacetFilterFunction, } from '../types';
-import { GreaterThan, GreaterThanOrEquals, LessThan, LessThanOrEquals, NumericFromTo, Operation, } from '@gen3/core';
+import {
+  ClearFacetFunction,
+  EnumOperandValue,
+  FromToRange,
+  UpdateFacetFilterFunction,
+} from '../types';
+import {
+  GreaterThan,
+  GreaterThanOrEquals,
+  LessThan,
+  LessThanOrEquals,
+  NumericFromTo,
+  Operation,
+} from '@gen3/core';
 import { NumericUnits, RangeBucketElement } from './types';
 import { DAYS_IN_YEAR } from '../constants';
 
@@ -44,49 +56,6 @@ export const buildRangeOperator = <T extends string | number>(
     return { operator: 'and', operands: [fromOperation, toOperation] };
   if (fromOperation) return fromOperation;
   return toOperation;
-};
-
-/**
- * Given an operation, determine if range is open or closed and extract
- * the range values and operands as a NumericRange
- * @param filter - operation to test
- */
-export const extractRangeValues = <T extends string | number>(
-  filter?: Operation,
-): FromToRange<T> | undefined => {
-  if (filter !== undefined) {
-    switch (filter.operator) {
-      case '>':
-      case '>=':
-        return {
-          from:
-            typeof filter.operand === 'number' ||
-            typeof filter.operand === 'string'
-              ? (filter.operand as T)
-              : undefined,
-          fromOp: filter.operator,
-        };
-      case '<':
-      case '<=':
-        return {
-          to:
-            typeof filter.operand === 'number' ||
-            typeof filter.operand === 'string'
-              ? (filter.operand as T)
-              : undefined,
-          toOp: filter.operator,
-        };
-      case 'and': {
-        const a = extractRangeValues<T>(filter.operands[0]);
-        const b = extractRangeValues<T>(filter.operands[1]);
-        return { ...a, ...b };
-      }
-      default:
-        return undefined;
-    }
-  } else {
-    return undefined;
-  }
 };
 
 export const updateFacetEnum = (
@@ -347,7 +316,6 @@ export const buildRangeLabelsAndValues = (
   rangeData?: Record<string, string | number>,
   showZero = true,
 ) => {
-
   return Object.entries(bucketRanges).reduce(
     (b, [x, val], index: number) => {
       const count = rangeData?.[val.queryKey];

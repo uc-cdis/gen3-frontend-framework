@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, JSX } from 'react';
+import React, { JSX, useCallback, useMemo, useState } from 'react';
 import {
   useDeepCompareCallback,
   useDeepCompareEffect,
@@ -30,7 +30,7 @@ import {
   useClearFilters,
   useFieldNameToLabel,
   useGetFacetFilters,
-  useUpdateFilters,
+  useUpdateNestedFilters,
 } from '../../../components/facets';
 import { partial } from 'lodash';
 import {
@@ -154,7 +154,7 @@ export const FileFacetPanel = ({
     return {
       enum: {
         useGetFacetData: getEnumFacetData,
-        useUpdateFacetFilters: partial(useUpdateFilters, index),
+        useUpdateFacetFilters: partial(useUpdateNestedFilters, index),
         useGetFacetFilters: partial(useGetFacetFilters, index),
         useClearFilter: partial(useClearFilters, index),
         useFilterExpanded: partial(useFilterExpandedState, index),
