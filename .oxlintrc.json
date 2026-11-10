@@ -39,6 +39,13 @@
     "react-hooks/exhaustive-deps": "warn",
     "react-perf/jsx-no-jsx-as-prop": "warn",
 
+    "react/immutability": "off",
+    "react/preserve-manual-memoization": "off",
+    "react/purity": "off",
+    "react/refs": "off",
+    "react/set-state-in-effect": "off",
+    "react/static-components": "off",
+
     "eslint/no-console": ["warn", { "allow": ["warn", "error"] }],
     "eslint/no-debugger": "error",
 

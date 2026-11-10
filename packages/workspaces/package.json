@@ -1,13 +1,13 @@
 {
   "name": "@gen3/workspaces",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "description": "Workspaces for Gen3",
   "license": "Apache-2.0",
   "sideEffects": false,
   "author": "Center for Translational Data Science",
   "engines": {
-    "npm": ">=11.16.0",
-    "node": ">=24.18.1"
+    "npm": ">=11.19.1",
+    "node": ">=24.22.1"
   },
   "main": "dist/index/cjs/index.js",
   "module": "dist/index/esm/index.js",
@@ -54,8 +54,8 @@
     "./jupyterlite-builds/*": "./dist/jupyterlite-builds/*"
   },
   "dependencies": {
-    "@gen3/core": "^0.13.0",
-    "@gen3/frontend": "^0.13.0",
+    "@gen3/core": "^0.13.1",
+    "@gen3/frontend": "^0.13.1",
     "camelcase-keys": "^10.0.2",
     "jose": "^6.2.12"
   },
@@ -67,7 +67,7 @@
     "@mantine/modals": "^9.6.2",
     "@mantine/notifications": "^9.6.2",
     "mantine-react-table-open": "^9.0.6",
-    "next": "^16.3.3",
+    "next": "^16.4.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "tailwindcss": "^3.4.18"

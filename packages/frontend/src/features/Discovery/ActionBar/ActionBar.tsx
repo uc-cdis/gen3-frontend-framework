@@ -6,6 +6,7 @@ import AddToDataLibrary from './AddToDataLibrary';
 import { DataLibraryStoreMode } from '@gen3/core';
 import { Text } from '@mantine/core';
 import ExportToWorkspaceButton from './ExportToWorkspaceButton';
+import { LoginGate } from '../../../components/Login/LoginGate';
 
 const createActionButton = ({
   buttonConfig,
@@ -63,13 +64,17 @@ const ActionBar: React.FC<ActionBarProps> = ({
           : `${selectedResources.length} selected`}
       </Text>
       {buttons?.map((button) => {
-        return createActionButton({
+        const btn = createActionButton({
           buttonConfig: button,
           selectedResources,
           exportDataFields,
           verifyExternalLogins,
           dataLibraryStoreMode,
         });
+
+        if (button.enableRedirectToLogin) {
+          return <LoginGate key={button.label}>{btn}</LoginGate>;
+        } else return btn;
       })}
     </div>
   );

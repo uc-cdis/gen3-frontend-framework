@@ -97,6 +97,7 @@ interface CohortPanelConfigurationWithAccessLevel extends CohortPanelConfigurati
  * @param {Object[]|undefined} props.dropdowns    Dropdown menu configuration, allowing for additional filter options or actions.
  * @param {Object[]|undefined} props.buttons      List of button configurations for actions such as downloads.
  * @param {boolean} props.loginForDownload        Determines whether login is required to enable download functionality.
+ * @param {boolean} props.enableRedirectToLogin   If set to true, will redirect the user to the login page.
  * @param {boolean} [props.showAccessLevel=false] Indicates if the user access level should be displayed on the panel.
  *
  * @returns {JSX.Element}                         Returns a JSX element rendering the CohortPanel. This includes filter options,
@@ -112,6 +113,7 @@ export const CohortPanel = ({
   dropdowns,
   buttons,
   loginForDownload,
+  enableRedirectToLogin,
   showAccessLevel = false,
   fieldsAreFlat = false,
 }: CohortPanelConfigurationWithAccessLevel): JSX.Element => {
@@ -486,6 +488,7 @@ export const CohortPanel = ({
               dropdowns={defaultDropdowns}
               buttons={defaultButtons}
               loginForDownload={loginForDownload}
+              enableRedirectToLogin={enableRedirectToLogin}
               index={index}
               totalCount={counts ?? 0}
               fields={table?.fields ?? []}

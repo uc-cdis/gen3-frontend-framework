@@ -70,6 +70,7 @@ const CohortBuilder = ({
               dropdowns={panelConfig.dropdowns}
               buttons={panelConfig.buttons}
               loginForDownload={panelConfig.loginForDownload}
+              enableRedirectToLogin={panelConfig.enableRedirectToLogin}
               sharedFiltersMap={panelConfig.sharedFiltersMap}
             />
           </Tabs.Panel>

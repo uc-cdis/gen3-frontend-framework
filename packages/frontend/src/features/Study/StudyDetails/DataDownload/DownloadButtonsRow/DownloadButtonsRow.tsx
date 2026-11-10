@@ -76,7 +76,7 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
   const accessibleFieldName = '__accessible';
   let userHasAccessToDownload = true;
   // if auth is enabled, check if user have access to this study
-  if (discoveryConfig.features.authorization?.enabled) {
+  if (discoveryConfig.features.authorization.enabled) {
     userHasAccessToDownload =
       data[accessibleFieldName] === AccessLevel.ACCESSIBLE;
   }
@@ -210,7 +210,14 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
           )}
         </>
       )}
-      <Button onClick={onDownloadAllFiles} variant="outline" size="sm">
+      <Button
+        onClick={() => {
+          onDownloadAllFiles();
+          setDownloadStatus({ inProgress: true });
+        }}
+        variant="outline"
+        size="sm"
+      >
         Download All Files
       </Button>
     </div>
