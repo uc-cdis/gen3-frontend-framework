@@ -1121,6 +1121,7 @@ export const SessionProvider = ({
           onClose: () => {
             expiryWarningIdRef.current = null;
           },
+          size: '80%',
           innerProps,
         });
         return;
