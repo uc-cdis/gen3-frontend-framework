@@ -1656,6 +1656,79 @@ describe('SessionProvider – inactivity warning', () => {
     expect(mockOpenContextModal).toHaveBeenCalledTimes(2);
   });
 
+  it('applies the normal inactivity limit on the Workspace page', async () => {
+    // Workspace used to be exempt (its own limit, default 0 = never). It is now a
+    // page like any other.
+    routerState.pathname = '/Workspace';
+    try {
+      render(
+        <SessionProvider
+          updateSessionTime={1}
+          inactiveTimeLimit={3}
+          expireWarningMinutes={0}
+        >
+          <div />
+        </SessionProvider>,
+      );
+
+      await act(async () => {});
+      await act(async () => {
+        jest.advanceTimersByTime(3 * 60 * 1000);
+      });
+
+      expect(mockRouterPush).toHaveBeenCalled();
+    } finally {
+      routerState.pathname = '/Explorer';
+    }
+  });
+
+  it('treats activity forwarded from a workspace iframe as activity', async () => {
+    routerState.pathname = '/Workspace';
+    try {
+      render(
+        <SessionProvider
+          updateSessionTime={1}
+          inactiveTimeLimit={3}
+          expireWarningMinutes={0}
+        >
+          <div />
+        </SessionProvider>,
+      );
+      await act(async () => {});
+
+      const call = mockChannel.addEventListener.mock.calls.find(
+        ([event]) => event === 'message',
+      );
+      if (!call) throw new Error('no message listener was registered');
+      const onMessage = call[1] as (event: MessageEvent) => void;
+
+      // The user types in the iframe two minutes in, the same message
+      // useIframeActivityForwarding posts
+      await act(async () => {
+        jest.advanceTimersByTime(2 * 60 * 1000);
+      });
+      await act(async () => {
+        onMessage({
+          data: { type: 'activity-update', timestamp: Date.now() },
+        } as MessageEvent);
+      });
+
+      // Past the original 3 minute mark, but only 1 minute since the activity
+      await act(async () => {
+        jest.advanceTimersByTime(60 * 1000);
+      });
+      expect(mockRouterPush).not.toHaveBeenCalled();
+
+      // A full window with no activity then logs the user out
+      await act(async () => {
+        jest.advanceTimersByTime(2 * 60 * 1000);
+      });
+      expect(mockRouterPush).toHaveBeenCalled();
+    } finally {
+      routerState.pathname = '/Explorer';
+    }
+  });
+
   it('closes the warning modal when the inactivity logout fires', async () => {
     render(
       <SessionProvider

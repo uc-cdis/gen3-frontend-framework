@@ -291,9 +291,9 @@ const unhealthyRefreshDelay = (failures: number) =>
  * @param children - Subtree that gets access to the session context
  * @param updateSessionTime - How often the inactivity check runs, and so the
  *   resolution of every inactivity decision. `0` disables activity monitoring
- * @param inactiveTimeLimit - Inactivity allowed before logout, except for Workspace pages
- * @param workspaceInactivityTimeLimit - Inactivity allowed before logout on a
- *   workspace page. `0` (the default) means no limit there
+ * @param inactiveTimeLimit - Inactivity allowed before logout, on every page.
+ *   `0` means no limit. Activity inside embedded workspace iframes counts, see
+ *   `useIframeActivityForwarding`
  * @param logoutInactiveUsers - Whether inactive users are logged out at all
  * @param monitorWorkspace - Whether to poll running/configured workspaces
  * @param expireWarningMinutes - How far ahead of the inactivity logout to warn;
@@ -307,7 +307,6 @@ export const SessionProvider = ({
   children,
   updateSessionTime = 5,
   inactiveTimeLimit = 20,
-  workspaceInactivityTimeLimit = 0,
   logoutInactiveUsers = true,
   monitorWorkspace = true,
   expireWarningMinutes = 5,
@@ -398,9 +397,6 @@ export const SessionProvider = ({
   const inactiveTimeLimitMilliseconds =
     minutesToMilliseconds(inactiveTimeLimit);
 
-  const workspaceInactivityTimeLimitMilliseconds = minutesToMilliseconds(
-    workspaceInactivityTimeLimit,
-  );
   const updateSessionIntervalMilliseconds =
     minutesToMilliseconds(updateSessionTime);
 
@@ -1041,24 +1037,7 @@ export const SessionProvider = ({
 
       const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
 
-      if (SESSION_DEBUG_LOGGING) {
-        // eslint-disable-next-line no-console
-        console.log(
-          '[workspace-test]',
-          pathname,
-          isUserOnPage('Workspace', pathname),
-        );
-
-        // oxlint-disable-next-line no-console
-        console.log(
-          '[workspace-test] workspaceInactivityTimeLimitMilliseconds',
-          workspaceInactivityTimeLimitMilliseconds,
-        );
-      }
-
-      const activeLimit = isUserOnPage('Workspace', pathname)
-        ? workspaceInactivityTimeLimitMilliseconds
-        : inactiveTimeLimitMilliseconds;
+      const activeLimit = inactiveTimeLimitMilliseconds;
 
       if (SESSION_DEBUG_LOGGING) {
         // eslint-disable-next-line no-console
@@ -1071,7 +1050,7 @@ export const SessionProvider = ({
         });
       }
 
-      // A limit of 0 means no inactivity logout for this kind of page
+      // A limit of 0 means no inactivity logout
       if (activeLimit <= 0) return;
 
       if (timeSinceLastActivity >= activeLimit) {
