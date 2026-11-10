@@ -90,7 +90,7 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
   const isUserLoggedIn = userInfo.active;
   const missingRequiredIdentityProviders = GetMissingRequiredIdentityProviders(
     [data],
-    userInfo.fence_idp,
+    userInfo.idp,
   );
   const isHEALLoginNeeded = Boolean(missingRequiredIdentityProviders.length);
   const downloadManifestButtonText =

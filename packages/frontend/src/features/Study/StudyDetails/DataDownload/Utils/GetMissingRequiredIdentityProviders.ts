@@ -1,7 +1,7 @@
 // This will possibly need to be updated in HP-2896:
 const GetMissingRequiredIdentityProviders = (
   selectedResources: ReadonlyArray<Record<string, unknown>>,
-  fenceIdentityProvider: string | undefined,
+  identityProvider: string | undefined,
 ): string[] => {
   const missingRequiredIdentityProvider: string[] = [];
   if (Array.isArray(selectedResources) && selectedResources.length > 0) {
@@ -14,8 +14,8 @@ const GetMissingRequiredIdentityProviders = (
               switch (tag.name) {
                 case 'InCommon':
                   if (
-                    fenceIdentityProvider &&
-                    fenceIdentityProvider === 'shibboleth'
+                    identityProvider &&
+                    identityProvider === 'shibboleth'
                   ) {
                     return; // do not add tag to list
                   }
