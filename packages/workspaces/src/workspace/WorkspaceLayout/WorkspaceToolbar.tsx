@@ -12,6 +12,7 @@ import { Icon } from '@iconify-icon/react';
 import { TierToolbarConfiguration } from '../tiers/types';
 import {
   CoreState,
+  selectJEGActiveWorkspaceId,
   selectJEGActiveWorkspaceStatus,
   selectWorkspaceFullscreen,
   selectWorkspaceTier,
@@ -57,13 +58,18 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
       coreDispatch(setWorkspaceTier(null));
     };
 
-    const { terminate, containerHash } = useMicroContainerReduxContext();
+    const { terminate } = useMicroContainerReduxContext();
     const { data: hatcheryOptions } = useHatcheryOptionsQuery();
-    // title of the workspace that is launching or running, shown under the status
+    // id set by setJEGActiveWorkspaceId when the workspace was launched
+    const activeWorkspaceId = useCoreSelector((state: CoreState) =>
+      selectJEGActiveWorkspaceId(state),
+    );
+    // only shown when the id exactly matches an option, otherwise show nothing
     const activeWorkspaceName =
-      workspaceStatus === WorkspaceStatus.NotFound
-        ? undefined
-        : hatcheryOptions?.find((option) => option.id === containerHash)?.name;
+      activeWorkspaceId && workspaceStatus !== WorkspaceStatus.NotFound
+        ? hatcheryOptions?.find((option) => option.id === activeWorkspaceId)
+            ?.name
+        : undefined;
 
     const fullscreenLabel = isFullscreen
       ? 'Exit Fullscreen'
