@@ -17,6 +17,7 @@ const ModalLauncher = ({
   const open = () =>
     modals.openContextModal({
       modal: MODAL_KEY,
+      title: 'Session Expiring',
       withCloseButton: true,
       closeOnClickOutside: false,
       closeOnEscape: false,
