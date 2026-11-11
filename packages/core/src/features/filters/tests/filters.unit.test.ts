@@ -467,3 +467,85 @@ describe('convertGqlFilterToFilter', () => {
     expect(result).toEqual(expected);
   });
 });
+
+describe('buildNestedFilterForOperation with compound leaf', () => {
+  it('uses field names relative to the nested path inside a range (and) leaf', () => {
+    const range: Operation = {
+      operator: 'and',
+      operands: [
+        { operator: '>=', field: 'Testing.age_at_normalized', operand: 2 },
+        { operator: '<=', field: 'Testing.age_at_normalized', operand: 106 },
+      ],
+    };
+    expect(
+      buildNestedFilterForOperation('Testing.age_at_normalized', range),
+    ).toEqual({
+      operator: 'nested',
+      path: 'Testing',
+      operand: {
+        operator: 'and',
+        operands: [
+          { operator: '>=', field: 'age_at_normalized', operand: 2 },
+          { operator: '<=', field: 'age_at_normalized', operand: 106 },
+        ],
+      },
+    });
+  });
+
+  it('produces the relative GQL payload for a range', () => {
+    const range: Operation = {
+      operator: 'and',
+      operands: [
+        { operator: '>=', field: 'Testing.age_at_normalized', operand: 2 },
+        { operator: '<=', field: 'Testing.age_at_normalized', operand: 106 },
+      ],
+    };
+    const gql = convertFilterSetToGqlFilter({
+      mode: 'and',
+      root: {
+        'Testing.age_at_normalized': buildNestedFilterForOperation(
+          'Testing.age_at_normalized',
+          range,
+        ),
+      },
+    });
+    expect(gql).toEqual({
+      and: [
+        {
+          nested: {
+            path: 'Testing',
+            and: [
+              { '>=': { age_at_normalized: 2 } },
+              { '<=': { age_at_normalized: 106 } },
+            ],
+          },
+        },
+      ],
+    });
+  });
+
+  it('handles doubly nested paths', () => {
+    const range: Operation = {
+      operator: 'and',
+      operands: [
+        { operator: '>=', field: 'a.b.c', operand: 1 },
+        { operator: '<=', field: 'a.b.c', operand: 9 },
+      ],
+    };
+    expect(buildNestedFilterForOperation('a.b.c', range)).toEqual({
+      operator: 'nested',
+      path: 'a',
+      operand: {
+        operator: 'nested',
+        path: 'a.b',
+        operand: {
+          operator: 'and',
+          operands: [
+            { operator: '>=', field: 'c', operand: 1 },
+            { operator: '<=', field: 'c', operand: 9 },
+          ],
+        },
+      },
+    });
+  });
+});
