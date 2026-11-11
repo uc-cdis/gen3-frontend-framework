@@ -1780,6 +1780,102 @@ describe('SessionProvider – inactivity warning', () => {
     expect(mockOpenContextModal).toHaveBeenCalledTimes(1);
   });
 
+  it('logs out at the inactivity limit, not at the next poll', async () => {
+    // 10 minute poll, 3 minute limit: polling alone would not act until minute 10
+    render(
+      <SessionProvider
+        updateSessionTime={10}
+        inactiveTimeLimit={3}
+        expireWarningMinutes={0}
+      >
+        <div />
+      </SessionProvider>,
+    );
+    await act(async () => {});
+
+    await act(async () => {
+      jest.advanceTimersByTime(3 * 60 * 1000 - 1000);
+    });
+    expect(mockRouterPush).not.toHaveBeenCalled();
+
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+    });
+    expect(mockRouterPush).toHaveBeenCalled();
+  });
+
+  it('opens the warning when its window starts, not at the next poll', async () => {
+    // 5 minute poll, 12 minute limit, 2 minute warning widened to one poll (5):
+    // the window opens at minute 7, between the polls at 5 and 10.
+    render(
+      <SessionProvider
+        updateSessionTime={5}
+        inactiveTimeLimit={12}
+        expireWarningMinutes={2}
+      >
+        <div />
+      </SessionProvider>,
+    );
+    await act(async () => {});
+
+    await act(async () => {
+      jest.advanceTimersByTime(7 * 60 * 1000 - 1000);
+    });
+    expect(mockOpenContextModal).not.toHaveBeenCalled();
+
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+    });
+    expect(mockOpenContextModal).toHaveBeenCalledTimes(1);
+    expect(lastInnerProps().minutesRemaining).toBe(5);
+
+    // ...and the logout lands on minute 12, not the poll at 15
+    await act(async () => {
+      jest.advanceTimersByTime(5 * 60 * 1000);
+    });
+    expect(mockRouterPush).toHaveBeenCalled();
+  });
+
+  it('pushes the inactivity deadline out when activity is forwarded', async () => {
+    render(
+      <SessionProvider
+        updateSessionTime={10}
+        inactiveTimeLimit={3}
+        expireWarningMinutes={0}
+      >
+        <div />
+      </SessionProvider>,
+    );
+    await act(async () => {});
+
+    const call = mockChannel.addEventListener.mock.calls.find(
+      ([event]) => event === 'message',
+    );
+    if (!call) throw new Error('no message listener was registered');
+    const onMessage = call[1] as (event: MessageEvent) => void;
+
+    await act(async () => {
+      jest.advanceTimersByTime(2 * 60 * 1000);
+    });
+    await act(async () => {
+      onMessage({
+        data: { type: 'activity-update', timestamp: Date.now() },
+      } as MessageEvent);
+    });
+
+    // The original deadline passes with no logout...
+    await act(async () => {
+      jest.advanceTimersByTime(60 * 1000 + 1000);
+    });
+    expect(mockRouterPush).not.toHaveBeenCalled();
+
+    // ...and the new one, 3 minutes after the activity, is honoured exactly
+    await act(async () => {
+      jest.advanceTimersByTime(2 * 60 * 1000);
+    });
+    expect(mockRouterPush).toHaveBeenCalled();
+  });
+
   it('closes the warning modal when the inactivity logout fires', async () => {
     render(
       <SessionProvider

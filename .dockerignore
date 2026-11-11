@@ -17,6 +17,17 @@ packages/sampleCommons/.swc
 packages/sampleCommons/builds
 packages/storybook
 
+# ── local-only / tooling dirs ─────────────────────────
+**/.next
+**/dist
+**/.yalc
+**/.rollup-cache
+**/.impeccable
+.claude
+.junie
+packages/sampleCommons/devtools
+packages/sampleCommons/snyk.json
+
 # ── JupyterLite / cockle (generated or downloaded) ────
 **/.jupyterlite.doit.db
 packages/sampleCommons/.cockle_temp

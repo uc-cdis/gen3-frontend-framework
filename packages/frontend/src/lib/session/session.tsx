@@ -239,6 +239,9 @@ const REFRESH_HEARTBEAT_GRACE_MILLISECONDS =
 
 const MILLISECONDS_PER_MINUTE = minutesToMilliseconds(1);
 
+// setTimeout stores its delay as a signed 32-bit integer and fires immediately above this
+const MAX_TIMEOUT_MILLISECONDS = 2 ** 31 - 1;
+
 /**
  * Delay before the next refresh of a healthy token, or a negative/small number
  * when the token does not look healthy (see `unhealthyRefreshDelay`).
@@ -945,6 +948,8 @@ export const SessionProvider = ({
   // The warning modal id lives in a ref, not state, so the interval callback and
   // the unmount cleanup always see the current value.
   const expiryWarningIdRef = useRef<string | null>(null);
+  // Minutes the open warning currently displays
+  const shownWarningMinutesRef = useRef<number | null>(null);
 
   const closeExpiryWarning = useCallback(() => {
     if (expiryWarningIdRef.current) {
@@ -1028,117 +1033,194 @@ export const SessionProvider = ({
     updateSessionIntervalMilliseconds,
   ]);
 
-  useInterval(
-    () => {
-      const { pathname } = router;
-      if (sessionInfo.status !== 'issued') return; // no need to update session if user is not logged in
-      if (isUserOnPage('Login', pathname)) return;
-      if (!logoutInactiveUsers) return;
+  const checkInactivity = () => {
+    const { pathname } = router;
+    if (sessionInfo.status !== 'issued') return; // no need to update session if user is not logged in
+    if (isUserOnPage('Login', pathname)) return; // can stay on login indefinitely
+    if (!logoutInactiveUsers) return;
+    if (endingSessionRef.current) return; // logout already under way
 
-      const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
+    const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
 
-      const activeLimit = inactiveTimeLimitMilliseconds;
+    const activeLimit = inactiveTimeLimitMilliseconds;
 
+    if (SESSION_DEBUG_LOGGING) {
+      // eslint-disable-next-line no-console
+      console.log('[session-inactivity] tick', {
+        pathname,
+        lastActivityAt: new Date(mostRecentActivityTimestamp).toISOString(),
+        idleSeconds: Math.round(timeSinceLastActivity / 1000),
+        activeLimitSeconds: Math.round(activeLimit / 1000),
+        warningShown: expiryWarningIdRef.current !== null,
+      });
+    }
+
+    // A limit of 0 means no inactivity logout
+    if (activeLimit <= 0) return;
+
+    if (timeSinceLastActivity >= activeLimit) {
       if (SESSION_DEBUG_LOGGING) {
         // eslint-disable-next-line no-console
-        console.log('[session-inactivity] tick', {
-          pathname,
-          lastActivityAt: new Date(mostRecentActivityTimestamp).toISOString(),
-          idleSeconds: Math.round(timeSinceLastActivity / 1000),
-          activeLimitSeconds: Math.round(activeLimit / 1000),
-          warningShown: expiryWarningIdRef.current !== null,
-        });
-      }
-
-      // A limit of 0 means no inactivity logout
-      if (activeLimit <= 0) return;
-
-      if (timeSinceLastActivity >= activeLimit) {
-        if (SESSION_DEBUG_LOGGING) {
-          // eslint-disable-next-line no-console
-          console.log(
-            '[session-inactivity] idle limit exceeded, ending session',
-            {
-              idleSeconds: Math.round(timeSinceLastActivity / 1000),
-              activeLimitSeconds: Math.round(activeLimit / 1000),
-            },
-          );
-        }
-        closeExpiryWarning();
-        coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
-        void endSession();
-        return;
-      }
-
-      const warningLead = warningLeadMilliseconds(activeLimit);
-
-      if (
-        warningLead > 0 &&
-        timeSinceLastActivity >= activeLimit - warningLead
-      ) {
-        // Time actually left, not the size of the warning window: the first tick
-        // inside the window can be well after it opened, and later ticks keep
-        // counting down while the modal is open.
-        const minutesRemaining = Math.max(
-          1,
-          Math.round(
-            (activeLimit - timeSinceLastActivity) / MILLISECONDS_PER_MINUTE,
-          ),
+        console.log(
+          '[session-inactivity] idle limit exceeded, ending session',
+          {
+            idleSeconds: Math.round(timeSinceLastActivity / 1000),
+            activeLimitSeconds: Math.round(activeLimit / 1000),
+          },
         );
-        const innerProps = {
-          minutesRemaining,
-          maxMinutes: expireWarningMinutes,
-          onRenew: renewSession,
-          onLogout: logoutFromWarning,
-        };
+      }
+      closeExpiryWarning();
+      coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
+      void endSession();
+      return;
+    }
 
-        if (expiryWarningIdRef.current) {
-          // Warning is already open: keep its countdown current
+    const warningLead = warningLeadMilliseconds(activeLimit);
+
+    if (warningLead > 0 && timeSinceLastActivity >= activeLimit - warningLead) {
+      // Time actually left, not the size of the warning window: the first tick
+      // inside the window can be well after it opened, and later ticks keep
+      // counting down while the modal is open.
+      const minutesRemaining = Math.max(
+        1,
+        Math.ceil(
+          (activeLimit - timeSinceLastActivity) / MILLISECONDS_PER_MINUTE,
+        ),
+      );
+      const innerProps = {
+        minutesRemaining,
+        maxMinutes: expireWarningMinutes,
+        onRenew: renewSession,
+        onLogout: logoutFromWarning,
+      };
+
+      if (expiryWarningIdRef.current) {
+        // Warning is already open: keep its countdown current, but only touch
+        // the modal when the displayed minutes actually change
+        if (shownWarningMinutesRef.current !== minutesRemaining) {
+          shownWarningMinutesRef.current = minutesRemaining;
           modals.updateContextModal({
             modalId: expiryWarningIdRef.current,
             innerProps,
           });
-          return;
         }
-
-        if (SESSION_DEBUG_LOGGING) {
-          // eslint-disable-next-line no-console
-          console.log('[session-inactivity] showing expiry warning', {
-            minutesRemaining,
-          });
-        }
-        // Show warning before session expires, giving user a chance to act
-        expiryWarningIdRef.current = modals.openContextModal({
-          modal: 'sessionExpiringModal',
-          title: 'Session Expiring',
-          // Offer an explicit close control, but prevent accidental dismissal
-          // through Escape or a click outside the modal.
-          withCloseButton: true,
-          closeOnClickOutside: false,
-          closeOnEscape: false,
-          // Belt and braces for a close we did not initiate (modals.closeAll
-          // elsewhere, say) so the id never outlives the modal.
-          onClose: () => {
-            expiryWarningIdRef.current = null;
-          },
-          size: '80%',
-          innerProps,
-        });
         return;
       }
 
-      // Take the warning down once the user is active again
-      if (expiryWarningIdRef.current && SESSION_DEBUG_LOGGING) {
+      if (SESSION_DEBUG_LOGGING) {
         // eslint-disable-next-line no-console
-        console.log(
-          '[session-inactivity] user active again, closing expiry warning',
-        );
+        console.log('[session-inactivity] showing expiry warning', {
+          minutesRemaining,
+        });
       }
-      closeExpiryWarning();
+      // Show warning before session expires, giving user a chance to act
+      shownWarningMinutesRef.current = minutesRemaining;
+      expiryWarningIdRef.current = modals.openContextModal({
+        modal: 'sessionExpiringModal',
+        title: 'Session Expiring',
+        // Offer an explicit close control, but prevent accidental dismissal
+        // through Escape or a click outside the modal.
+        withCloseButton: true,
+        closeOnClickOutside: false,
+        closeOnEscape: false,
+        onClose: () => {
+          expiryWarningIdRef.current = null;
+        },
+        size: '75%',
+        innerProps,
+      });
+      return;
+    }
 
-      // Token refresh is handled by the exp-driven scheduler above — this
-      // interval only tracks inactivity/logout timing.
-    },
+    // Take the warning down once the user is active again
+    if (expiryWarningIdRef.current && SESSION_DEBUG_LOGGING) {
+      // eslint-disable-next-line no-console
+      console.log(
+        '[session-inactivity] user active again, closing expiry warning',
+      );
+    }
+    closeExpiryWarning();
+
+    // Token refresh is handled by the exp-driven scheduler above — this
+    // interval only tracks inactivity/logout timing.
+  };
+
+  /**
+   * How long until the next moment inactivity needs acting on: the start of the
+   * warning window, each whole minute of the countdown while it is open, then the
+   * limit itself. `null` when nothing is pending (not logged in, on the Login
+   * page, monitoring off, no limit, or the limit has already passed and the
+   * logout is under way).
+   */
+  const nextInactivityDelay = (): number | null => {
+    if (updateSessionIntervalMilliseconds <= 0) return null;
+    if (sessionInfo.status !== 'issued') return null;
+    if (isUserOnPage('Login', router.pathname)) return null;
+    if (!logoutInactiveUsers) return null;
+    if (inactiveTimeLimitMilliseconds <= 0) return null;
+
+    const idle = Date.now() - mostRecentActivityTimestamp;
+    const remaining = inactiveTimeLimitMilliseconds - idle;
+    if (remaining <= 0) return null;
+
+    const warningLead = warningLeadMilliseconds(inactiveTimeLimitMilliseconds);
+    const warningStartsIn = remaining - warningLead;
+
+    let delay: number;
+    if (warningLead <= 0) {
+      delay = remaining;
+    } else if (warningStartsIn > 0) {
+      delay = warningStartsIn;
+    } else {
+      // Inside the warning window: wake when the displayed minutes change
+      const wholeMinutesBelow =
+        (Math.ceil(remaining / MILLISECONDS_PER_MINUTE) - 1) *
+        MILLISECONDS_PER_MINUTE;
+      delay = remaining - wholeMinutesBelow;
+    }
+    return Math.min(Math.max(delay, 1), MAX_TIMEOUT_MILLISECONDS);
+  };
+
+  // The poll below only runs every `updateSessionTime`, so on its own it can act
+  // up to that long after the limit. These timers aim at the exact moments
+  // instead; the poll stays as a backstop (a suspended machine, a throttled
+  // background tab) and does the same, idempotent, check.
+  const checkInactivityRef = useRef(checkInactivity);
+  const nextInactivityDelayRef = useRef(nextInactivityDelay);
+  useEffect(() => {
+    checkInactivityRef.current = checkInactivity;
+    nextInactivityDelayRef.current = nextInactivityDelay;
+  });
+
+  useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+    const arm = () => {
+      const delay = nextInactivityDelayRef.current();
+      if (delay === null) return;
+      timeoutId = setTimeout(() => {
+        checkInactivityRef.current();
+        arm();
+      }, delay);
+    };
+    arm();
+
+    return () => clearTimeout(timeoutId);
+    // Re-arm whenever something the deadline depends on changes; activity moves
+    // `mostRecentActivityTimestamp`, which is what pushes the deadline out.
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    sessionInfo.status,
+    mostRecentActivityTimestamp,
+    router.pathname,
+    logoutInactiveUsers,
+    inactiveTimeLimitMilliseconds,
+    expireWarningMilliseconds,
+    updateSessionIntervalMilliseconds,
+  ]);
+
+  useInterval(
+    checkInactivity,
     updateSessionIntervalMilliseconds > 0
       ? updateSessionIntervalMilliseconds
       : null,
