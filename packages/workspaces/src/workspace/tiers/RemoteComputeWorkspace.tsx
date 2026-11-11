@@ -12,7 +12,7 @@ import MicroContainerReduxPanel from '../../components/MicroContainerReduxPanel'
 import { useMicroContainerReduxContext } from '../../providers/MicroContainerReduxProvider';
 import { WorkspaceStatus } from '@gen3/core';
 import { type RemoteComputeWorkspaceHandle } from './types';
-import { ACTIVITY_CHANNEL } from '@gen3/frontend';
+import { useIframeActivityForwarding } from '@gen3/frontend';
 
 export type RemoteComputeWorkspaceProps = {
   assetBaseUrl?: string;
@@ -54,7 +54,8 @@ const RemoteComputeWorkspace = React.memo(
       const [retryCount, setRetryCount] = useState(0);
       const [jupyterReady, setJupyterReady] = useState(false);
       const iframeRef = useRef<HTMLIFrameElement | null>(null);
-      const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
+      // keeps the session alive while the user works inside the workspace frame
+      const forwardActivity = useIframeActivityForwarding();
       const { status } = useMicroContainerReduxContext();
 
       const normalizedBase = assetBaseUrl.replace(/\/$/, '');
@@ -84,84 +85,6 @@ const RemoteComputeWorkspace = React.memo(
       //   accessToken = getCookie('credentials_token');
       // }
 
-      // set up BroadcastChannel
-      useEffect(() => {
-        if (!broadcastChannelRef?.current) {
-          broadcastChannelRef.current = new BroadcastChannel(ACTIVITY_CHANNEL);
-        }
-
-        return () => {
-          if (broadcastChannelRef.current) {
-            broadcastChannelRef.current.close();
-            broadcastChannelRef.current = null;
-          }
-        };
-      }, []);
-
-      // Handle setting up iframe event listeners for activity detection.
-      // Tries same-origin contentDocument access first; falls back to
-      // focus/blur heuristics when the iframe is cross-origin.
-      useEffect(() => {
-        if (!jupyterReady) return;
-
-        const updateUserActivity = () => {
-          if (broadcastChannelRef.current) {
-            broadcastChannelRef.current.postMessage({
-              type: 'activity-update',
-              timestamp: Date.now(),
-            });
-          }
-        };
-
-        const iframe = iframeRef.current;
-        let usedDirectListeners = false;
-
-        if (iframe?.contentWindow) {
-          try {
-            const iframeDoc =
-              iframe.contentDocument || iframe.contentWindow.document;
-
-            if (iframeDoc) {
-              iframeDoc.addEventListener('mousedown', updateUserActivity);
-              iframeDoc.addEventListener('keypress', updateUserActivity);
-              iframeDoc.addEventListener('scroll', updateUserActivity);
-              iframeDoc.addEventListener('touchstart', updateUserActivity);
-              usedDirectListeners = true;
-            }
-          } catch {
-            // cross-origin — fall through to focus/blur fallback
-          }
-        }
-
-        // Fallback: treat iframe receiving focus as user activity.
-        // This fires when the user clicks into the iframe even if we
-        // cannot attach listeners to its document directly.
-        if (!usedDirectListeners) {
-          window.addEventListener('blur', updateUserActivity);
-          window.addEventListener('focus', updateUserActivity);
-        }
-
-        return () => {
-          if (usedDirectListeners && iframe?.contentWindow) {
-            try {
-              const iframeDoc =
-                iframe.contentDocument || iframe.contentWindow.document;
-              if (iframeDoc) {
-                iframeDoc.removeEventListener('mousedown', updateUserActivity);
-                iframeDoc.removeEventListener('keypress', updateUserActivity);
-                iframeDoc.removeEventListener('scroll', updateUserActivity);
-                iframeDoc.removeEventListener('touchstart', updateUserActivity);
-              }
-            } catch {
-              // Ignore cleanup errors
-            }
-          }
-          if (!usedDirectListeners) {
-            window.removeEventListener('blur', updateUserActivity);
-            window.removeEventListener('focus', updateUserActivity);
-          }
-        };
-      }, [jupyterReady]);
       /* ---- Wait for JupyterLite app inside the iframe --------------- */
 
       useEffect(() => {
@@ -325,7 +248,8 @@ const RemoteComputeWorkspace = React.memo(
               sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads allow-modals allow-storage-access-by-user-activation"
               allow="clipboard-read; clipboard-write; cross-origin-isolated"
               className="min-h-0 flex-1 border-0"
-              onLoad={() => {
+              onLoad={(e) => {
+                forwardActivity(e.currentTarget);
                 setLoading(false);
                 // jupyterReady is set by the polling effect once the
                 // JupyterLite app reports status === 'ready'

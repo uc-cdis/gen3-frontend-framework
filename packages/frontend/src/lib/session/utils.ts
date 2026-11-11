@@ -12,9 +12,9 @@ export const redirectTo = (url: string) => {
 /**
  * Is `pathname` the named page?
  *
- * Matched one path segment at a time, prefix-wise, so `/Workspace`,
- * `/Workspaces` and `/Workspace/[id]` all count as the Workspace page while
- * `/no-workspace-access` does not. Pass `router.pathname` — it carries no query
+ * Matched one path segment at a time, prefix-wise, so `/Login`, `/Login/error`
+ * and `/LoginRedirect` all count as the Login page while `/no-login-access`
+ * does not. Pass `router.pathname` — it carries no query
  * string or hash to confuse the match.
  *
  * A missing pathname is never a match: the caller is rendering on the server or
