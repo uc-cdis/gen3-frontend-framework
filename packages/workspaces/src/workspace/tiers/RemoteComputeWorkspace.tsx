@@ -218,7 +218,7 @@ const RemoteComputeWorkspace = React.memo(
           {loadError && (
             <div>
               <Card withBorder shadow="sm" padding="md" w="100%" maw={448}>
-                <Text fw={600} c="primary">
+                <Text fw={600} c="primary-contrast.5">
                   Remote workspace failed to load
                 </Text>
                 <Text size="sm" c="dimmed" mt={4}>

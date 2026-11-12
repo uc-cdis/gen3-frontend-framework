@@ -103,7 +103,7 @@ const MicroContainerReduxPanel = ({
       return (
         <Alert
           variant="light"
-          color="accentWarm.4"
+          color="secondary.2"
           title="Options API Error"
           icon={icon}
         >
@@ -156,7 +156,7 @@ const MicroContainerReduxPanel = ({
       <div className={PanelStyle}>
         <Alert
           variant="light"
-          color="accentWarm.4"
+          color="secondary.2"
           title="Status Error"
           icon={icon}
         >
@@ -215,9 +215,10 @@ const MicroContainerReduxPanel = ({
       <div role="alert" className={PanelStyle}>
         <Alert
           variant="light"
-          color="accentWarm.4"
+          color="secondary.2"
           title="Status Error"
           icon={icon}
+          classNames={{ root: 'w-1/2 h-20' }}
         >
           Workspace failed to start.
         </Alert>

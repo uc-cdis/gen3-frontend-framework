@@ -36,7 +36,9 @@ const getWorkspaceErrorMessage = (
   error: unknown,
   defaultMessage: string,
 ): string => {
+  console.log('getWorkspaceErrorMessage', error);
   if (isFetchBaseQueryError(error)) {
+    console.log('isFetchBaseQueryError', error);
     return getRTKQErrorMessage(error);
   }
   return defaultMessage;
@@ -88,6 +90,7 @@ export function useMicroContainerRedux(
     selectJEGActiveWorkspaceStatus,
   );
   const [containerHash, setContainerHash] = useState<string | null>(null);
+  const [workspaceError, setWorkspaceError] = useState<string | null>(null);
   const coreDispatch = useCoreDispatch();
 
   // get the options for the workspace could move to parent
@@ -122,6 +125,8 @@ export function useMicroContainerRedux(
         errorMessage,
       );
 
+      setWorkspaceError(errorMessage);
+
       if (isWorkspaceLaunchError) {
         coreDispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.LaunchError));
       } else {
@@ -135,50 +140,59 @@ export function useMicroContainerRedux(
     }
   }, [isWorkspaceLaunchError, isTerminateError]);
 
-  const launch = useCallback(async (tag?: string): Promise<void> => {
-    if (
-      !enabled ||
-      workspaceContainerStatus === WorkspaceStatus.Launching ||
-      workspaceContainerStatus === WorkspaceStatus.Running
-    )
-      return; // already running or launching so ignore
+  const launch = useCallback(
+    async (tag?: string): Promise<void> => {
+      if (
+        !enabled ||
+        workspaceContainerStatus === WorkspaceStatus.Launching ||
+        workspaceContainerStatus === WorkspaceStatus.Running
+      )
+        return; // already running or launching so ignore
 
-    const isTagString = tag && typeof tag === 'string';
-    if (isTagString) {
-      // set hash to passed in tag
-      setContainerHash(tag);
-    }
-
-    try {
-      coreDispatch(
-        setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Launch),
-      );
-      coreDispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.Launching));
-      // use tag if provided to prevent race condition with setContainerHash
-      const query = isTagString ? encodeURIComponent(tag) : (containerHash ? encodeURIComponent(containerHash) : '');
-      const launchResults = await launchTrigger(query).unwrap();
-      if (!launchResults) {
-        // launch error, will show error message and then reset
-        coreDispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.LaunchError));
-      } else {
-        // Keep status as Launching — the monitor will promote to Running
-        // once the pod actually reports running status
-        coreDispatch(
-          setJEGActiveWorkspaceId({ id: containerHash ?? 'default' }),
-        );
+      const isTagString = tag && typeof tag === 'string';
+      if (isTagString) {
+        // set hash to passed in tag
+        setContainerHash(tag);
       }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (_error: unknown) {
-      coreDispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.LaunchError));
-    }
-    // Status will resolve to 'running' on the next poll
-  }, [
-    enabled,
-    workspaceContainerStatus,
-    coreDispatch,
-    containerHash,
-    launchTrigger,
-  ]);
+
+      try {
+        coreDispatch(
+          setJEGRequestedWorkspaceStatus(RequestedWorkspaceStatus.Launch),
+        );
+        coreDispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.Launching));
+        // use tag if provided to prevent race condition with setContainerHash
+        const query = isTagString
+          ? encodeURIComponent(tag)
+          : containerHash
+            ? encodeURIComponent(containerHash)
+            : '';
+        const launchResults = await launchTrigger(query).unwrap();
+        if (!launchResults) {
+          // launch error, will show error message and then reset
+          coreDispatch(
+            setJEGActiveWorkspaceStatus(WorkspaceStatus.LaunchError),
+          );
+        } else {
+          // Keep status as Launching — the monitor will promote to Running
+          // once the pod actually reports running status
+          coreDispatch(
+            setJEGActiveWorkspaceId({ id: containerHash ?? 'default' }),
+          );
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (_error: unknown) {
+        coreDispatch(setJEGActiveWorkspaceStatus(WorkspaceStatus.LaunchError));
+      }
+      // Status will resolve to 'running' on the next poll
+    },
+    [
+      enabled,
+      workspaceContainerStatus,
+      coreDispatch,
+      containerHash,
+      launchTrigger,
+    ],
+  );
 
   const terminate = useCallback(async () => {
     if (!enabled || workspaceContainerStatus === WorkspaceStatus.Terminating)
