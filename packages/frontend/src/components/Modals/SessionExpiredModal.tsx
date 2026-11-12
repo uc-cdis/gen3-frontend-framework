@@ -15,7 +15,7 @@ export const SessionExpiredModal = ({
   const router = useRouter();
   const onLogout = useCallback(() => {
     void router.push(config?.externalLoginUrl || '/Login');
-  }, [router]);
+  }, [router, config?.externalLoginUrl]);
 
   return (
     <BaseModal

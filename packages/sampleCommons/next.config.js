@@ -50,7 +50,8 @@ const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
   allowedDevOrigins: ['local.io', '*.local.io'],
-  productionBrowserSourceMaps: true,
+  // Off by default (source maps are ~70MB); set GEN3_SOURCE_MAPS=1 to enable.
+  productionBrowserSourceMaps: process.env.GEN3_SOURCE_MAPS === '1',
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   basePath: basePath,
   logging: {
@@ -193,8 +194,7 @@ const nextConfig = {
           source: '/index/:path*',
           destination: `${GEN3_TARGET}/index/:path*`,
         },
-        { source: '/fhir/:path*',
-          destination: `${GEN3_TARGET}/fhir/:path*` },
+        { source: '/fhir/:path*', destination: `${GEN3_TARGET}/fhir/:path*` },
         {
           source: '/login',
           destination: `${GEN3_TARGET}/login`,

@@ -153,6 +153,7 @@ import OverflowTooltippedLabel from './components/OverflowTooltippedLabel';
 import type { NavigationRailItem } from './components/NavigationRail';
 import NavigationRail from './components/NavigationRail';
 import { ACTIVITY_CHANNEL } from './lib/session/constants';
+import { useIframeActivityForwarding } from './lib/session/useIframeActivity';
 
 import {
   registerBaseSowerActions,
@@ -212,6 +213,7 @@ export {
   type InfoRolloverButtonProps,
   InfoRolloverButton,
   ACTIVITY_CHANNEL,
+  useIframeActivityForwarding,
   // Pages
   type QueryConfiguration,
   type QueryPageLayoutProps,
