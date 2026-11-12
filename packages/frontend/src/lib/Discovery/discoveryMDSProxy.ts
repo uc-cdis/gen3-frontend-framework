@@ -13,7 +13,7 @@ import { combineData } from '../../features/Discovery/DataLoaders/preProcessData
 import addAccessLevelsMetaData from './addAccessLevelsMetaData';
 
 export const GEN3_METADATA_SERVICE =
-  process.env.GEN3_METADATA_SERVICE || 'http:/metadata-service';
+  process.env.GEN3_METADATA_SERVICE || 'http://metadata-service';
 
 let cachedData: Array<JSONObject> = [];
 let cacheTime = 0;
