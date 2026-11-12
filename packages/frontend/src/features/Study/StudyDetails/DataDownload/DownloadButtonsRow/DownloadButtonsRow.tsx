@@ -20,7 +20,7 @@ import downloadManifestClick from '../Utils/downloadManifest';
 import ConditionalPopover from './ConditionalPopover';
 import isManifestDataMissing from '../Utils/isManifestDataMissing';
 import handleRedirectFromDiscoveryDetailsToLoginClick from '../Utils/handleRedirectFromDiscoveryDetailsToLoginClick';
-import { AccessLevel } from '../Utils/constants';
+import { AccessLevel } from '../../../../../utils';
 
 export interface DownloadButtonsRowProps {
   readonly data: JSONObject;
