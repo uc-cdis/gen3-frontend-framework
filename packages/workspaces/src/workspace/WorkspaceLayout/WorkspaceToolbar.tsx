@@ -135,7 +135,7 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
                 </Badge>
               </Group>
               <Text size="sm" c="base-contrast.4" className='min-h-4'>
-                {activeWorkspaceName ? activeWorkspaceName: ''}
+                {/*activeWorkspaceName ? activeWorkspaceName: ''*/}
               </Text>
             </Stack>
           )}
