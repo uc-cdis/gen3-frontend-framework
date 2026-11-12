@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import type { JSONObject } from '@gen3/core/server';
-import { GEN3_MDS_API } from '@gen3/core/server';
 import {
   filterByAccessLevels,
   filterByAdvSearch,
@@ -13,11 +12,14 @@ import {
 import { combineData } from '../../features/Discovery/DataLoaders/preProcessData';
 import addAccessLevelsMetaData from './addAccessLevelsMetaData';
 
+export const GEN3_METADATA_SERVICE =
+  process.env.GEN3_METADATA_SERVICE || 'http:/metadata-service';
+
 let cachedData: Array<JSONObject> = [];
 let cacheTime = 0;
 const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
-const mdsAggregateApi = `${GEN3_MDS_API}/aggregate/metadata?data=True&limit=2000&offset=0`;
-const mdsMetadataApi = `${GEN3_MDS_API}/metadata?data=True&_guid_type=unregistered_discovery_metadata&limit=2000&offset=0`;
+const mdsAggregateApi = `${GEN3_METADATA_SERVICE}/mds/aggregate/metadata?data=True&limit=2000&offset=0`;
+const mdsMetadataApi = `${GEN3_METADATA_SERVICE}/mds/metadata?data=True&_guid_type=unregistered_discovery_metadata&limit=2000&offset=0`;
 
 // Main Function to Orchestrate Steps
 const processData = async (
