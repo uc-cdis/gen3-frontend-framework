@@ -3,16 +3,18 @@ import type {
   CategoryObject,
   DiscoverDataHookResponse,
   DiscoveryDataLoaderProps,
+  KeyValueSearchFilter,
 } from '../../types';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import type { JSONObject } from '@gen3/core';
-import { processAdvancedSearchTerms, processAllSummaries } from '../utils';
+import { processAllSummaries } from '../utils';
 
 interface ProxyData {
   displayedData: JSONObject[];
   hits: number;
   suggestions: string[];
   tagCategoryData: CategoryObject[];
+  advancedSearchFilterValues: ReadonlyArray<KeyValueSearchFilter>;
 }
 
 export const useAggMetaMDSProxy = ({
@@ -33,10 +35,10 @@ export const useAggMetaMDSProxy = ({
     hits: 0,
     suggestions: [],
     tagCategoryData: [],
+    advancedSearchFilterValues: [],
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
   const apiUrl = '/frontend-api/discovery';
 
   const params = {
@@ -84,19 +86,6 @@ export const useAggMetaMDSProxy = ({
     selectedAccessLevels,
   ]);
 
-  let advancedSearchFilterValues = [] as any;
-  const advancedSearchFilters = discoveryConfig.features?.advSearchFilters ?? {
-    enabled: false,
-    field: '',
-    displayName: '',
-    filters: [],
-  };
-  advancedSearchFilterValues = processAdvancedSearchTerms(
-    advancedSearchFilters,
-    data.displayedData,
-    uidField,
-  );
-
   const summaryStatistics = processAllSummaries(
     data.displayedData,
     discoveryConfig?.aggregations,
@@ -110,7 +99,7 @@ export const useAggMetaMDSProxy = ({
     suggestions: data.suggestions,
     summaryStatistics: summaryStatistics,
     charts: {},
-    advancedSearchFilterValues: advancedSearchFilterValues,
+    advancedSearchFilterValues: data.advancedSearchFilterValues,
     tagCategoryData: data.tagCategoryData,
     dataRequestStatus: {
       isUninitialized: false,

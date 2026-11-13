@@ -10,6 +10,7 @@ import {
   sortData,
 } from '../../features/Discovery/DataLoaders/processData';
 import { combineData } from '../../features/Discovery/DataLoaders/preProcessData';
+import { getFilterValuesByKey } from '../../features/Discovery/Search/utils';
 import addAccessLevelsMetaData from './addAccessLevelsMetaData';
 
 export const GEN3_METADATA_SERVICE =
@@ -20,6 +21,27 @@ let cacheTime = 0;
 const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
 const mdsAggregateApi = `${GEN3_METADATA_SERVICE}/mds/aggregate/metadata?data=True&limit=2000&offset=0`;
 const mdsMetadataApi = `${GEN3_METADATA_SERVICE}/mds/metadata?data=True&_guid_type=unregistered_discovery_metadata&limit=2000&offset=0`;
+
+// Filter options are built from the full study list
+const getAdvancedSearchFilterValues = (
+  data: Array<JSONObject>,
+  discoveryConfig: NextApiRequest['body']['discoveryConfig'],
+) => {
+  const advSearchFilters = discoveryConfig?.features?.advSearchFilters;
+  if (!advSearchFilters?.enabled) return [];
+  const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
+  return advSearchFilters.filters.map(
+    ({ key, keyDisplayName }: { key: string; keyDisplayName?: string }) => ({
+      key,
+      keyDisplayName,
+      valueDisplayNames: Object.fromEntries(
+        getFilterValuesByKey(key, data, advSearchFilters.field, uidField).map(
+          (value) => [value, value],
+        ),
+      ),
+    }),
+  );
+};
 
 // Main Function to Orchestrate Steps
 const processData = async (
@@ -70,6 +92,10 @@ const processData = async (
     displayedData: paginatedData,
     suggestions: [],
     tagCategoryData: processTagCategoryData(data, discoveryConfig),
+    advancedSearchFilterValues: getAdvancedSearchFilterValues(
+      data,
+      discoveryConfig,
+    ),
   };
 };
 
