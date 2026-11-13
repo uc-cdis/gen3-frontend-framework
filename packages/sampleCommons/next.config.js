@@ -120,9 +120,15 @@ const nextConfig = {
     return config;
   },
   async rewrites() {
-    const workspaceApiRewrite = [
+    // Gen3's revproxy sends /api/ to sheepdog on deployed servers, so these
+    // public prefixes map onto the Next.js handlers in pages/api.
+    const publicApiRewrites = [
       {
         source: '/workspace-api/:path*',
+        destination: '/api/:path*',
+      },
+      {
+        source: '/frontend-api/:path*',
         destination: '/api/:path*',
       },
     ];
@@ -131,7 +137,7 @@ const nextConfig = {
         process.env.NEXT_PUBLIC_GEN3_API_TARGET || 'https://localhost';
 
       return [
-        ...workspaceApiRewrite,
+        ...publicApiRewrites,
         { source: '/_status', destination: `${GEN3_TARGET}/_status` },
         { source: '/user/:path*', destination: `${GEN3_TARGET}/user/:path*` },
         {
@@ -195,7 +201,7 @@ const nextConfig = {
         },
       ];
     } else {
-      return workspaceApiRewrite;
+      return publicApiRewrites;
     }
   },
   async headers() {

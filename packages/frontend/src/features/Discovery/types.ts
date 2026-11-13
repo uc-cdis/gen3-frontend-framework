@@ -76,7 +76,7 @@ export interface DiscoverDataHookResponse {
 
 export type DiscoveryTableDataHook = (
   dataHookArgs: DiscoveryDataLoaderProps,
-  ...args: any[]
+  ...args: unknown[]
 ) => DiscoverDataHookResponse;
 
 export interface KeyValueSearchFilter {
@@ -97,23 +97,25 @@ export interface SearchKV {
   value: any;
 }
 
-export const isSearchKV = (obj: any): obj is SearchKV => {
-  return obj?.key && obj.value;
+export const isSearchKV = (obj: unknown): obj is SearchKV => {
+  if (typeof obj !== 'object' || obj === null) return false;
+  const { key, value } = obj as Partial<SearchKV>;
+  return Boolean(key && value);
 };
 
-export const isSearchKVArray = (obj: any): obj is SearchKV[] => {
-  return obj && Array.isArray(obj) && obj.every(isSearchKV);
+export const isSearchKVArray = (obj: unknown): obj is SearchKV[] => {
+  return Boolean(obj && Array.isArray(obj) && obj.every(isSearchKV));
 };
 
 export type DiscoveryContentTypes =
-  | string
   | 'string'
   | 'number'
   | 'date'
   | 'array'
   | 'link'
   | 'boolean'
-  | 'paragraphs';
+  | 'paragraphs'
+  | (string & Record<never, never>);
 
 export interface MinimalFieldMapping {
   authzField: string;
@@ -188,14 +190,21 @@ export interface AccessFilters {
   [accessLevel: number]: boolean;
 }
 
-interface DiscoveryIndex {
-  indexName: string;
-}
-
 interface DataLoader {
   dataFetchFunction?: string;
   dataFetchArgs?: JSONObject;
   sortingAndPagination?: 'client' | 'server';
+}
+
+export interface ExportToWorkspaceConfig {
+  enabled?: boolean;
+  enableDownloadVariableMetadata?: boolean;
+  enableDownloadStudyMetadata?: boolean;
+  studyMetadataFieldName?: string;
+  manifestFieldName?: string;
+  enableDownloadManifest: boolean;
+  downloadManifestButtonText?: string;
+  [key: string]: unknown;
 }
 
 // TODO: Type the rest of the config
@@ -224,10 +233,9 @@ export interface DiscoveryIndexConfig {
   detailView?: StudyDetailView;
   minimalFieldMapping: MinimalFieldMapping;
   variableMetadataFieldName?: string;
+  exportToWorkspace?: ExportToWorkspaceConfig;
 }
 
 export interface DiscoveryConfig extends Gen3AppConfigData {
   metadataConfig: Array<DiscoveryIndexConfig>;
 }
-
-const ARBORIST_READ_PRIV = 'read';

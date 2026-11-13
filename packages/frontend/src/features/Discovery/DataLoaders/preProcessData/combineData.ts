@@ -97,13 +97,33 @@ const processMDSAggregateData = (metadataResponse: JSONObject[]) => {
   return allStudies;
 };
 
+// keeps the first study for each uid; studies without a uid are kept as is
+const dedupeByUid = (
+  studies: JSONObject[],
+  uidField: string,
+): JSONObject[] => {
+  const seenUids = new Set<unknown>();
+  return studies.filter((study) => {
+    const uid = study[uidField];
+    if (uid === undefined || uid === null) return true;
+    if (seenUids.has(uid)) return false;
+    seenUids.add(uid);
+    return true;
+  });
+};
+
 const combineData = (
   mdsAggregateData: JSONObject[],
   mdsMetadataData: JSONObject[],
+  uidField = '_hdp_uid',
 ) => {
   const processedAggregateData = processMDSAggregateData(mdsAggregateData);
   const processedMetadataData = processMDSMetadataData(mdsMetadataData);
-  const result = union(processedMetadataData, processedAggregateData);
+  // metadata studies come first, so they win over aggregate entries with the same uid
+  const result = dedupeByUid(
+    union(processedMetadataData, processedAggregateData),
+    uidField,
+  );
   return result;
 };
 

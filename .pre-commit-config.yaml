@@ -16,4 +16,5 @@ repos:
       rev: v1.89.0
       hooks:
           - id: oxlint
+            language_version: system
             verbose: true

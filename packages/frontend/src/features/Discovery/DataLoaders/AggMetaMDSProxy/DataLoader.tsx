@@ -37,7 +37,7 @@ export const useAggMetaMDSProxy = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
-  const apiUrl = '/api/discovery';
+  const apiUrl = '/frontend-api/discovery';
 
   const params = {
     discoveryConfig: discoveryConfig,
