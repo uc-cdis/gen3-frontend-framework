@@ -4,11 +4,7 @@ import type { DiscoveryConfig, DiscoveryIndexConfig } from './types';
 import DiscoveryIndexPanel from './DiscoveryIndexPanel';
 import MessagePanel from '../../components/MessagePanel';
 import DiscoveryProvider from './DiscoveryProvider';
-import {
-  type CoreState,
-  selectAuthzMappingData,
-  useCoreSelector,
-} from '@gen3/core';
+import { type CoreState, selectUserDetails, useCoreSelector } from '@gen3/core';
 
 const extractLabel = (c: DiscoveryIndexConfig, idx: number) =>
   c.label ?? c.features?.pageTitle?.text ?? `Index ${idx.toString()}`;
@@ -24,9 +20,11 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
     (x) => x.authz.length > 0,
   );
 
-  const authMapping = useCoreSelector((state: CoreState) =>
-    selectAuthzMappingData(state),
+  const userProfile = useCoreSelector((state: CoreState) =>
+    selectUserDetails(state),
   );
+
+  console.log('userProfile', userProfile);
 
   // const isMesh = !!discoveryConfig?.features?.authorization?.isMesh; = useCoreSelector((state: CoreState) =>
   //   selectMeshAuthzMapping(state),
@@ -36,8 +34,11 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
     return discoveryConfig.metadataConfig.reduce<
       Array<{ value: string; label: string; config: DiscoveryIndexConfig }>
     >((items, n, idx) => {
-      if (n.authz.length > 0) {
-      }
+      // if (n.authz.length > 0) {
+      //   // check to see if user has the authz
+      //   // if (!userProfile.authz?.includes(n.authz[0])) {
+      //   //   return items;
+      //   }
       items.push({
         value: idx.toString(),
         label: extractLabel(n, idx),

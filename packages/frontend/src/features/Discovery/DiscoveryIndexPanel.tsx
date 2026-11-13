@@ -121,6 +121,8 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
     selectedTags: selectedTags,
     selectedAccessLevels: selectedAccessLevels,
   });
+  console.log('data', data);
+  console.log('dataRequestStatus', dataRequestStatus);
   const selectedRecords = useMemo(() => {
     const uidField = discoveryConfig?.minimalFieldMapping?.uid ?? 'guid';
     const filterSelectedMembers = (data: Array<Record<string, any>>) =>

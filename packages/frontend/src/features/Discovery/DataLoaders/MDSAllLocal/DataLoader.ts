@@ -143,6 +143,8 @@ const useGetMDSData = ({
     offset: 0,
     pageSize: maxStudies,
   });
+  console.log('guidType', guidType);
+  console.log('useGetMDSData:data', data);
 
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
 
@@ -155,10 +157,15 @@ const useGetMDSData = ({
         : undefined,
     [data, studyField],
   );
+
+  console.log('useGetMDSData:studies', studies);
+
   const { studiesWithIds, missingIdCount } = useStudiesWithIds(
     studies,
     uidField,
   );
+
+  console.log('useGetMDSData:studiesWithIds', studiesWithIds);
   const studyData = useMemo(
     () => studiesWithIds.map((study) => addCommonsToTags(study)),
     [studiesWithIds],
@@ -516,6 +523,9 @@ export const useLoadAllData = ({
     maxStudies,
     discoveryConfig,
   });
+
+  console.log('mdsData', mdsData);
+  console.log('dataGuidType', dataGuidType);
 
   const manualSortingAndPagination =
     getManualSortingAndPagination(discoveryConfig);
