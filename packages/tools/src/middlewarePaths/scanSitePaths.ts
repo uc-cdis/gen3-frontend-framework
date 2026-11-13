@@ -11,6 +11,7 @@ loadEnvConfig(process.cwd(), dev);
 
 const GEN3_COMMONS_NAME = process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME || 'gen3';
 const LOGIN_ROUTE = '/Login';
+const NO_WORKSPACE_ACCESS_ROUTE = '/no-workspace-access';
 // Paths the match-all proxy must not intercept: Next internals, static assets and the
 // backend services that the dev server proxies to the commons via rewrites (see
 // next.config.js). Redirecting those to /Login would break API calls such as /_status.
@@ -228,8 +229,10 @@ const createMiddlewareRoutes = (
     matcher = [`/((?!${MATCH_ALL_EXCLUSIONS.join('|')}).*)`];
   }
 
-  // The proxy redirects logged in users away from the Login page, so it must see /Login
-  matcher.push(LOGIN_ROUTE);
+  // The proxy redirects logged in users away from the Login page, so it must see /Login.
+  // It also maps nginx's /no-workspace-access redirect onto the 403 handling, so it must
+  // see that too (the match-all regex above deliberately excludes it).
+  matcher.push(LOGIN_ROUTE, NO_WORKSPACE_ACCESS_ROUTE);
 
   console.log(`proxy matcher entries:\n${matcher.join('\n')}`);
   writeGeneratedMiddlewareEntryTs(matcher);

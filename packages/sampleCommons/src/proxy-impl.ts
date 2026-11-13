@@ -3,32 +3,27 @@ import { NextResponse } from 'next/server';
 import { getRouteConfig } from './lib/auth/arboristConfig';
 import { getLoginStatus, type LoginStatus } from './lib/auth/getLoginStatus';
 import { fetchArboristResources } from './lib/auth/fetchAuthz';
-import type { RouteConfig } from '@gen3/frontend/server';
-import { getAccessToken } from '@gen3/frontend/server';
-
-const WILDCARD_ROUTE_KEY = '*';
-
-function getRouteRuleForPath(pathname: string, routeConfig: RouteConfig) {
-  // handle wildcards
-  // get subdirectory
-  const pathParts = pathname.split('/');
-  // has subdirectory
-  if (pathParts.length > 2) {
-    const startsWithPath = `/${pathParts[1]}`;
-    // look through config for subdirectory
-    const routeConfigMatch = Object.keys(routeConfig).find((key) =>
-      key.startsWith(startsWithPath),
-    );
-    // check if subdirectory ends with wildcard
-    if (routeConfigMatch?.endsWith('(.*)')) {
-      return routeConfig?.[routeConfigMatch];
-    }
-  }
-  return routeConfig?.[pathname] ?? routeConfig?.[WILDCARD_ROUTE_KEY];
-}
+import type { ForbiddenAction, RouteRule } from '@gen3/frontend/server';
+import {
+  getAccessToken,
+  getRouteRuleForPath,
+  NO_WORKSPACE_ACCESS_ROUTE,
+  resolveForbiddenAction,
+  WORKSPACE_ROUTE,
+} from '@gen3/frontend/server';
 
 function isLoggedIn(loginStatus: LoginStatus) {
   return loginStatus.status === 'issued';
+}
+
+function handleForbidden(req: NextRequest, rule?: RouteRule) {
+  const action: ForbiddenAction = resolveForbiddenAction(rule);
+  if (action.type === 'redirect') {
+    return NextResponse.redirect(new URL(action.destination, req.url));
+  }
+  const forbiddenUrl = req.nextUrl.clone();
+  forbiddenUrl.pathname = action.destination;
+  return NextResponse.rewrite(forbiddenUrl);
 }
 
 export async function proxy(req: NextRequest) {
@@ -47,6 +42,16 @@ export async function proxy(req: NextRequest) {
     }
   }
 
+  // nginx sends users here when the workspace proxy denies them. It is a denial
+  // landing page, not a protected resource: handle it with the /Workspace rule's
+  // 403 handling. Must run before login enforcement to avoid a login loop.
+  if (pathname === NO_WORKSPACE_ACCESS_ROUTE) {
+    return handleForbidden(
+      req,
+      getRouteRuleForPath(WORKSPACE_ROUTE, routeConfig),
+    );
+  }
+
   // check if there is a wildcard route
   if (!rule) {
     rule = getRouteRuleForPath('*', routeConfig);
@@ -62,7 +67,6 @@ export async function proxy(req: NextRequest) {
   if (!loginRequired) {
     return NextResponse.next();
   }
-
 
   // Enforce login if required
   if (!loggedIn) {
@@ -89,17 +93,12 @@ export async function proxy(req: NextRequest) {
     process.env.NODE_ENV === 'production',
   );
 
-  const allowed = rule?.authz!.some((needed) => resources.includes(needed));
+  const allowed = (rule.authz ?? []).some((needed) =>
+    resources.includes(needed),
+  );
   if (!allowed) {
     // Already logged in if required; they just lack authz for this resource
-    const forbiddenUrl = req.nextUrl.clone();
-    // Ceck for 403 redirect
-    if (rule?.redirect403 ) {
-      return NextResponse.redirect(new URL(rule.redirect403, req.url));
-    }
-
-    forbiddenUrl.pathname = '/403';
-    return NextResponse.rewrite(forbiddenUrl);
+    return handleForbidden(req, rule);
   }
 
   return NextResponse.next();

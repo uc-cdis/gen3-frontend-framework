@@ -3,6 +3,11 @@ import { NavPageLayout, NavPageLayoutProps } from '../../features/Navigation';
 import { CardContainer } from '../../components/MessageCards';
 import { Center } from '@mantine/core';
 
+/**
+ * @deprecated The proxy now routes /no-workspace-access through the /Workspace
+ * rule's redirect403 / 403 handling. Kept only as a fallback for apps whose proxy
+ * does not match that path.
+ */
 const WorkspaceNoAccessPage = ({
   headerProps,
   footerProps,
