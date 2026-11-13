@@ -1,6 +1,10 @@
-jupyterlite-core>=0.8.1
-jupyterlab>=4.6.3
+jupyterlite-core>=0.8.6
+jupyterlab>=4.6.4
 jupyterlite-pyodide-kernel
 jupyterlite-remote-server>=0.2.0
 jupyterlite-terminal
-jupyterlmod
+jupyterlmod>=5.3.2
+jupyter-server>=2.21.1
+nbconvert>=7.17.2
+beautifulsoup4>=4.15.0
+soupsieve>=2.8.4
