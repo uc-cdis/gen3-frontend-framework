@@ -37,8 +37,7 @@ const HorizontalNavigationBar = ({
     classNames,
   );
 
-  const { loggedIn, pending, resources, routesConfig } =
-    useNavigationAuthState();
+  const { loggedIn, pending, mapping, routesConfig } = useNavigationAuthState();
 
   return (
     <div
@@ -64,7 +63,7 @@ const HorizontalNavigationBar = ({
         {items?.map((x, index) => {
           const linkAuthStatus = checkRouteAccess(
             x.href,
-            resources,
+            mapping,
             routesConfig,
             loggedIn,
             pending,
