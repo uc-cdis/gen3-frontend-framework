@@ -19,7 +19,7 @@ const SearchFilters = ({
   const { key } = filter;
   return (
     <div className="flex flex-col">
-      <Paper>
+      <Paper className="flex flex-col gap-1 p-1">
         {values.map((value) => {
           const valueDisplayName =
             filter.valueDisplayNames && filter.valueDisplayNames[value]
@@ -28,20 +28,21 @@ const SearchFilters = ({
           return (
             <Checkbox
               key={`${key}-${value}`}
-              checked={filterState[key] && filterState[key][value]}
+              checked={Boolean(filterState[key]?.[value])}
               label={valueDisplayName}
               onChange={(ev) => {
-                const newFilterState = { ...filterState };
-                if (!newFilterState[key]) {
-                  newFilterState[key] = {};
-                }
+                const selectedValues = { ...filterState[key] };
                 if (ev.target.checked) {
-                  newFilterState[key][value] = true;
+                  selectedValues[value] = true;
                 } else {
-                  delete newFilterState[key][value];
-                  if (Object.keys(newFilterState[key]).length === 0) {
-                    delete newFilterState[key];
-                  }
+                  delete selectedValues[value];
+                }
+                const newFilterState = {
+                  ...filterState,
+                  [key]: selectedValues,
+                };
+                if (Object.keys(selectedValues).length === 0) {
+                  delete newFilterState[key];
                 }
                 setFilterState(newFilterState);
               }}

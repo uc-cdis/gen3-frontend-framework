@@ -35,9 +35,9 @@ const getAdvancedSearchFilterValues = (
       key,
       keyDisplayName,
       valueDisplayNames: Object.fromEntries(
-        getFilterValuesByKey(key, data, advSearchFilters.field, uidField).map(
-          (value) => [value, value],
-        ),
+        getFilterValuesByKey(key, data, advSearchFilters.field, uidField)
+          .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+          .map((value) => [value, value]),
       ),
     }),
   );

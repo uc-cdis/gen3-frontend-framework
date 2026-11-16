@@ -73,7 +73,6 @@ const AdvancedSearch = ({
                 key={`discovery-advancedSearch-accordion-${key}`}
               >
                 <Accordion.Control key={key}>
-                  {' '}
                   {keyDisplayName || key}
                 </Accordion.Control>
                 <Accordion.Panel>
