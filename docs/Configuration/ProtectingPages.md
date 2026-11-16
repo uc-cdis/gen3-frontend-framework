@@ -56,13 +56,7 @@ to an access request page.
 
 Will only allow users with the `/pages/see-workspace` resource to view the /Workspace page.
 
-### Authz entry formats
-
-Each item in `authz` is either a bare string or an object.
-
-- **Bare string** (`"/workspace"`): the user needs *any* permission (any service, any method) on that resource.
-- **Object** (`{ "resource", "service", "method" }`): the user needs that specific Arborist permission on the
-  resource. `service` and `method` are optional and default to `*` (any).
+### Using Arborist permission tuples
 
 In Arborist a permission is the tuple (resource, service, method), not the resource path alone. A user can have
 `/workspace` with only `requestor:create` ("may request access") without having workspace access. Use the object form
@@ -75,6 +69,14 @@ when the distinction matters:
 }
 ```
 
+For simpler access control the resource string method is recommended.
+
+Each item in `authz` is either a resource string or an object.
+
+- **resource string** (`"/workspace"`): the user needs *any* permission (any service, any method) on that resource.
+- **Object** (`{ "resource", "service", "method" }`): the user needs that specific Arborist permission on the
+  resource. `service` and `method` are optional and default to `*` (any).
+
 The check is made against the user's Arborist mapping (`/authz/mapping`), so the service and method must be granted to
 the user through a policy in the user YAML. Matching rules:
 
@@ -85,7 +87,7 @@ the user through a policy in the user YAML. Matching rules:
 
 ### Multiple authz entries
 
-By default the user needs **any one** of the entries. Set `authzMatch` to `"all"` to require every entry:
+By default, the user needs **any one** of the entries. Set `authzMatch` to `"all"` to require every entry:
 
 ```
 "/Submission": {
@@ -102,32 +104,7 @@ By default the user needs **any one** of the entries. Set `authzMatch` to `"all"
 
 A route also protects pages below it: `/Workspace` applies to `/Workspace/abc` (but not `/WorkspaceX`). The rule used
 for a page is, in order: an exact route key, the longest route key that is a parent path, then `*`. The legacy
-`/dir/(.*)` form still works. After changing `authz.json`, run `npm run build:tools` and restart the dev server so the
-proxy matcher is regenerated.
-
-### Validation
-
-`authz.json` is validated when it is loaded. A route key that does not start with `/` (or is not `*`), a resource
-without a leading `/`, an unknown key in an entry (for example `servce`), or an invalid `authzMatch` raises an error
-rather than silently denying access.
-
-### Notes
-
-- Page gating in the frontend controls what the user sees; it is not a security boundary. Gen3 services still check
-  Arborist on every request.
-- The frontend uses a cached copy of the user's mapping, so a newly granted or revoked permission can take a few
-  minutes to show up.
-- A logged-out user on a protected page is sent to login with a return URL. A logged-in user without the permission
-  sees the 403 page, or the `redirect403` page if set.
-
-Select all can be used for directories only at the topmost level use (.\*) to select all files in a directory for a
-policy example:
-
-```
-"/protectedDirectory/(.*)": {
-  "loginRequired": true
-}
-```
+`/dir/(.*)` form still works.
 
 See the Appendix at the bottom of the page for an example of a role, resources, and policies that you can use for all of
 the frontend-framework pages (as of Jan 9, 2026).
