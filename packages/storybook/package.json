@@ -1,6 +1,6 @@
 {
   "name": "@gen3/storybook",
-  "version": "0.13.5",
+  "version": "0.13.6",
   "private": true,
   "description": "Storybook for testing and CI/CD",
   "keywords": [
@@ -26,7 +26,7 @@
     "@mantine/hooks": "^9.6.2",
     "@mantine/modals": "^9.6.2",
     "@mantine/notifications": "^9.6.2",
-    "next": "^16.4.3",
+    "next": "^16.4.5",
     "storybook": "^10.6.0"
   },
   "devDependencies": {
