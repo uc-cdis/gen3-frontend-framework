@@ -1,7 +1,7 @@
 import React from 'react';
 import { Checkbox, Paper } from '@mantine/core';
-import { KeyValueSearchFilter } from '../types';
-import { SearchFilterState } from './types';
+import type { KeyValueSearchFilter } from '../types';
+import type { SearchFilterState } from './types';
 
 interface SearchFiltersProps {
   readonly values: string[];
