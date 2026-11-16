@@ -49,6 +49,8 @@ export async function proxy(req: NextRequest) {
 
   const access = checkRuleAccess(rule, { isLoggedIn: loggedIn, mapping });
 
+  console.log('commons:proxy Arborist /mapping response:', { access, mapping });
+
   if (access === 'allowed') {
     return NextResponse.next();
   }
