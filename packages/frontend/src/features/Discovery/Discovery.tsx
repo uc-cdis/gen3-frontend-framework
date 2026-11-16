@@ -4,7 +4,12 @@ import type { DiscoveryConfig, DiscoveryIndexConfig } from './types';
 import DiscoveryIndexPanel from './DiscoveryIndexPanel';
 import MessagePanel from '../../components/MessagePanel';
 import DiscoveryProvider from './DiscoveryProvider';
-import { type CoreState, selectUserDetails, useCoreSelector } from '@gen3/core';
+import {
+  type CoreState,
+  selectMeshAuthzMapping,
+  selectUserDetails,
+  useCoreSelector,
+} from '@gen3/core';
 
 const extractLabel = (c: DiscoveryIndexConfig, idx: number) =>
   c.label ?? c.features?.pageTitle?.text ?? `Index ${idx.toString()}`;
@@ -26,9 +31,11 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
 
   console.log('userProfile', userProfile);
 
-  // const isMesh = !!discoveryConfig?.features?.authorization?.isMesh; = useCoreSelector((state: CoreState) =>
-  //   selectMeshAuthzMapping(state),
-  // );
+  const mapping = useCoreSelector((state: CoreState) =>
+    selectMeshAuthzMapping(state),
+  );
+
+  console.log('mapping', mapping);
 
   const tabItems = useMemo(() => {
     return discoveryConfig.metadataConfig.reduce<
