@@ -75,8 +75,7 @@ const NavigationBar = ({
     classNames,
   );
 
-  const { loggedIn, pending, resources, routesConfig } =
-    useNavigationAuthState();
+  const { loggedIn, pending, mapping, routesConfig } = useNavigationAuthState();
 
   const pathname = usePathname();
   const [current, setCurrent] = useState(pathname);
@@ -88,7 +87,7 @@ const NavigationBar = ({
   const navigationItems = items.map((item, index) => {
     const linkAuthStatus = checkRouteAccess(
       item.href,
-      resources,
+      mapping,
       routesConfig,
       loggedIn,
       pending,

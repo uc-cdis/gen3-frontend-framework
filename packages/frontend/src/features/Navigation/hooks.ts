@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useGetAuthzResourcesQuery } from '@gen3/core';
+import { useGetAuthzMappingsQuery } from '@gen3/core';
 import { useSession } from '../../lib/session/session';
-import { useProtectedRoutesContext } from '../../components/AuthorizedRoutes/ProtectedRoutesProvider';
+import {
+  useProtectedRoutesContext
+} from '../../components/AuthorizedRoutes/ProtectedRoutesProvider';
 
 /**
  * Login and authz state used to compute each navigation link's access status.
@@ -17,9 +19,9 @@ export const useNavigationAuthState = () => {
   const routesConfig = useProtectedRoutesContext();
   const {
     data,
-    isFetching: isAuthzResourcesFetching,
+    isFetching: isAuthzMappingFetching,
     refetch,
-  } = useGetAuthzResourcesQuery();
+  } = useGetAuthzMappingsQuery();
 
   // The login state the current resources were fetched for.
   const [resourcesFetchedFor, setResourcesFetchedFor] = useState<
@@ -50,12 +52,12 @@ export const useNavigationAuthState = () => {
 
   const pending =
     sessionPending ||
-    (loggedIn && (isAuthzResourcesFetching || resourcesFetchedFor !== true));
+    (loggedIn && (isAuthzMappingFetching || resourcesFetchedFor !== true));
 
   return {
     loggedIn,
     pending,
-    resources: data?.resources ?? [],
+    mapping: data ?? {},
     routesConfig,
   };
 };
