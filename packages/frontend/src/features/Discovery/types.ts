@@ -141,8 +141,8 @@ interface DiscoveryTableConfig {
 }
 
 export interface DiscoveryPageTitle {
-  enabled: boolean;
-  text: string;
+  enabled?: boolean;
+  text?: string;
 }
 
 export type ActionButtonType =

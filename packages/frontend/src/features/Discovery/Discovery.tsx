@@ -3,7 +3,6 @@ import { Select, Tabs } from '@mantine/core';
 import type { DiscoveryConfig, DiscoveryIndexConfig } from './types';
 import DiscoveryIndexPanel from './DiscoveryIndexPanel';
 import MessagePanel from '../../components/MessagePanel';
-import DiscoveryProvider from './DiscoveryProvider';
 
 const extractLabel = (c: DiscoveryIndexConfig, idx: number) =>
   c.label ?? c.features?.pageTitle?.text ?? `Index ${idx.toString()}`;
@@ -28,41 +27,40 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
   if (menuItems.length === 1) {
     // no need for tabs
     return (
-      <DiscoveryProvider
-        discoveryIndexConfig={
-          discoveryConfig.metadataConfig[0] as DiscoveryIndexConfig
-        }
-      >
-        <DiscoveryIndexPanel indexSelector={null} />
-      </DiscoveryProvider>
+      <DiscoveryIndexPanel
+        indexSelector={null}
+        configuration={discoveryConfig.metadataConfig[0]}
+      />
     );
   }
 
   return (
-    <DiscoveryProvider
-      discoveryIndexConfig={
-        discoveryConfig.metadataConfig[0] as DiscoveryIndexConfig
-      }
-    >
-      <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
-        <Tabs
-          className="w-full"
-          defaultValue={metadataIndex}
-          variant={discoveryConfig.metadataConfig[0]?.tabType}
-          onChange={(v: string | null) => {
-            setMetadataIndex(v ?? '0');
-          }}
-        >
-          <Tabs.List>
-            {menuItems.map((item) => (
-              <Tabs.Tab key={item.value} value={item.value}>
-                {item.label}
-              </Tabs.Tab>
-            ))}
-          </Tabs.List>
-          {menuItems.map((item, i) => (
+    <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
+      <Tabs
+        className="w-full"
+        defaultValue={metadataIndex}
+        variant={discoveryConfig.metadataConfig[0]?.tabType}
+        onChange={(v: string | null) => {
+          setMetadataIndex(v ?? '0');
+        }}
+      >
+        <Tabs.List>
+          {menuItems.map((item) => (
+            <Tabs.Tab key={item.value} value={item.value}>
+              {item.label}
+            </Tabs.Tab>
+          ))}
+        </Tabs.List>
+        {menuItems.map((item, i) => {
+          console.log(
+            'Discovery: menuItems.map',
+            discoveryConfig.metadataConfig[i],
+            i,
+          );
+          return (
             <Tabs.Panel value={item.value} key={item.value}>
               <DiscoveryIndexPanel
+                configuration={discoveryConfig.metadataConfig[i]}
                 indexSelector={
                   menuItems.length < 0 ? (
                     <Select
@@ -77,10 +75,10 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
                 }
               />
             </Tabs.Panel>
-          ))}
-        </Tabs>
-      </div>
-    </DiscoveryProvider>
+          );
+        })}
+      </Tabs>
+    </div>
   );
 };
 

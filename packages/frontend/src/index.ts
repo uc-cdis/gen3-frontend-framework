@@ -99,6 +99,12 @@ import {
 
 import AnalysisEditorPage from './pages/admin/analysis/Analysis';
 import { AnalysisEditorPageGetServerSideProps } from './pages/admin/analysis/data';
+import DiscoveryConfigPage from './pages/admin/discovery/DiscoveryConfigPage';
+import { DiscoveryConfigPageGetServerSideProps } from './pages/admin/discovery/data';
+import {
+  checkDiscoveryIndexConfig,
+  DiscoveryConfigEditor,
+} from './features/admin/Discovery';
 
 import AiSearchPage from './pages/AISearch/AISearchPage';
 import { AISearchPageGetServerSideProps } from './pages/AISearch/data';
@@ -243,6 +249,10 @@ export {
   getNavPageLayoutPropsFromConfig,
   AuthzPage,
   AdminAuthZPageGetServerSideProps,
+  DiscoveryConfigPage,
+  DiscoveryConfigPageGetServerSideProps,
+  DiscoveryConfigEditor,
+  checkDiscoveryIndexConfig,
   WorkspacePage,
   WorkspacePageGetServerSideProps,
   WorkspaceNoAccessPage,
