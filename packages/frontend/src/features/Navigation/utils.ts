@@ -1,4 +1,6 @@
-import { AuthorizedRoutesConfig } from '../../lib/authz/type';
+import type { AuthorizedRoutesConfig } from '../../lib/authz/type';
+import type { AuthzMapping } from '../../lib/authz/hasPermission';
+import { resolveRoute, satisfiesAuthz } from '../../lib/authz/routeAuthz';
 import { LinkAuthStatus } from './types';
 
 export const extractClassName = (
@@ -12,12 +14,12 @@ export const extractClassName = (
 };
 export const checkRouteAccess = (
   pathname: string,
-  resources: string[],
+  mapping: AuthzMapping,
   routesConfig: AuthorizedRoutesConfig,
   loggedIn: boolean,
   pending: boolean,
 ): LinkAuthStatus => {
-  const rule = routesConfig.routes[pathname] || routesConfig.routes['*'];
+  const rule = resolveRoute(routesConfig.routes, pathname);
   if (!rule) {
     // Not configured: public page
     return LinkAuthStatus.Authorized;
@@ -54,7 +56,7 @@ export const checkRouteAccess = (
   }
 
   // Authz enabled and authzResources defined → check membership
-  const allowed = rule.authz!.some((needed: any) => resources.includes(needed));
+  const allowed = satisfiesAuthz(rule, mapping);
 
   if (allowed) {
     return LinkAuthStatus.Authorized;

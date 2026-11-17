@@ -21,6 +21,7 @@ import {
 // NOTE: Do NOT change to using the barrel file as that will break the server-only package
 import { fetchArboristResources } from './features/authz/fetchAuthz';
 import {
+  type AuthzMapping,
   type AuthzResourceData,
   type AuthzResourceResponse,
 } from './features/authz/types';
@@ -53,6 +54,7 @@ export {
   type FetchRequest,
   type Gen3FenceResponse,
   type AuthzResourceResponse,
+  type AuthzMapping,
   type AuthzResourceData,
   type Accessibility,
   fetchArboristResources,
