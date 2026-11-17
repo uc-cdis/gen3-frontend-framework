@@ -6,10 +6,16 @@ import MessagePanel from '../../components/MessagePanel';
 import {
   type CoreState,
   selectAuthzMappingData,
-  selectMeshAuthzMapping,
-  selectUserDetails,
   useCoreSelector,
 } from '@gen3/core';
+import { hasPermission } from '../../lib/authz/hasPermission';
+import { toRule } from '../../lib/authz/routeAuthz';
+import { mergeDefaultTailwindClassnames } from '../../utils';
+
+const DEFAULT_CLASSNAMES: Record<string, string> = {
+  root: 'flex flex-col items-center p-4 w-full bg-base-lightest',
+  tab: 'bg-accent-lighter data-active:bg-accent-dark  data-active:text-accent-contrast-dark',
+};
 
 const extractLabel = (c: DiscoveryIndexConfig, idx: number) =>
   c.label ?? c.features?.pageTitle?.text ?? `Index ${idx.toString()}`;
@@ -21,26 +27,23 @@ export interface DiscoveryProps {
 const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
   const [metadataIndex, setMetadataIndex] = useState<string>('0');
 
-  const needsAuthz = discoveryConfig.metadataConfig.some(
-    (x) => x.authz.length > 0,
-  );
-
-  const userProfile = useCoreSelector((state: CoreState) =>
-    selectUserDetails(state),
-  );
-
   const authMapping = useCoreSelector((state: CoreState) =>
     selectAuthzMappingData(state),
   );
 
-  console.log('userProfile', userProfile);
+  // TODO: add support for mesh authz
+  // const meshMapping = useCoreSelector((state: CoreState) =>
+  //   selectMeshAuthzMapping(state),
+  // );
 
-  const meshMapping = useCoreSelector((state: CoreState) =>
-    selectMeshAuthzMapping(state),
+  const mergedClassnames = useMemo(
+    () =>
+      mergeDefaultTailwindClassnames(DEFAULT_CLASSNAMES, {
+        mergeMode: 'merge',
+        ...discoveryConfig.classNames,
+      }),
+    [discoveryConfig?.classNames],
   );
-
-  console.log('authMapping', authMapping);
-  console.log('meshMapping', meshMapping);
 
   const tabItems = useMemo(() => {
     return discoveryConfig.metadataConfig.reduce<
@@ -50,11 +53,15 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
         configuration: DiscoveryIndexConfig;
       }>
     >((items, n, idx) => {
-      // if (n.authz.length > 0) {
-      //   // check to see if user has the authz
-      //   // if (!userProfile.authz?.includes(n.authz[0])) {
-      //   //   return items;
-      //   }
+      if (n.authz.length > 0) {
+        // check if user has permission for any authz
+        const isAuthorized = n.authz.some((x) =>
+          hasPermission(authMapping, toRule(x)),
+        );
+        if (!isAuthorized) {
+          return items;
+        }
+      }
       items.push({
         value: idx.toString(),
         label: extractLabel(n, idx),
@@ -79,13 +86,16 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
   }
 
   return (
-    <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
+    <div className={mergedClassnames.root}>
       <Tabs
         className="w-full"
         defaultValue={metadataIndex}
-        variant={discoveryConfig.metadataConfig[0]?.tabType}
+        variant={discoveryConfig?.tabType}
         onChange={(v: string | null) => {
           setMetadataIndex(v ?? '0');
+        }}
+        classNames={{
+          tab: mergedClassnames.tab,
         }}
       >
         <Tabs.List>

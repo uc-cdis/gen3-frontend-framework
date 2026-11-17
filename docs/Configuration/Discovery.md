@@ -43,6 +43,24 @@ Configurable features to enhance the user interface and functionality:
 - **field**: Specifies the internal field to be used for advanced filtering.
 - **displayName**: The label shown for the filters in the UI.
 - **filters**: An array of filter keys that dictate the available filters.
+-
+
+```json
+"advSearchFilters": {
+  "enabled": true,
+  "field": "advSearchFilters",
+  "displayName": "Filters",
+  "filters": [
+    {
+      "key": "Study Type"
+    },
+    {
+      "key": "Data Type"
+    }
+    // More filters...
+  ]
+}
+```
 
 ##### AI Search
 
@@ -65,20 +83,80 @@ Configurable features to enhance the user interface and functionality:
 
 Example of advanced search filters configuration:
 
+## Multiple Tabs
+
+The Discovery page can be configured to display multiple tabs, each with its own set of filters and aggregations. This
+allows users to explore different aspects of the data in a more organized manner. To enable this eacthe dicvpery
+configuration for each tab is placed in an array:
+
 ```json
-"advSearchFilters": {
-  "enabled": true,
-  "field": "advSearchFilters",
-  "displayName": "Filters",
-  "filters": [
-    {"key": "Study Type"},
-    {"key": "Data Type"}
-    // More filters...
+{
+  "metadataConfig": [
+    {
+      "guidType": "discovery_metadata",
+      "pageTitle": {
+        "enabled": false,
+        "text": "Study Discovery"
+      },
+      ...
+      rest
+      of
+      configuration
+    },
+    "metadataConfig"
+    :
+    [
+      {
+        "guidType": "indexed_files_metadata",
+        "pageTitle": {
+          "enabled": false,
+          "text": "Files"
+        },
+        ...
+        rest
+        of
+        configuration
+      }
   ]
 }
 ```
 
-#### c. Aggregations (`aggregations`)
+In this case the "pageTitle" member is the label for the tab. As shown in the image below:
+![Tabs](images/Discovery/Discovery_tabs_default.png)
+
+### Tab Styles
+
+To set tab styles, add a   "tabType": "pills",
+![Tabs](images/Discovery/Discovery_tabs_pills.png)
+
+or 'tabType': 'outline'
+![Tabs](images/Discovery/Discovery_tabs_outline.png)
+
+### Authorization to Tabs
+
+Optionally you can add authorization to the tabs tabs by adding a       "authz" member as:
+
+```json
+{
+  "metadataConfig": [
+    {
+      "guidType": "discovery_metadata",
+      "authz": [
+        "/see_studies"
+      ]
+    },
+    ...
+    rest
+    of
+    configuration
+  ]
+}
+```
+
+Is a user is not authorized to see the tab it will not be shown. The resource uses the aborist rules engine to determine
+authorization, so a user aathoprized to access a parent resource path will be allowed to see the tab.
+
+## Aggregations (`aggregations`)
 
 - Defines how data should be aggregated on the page, such as count of studies.
 
@@ -135,11 +213,3 @@ Example of advanced search filters configuration:
   ]
 }
 ```
-
-### 3. Best Practices
-
-- **Consistency**: Ensure consistency in field naming and settings across different parts of the configuration.
-- **User Experience**: Optimize configurations for the best user experience, considering the ease of finding and interacting with data.
-- **Testing**: Always test changes in a development environment before deploying to production to avoid disruptions.
-
-This configuration guide provides a comprehensive understanding of how to tailor the Discovery Page through its JSON configuration, enabling a highly functional and user-friendly interface for data browsing and searching.
