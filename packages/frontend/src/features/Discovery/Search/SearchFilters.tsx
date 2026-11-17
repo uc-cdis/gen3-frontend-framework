@@ -30,6 +30,7 @@ const SearchFilters = ({
               key={`${key}-${value}`}
               checked={Boolean(filterState[key]?.[value])}
               label={valueDisplayName}
+              classNames={{ label: '[overflow-wrap:anywhere]' }}
               onChange={(ev) => {
                 const selectedValues = { ...filterState[key] };
                 if (ev.target.checked) {
