@@ -73,6 +73,10 @@ const DiscoveryIndexPanel = ({
     [configuration],
   );
 
+  const [selectedAccessLevels, setSelectedAccessLevels] = useState<number[]>(
+    () => [...enabledAccessLevels],
+  );
+
   const parentDivRef = useRef<HTMLDivElement>(null);
   const studyIdFromWindow = useStudyIdFromWindow();
   const [searchBarTerms, setSearchBarTerms] = useState<string[]>(
@@ -84,10 +88,6 @@ const DiscoveryIndexPanel = ({
   );
   const [selections, setSelections] = useState<string[]>([]); // table selections
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
-
-  const [selectedAccessLevels, setSelectedAccessLevels] = useState<number[]>(
-    () => [...enabledAccessLevels],
-  );
 
   const [advancedSearchTerms, setAdvancedSearchTerms] =
     useState<AdvancedSearchTerms>({
@@ -177,6 +177,9 @@ const DiscoveryIndexPanel = ({
       discoveryConfig={configuration}
       selectedTags={selectedTags}
       setSelectedTags={setSelectedTags}
+      selectedAccessLevels={selectedAccessLevels}
+      setSelectedAccessLevels={setSelectedAccessLevels}
+      enabledAccessLevels={enabledAccessLevels}
     >
       <div className="p-4 w-full bg-base-lightest">
         <StudyProvider>
