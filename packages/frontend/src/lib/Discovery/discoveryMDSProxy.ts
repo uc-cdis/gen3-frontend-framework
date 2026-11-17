@@ -10,7 +10,7 @@ import {
   sortData,
 } from '../../features/Discovery/DataLoaders/processData';
 import { combineData } from '../../features/Discovery/DataLoaders/preProcessData';
-import { getFilterValuesByKey } from '../../features/Discovery/Search/utils';
+import { processAdvancedSearchTerms } from '../../features/Discovery/DataLoaders/utils';
 import addAccessLevelsMetaData from './addAccessLevelsMetaData';
 
 export const GEN3_METADATA_SERVICE =
@@ -30,17 +30,7 @@ const getAdvancedSearchFilterValues = (
   const advSearchFilters = discoveryConfig?.features?.advSearchFilters;
   if (!advSearchFilters?.enabled) return [];
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
-  return advSearchFilters.filters.map(
-    ({ key, keyDisplayName }: { key: string; keyDisplayName?: string }) => ({
-      key,
-      keyDisplayName,
-      valueDisplayNames: Object.fromEntries(
-        getFilterValuesByKey(key, data, advSearchFilters.field, uidField)
-          .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
-          .map((value) => [value, value]),
-      ),
-    }),
-  );
+  return processAdvancedSearchTerms(advSearchFilters, data, uidField);
 };
 
 // Main Function to Orchestrate Steps
