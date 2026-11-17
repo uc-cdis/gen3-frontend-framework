@@ -1,14 +1,15 @@
-# Setting up password and authentication for pages
+# Setting up authentication and authorization for pages
 
-You can protect each page with a password and optionally enforce authorization. By default, all pages are unprotected
-except Profile, Data Library, and Workspaces, which require the user to be logged in.
+You can require users to log in to view a page and optionally enforce authorization. By default, all pages are
+unprotected except Profile, Data Library, and Workspace, which require the user to be logged in.
 
-When a page is protected, the user is prompted for a password before viewing it; otherwise, its navigation link is
-disabled or hidden.
+When a page is protected and the user is not logged in, they are redirected to the Login page (and returned to the page
+after logging in). If they are logged in but not authorized, they are shown the 403 page or redirected to the page set
+in `redirect403`. Otherwise, the page's navigation link is disabled or hidden (see Navigation Links below).
 
 ## Configuration
 
-The password for each page can be set in the config/gen3/authz.json file. The default configuration is:
+Protection for each page is set in the config/gen3/authz.json file. The default configuration is:
 
 ```
 {
@@ -43,8 +44,8 @@ The authz entry in a route entry controls authorization to a page. For example
 }
 ```
 
-You can also add redirect403 to redirect the user to a custom page when they don't have access to the path; for example,
-to an access request page.
+You can also add redirect403 to redirect the user to a custom page when they are logged in but don't have access to the
+path; for example, to an access request page. Without redirect403 the user sees the 403 page.
 
 ```
 "/Workspaces": {
@@ -65,7 +66,11 @@ when the distinction matters:
 ```
 "/Workspace": {
   "loginRequired": true,
-  "authz": [{ "resource": "/workspace", "service": "jupyterhub", "method": "access" }]
+  "authz": [{
+    "resource": "/workspace",
+    "service": "jupyterhub",
+    "method": "access"
+  }]
 }
 ```
 
@@ -104,7 +109,7 @@ By default, the user needs **any one** of the entries. Set `authzMatch` to `"all
 
 A route also protects pages below it: `/Workspace` applies to `/Workspace/abc` (but not `/WorkspaceX`). The rule used
 for a page is, in order: an exact route key, the longest route key that is a parent path, then `*`. The legacy
-`/dir/(.*)` form still works.
+`/dir/(.*)` form still works (it is treated as `/dir`).
 
 See the Appendix at the bottom of the page for an example of a role, resources, and policies that you can use for all of
 the frontend-framework pages (as of Jan 9, 2026).
@@ -117,21 +122,22 @@ for all pages.
 ### Protecting all pages
 
 To protect all pages, use the \* key in the routes object and set loginRequired to true. This requires all users to log
-in before they can view any page, except the Login and error pages. **Note** there is a slight performance penalty for
+in before they can view any page, except the Login, 403, and 404 pages. **Note** there is a slight performance penalty for
 protecting every page.
 
 ### Protecting the Profile page
 
-The Profile page is protected by default.
+The Profile page is protected by default. Logged-in users who visit the Login page are redirected to Profile.
 
 ## Navigation Links
 
-There are two options for displaying navigation links on the left side of the page.
+There are two options for displaying navigation links.
 
-- Show All Links: All links will be displayed, even if the user does not have access to the page. A tooltip will be
-  displayed indicating if login is required. Once logged in, if the user does not have authorization to view the page, a
-  tooltip will be displayed indicating that the user does not have access.
-- Hide All Unavailable Links: If a user does not have access to a page, the link will not be displayed.
+- Show All Links (`false`): All links will be displayed, even if the user does not have access to the page. A tooltip
+  will be displayed indicating if login is required. Once logged in, if the user does not have authorization to view
+  the page, a tooltip will be displayed indicating that the user does not have access.
+- Hide All Unavailable Links (`true`): Any link the user cannot currently access is not displayed. This includes links
+  that require login while the user is logged out.
 
 ## Appendix: Adding page access policies to the user.yaml
 
