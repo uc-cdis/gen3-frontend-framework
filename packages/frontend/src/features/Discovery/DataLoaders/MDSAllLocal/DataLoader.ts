@@ -143,8 +143,6 @@ const useGetMDSData = ({
     offset: 0,
     pageSize: maxStudies,
   });
-  console.log('guidType', guidType);
-  console.log('useGetMDSData:data', data);
 
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
 
@@ -158,14 +156,11 @@ const useGetMDSData = ({
     [data, studyField],
   );
 
-  console.log('useGetMDSData:studies', studies);
-
   const { studiesWithIds, missingIdCount } = useStudiesWithIds(
     studies,
     uidField,
   );
 
-  console.log('useGetMDSData:studiesWithIds', studiesWithIds);
   const studyData = useMemo(
     () => studiesWithIds.map((study) => addCommonsToTags(study)),
     [studiesWithIds],
@@ -524,9 +519,6 @@ export const useLoadAllData = ({
     discoveryConfig,
   });
 
-  console.log('mdsData', mdsData);
-  console.log('dataGuidType', dataGuidType);
-
   const manualSortingAndPagination =
     getManualSortingAndPagination(discoveryConfig);
 
@@ -542,17 +534,22 @@ export const useLoadAllData = ({
   const { searchedData, clearSearchTerms, suggestions } = useSearchMetadata({
     discoveryConfig,
     searchTerms,
-
     mdsData,
     isSuccess,
   });
 
-  // memoized: filter() returns a new array, and usePagination's effect depends
-  // on this reference, so recomputing it every render loops forever
-  const accessLevelFiltered = useMemo(
-    () => filterByAccessLevels(searchedData, selectedAccessLevels),
-    [searchedData, selectedAccessLevels],
-  );
+  // if we have authorization enabled, filter by access levels
+  // otherwise return searchedData
+  const accessLevelFiltered = useMemo(() => {
+    if (discoveryConfig?.features?.authorization.enabled)
+      // TODO: fix this because a similar check is done in the dataHook
+      return filterByAccessLevels(searchedData, selectedAccessLevels);
+    else return searchedData;
+  }, [
+    searchedData,
+    selectedAccessLevels,
+    discoveryConfig?.features?.authorization.enabled,
+  ]);
 
   // fully filtered data: search → access levels → tags
   const filteredByTags = useMemo(
