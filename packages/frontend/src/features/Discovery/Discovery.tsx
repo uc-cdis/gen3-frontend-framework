@@ -3,9 +3,9 @@ import { Select, Tabs } from '@mantine/core';
 import type { DiscoveryConfig, DiscoveryIndexConfig } from './types';
 import DiscoveryIndexPanel from './DiscoveryIndexPanel';
 import MessagePanel from '../../components/MessagePanel';
-import DiscoveryProvider from './DiscoveryProvider';
 import {
   type CoreState,
+  selectAuthzMappingData,
   selectMeshAuthzMapping,
   selectUserDetails,
   useCoreSelector,
@@ -29,17 +29,26 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
     selectUserDetails(state),
   );
 
+  const authMapping = useCoreSelector((state: CoreState) =>
+    selectAuthzMappingData(state),
+  );
+
   console.log('userProfile', userProfile);
 
-  const mapping = useCoreSelector((state: CoreState) =>
+  const meshMapping = useCoreSelector((state: CoreState) =>
     selectMeshAuthzMapping(state),
   );
 
-  console.log('mapping', mapping);
+  console.log('authMapping', authMapping);
+  console.log('meshMapping', meshMapping);
 
   const tabItems = useMemo(() => {
     return discoveryConfig.metadataConfig.reduce<
-      Array<{ value: string; label: string; config: DiscoveryIndexConfig }>
+      Array<{
+        value: string;
+        label: string;
+        configuration: DiscoveryIndexConfig;
+      }>
     >((items, n, idx) => {
       // if (n.authz.length > 0) {
       //   // check to see if user has the authz
@@ -49,7 +58,7 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
       items.push({
         value: idx.toString(),
         label: extractLabel(n, idx),
-        config: n,
+        configuration: n,
       });
       return items;
     }, []);
@@ -62,13 +71,10 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
   if (tabItems.length === 1) {
     // no need for tabs
     return (
-      <DiscoveryProvider
-        discoveryIndexConfig={
-          discoveryConfig.metadataConfig[0] as DiscoveryIndexConfig
-        }
-      >
-        <DiscoveryIndexPanel indexSelector={null} />
-      </DiscoveryProvider>
+      <DiscoveryIndexPanel
+        indexSelector={null}
+        configuration={tabItems[0].configuration}
+      />
     );
   }
 
@@ -92,24 +98,21 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
         {tabItems.map((item, i) => {
           return (
             <Tabs.Panel value={item.value} key={item.value}>
-              <DiscoveryProvider
-                discoveryIndexConfig={discoveryConfig.metadataConfig[i]}
-              >
-                <DiscoveryIndexPanel
-                  indexSelector={
-                    tabItems.length < 0 ? (
-                      <Select
-                        label="Metadata:"
-                        data={tabItems}
-                        value={metadataIndex}
-                        onChange={(v: string | null) => {
-                          setMetadataIndex(v ?? '0');
-                        }}
-                      />
-                    ) : null
-                  }
-                />
-              </DiscoveryProvider>
+              <DiscoveryIndexPanel
+                configuration={item.configuration}
+                indexSelector={
+                  tabItems.length < 0 ? (
+                    <Select
+                      label="Metadata:"
+                      data={tabItems}
+                      value={metadataIndex}
+                      onChange={(v: string | null) => {
+                        setMetadataIndex(v ?? '0');
+                      }}
+                    />
+                  ) : null
+                }
+              />
             </Tabs.Panel>
           );
         })}
