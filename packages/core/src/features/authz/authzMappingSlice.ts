@@ -1,11 +1,13 @@
 import { gen3Api } from '../gen3';
 import { createSelector } from '@reduxjs/toolkit';
-import type {
+import {
+  type AuthzMapping,
   AuthzResourceResponse,
+  CheckAuthzRequest,
+  CheckAuthzResourceResponse,
   CreateAuthzResourceRequest,
   CreateAuthzResourceResponse,
 } from './types';
-import { type AuthzMapping } from './types';
 import { GEN3_AUTHZ_API } from '../../constants';
 
 const TAGS = 'authz';
@@ -31,6 +33,16 @@ export const authzApi = authzTags.injectEndpoints({
         method: 'GET',
       }),
     }),
+    checkAuthzRequest: builder.query<
+      CheckAuthzResourceResponse,
+      CheckAuthzRequest
+    >({
+      query: (body) => ({
+        url: `${GEN3_AUTHZ_API}/request`,
+        method: 'POST',
+        body,
+      }),
+    }),
     createAuthzResource: builder.mutation<
       CreateAuthzResourceResponse,
       CreateAuthzResourceRequest
@@ -51,6 +63,8 @@ export const {
   useGetAuthzResourcesQuery,
   useLazyGetAuthzResourcesQuery,
   useCreateAuthzResourceMutation,
+  useCheckAuthzRequestQuery,
+  useLazyCheckAuthzRequestQuery,
 } = authzApi;
 
 export const selectAuthzMapping = authzApi.endpoints.getAuthzMappings.select();

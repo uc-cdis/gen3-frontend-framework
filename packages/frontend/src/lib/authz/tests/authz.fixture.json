@@ -1,0 +1,32 @@
+{
+  "routes": {
+    "/Workspace": {
+      "loginRequired": true,
+      "authz": [
+        {
+          "resource": "/workspace",
+          "service": "jupyterhub",
+          "method": "access"
+        }
+      ]
+    },
+    "/Submission": {
+      "loginRequired": true,
+      "authzMatch": "any",
+      "authz": [
+        { "resource": "/programs", "service": "sheepdog", "method": "create" },
+        { "resource": "/programs", "service": "sheepdog", "method": "update" }
+      ]
+    },
+    "/Profile": {
+      "loginRequired": true
+    },
+    "/Reports": {
+      "loginRequired": false,
+      "authz": ["/reports"]
+    },
+    "*": {
+      "loginRequired": false
+    }
+  }
+}

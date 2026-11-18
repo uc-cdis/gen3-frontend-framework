@@ -1,5 +1,6 @@
 import React, { createContext } from 'react';
 import type { DiscoveryIndexConfig } from './types';
+import type { AccessLevel } from '../../utils';
 
 interface DiscoveryProviderValue {
   discoveryConfig: DiscoveryIndexConfig;
@@ -7,12 +8,18 @@ interface DiscoveryProviderValue {
   setSelectedTags: React.Dispatch<
     React.SetStateAction<{ [key: string]: boolean }>
   >;
+  selectedAccessLevels: number[];
+  setSelectedAccessLevels: React.Dispatch<React.SetStateAction<number[]>>;
+  enabledAccessLevels: Set<AccessLevel>;
 }
 
 const DiscoveryContext = createContext<DiscoveryProviderValue>({
   discoveryConfig: {} as DiscoveryIndexConfig,
   selectedTags: {},
   setSelectedTags: () => {},
+  selectedAccessLevels: [],
+  setSelectedAccessLevels: () => [],
+  enabledAccessLevels: new Set(),
 });
 
 const useDiscoveryContext = () => {
@@ -28,6 +35,9 @@ const DiscoveryProvider = ({
   discoveryConfig,
   selectedTags,
   setSelectedTags,
+  selectedAccessLevels,
+  setSelectedAccessLevels,
+  enabledAccessLevels,
 }: {
   children: React.ReactNode;
 } & DiscoveryProviderValue) => {
@@ -37,6 +47,9 @@ const DiscoveryProvider = ({
         discoveryConfig,
         selectedTags,
         setSelectedTags,
+        selectedAccessLevels,
+        setSelectedAccessLevels,
+        enabledAccessLevels,
       }}
     >
       {children}

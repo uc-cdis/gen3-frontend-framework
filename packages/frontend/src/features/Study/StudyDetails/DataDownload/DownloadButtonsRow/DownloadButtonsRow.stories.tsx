@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { http, HttpResponse } from 'msw';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { GEN3_FENCE_API } from '@gen3/core';
 import DownloadButtonsRow from './DownloadButtonsRow';
 import DiscoveryProvider from '../../../../Discovery/DiscoveryProvider';
 import type { DiscoveryIndexConfig } from '../../../../Discovery/types';
+import { AccessLevel } from '../../../../../utils';
 
 const discoveryIndexConfig = {
   minimalFieldMapping: { uid: '_hdp_uid' },
@@ -42,13 +43,32 @@ const meta = {
   component: DownloadButtonsRow,
   title: 'Features/Study/StudyDetails/DataDownload/DownloadButtonsRow',
   decorators: [
-    (Story) => (
-      <DiscoveryProvider discoveryIndexConfig={discoveryIndexConfig}>
-        <div className="bg-base-lighter p-4 h-96">
-          <Story />
-        </div>
-      </DiscoveryProvider>
-    ),
+    (Story) => {
+      const [selectedAccessLevels, setSelectedAccessLevels] = useState<
+        number[]
+      >([]);
+
+      return (
+        <DiscoveryProvider
+          discoveryConfig={discoveryIndexConfig}
+          selectedTags={{}}
+          setSelectedTags={() => {}}
+          selectedAccessLevels={selectedAccessLevels}
+          setSelectedAccessLevels={setSelectedAccessLevels}
+          enabledAccessLevels={
+            new Set([
+              AccessLevel.ACCESSIBLE,
+              AccessLevel.UNACCESSIBLE,
+              AccessLevel.WAITING,
+            ])
+          }
+        >
+          <div className="bg-base-lighter p-4 h-96">
+            <Story />
+          </div>
+        </DiscoveryProvider>
+      );
+    },
   ],
   parameters: {
     deepControls: { enabled: true },

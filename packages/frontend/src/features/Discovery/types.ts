@@ -22,6 +22,7 @@ import type { DataAuthorization } from '../../utils';
 import type { Gen3AppConfigData } from '../../lib/content/types';
 import type { SearchMode } from './constants';
 import type { ActionButtonConfig } from '../../components/Buttons/types';
+import { AuthzEntry } from '../../lib/authz/type';
 
 interface KeywordSearch {
   keywords?: string[];
@@ -209,11 +210,11 @@ export interface ExportToWorkspaceConfig {
 
 // TODO: Type the rest of the config
 export interface DiscoveryIndexConfig {
+  authz: AuthzEntry[]; // list of authz resources for the Discovery page [] is default
   guidType?: string;
   studyField?: string;
   maxStudies?: number;
   label?: string;
-  tabType?: 'pills' | 'outline';
   features: {
     advSearchFilters?: AdvancedSearchFilters;
     aiSearch?: boolean;
@@ -237,5 +238,7 @@ export interface DiscoveryIndexConfig {
 }
 
 export interface DiscoveryConfig extends Gen3AppConfigData {
+  tabType?: 'pills' | 'outline';
+  classNames?: Record<string, string>; // top level tab type for multi index configurations
   metadataConfig: Array<DiscoveryIndexConfig>;
 }

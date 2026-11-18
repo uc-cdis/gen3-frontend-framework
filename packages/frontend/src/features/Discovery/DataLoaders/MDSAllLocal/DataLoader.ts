@@ -157,10 +157,12 @@ const useGetMDSData = ({
         : undefined,
     [data, studyField],
   );
+
   const { studiesWithIds, missingIdCount } = useStudiesWithIds(
     studies,
     uidField,
   );
+
   const studyData = useMemo(
     () => studiesWithIds.map((study) => addCommonsToTags(study)),
     [studiesWithIds],
@@ -536,7 +538,6 @@ export const useLoadAllData = ({
   const { searchedData, clearSearchTerms, suggestions } = useSearchMetadata({
     discoveryConfig,
     searchTerms,
-
     mdsData,
     isSuccess,
   });

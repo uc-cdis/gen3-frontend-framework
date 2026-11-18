@@ -24,8 +24,7 @@ const LeftSidePanel = ({
     classNames,
   );
 
-  const { loggedIn, pending, resources, routesConfig } =
-    useNavigationAuthState();
+  const { loggedIn, pending, mapping, routesConfig } = useNavigationAuthState();
 
   return (
     <div
@@ -37,7 +36,7 @@ const LeftSidePanel = ({
       {items.map((x, index) => {
         const linkAuthStatus = checkRouteAccess(
           x.href,
-          resources,
+          mapping,
           routesConfig,
           loggedIn,
           pending,

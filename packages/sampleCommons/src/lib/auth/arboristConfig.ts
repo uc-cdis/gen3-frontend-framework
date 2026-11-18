@@ -2,7 +2,8 @@
  * Frontend server side api to extract the frontend-protected resources
  */
 import { GEN3_COMMONS_NAME } from '@gen3/core/server';
-import { AuthorizedRoutesConfig } from '@gen3/frontend/server';
+import type { AuthorizedRoutesConfig } from '@gen3/frontend/server';
+import { parseAuthzConfig } from '@gen3/frontend/server';
 
 let cachedConfig: AuthorizedRoutesConfig | null = null;
 
@@ -11,7 +12,7 @@ export async function getRouteConfig(): Promise<AuthorizedRoutesConfig> {
 
   try {
     const mod = await import(`../../../config/${GEN3_COMMONS_NAME}/authz.json`);
-    cachedConfig = mod.default || mod; // Handle ESM default export compatibility
+    cachedConfig = parseAuthzConfig(mod.default || mod); // validates; handles ESM default export
     return cachedConfig as AuthorizedRoutesConfig;
   } catch (e) {
     console.error(

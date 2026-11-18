@@ -27,3 +27,23 @@ export interface CreateAuthzResourceResponse {
 export type AuthzMapping = Record<string, ServiceAndMethod[]>;
 
 export type ResourceAuthzMapping = Record<string, AuthzMapping>;
+
+export interface AuthzRequest {}
+
+export interface CheckAuthzResourceResponse {
+  authorized: boolean;
+}
+
+interface AuthzRequestAction {
+  resource: string;
+  action?: ServiceAndMethod;
+}
+
+export interface CheckAuthzRequest {
+  request?: AuthzRequestAction;
+  requests?: AuthzRequestAction[];
+  user?: {
+    token: string;
+    user_id: string;
+  };
+}

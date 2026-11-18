@@ -25,6 +25,7 @@ const AuthTooltips: Record<LinkAuthStatus, string> = {
  * @param classNames - the class names to use for root, label, icon/tooltip and arrow'
  * @param noBasePath - set to true to avoid prepending a basePath to the link
  * @param authStatus - the status of the user's authorization to access this page.
+ * @param enabledWithNoAccess - show even if not authorized
  */
 const NavigationBarButton = ({
   tooltip,
@@ -91,8 +92,7 @@ const NavigationBarButton = ({
         zIndex={1000}
         w={220}
       >
-        <div
-          role="navigation"
+        <nav
           className={extractClassName('root', mergedClassnames)}
           data-disabled={dataDisabled ? true : undefined}
         >
@@ -112,7 +112,7 @@ const NavigationBarButton = ({
               {name}
             </p>
           </UnstyledButton>
-        </div>
+        </nav>
       </Tooltip>
     </React.Fragment>
   );

@@ -22,7 +22,8 @@ RUN chmod +x /usr/local/bin/micromamba
 # `./cockle_wasm_env` lookup misses. Only the remote tier is downloaded here.
 # Independent of source, so this layer stays cached.
 ENV LITE_ROOT=/lite/jupyterlite-builds
-RUN WASM_ENV=${LITE_ROOT}/remote-private/cockle_wasm_env && \
+RUN set -eu && \
+    WASM_ENV=${LITE_ROOT}/remote-private/cockle_wasm_env && \
     mkdir -p "$WASM_ENV" && \
     for URL in \
       "https://repo.prefix.dev/emscripten-forge-4x/emscripten-wasm32/cockle_fs-0.3.0-h8b79025_1.tar.bz2" \
@@ -31,7 +32,13 @@ RUN WASM_ENV=${LITE_ROOT}/remote-private/cockle_wasm_env && \
       "https://repo.prefix.dev/emscripten-forge-4x/emscripten-wasm32/less-693-hf259948_0.tar.bz2" \
       "https://repo.prefix.dev/emscripten-forge-4x/emscripten-wasm32/sed-4.9-h072c4ef_0.tar.bz2" \
     ; do \
-      curl -fsSL "$URL" | tar -xj -C "$WASM_ENV"; \
+      F="/tmp/$(basename "$URL")"; \
+      curl -fsSL --retry 5 --retry-delay 3 -o "$F" "$URL" && \
+      tar -xjf "$F" -C "$WASM_ENV" && \
+      rm -f "$F" || exit 1; \
+    done && \
+    for F in bin/coreutils.js bin/coreutils.wasm bin/fs.js; do \
+      test -s "$WASM_ENV/$F" || { echo "missing $F in cockle_wasm_env" >&2; exit 1; }; \
     done
 
 # Mirror the layout of packages/workspaces/dist/jupyterlite-builds (what the
