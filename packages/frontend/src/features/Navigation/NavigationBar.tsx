@@ -1,10 +1,8 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import type { ReactElement } from 'react';
+import React, { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import {
-  LinkAuthStatus,
-  NavigationButtonProps,
-  NavigationProps,
-} from './types';
+import type { NavigationButtonProps, NavigationProps } from './types';
+import { LinkAuthStatus } from './types';
 import NavigationLogo from './NavigationLogo';
 import NavigationBarButton from './NavigationBarButton';
 import { checkRouteAccess, extractClassName } from './utils';

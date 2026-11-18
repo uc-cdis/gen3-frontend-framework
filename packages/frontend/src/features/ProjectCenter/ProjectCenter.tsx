@@ -1,9 +1,8 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { DiscoveryIndexConfig } from '../Discovery/types';
 import { ProjectCenterConfig, ProjectCenterIndexConfig } from './types';
 import ProjectCenterIndexPanel from './ProjectCenterIndexPanel';
 import MessagePanel from '../../components/MessagePanel';
-import DiscoveryProvider from '../Discovery/DiscoveryProvider';
 
 const extractLabel = (c: ProjectCenterIndexConfig, idx: number) =>
   c.label ?? c.features?.pageTitle?.text ?? `Index ${idx.toString()}`;
@@ -18,13 +17,12 @@ const ProjectCenter = ({ projectCenterConfig }: ProjectCenterProps) => {
   }
 
   return (
-    <DiscoveryProvider
-      discoveryIndexConfig={
+    <ProjectCenterIndexPanel
+      indexSelector={null}
+      configuration={
         projectCenterConfig.metadataConfig[0] as DiscoveryIndexConfig
       }
-    >
-      <ProjectCenterIndexPanel indexSelector={null} />
-    </DiscoveryProvider>
+    />
   );
 };
 
