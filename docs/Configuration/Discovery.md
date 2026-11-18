@@ -86,8 +86,8 @@ Example of advanced search filters configuration:
 ## Multiple Tabs
 
 The Discovery page can be configured to display multiple tabs, each with its own set of filters and aggregations. This
-allows users to explore different aspects of the data in a more organized manner. To enable this eacthe dicvpery
-configuration for each tab is placed in an array:
+allows users to explore different aspects of the data in a more organized manner. To enable this a configuration for
+each tab is placed in an array:
 
 ```json
 {
@@ -132,9 +132,14 @@ To set tab styles, add a   "tabType": "pills",
 or 'tabType': 'outline'
 ![Tabs](images/Discovery/Discovery_tabs_outline.png)
 
+### Organizing data for tabs
+
+The preferred method to served difference metadata by tab is to create different `guidType` types and load data
+accordingly. This way, each tab will have a separate `guidType` and loads only that data from the metadata service.
+
 ### Authorization to Tabs
 
-Optionally you can add authorization to the tabs tabs by adding a       "authz" member as:
+Optionally you can add authorization to the tabs by adding an "authz" member as:
 
 ```json
 {
@@ -153,8 +158,8 @@ Optionally you can add authorization to the tabs tabs by adding a       "authz" 
 }
 ```
 
-Is a user is not authorized to see the tab it will not be shown. The resource uses the aborist rules engine to determine
-authorization, so a user aathoprized to access a parent resource path will be allowed to see the tab.
+Is a user is not authorized to see the tab it will not be shown. The resource uses the aborist rules
+engine to determine authorization, so a user authorized to access a parent resource path will be allowed to see the tab.
 
 ## Aggregations (`aggregations`)
 
