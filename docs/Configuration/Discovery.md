@@ -1,6 +1,6 @@
 ## Discovery Page Configuration Guide
 
-This guide outlines how to configure the Discovery Page of an application, focusing on browsing and searching metadata. The Discovery Page can be tailored through JSON configuration files to enhance user interaction and data discovery capabilities.
+This guide outlines how to configure an application's Discovery Page, focusing on browsing and searching metadata. You can tailor the Discovery Page through JSON configuration files to enhance user interaction and data discovery.
 
 ### 1. Overview of Configuration Structure
 
@@ -75,7 +75,7 @@ Configurable features to enhance the user interface and functionality:
 ##### Page Title and Search
 
 - **pageTitle**: Toggle to display the page title.
-- **search**: Detailed configurations for search functionalities including a search bar and tag dropdown.
+- **search**: Detailed configurations for search functionalities, including a search bar and tag dropdown.
 
 ##### Authorization
 
@@ -86,7 +86,7 @@ Example of advanced search filters configuration:
 ## Multiple Tabs
 
 The Discovery page can be configured to display multiple tabs, each with its own set of filters and aggregations. This
-allows users to explore different aspects of the data in a more organized manner. To enable this a configuration for
+allows users to explore different aspects of the data in a more organized manner. To enable this, a configuration for
 each tab is placed in an array:
 
 ```json
@@ -103,25 +103,22 @@ each tab is placed in an array:
       of
       configuration
     },
-    "metadataConfig"
-    :
-    [
-      {
-        "guidType": "indexed_files_metadata",
-        "pageTitle": {
-          "enabled": false,
-          "text": "Files"
-        },
-        ...
-        rest
-        of
-        configuration
-      }
+    {
+      "guidType": "indexed_files_metadata",
+      "pageTitle": {
+        "enabled": false,
+        "text": "Files"
+      },
+      ...
+      rest
+      of
+      configuration
+    }
   ]
 }
 ```
 
-In this case the "pageTitle" member is the label for the tab. As shown in the image below:
+In this case, the "pageTitle" member is the tab label. As shown in the image below:
 ![Tabs](images/Discovery/Discovery_tabs_default.png)
 
 ### Tab Styles
@@ -134,12 +131,12 @@ or 'tabType': 'outline'
 
 ### Organizing data for tabs
 
-The preferred method to served difference metadata by tab is to create different `guidType` types and load data
-accordingly. This way, each tab will have a separate `guidType` and loads only that data from the metadata service.
+The preferred method to serve different metadata by tab is to create different `guidType` types and load data
+accordingly. This way, each tab has a separate `guidType` and loads only its data from the metadata service.
 
 ### Authorization to Tabs
 
-Optionally you can add authorization to the tabs by adding an "authz" member as:
+Optionally, you can add authorization to the tabs by adding an "authz" member as:
 
 ```json
 {
@@ -158,7 +155,7 @@ Optionally you can add authorization to the tabs by adding an "authz" member as:
 }
 ```
 
-Is a user is not authorized to see the tab it will not be shown. The resource uses the aborist rules
+If a user is not authorized to see the tab, it will not be shown. The resource uses the aborist rules
 engine to determine authorization, so a user authorized to access a parent resource path will be allowed to see the tab.
 
 ## Aggregations (`aggregations`)
