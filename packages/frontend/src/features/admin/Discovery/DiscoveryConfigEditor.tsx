@@ -36,7 +36,7 @@ import type {
   DiscoveryIndexConfig,
 } from '../../Discovery/types';
 import PanelErrorBoundary from '../../../components/PanelErrorBoundary';
-import { IndexEditorProvider } from './fields';
+import { IndexEditorProvider } from '../components/fields';
 import { IndexConfigForm } from './sections';
 import { checkDiscoveryIndexConfig } from './checkConfig';
 
@@ -49,6 +49,7 @@ export interface DiscoveryConfigEditorProps {
 
 const EMPTY_INDEX = {
   label: 'New index',
+  authz: [],
   features: {
     pageTitle: { enabled: true, text: 'Discover Datasets' },
     authorization: { enabled: false },
@@ -238,8 +239,8 @@ const DiscoveryConfigEditor = ({
         className="px-4 py-2 border-b border-base-light bg-base-max"
       >
         <Group gap="xs">
-          <Text fw={600}>Discovery config</Text>
-          <Badge variant="light" color="gray">
+          <Text fw={600}>Discovery Config Editor</Text>
+          <Badge variant="outline" color="secondary.2" size="lg" radius="xs">
             {commonsName}
           </Badge>
           {dirty && (
@@ -362,7 +363,7 @@ const DiscoveryConfigEditor = ({
           <Tabs defaultValue="form" className="flex flex-col min-h-0 flex-1">
             <Tabs.List>
               <Tabs.Tab value="form">Form</Tabs.Tab>
-              <Tabs.Tab value="json">JSON</Tabs.Tab>
+              <Tabs.Tab value="json">JSON Editor</Tabs.Tab>
               <Tabs.Tab value="issues">
                 Checks {issues.length > 0 ? `(${issues.length})` : ''}
               </Tabs.Tab>

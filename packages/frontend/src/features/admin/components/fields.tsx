@@ -36,7 +36,7 @@ import {
   moveItem,
   removeAt,
   setIn,
-} from './configPath';
+} from '../Discovery/configPath';
 
 /* ------------------------------------------------------------------ */
 /* Editor context: the index config being edited + an update function  */

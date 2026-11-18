@@ -8,7 +8,7 @@ import type { NavPageLayoutProps } from '../../features/Navigation';
 import type { DataLibraryConfig } from '../../features/DataLibrary';
 import { DiscoveryIndexConfig } from '../../features/Discovery/types';
 
-const DEFAULT_DISCOVERY_CONFIG: DiscoveryIndexConfig = {
+export const DEFAULT_DISCOVERY_CONFIG: DiscoveryIndexConfig = {
   authz: [],
   features: {
     authorization: {},
@@ -47,7 +47,7 @@ export const DiscoveryPageGetServerSideProps: GetServerSideProps<
     const storeMode =
       datalibraryConfig?.storageMode ?? DataLibraryStoreMode.ApiOnly;
 
-    // merge the defaults into each index's config (config values win) without mutating the defaults
+    // merge the defaults into each index's config
     discoveryConfig.metadataConfig = (discoveryConfig.metadataConfig ?? []).map(
       (indexConfig) => {
         const merged = merge({}, DEFAULT_DISCOVERY_CONFIG, indexConfig);

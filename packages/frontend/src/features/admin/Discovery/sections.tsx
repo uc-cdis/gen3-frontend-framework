@@ -10,7 +10,7 @@ import {
   SwitchField,
   TextField,
   useConfigValue,
-} from './fields';
+} from '../components/fields';
 import type { ConfigPath } from './configPath';
 import { getIn } from './configPath';
 
@@ -424,10 +424,10 @@ export const IndexConfigForm = ({
 }): ReactElement => (
   <Accordion multiple defaultValue={['general']} variant="separated">
     <GeneralSection />
+    <AggregationsSection fields={fields} />
     <SearchSection fields={fields} />
     <StudyColumnsSection fields={fields} />
     <StudyPreviewSection fields={fields} />
-    <AggregationsSection fields={fields} />
     <TagsSection />
     <AuthorizationSection />
     <FieldMappingSection fields={fields} />
