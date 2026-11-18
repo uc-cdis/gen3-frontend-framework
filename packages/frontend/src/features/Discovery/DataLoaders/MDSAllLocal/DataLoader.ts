@@ -155,10 +155,12 @@ const useGetMDSData = ({
         : undefined,
     [data, studyField],
   );
+
   const { studiesWithIds, missingIdCount } = useStudiesWithIds(
     studies,
     uidField,
   );
+
   const studyData = useMemo(
     () => studiesWithIds.map((study) => addCommonsToTags(study)),
     [studiesWithIds],
@@ -532,17 +534,22 @@ export const useLoadAllData = ({
   const { searchedData, clearSearchTerms, suggestions } = useSearchMetadata({
     discoveryConfig,
     searchTerms,
-
     mdsData,
     isSuccess,
   });
 
-  // memoized: filter() returns a new array, and usePagination's effect depends
-  // on this reference, so recomputing it every render loops forever
-  const accessLevelFiltered = useMemo(
-    () => filterByAccessLevels(searchedData, selectedAccessLevels),
-    [searchedData, selectedAccessLevels],
-  );
+  // if we have authorization enabled, filter by access levels
+  // otherwise return searchedData
+  const accessLevelFiltered = useMemo(() => {
+    if (discoveryConfig?.features?.authorization.enabled)
+      // TODO: fix this because a similar check is done in the dataHook
+      return filterByAccessLevels(searchedData, selectedAccessLevels);
+    else return searchedData;
+  }, [
+    searchedData,
+    selectedAccessLevels,
+    discoveryConfig?.features?.authorization.enabled,
+  ]);
 
   // fully filtered data: search → access levels → tags
   const filteredByTags = useMemo(
