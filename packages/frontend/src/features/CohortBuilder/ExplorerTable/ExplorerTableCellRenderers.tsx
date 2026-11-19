@@ -4,17 +4,24 @@ import { Icon } from '@iconify-icon/react';
 import Link from 'next/link';
 import { filesize } from 'filesize';
 import { isArray } from 'lodash';
-import { Badge, Text } from '@mantine/core';
+import { Badge, Text, Tooltip } from '@mantine/core';
+import type { JSONObject } from '@gen3/core';
 import { CellRendererFunction, CellRendererFunctionProps } from './types';
 import {
   OpenControlledAccessCellRenderer,
   ProjectAccessCellRenderer,
 } from './AccessCellRenderers';
 import { RenderOpenAppLink } from './LinkRenderers';
+import { TruncatedStringWithTooltip } from '../../../components/DataItems/TruncatedStringWithTooltip';
 
 export interface CellRendererFunctionCatalogEntry {
   [key: string]: CellRendererFunction;
 }
+
+export const RenderTruncatedStringWithTooltip: CellRendererFunction = (
+  { cell }: CellRendererFunctionProps,
+  params?: JSONObject,
+) => <TruncatedStringWithTooltip value={cell.getValue()} params={params} />;
 
 export const RenderArrayCellSimple: CellRendererFunction = (
   { cell }: CellRendererFunctionProps,
@@ -205,9 +212,11 @@ const RenderLinkCellWithIcon = (
     <Link href={linkURL} target="_blank" rel="noreferrer">
       <div className="flex items-center gap-1">
         {icon && <Icon height={iconHeight} icon={icon} />}
-        <Text fw={700} size={size} classNames={{ root: classNames?.text }}>
-          {cell.getValue() as ReactNode}
-        </Text>
+        <Tooltip label={cell.getValue() as string}>
+          <Text fw={700} size={size} classNames={{ root: classNames?.text }}>
+            {cell.getValue() as ReactNode}
+          </Text>
+        </Tooltip>
       </div>
     </Link>
   );
@@ -259,8 +268,8 @@ export const registerExplorerDefaultCellRenderers = () => {
   ExplorerTableCellRendererFactory().registerRendererCatalog({
     value: {
       default: ValueCellRenderer,
-
       filesize: FilesizeRenderer,
+      truncatedStringWithTooltip: RenderTruncatedStringWithTooltip,
     },
   });
   ExplorerTableCellRendererFactory().registerRendererCatalog({
