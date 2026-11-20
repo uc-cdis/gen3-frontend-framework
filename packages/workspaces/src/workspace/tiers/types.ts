@@ -8,7 +8,6 @@ interface LabelAndDescription {
 
 export interface TierToolbarConfiguration extends LabelAndDescription {
   showStop: boolean;
-  showStatus: boolean;
   tierLabel?: string;
   requirePayModel?: boolean;
   workspaceAccountManagerTarget?: string;

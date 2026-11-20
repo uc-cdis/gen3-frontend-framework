@@ -23,7 +23,6 @@ const DEFAULT_WORKSPACES_CONFIGURATION: WorkspacesCenterPageConfiguration = {
         label: 'JupyterLite',
         description: 'Running via JupyterLite',
         showStop: false,
-        showStatus: false,
       },
       settings: {
         enabled: true,
@@ -50,7 +49,6 @@ const DEFAULT_WORKSPACES_CONFIGURATION: WorkspacesCenterPageConfiguration = {
         label: 'Trusted Research Environment',
         description: 'Running with Remote Kernels',
         showStop: true,
-        showStatus: true,
       },
       settings: {
         enabled: true,
