@@ -298,7 +298,7 @@ export const processAdvancedSearchTerms = (
       data,
       advSearchFilters.field,
       uidField,
-    );
+    ).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
     return {
       key,
       keyDisplayName,
