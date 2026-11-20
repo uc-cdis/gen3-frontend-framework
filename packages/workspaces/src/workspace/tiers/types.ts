@@ -9,6 +9,8 @@ interface LabelAndDescription {
 export interface TierToolbarConfiguration extends LabelAndDescription {
   showStop: boolean;
   showStatus: boolean;
+  /** show the name of the running workspace under the status, defaults to false */
+  showWorkspaceName?: boolean;
   tierLabel?: string;
   requirePayModel?: boolean;
   workspaceAccountManagerTarget?: string;

@@ -46,7 +46,7 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
       selectWorkspaceFullscreen(state),
     );
 
-    const { showStatus, showStop, tierLabel, requirePayModel, workspaceAccountManagerTarget } = toolbarConfiguration || {};
+    const { showStatus, showStop, showWorkspaceName, tierLabel, requirePayModel, workspaceAccountManagerTarget } = toolbarConfiguration || {};
 
     const coreDispatch = useCoreDispatch();
 
@@ -64,9 +64,10 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
     const activeWorkspaceId = useCoreSelector((state: CoreState) =>
       selectJEGActiveWorkspaceId(state),
     );
-    // only shown when the id exactly matches an option, otherwise show nothing
+    // only shown when enabled with showWorkspaceName in workspaces.json and the id
+    // exactly matches an option, otherwise show nothing
     const activeWorkspaceName =
-      activeWorkspaceId && workspaceStatus !== WorkspaceStatus.NotFound
+      showWorkspaceName && activeWorkspaceId && workspaceStatus !== WorkspaceStatus.NotFound
         ? hatcheryOptions?.find((option) => option.id === activeWorkspaceId)
             ?.name
         : undefined;
@@ -135,7 +136,7 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
                 </Badge>
               </Group>
               <Text size="sm" c="base-contrast.4" className='min-h-4'>
-                {/*activeWorkspaceName ? activeWorkspaceName: ''*/}
+                {activeWorkspaceName ? activeWorkspaceName: ''}
               </Text>
             </Stack>
           )}

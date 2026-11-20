@@ -164,7 +164,10 @@ export function useMicroContainerRedux(
         // Keep status as Launching — the monitor will promote to Running
         // once the pod actually reports running status
         coreDispatch(
-          setJEGActiveWorkspaceId({ id: containerHash ?? 'default' }),
+          setJEGActiveWorkspaceId({
+            // use the launched tag, containerHash is stale until the next render
+            id: (isTagString ? tag : containerHash) ?? 'default',
+          }),
         );
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
