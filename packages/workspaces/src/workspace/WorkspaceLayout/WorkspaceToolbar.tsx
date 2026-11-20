@@ -65,7 +65,7 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
       [WorkspaceStatus.Running]: 'Stop Workspace',
       [WorkspaceStatus.NotFound]: 'Not Running',
     };
-    const colorsForStates = {
+    const colorsForStates: Record<string, string> = {
       [WorkspaceStatus.Launching]: 'text-utility-warning',
       [WorkspaceStatus.Running]: 'text-utility-success',
       [WorkspaceStatus.Terminating]: 'text-utility-warning',
@@ -73,7 +73,7 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
       [WorkspaceStatus.StatusError]: 'text-utility-error',
       [WorkspaceStatus.LaunchError]: 'text-utility-error',
       [WorkspaceStatus.TerminateError]: 'text-utility-error',
-    }
+    };
     // use the display label when one is defined for the status, otherwise show the status as is
     const statusLabel =
       labelListForDisplay[workspaceStatus as string] ??
@@ -141,8 +141,8 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
                   height={36}
                   aria-hidden="true"
                   className={
-                    colorsForStates[workspaceStatus as string] 
-                      ?? 'text-primary-contrast'
+                    colorsForStates[workspaceStatus as string] ??
+                    'text-primary-contrast'
                   }
                 />
               }
