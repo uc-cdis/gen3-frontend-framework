@@ -9,9 +9,9 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { Icon } from '@iconify-icon/react';
-import { TierToolbarConfiguration } from '../tiers/types';
+import type { TierToolbarConfiguration } from '../tiers/types';
+import type { CoreState } from '@gen3/core';
 import {
-  CoreState,
   selectJEGActiveWorkspaceId,
   selectJEGActiveWorkspaceStatus,
   selectWorkspaceFullscreen,
@@ -24,7 +24,7 @@ import {
 } from '@gen3/core';
 import CostTracker from '../../components/CostTracker';
 
-import { WorkspaceTier } from '../../types';
+import type { WorkspaceTier } from '../../types';
 import { useMicroContainerReduxContext } from '../../providers/MicroContainerReduxProvider';
 import { useHatcheryOptionsQuery } from '../../core/hatcheryApi';
 
@@ -46,7 +46,13 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
       selectWorkspaceFullscreen(state),
     );
 
-    const { showStop, showWorkspaceName, tierLabel, requirePayModel, workspaceAccountManagerTarget } = toolbarConfiguration || {};
+    const {
+      showStop,
+      showWorkspaceName,
+      tierLabel,
+      requirePayModel,
+      workspaceAccountManagerTarget,
+    } = toolbarConfiguration || {};
 
     const coreDispatch = useCoreDispatch();
 
@@ -67,7 +73,9 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
     // only shown when enabled with showWorkspaceName in workspaces.json and the id
     // exactly matches an option, otherwise show nothing
     const activeWorkspaceName =
-      showWorkspaceName && activeWorkspaceId && workspaceStatus !== WorkspaceStatus.NotFound
+      showWorkspaceName &&
+      activeWorkspaceId &&
+      workspaceStatus !== WorkspaceStatus.NotFound
         ? hatcheryOptions?.find((option) => option.id === activeWorkspaceId)
             ?.name
         : undefined;
@@ -128,15 +136,20 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
               >
                 {tierLabel ?? (workspaceTier as string)}
               </Badge>
-              {requirePayModel && (<CostTracker workspaceAccountManagerTarget={workspaceAccountManagerTarget}/>)}
+              {requirePayModel && (
+                <CostTracker
+                  workspaceAccountManagerTarget={workspaceAccountManagerTarget}
+                />
+              )}
             </Group>
           </Stack>
         </div>
         <div className="flex items-center gap-4 mr-8">
-          {activeWorkspaceName ? 
+          {activeWorkspaceName && (
             <div className="text-base-darker text-sm">
               {activeWorkspaceName}
-            </div>: ''}
+            </div>
+          )}
           {showStop && (
             <Button
               size="sm"
