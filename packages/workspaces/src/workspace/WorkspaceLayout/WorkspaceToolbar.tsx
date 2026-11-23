@@ -134,7 +134,7 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
         </div>
         <div className="flex items-center gap-4 mr-8">
           {activeWorkspaceName ? 
-            <div className="">
+            <div className="text-base-darker text-sm">
               {activeWorkspaceName}
             </div>: ''}
           {showStop && (
