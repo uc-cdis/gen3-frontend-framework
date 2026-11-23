@@ -253,7 +253,10 @@ const CostTracker = ({ workspaceAccountManagerTarget = '' }) => {
           size="xs"
           radius="xl"
           variant="default"
-          className="h-[--badge-height]"
+          classNames={{
+            root: "h-[--badge-height] pl-0 border-base-dark",
+            section: "block"
+          }}
           rightSection={
             <MdExpandMore
               className="text-accent"
@@ -264,6 +267,11 @@ const CostTracker = ({ workspaceAccountManagerTarget = '' }) => {
                 transition: 'transform 200ms ease',
               }}
             />
+          }
+          leftSection={
+            <span className="font-semibold bg-base-light h-[--badge-height]  border-r border-r-base-dark px-2">
+              Account
+            </span>
           }
         >
           {ProgressBar('w-[110px]')}
