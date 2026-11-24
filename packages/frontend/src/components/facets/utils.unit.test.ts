@@ -1,6 +1,7 @@
 import type { FacetDefinition, HistogramDataArray } from '@gen3/core';
 import {
   classifyFacets,
+  extractRangeValues,
   mapFacetSortToSortType,
   updateFacetEnum,
 } from './utils';
@@ -113,5 +114,67 @@ describe('updateFacetEnum', () => {
       ],
     });
     expect(clearFilters).not.toHaveBeenCalled();
+  });
+});
+
+describe('extractRangeValues', () => {
+  const closed = {
+    operator: 'and' as const,
+    operands: [
+      { field: 'age', operator: '>=' as const, operand: 30 },
+      { field: 'age', operator: '<' as const, operand: 40 },
+    ],
+  };
+
+  test('returns undefined for undefined input', () => {
+    expect(extractRangeValues(undefined)).toBeUndefined();
+  });
+
+  test('extracts a closed range', () => {
+    expect(extractRangeValues<number>(closed)).toEqual({
+      from: 30,
+      fromOp: '>=',
+      to: 40,
+      toOp: '<',
+    });
+  });
+
+  test('extracts open ranges', () => {
+    expect(
+      extractRangeValues<number>({ field: 'age', operator: '>', operand: 5 }),
+    ).toEqual({ from: 5, fromOp: '>' });
+    expect(
+      extractRangeValues<number>({ field: 'age', operator: '<=', operand: 9 }),
+    ).toEqual({ to: 9, toOp: '<=' });
+  });
+
+  test('extracts open ranges from nested', () => {
+    expect(
+      extractRangeValues<number>({
+        operator: 'nested',
+        path: 'demographic',
+        operand: {
+          field: 'age',
+          operator: '>=',
+          operand: 23,
+        },
+      }),
+    ).toEqual({ from: 23, fromOp: '>=' });
+  });
+
+  test('extracts a closed range inside a nested filter', () => {
+    expect(
+      extractRangeValues<number>({
+        operator: 'nested',
+        path: 'demographic',
+        operand: closed,
+      }),
+    ).toEqual({ from: 30, fromOp: '>=', to: 40, toOp: '<' });
+  });
+
+  test('returns undefined for non-range operations', () => {
+    expect(
+      extractRangeValues({ operator: '=', field: 'age', operand: 3 }),
+    ).toBeUndefined();
   });
 });

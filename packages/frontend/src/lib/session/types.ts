@@ -49,16 +49,10 @@ export interface SessionConfiguration {
 
   /**
    * Number of minutes of inactivity after which the user is logged out.
-   * `0` disables inactivity logout on non-workspace pages.
+   * `0` disables inactivity logout. Applies to every page, including Workspace.
    */
   inactiveTimeLimit?: number;
 
-  /**
-   * Number of minutes of inactivity after which the user is logged out while on
-   * a workspace page. Defaults to `0`, which means idle workspace sessions are
-   * never ended — set it explicitly if that is not what you want.
-   */
-  workspaceInactivityTimeLimit?: number;
   /**
    * logout the user if the session is inactive for the specified time defined by 'inactiveTimeLimit'.
    */

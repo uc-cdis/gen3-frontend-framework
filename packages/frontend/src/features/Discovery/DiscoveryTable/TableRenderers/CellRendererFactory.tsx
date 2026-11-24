@@ -66,6 +66,19 @@ export class DiscoveryCellRendererFactory {
     );
   }
 
+  /**
+   * Returns the registered renderer names keyed by content type,
+   * e.g. { string: ['default', 'truncated'], link: ['default', 'withURL'] }.
+   * Used by admin tooling to suggest valid contentType/cellRenderFunction values.
+   */
+  static getRegisteredRenderers(): Record<string, string[]> {
+    const catalog =
+      DiscoveryCellRendererFactory.getInstance().cellRendererCatalog;
+    return Object.fromEntries(
+      Object.entries(catalog).map(([type, fns]) => [type, Object.keys(fns)]),
+    );
+  }
+
   static registerCellRenderer(
     type: string,
     functionName: string,

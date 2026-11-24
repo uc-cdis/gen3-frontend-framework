@@ -3,5 +3,11 @@
 export { proxy } from './proxy-impl';
 
 export const config = {
-  matcher: ['/Workspace', '/Profile', '/Login'],
+  matcher: [
+    '/Workspace/:authzRest*',
+    '/Workspaces/:authzRest*',
+    '/WorkspaceRequestAccess/:authzRest*',
+    '/Profile/:authzRest*',
+    '/Login',
+  ],
 };

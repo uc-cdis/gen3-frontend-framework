@@ -80,7 +80,10 @@ export const createTableColumns = (tableConfig: TableColumnsAndFields) => {
       }
       return acc;
     },
-    { 'mrt-row-actions': true } as Record<string, boolean>,
+    {
+      'mrt-row-actions': true,
+      'mrt-row-expand': false,
+    } as Record<string, boolean>,
   );
 
   return {

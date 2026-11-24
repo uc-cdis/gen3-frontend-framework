@@ -5,6 +5,7 @@ import MessageCard, { type MessageTextProps } from './MessageCard';
 
 const ErrorCard: React.FunctionComponent<MessageTextProps> = ({
   message,
+  width,
 }: MessageTextProps): ReactElement => (
   <MessageCard
     message={message}
@@ -14,6 +15,7 @@ const ErrorCard: React.FunctionComponent<MessageTextProps> = ({
       />
     }
     color="utility.3"
+    width={width}
   />
 );
 
