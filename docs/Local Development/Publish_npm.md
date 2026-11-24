@@ -20,6 +20,17 @@ make sure the package code is built by running:
 npm run build:pkg
 ```
 
+Make sure you are logged into NPM run:
+```bash
+npm whoami
+```
+check that it prints your username
+
+To login:
+```bash
+npm login
+```
+
 Then run
 ```bash
 lerna publish patch

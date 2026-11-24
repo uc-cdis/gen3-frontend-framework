@@ -21,7 +21,7 @@ interface DRSIndexEntry {
 
 const httpAgent = new HTTPAgent();
 const httpsAgent = new HTTPSAgent({
-  rejectUnauthorized: false,
+  rejectUnauthorized: true,
 });
 
 const fetchJson = async (url: string) => {

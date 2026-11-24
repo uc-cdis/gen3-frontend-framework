@@ -1,9 +1,8 @@
 /**
  * Unit tests for the session utils.
  *
- * isUserOnPage decides whether the workspace inactivity limit applies and whether
- * the inactivity check runs at all, so a false positive silently changes the
- * logout policy for a page.
+ * isUserOnPage decides whether the inactivity check runs at all (it is skipped on
+ * the Login page), so a false positive silently disables logout for a page.
  */
 
 import { isUserOnPage } from '../utils';
@@ -12,17 +11,17 @@ describe('isUserOnPage', () => {
   it.each([
     ['Login', '/Login'],
     ['Login', 'login'],
-    ['Workspace', '/Workspace'],
-    ['Workspace', '/Workspaces'],
-    ['Workspace', '/Workspace/[id]'],
-    ['Workspace', '/admin/Workspace/Notebooks'],
+    ['Login', '/LoginRedirect'],
+    ['Login', '/Login/[error]'],
+    ['Login', '/admin/Login/Callback'],
   ])('matches %s against %s', (pageName, pathName) => {
     expect(isUserOnPage(pageName, pathName)).toBe(true);
   });
 
   it.each([
-    ['/no-workspace-access', 'Workspace'],
-    ['/Explorer', 'Workspace'],
+    ['/no-login-access', 'Login'],
+    ['/Explorer', 'Login'],
+    ['/Workspace', 'Login'],
     ['/Discovery/[studyId]', 'Login'],
     ['/', 'Login'],
   ])('does not match %s against %s', (pathname, pageName) => {
@@ -32,8 +31,8 @@ describe('isUserOnPage', () => {
   it('matches per segment, not anywhere in the path', () => {
     // The page name has to start a segment: a route that merely contains the word
     // is a different page with a different inactivity policy.
-    expect(isUserOnPage('Workspace', '/no-workspace-access')).toBe(false);
-    expect(isUserOnPage('Workspace', '/my-workspace')).toBe(false);
+    expect(isUserOnPage('Login', '/no-login-access')).toBe(false);
+    expect(isUserOnPage('Login', '/my-login')).toBe(false);
   });
 
   it('is not a match without a pathname', () => {
@@ -45,7 +44,7 @@ describe('isUserOnPage', () => {
 
   it('is not a match without a page name', () => {
     // Guards against an empty target matching every segment
-    expect(isUserOnPage('', '/Workspace')).toBe(false);
+    expect(isUserOnPage('', '/Login')).toBe(false);
   });
 });
 

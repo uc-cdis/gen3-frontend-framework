@@ -22,6 +22,7 @@ const CohortBuilder = ({
   tabsLayout = 'left',
   enableCohortManager = true,
   activeTab,
+  accessControl,
 }: CohortBuilderProps) => {
   const dispatch = useCoreDispatch();
   dispatch(setSharedFilters(sharedFiltersMap ?? {}));
@@ -34,6 +35,7 @@ const CohortBuilder = ({
   return (
     <div className="flex flex-col w-full mt-2">
       {enableCohortManager ? <CohortManager /> : null}
+      {}
       <Tabs
         color="primary.5"
         variant={explorerConfig[0]?.tabType}
@@ -72,6 +74,7 @@ const CohortBuilder = ({
               loginForDownload={panelConfig.loginForDownload}
               enableRedirectToLogin={panelConfig.enableRedirectToLogin}
               sharedFiltersMap={panelConfig.sharedFiltersMap}
+              fieldsAreFlat={panelConfig.fieldsAreFlat}
             />
           </Tabs.Panel>
         ))}

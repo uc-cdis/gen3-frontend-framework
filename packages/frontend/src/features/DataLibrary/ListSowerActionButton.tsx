@@ -11,7 +11,15 @@ interface ListActionButtonProps {
   leftIcon?: ButtonIcon;
   tooltip?: string;
   size?: string;
+  outputAction?: CreateAndExportOutputConfig['outputAction']; // runs when the job completes
 }
+
+const DEFAULT_OUTPUT_ACTION: CreateAndExportOutputConfig['outputAction'] = {
+  name: 'notification',
+  parameters: {
+    message: 'The job has completed',
+  },
+};
 
 // Wrapper around SubmitSowerJobButton for ListBased Sower Jobs
 
@@ -23,6 +31,7 @@ const ListSowerActionButton = ({
   rightIcon,
   label,
   size = 'xs',
+  outputAction = DEFAULT_OUTPUT_ACTION,
 }: ListActionButtonProps) => {
   // Build the action object for the SubmitSowerJobButton
   const actions: CreateAndExportOutputConfig = {
@@ -32,12 +41,7 @@ const ListSowerActionButton = ({
         listId,
       },
     },
-    outputAction: {
-      name: 'notification',
-      parameters: {
-        message: 'The job has completed',
-      },
-    },
+    outputAction,
   };
   // Render the SubmitSowerJobButton with the provided props
   return (

@@ -58,11 +58,10 @@ const getSubPath = (argPath = ''): SubPath => {
 
 const httpAgent = new HTTPAgent();
 const httpsAgent = new HTTPSAgent({
-  rejectUnauthorized: false,
+  rejectUnauthorized: true,
 });
 
 const fetchJson = async (url: string) => {
-
   return fetchWithRetry(url, {
     // TODO: fix the typing to remove the ts-ignore
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

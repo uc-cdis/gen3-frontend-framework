@@ -1,6 +1,13 @@
 import ContentSource from './lib/content/index';
 import type { AuthorizedRoutesConfig, RouteConfig } from './lib/authz/type';
 import { DefaultAuthorizedRoutesConfig } from './lib/authz/type';
+import type { RouteAccess } from './lib/authz/routeAuthz';
+import {
+  checkRuleAccess,
+  parseAuthzConfig,
+  resolveRoute,
+} from './lib/authz/routeAuthz';
+import type { AuthzMapping as RouteAuthzMapping } from './lib/authz/hasPermission';
 import { fetchJWTKey, getAccessToken } from './lib/auth/utils';
 import sessionToken from './api/auth/sessionToken';
 import sessionLogout from './api/auth/sessionLogout';
@@ -11,6 +18,11 @@ import { default as vlmdS3UploadProxy } from './lib/VLMDSubmission/vlmdS3UploadP
 export {
   type RouteConfig,
   type AuthorizedRoutesConfig,
+  type RouteAccess,
+  type RouteAuthzMapping,
+  parseAuthzConfig,
+  resolveRoute,
+  checkRuleAccess,
   ContentSource,
   DefaultAuthorizedRoutesConfig,
   fetchJWTKey,

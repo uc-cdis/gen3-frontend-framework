@@ -19,11 +19,11 @@ The configuration options are as follows:
 
 Where
 
-- **updateSessionTime**: How often the inactivity check runs, `0` disables activity monitoring
-- **inactiveTimeLimit**: Inactivity allowed before logout, except for Workspace pages. Set to `0` disable or set
+- **updateSessionTime**: How often the backstop inactivity poll runs, `0` disables activity monitoring. The warning and
+  the inactivity logout are timed to their exact moments and do not wait for the next poll; the poll only catches up
+  after a suspended machine or a throttled background tab.
+- **inactiveTimeLimit**: Inactivity allowed before logout, on all pages including Workspace. Set to `0` disable or set
   `logoutInactiveUsers` to true
-- **workspaceInactivityTimeLimit**: Inactivity allowed before logout on a workspace page. `0` (the default) which means
-  do not limit inactivity
 - **logoutInactiveUsers**: `true|false` enable/disable if inactive users are logged out
 - **monitorWorkspace**: Whether to poll running/configured hatchery based workspaces
 - **expireWarningMinutes**: `minutes`  Number of minutes ahead of the inactivity logout to warn users. Default is `0`

@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import type { JSONObject } from '@gen3/core/server';
-import { GEN3_MDS_API } from '@gen3/core/server';
 import {
   filterByAccessLevels,
   filterByAdvSearch,
@@ -11,13 +10,28 @@ import {
   sortData,
 } from '../../features/Discovery/DataLoaders/processData';
 import { combineData } from '../../features/Discovery/DataLoaders/preProcessData';
+import { processAdvancedSearchTerms } from '../../features/Discovery/DataLoaders/utils';
 import addAccessLevelsMetaData from './addAccessLevelsMetaData';
+
+export const GEN3_METADATA_SERVICE =
+  process.env.GEN3_METADATA_SERVICE || 'http://metadata-service';
 
 let cachedData: Array<JSONObject> = [];
 let cacheTime = 0;
 const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
-const mdsAggregateApi = `${GEN3_MDS_API}/aggregate/metadata?data=True&limit=2000&offset=0`;
-const mdsMetadataApi = `${GEN3_MDS_API}/metadata?data=True&_guid_type=unregistered_discovery_metadata&limit=2000&offset=0`;
+const mdsAggregateApi = `${GEN3_METADATA_SERVICE}/mds/aggregate/metadata?data=True&limit=2000&offset=0`;
+const mdsMetadataApi = `${GEN3_METADATA_SERVICE}/mds/metadata?data=True&_guid_type=unregistered_discovery_metadata&limit=2000&offset=0`;
+
+// Filter options are built from the full study list
+const getAdvancedSearchFilterValues = (
+  data: Array<JSONObject>,
+  discoveryConfig: NextApiRequest['body']['discoveryConfig'],
+) => {
+  const advSearchFilters = discoveryConfig?.features?.advSearchFilters;
+  if (!advSearchFilters?.enabled) return [];
+  const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
+  return processAdvancedSearchTerms(advSearchFilters, data, uidField);
+};
 
 // Main Function to Orchestrate Steps
 const processData = async (
@@ -68,6 +82,10 @@ const processData = async (
     displayedData: paginatedData,
     suggestions: [],
     tagCategoryData: processTagCategoryData(data, discoveryConfig),
+    advancedSearchFilterValues: getAdvancedSearchFilterValues(
+      data,
+      discoveryConfig,
+    ),
   };
 };
 
@@ -97,7 +115,11 @@ export default async function handler(
       // Parse the JSON data from both responses
       const mdsAggregateData = await mdsAggregateResponse.json();
       const mdsMetadataData = await mdsMetadataResponse.json();
-      const combinedData = combineData(mdsAggregateData, mdsMetadataData);
+      const combinedData = combineData(
+        mdsAggregateData,
+        mdsMetadataData,
+        req.body?.discoveryConfig?.minimalFieldMapping?.uid,
+      );
       // Update the cache
       cachedData = combinedData;
       cacheTime = currentTime;
