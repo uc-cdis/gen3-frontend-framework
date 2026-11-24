@@ -8,13 +8,14 @@ import {
   Text,
   ThemeIcon,
 } from '@mantine/core';
+import { useDeepCompareEffect } from 'use-deep-compare';
 import StudyDetailsPanel from './StudyDetailsPanel';
 import { accessibleFieldName, AccessLevel } from '../../../utils';
 import { useDiscoveryContext } from '../../Discovery/DiscoveryProvider';
 import { useStudyContext } from '../../Study/StudyProvider';
 import StudyDetails from '../../Study/StudyDetails/StudyDetails';
-import type { DataRequestStatus } from '../../Discovery/types';
-import type { ProjectCenterIndexConfig } from '../types';
+import { DataRequestStatus } from '../../Discovery/types';
+import { ProjectCenterIndexConfig } from '../types';
 
 import {
   LuLock as LockedIcon,
@@ -25,11 +26,13 @@ interface ProjectCenterDisplayProps {
   data: Array<Record<string, any>>;
   studyIdFromWindow?: string;
   dataRequestStatus: DataRequestStatus;
+  setSelection: (selection: Array<string>) => void;
 }
 const ProjectCenterDisplay = ({
   data,
   studyIdFromWindow,
   dataRequestStatus,
+  setSelection,
 }: ProjectCenterDisplayProps) => {
   const { discoveryConfig } = useDiscoveryContext();
   const config = discoveryConfig as unknown as ProjectCenterIndexConfig;
@@ -171,6 +174,11 @@ const ProjectCenterDisplay = ({
       </Tabs>
     );
   };
+
+  useDeepCompareEffect(() => {
+    // report the selected study ids to the parent (the project list has no row selection yet, so this stays empty)
+    setSelection(rowSelection ? Object.keys(rowSelection) : []);
+  }, [rowSelection, setSelection]);
 
   if (dataRequestStatus.isLoading) {
     return (

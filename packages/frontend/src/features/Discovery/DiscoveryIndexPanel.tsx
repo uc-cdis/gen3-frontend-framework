@@ -27,7 +27,7 @@ import DiscoveryProvider from './DiscoveryProvider';
 import { useStudyIdFromWindow } from './utils/useStudyIdFromWindow';
 import type { DiscoveryIndexConfig } from './types';
 import type { AccessLevel } from '../../utils';
-import { supportedAccessLevels } from './utils';
+import { processSupportedAccessLevels } from './utils';
 
 export interface DiscoveryIndexPanelProps {
   configuration: DiscoveryIndexConfig;
@@ -69,7 +69,7 @@ const DiscoveryIndexPanel = ({
   );
 
   const enabledAccessLevels = useMemo(
-    () => new Set<AccessLevel>(supportedAccessLevels(configuration)),
+    () => new Set<AccessLevel>(processSupportedAccessLevels(configuration)),
     [configuration],
   );
 

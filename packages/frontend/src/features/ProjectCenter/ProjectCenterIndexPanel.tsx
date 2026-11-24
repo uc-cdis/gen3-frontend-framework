@@ -21,7 +21,7 @@ import DiscoveryDropdownTagViewer from '../Discovery/DiscoveryDropdownTagViewer'
 import { IoIosArrowDown, IoIosArrowUp, IoIosRefresh } from 'react-icons/io';
 import { useStudyIdFromWindow } from '../Discovery/utils/useStudyIdFromWindow';
 import type { AccessLevel } from '../../utils';
-import { supportedAccessLevels } from '../Discovery/utils';
+import { processSupportedAccessLevels } from '../Discovery/utils';
 import DiscoveryProvider from '../Discovery/DiscoveryProvider';
 import type { DiscoveryIndexConfig } from '../Discovery/types';
 
@@ -62,7 +62,7 @@ const ProjectCenterIndexPanel = ({
   );
 
   const enabledAccessLevels = useMemo(
-    () => new Set<AccessLevel>(supportedAccessLevels(configuration)),
+    () => new Set<AccessLevel>(processSupportedAccessLevels(configuration)),
     [configuration],
   );
 
