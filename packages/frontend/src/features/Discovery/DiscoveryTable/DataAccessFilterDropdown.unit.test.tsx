@@ -30,7 +30,7 @@ const TestComponent = ({
             return next;
           });
         },
-        supportedAccessLevels: new Set([
+        enabledAccessLevels: new Set([
           AccessLevel.ACCESSIBLE,
           AccessLevel.UNACCESSIBLE,
           AccessLevel.WAITING,

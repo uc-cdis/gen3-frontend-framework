@@ -73,8 +73,16 @@ export const processSupportedAccessLevels = (
 ): Array<AccessLevel> => {
   const supportedValues = config?.features?.authorization?.supportedValues;
   if (!supportedValues) return [];
-  return Object.keys(supportedValues).map(
-    (x) => StringToSupportedAccessLevels[x],
+
+  return Object.entries(supportedValues).reduce<Array<AccessLevel>>(
+    (acc, [key, value]) => {
+      const accessLevel = StringToSupportedAccessLevels[key];
+      if (accessLevel && value?.enabled) {
+        acc.push(accessLevel);
+      }
+      return acc;
+    },
+    [],
   );
 };
 

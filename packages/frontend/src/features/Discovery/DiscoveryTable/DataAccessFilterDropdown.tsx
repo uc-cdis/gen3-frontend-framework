@@ -20,7 +20,7 @@ const DataAccessFilterDropdown = () => {
   const {
     selectedAccessLevels,
     setSelectedAccessLevels,
-    supportedAccessLevels,
+    enabledAccessLevels,
     discoveryConfig,
   } = useDiscoveryContext();
 
@@ -136,7 +136,7 @@ const DataAccessFilterDropdown = () => {
             <FilterIcon
               size={18}
               color={
-                selectedAccessLevels.length === supportedAccessLevels.size
+                selectedAccessLevels.length === enabledAccessLevels.size
                   ? 'var(--mantine-base-contrast-5)'
                   : 'var(--mantine-color-accent-5)'
               }
@@ -155,7 +155,7 @@ const DataAccessFilterDropdown = () => {
       >
         <Stack gap={0} className="py-2">
           {accessLevelItems
-            .filter((item) => supportedAccessLevels.has(item.level))
+            .filter((item) => enabledAccessLevels.has(item.level))
             .map((item) => (
               <Checkbox
                 key={item.level}

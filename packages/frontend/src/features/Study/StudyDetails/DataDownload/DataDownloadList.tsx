@@ -8,7 +8,7 @@ import type {
 } from './Utils/ProcessData';
 import { MAX_NUMBER_OF_ITEMS_IN_LIST, processData } from './Utils/ProcessData';
 import { Alert } from '@mantine/core';
-import { useDiscoveryContext } from '@gen3/frontend';
+import { useDiscoveryContext } from '../../../Discovery/DiscoveryProvider';
 
 interface DataDownloadListProps {
   readonly data: JSONObject;
