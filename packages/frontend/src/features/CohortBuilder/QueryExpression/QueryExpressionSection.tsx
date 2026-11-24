@@ -8,13 +8,11 @@ import {
 import { Icon } from '@iconify-icon/react';
 import tw from 'tailwind-styled-components';
 import { omit } from 'lodash';
-import { FilterSet, Operation } from '@gen3/core';
+import type { FilterSet, Operation } from '@gen3/core';
 import OverflowTooltippedLabel from '../../../components/OverflowTooltippedLabel';
 import { convertFilterToComponent } from './QueryRepresentation';
-import {
-  CollapsedStateReducerAction,
-  QueryExpressionsExpandedContext,
-} from './QueryExpressionsExpandedContext';
+import type { CollapsedStateReducerAction } from './QueryExpressionsExpandedContext';
+import { QueryExpressionsExpandedContext } from './QueryExpressionsExpandedContext';
 
 import { QueryExpressionContext } from './QueryExpressionContext';
 

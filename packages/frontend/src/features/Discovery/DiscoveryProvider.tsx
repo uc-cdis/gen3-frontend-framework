@@ -1,10 +1,6 @@
-import React, { createContext, useMemo, useState } from 'react';
+import React, { createContext } from 'react';
 import type { DiscoveryIndexConfig } from './types';
 import type { AccessLevel } from '../../utils';
-import {
-  processSupportedAccessLevels,
-  StringToSupportedAccessLevels,
-} from './utils';
 
 interface DiscoveryProviderValue {
   discoveryConfig: DiscoveryIndexConfig;
@@ -14,7 +10,7 @@ interface DiscoveryProviderValue {
   >;
   selectedAccessLevels: number[];
   setSelectedAccessLevels: React.Dispatch<React.SetStateAction<number[]>>;
-  supportedAccessLevels: Set<AccessLevel>;
+  enabledAccessLevels: Set<AccessLevel>;
 }
 
 const DiscoveryContext = createContext<DiscoveryProviderValue>({
@@ -23,7 +19,7 @@ const DiscoveryContext = createContext<DiscoveryProviderValue>({
   setSelectedTags: () => {},
   selectedAccessLevels: [],
   setSelectedAccessLevels: () => [],
-  supportedAccessLevels: new Set(),
+  enabledAccessLevels: new Set(),
 });
 
 const useDiscoveryContext = () => {
@@ -36,40 +32,24 @@ const useDiscoveryContext = () => {
 
 const DiscoveryProvider = ({
   children,
-  discoveryIndexConfig,
+  discoveryConfig,
+  selectedTags,
+  setSelectedTags,
+  selectedAccessLevels,
+  setSelectedAccessLevels,
+  enabledAccessLevels,
 }: {
   children: React.ReactNode;
-  discoveryIndexConfig: DiscoveryIndexConfig;
-}) => {
-  const supportedAccessLevels: Set<AccessLevel> = useMemo(
-    () =>
-      new Set<AccessLevel>(processSupportedAccessLevels(discoveryIndexConfig)),
-    [discoveryIndexConfig],
-  );
-
-  const [selectedTags, setSelectedTags] = useState<{ [key: string]: boolean }>(
-    {},
-  );
-  const [selectedAccessLevels, setSelectedAccessLevels] = useState<number[]>(
-    () =>
-      Object.entries(
-        discoveryIndexConfig.features.authorization?.supportedValues ?? {},
-      ).reduce<number[]>((acc, [key, value]) => {
-        if (value.enabled && key in StringToSupportedAccessLevels)
-          acc.push(StringToSupportedAccessLevels[key]);
-        return acc;
-      }, []),
-  );
-
+} & DiscoveryProviderValue) => {
   return (
     <DiscoveryContext.Provider
       value={{
-        discoveryConfig: discoveryIndexConfig,
+        discoveryConfig,
         selectedTags,
         setSelectedTags,
         selectedAccessLevels,
         setSelectedAccessLevels,
-        supportedAccessLevels,
+        enabledAccessLevels,
       }}
     >
       {children}

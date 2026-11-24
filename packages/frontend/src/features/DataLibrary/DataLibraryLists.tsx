@@ -31,7 +31,7 @@ const buildListActionPanel = (
         listId={listId}
         sowerJobName={action.actionName}
         {...action}
-        key={action.actionName}
+        key={action.id}
       />
     );
   });

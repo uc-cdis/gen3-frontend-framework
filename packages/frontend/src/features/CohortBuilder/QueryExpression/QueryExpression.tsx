@@ -1,9 +1,7 @@
 import React from 'react';
+import type { CoreState, FilterSet, Operation } from '@gen3/core';
 import {
   clearCohortFilters,
-  CoreState,
-  FilterSet,
-  Operation,
   removeCohortFilter,
   selectCurrentCohortId,
   selectCurrentCohortName,
@@ -15,10 +13,8 @@ import {
   useCoreSelector,
 } from '@gen3/core';
 import QueryExpressionSection from './QueryExpressionSection';
-import {
-  QueryExpressionContext,
-  QueryExpressionHooks,
-} from './QueryExpressionContext';
+import type { QueryExpressionHooks } from './QueryExpressionContext';
+import { QueryExpressionContext } from './QueryExpressionContext';
 import { useCohortFacetFilters } from '../hooks';
 
 const SUMMARY_THRESHOLD = 10;
@@ -138,7 +134,7 @@ const QueryExpression = ({
                   }),
                 );
               });
-            } else
+            } else {
               dispatch(
                 updateCohortFilter({
                   index,
@@ -146,6 +142,7 @@ const QueryExpression = ({
                   filter: filter,
                 }),
               );
+            }
           };
         },
         useSetCohortFilters: () => {

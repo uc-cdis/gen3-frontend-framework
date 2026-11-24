@@ -9,6 +9,13 @@ const DataAccessFilterDropdownWrapper = (initialLevels: number[] = []) => {
   const DecoratorComponent = (Story: React.ComponentType, ...args: any[]) => {
     const [selectedAccessLevels, setSelectedAccessLevels] =
       useState<number[]>(initialLevels);
+
+    const enabledAccessLevels = new Set([
+      AccessLevel.ACCESSIBLE,
+      AccessLevel.UNACCESSIBLE,
+      AccessLevel.WAITING,
+    ]);
+
     return (
       <MantineProvider>
         <DiscoveryContext.Provider
@@ -18,11 +25,7 @@ const DataAccessFilterDropdownWrapper = (initialLevels: number[] = []) => {
             setSelectedTags: () => {},
             selectedAccessLevels,
             setSelectedAccessLevels,
-            supportedAccessLevels: new Set([
-              AccessLevel.ACCESSIBLE,
-              AccessLevel.UNACCESSIBLE,
-              AccessLevel.WAITING,
-            ]),
+            enabledAccessLevels,
           }}
         >
           <div className="bg-base-lighter p-4 h-96 flex items-center justify-center">

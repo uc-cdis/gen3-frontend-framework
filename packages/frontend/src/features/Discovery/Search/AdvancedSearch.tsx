@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { KeyValueSearchFilter } from '../types';
+import type { KeyValueSearchFilter } from '../types';
 import { Accordion, Button, SegmentedControl } from '@mantine/core';
 import { MdUndo as UndoIcon } from 'react-icons/md';
 import SearchFilters from './SearchFilters';
 import {
   SearchCombination,
-  SearchFilterState,
-  SetAdvancedSearchFiltersFn,
+  type SearchFilterState,
+  type SetAdvancedSearchFiltersFn,
 } from './types';
 
 export interface AdvancedSearchProps {
@@ -73,7 +73,6 @@ const AdvancedSearch = ({
                 key={`discovery-advancedSearch-accordion-${key}`}
               >
                 <Accordion.Control key={key}>
-                  {' '}
                   {keyDisplayName || key}
                 </Accordion.Control>
                 <Accordion.Panel>

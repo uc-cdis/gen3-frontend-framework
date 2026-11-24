@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react';
 import React, { useMemo, useRef, useState } from 'react';
 import ProjectCenterDisplay from './ProjectCenterDisplay/ProjectCenterDisplay';
-import { Button, Collapse, Grid, Title } from '@mantine/core';
+import { Button, Grid, Title } from '@mantine/core';
 import type {
   MRT_PaginationState,
   MRT_SortingState,
 } from 'mantine-react-table-open';
-import { useDebouncedValue } from '@mantine/hooks';
+import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
 import SummaryStatisticPanel from '../Discovery/Statistics/SummaryStatisticPanel';
 import { useLoadAllMDSData } from '../Discovery/DataLoaders/MDSAllLocal/DataLoader';
 import type { AdvancedSearchTerms } from '../Discovery/Search/types';
@@ -19,11 +19,15 @@ import SearchInputSelectableFields from '../Discovery/Search/SearchInputSelectab
 import { DEBOUNCE_DELAY_TIME, SearchMode } from '../Discovery/constants';
 import DiscoveryDropdownTagViewer from '../Discovery/DiscoveryDropdownTagViewer';
 import { IoIosArrowDown, IoIosArrowUp, IoIosRefresh } from 'react-icons/io';
-import { useDiscoveryContext } from '../Discovery/DiscoveryProvider';
 import { useStudyIdFromWindow } from '../Discovery/utils/useStudyIdFromWindow';
+import type { AccessLevel } from '../../utils';
+import { supportedAccessLevels } from '../Discovery/utils';
+import DiscoveryProvider from '../Discovery/DiscoveryProvider';
+import type { DiscoveryIndexConfig } from '../Discovery/types';
 
 export interface ProjectCenterIndexPanelProps {
   indexSelector: ReactNode | null;
+  configuration: DiscoveryIndexConfig;
 }
 
 /**
@@ -39,24 +43,32 @@ export interface ProjectCenterIndexPanelProps {
  */
 const ProjectCenterIndexPanel = ({
   indexSelector,
+  configuration,
 }: ProjectCenterIndexPanelProps) => {
-  const {
-    discoveryConfig,
-    selectedTags,
-    setSelectedTags,
-    selectedAccessLevels,
-  } = useDiscoveryContext();
   const dataHook = useMemo(
     () =>
       getDiscoveryDataLoader(
-        discoveryConfig?.features?.dataLoader?.dataFetchFunction,
+        configuration?.features?.dataLoader?.dataFetchFunction,
       ) ?? useLoadAllMDSData,
-    [discoveryConfig?.features?.dataLoader?.dataFetchFunction],
+    [configuration?.features?.dataLoader?.dataFetchFunction],
   );
   const [pagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
+
+  const [selectedTags, setSelectedTags] = useState<{ [key: string]: boolean }>(
+    {},
+  );
+
+  const enabledAccessLevels = useMemo(
+    () => new Set<AccessLevel>(supportedAccessLevels(configuration)),
+    [configuration],
+  );
+
+  const [selectedAccessLevels, setSelectedAccessLevels] = useState<number[]>(
+    () => [...enabledAccessLevels],
+  );
 
   const parentDivRef = useRef<HTMLDivElement>(null);
   const studyIdFromWindow = useStudyIdFromWindow();
@@ -97,8 +109,10 @@ const ProjectCenterIndexPanel = ({
   const {
     data,
     dataRequestStatus,
+    advancedSearchFilterValues,
     suggestions,
     summaryStatistics,
+    charts: chartData,
     tagCategoryData,
   } = dataHook({
     pagination: {
@@ -106,80 +120,80 @@ const ProjectCenterIndexPanel = ({
       pageSize: pagination.pageSize,
     },
     searchTerms: searchParam,
-    discoveryConfig,
+    discoveryConfig: configuration,
     sorting,
     selectedFieldsForSearchIndexing: selectedFieldsForSearchIndexing,
     searchMode: searchMode,
     selectedTags: selectedTags,
     selectedAccessLevels: selectedAccessLevels,
   });
+  const selectedRecords = useMemo(() => {
+    const uidField = configuration?.minimalFieldMapping?.uid ?? 'guid';
+    const filterSelectedMembers = (data: Array<Record<string, any>>) =>
+      data?.filter(
+        (member) => uidField in member && selections.includes(member[uidField]),
+      );
+    return filterSelectedMembers(data);
+  }, [data, configuration?.minimalFieldMapping?.uid, selections]);
 
-  const categoryTypes =
-    discoveryConfig?.features?.search?.tagSearchDropdown?.categoryTypes;
-
-  const tagCategoryMenus = useMemo(() => {
-    if (!categoryTypes || !tagCategoryData) {
-      return tagCategoryData;
-    }
-
-    const allowedTypes = new Set(categoryTypes);
-    return tagCategoryData.filter((category) =>
-      allowedTypes.has(category.category),
-    );
-  }, [tagCategoryData, categoryTypes]);
+  const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
+    useDisclosure(false);
 
   const [isDropdownTagViewerOpen, setIsDropdownTagViewerOpen] = useState(false);
-  const enableSearchBar = discoveryConfig?.features?.search?.searchBar?.enabled;
+  const tagViewerContentRef = useRef<HTMLDivElement | null>(null);
+  const enableSearchBar = configuration?.features?.search?.searchBar?.enabled;
   const enableSearchableTags =
-    discoveryConfig?.features?.search?.tagSearchDropdown?.enabled;
+    configuration?.features?.search?.tagSearchDropdown?.enabled;
   const enableSearchInputSelectableFields =
-    discoveryConfig?.features?.search?.searchBar?.searchableTextFields ||
-    discoveryConfig?.features?.search?.searchBar
+    configuration?.features?.search?.searchBar?.searchableTextFields ||
+    configuration?.features?.search?.searchBar
       ?.searchableAndSelectableTextFields;
 
   return (
-    <div className="flex flex-col items-center p-4 pb-0 w-full bg-base-lightest">
-      <StudyProvider>
-        <div className="w-full">
-          {discoveryConfig.features?.pageTitle &&
-          discoveryConfig?.features?.pageTitle.enabled ? (
-            <Title size="xl">{discoveryConfig?.features?.pageTitle.text}</Title>
-          ) : null}
-          <div className="flex items-center p-2 mb-4 bg-base-max rounded-lg">
-            {indexSelector}
-            <SummaryStatisticPanel summaries={summaryStatistics} />
-            {enableSearchBar && (
-              <div className="w-3/4 flex flex-col ml-2">
-                <Grid
-                  gap="sm"
-                  justify="space-between"
-                  align="flex-start"
-                  classNames={{ root: 'w-full' }}
-                >
-                  <Grid.Col span={8}>
-                    <SearchInputWithSuggestions
-                      searchBarTerms={searchBarTerms}
-                      setSearchBarTerms={setSearchBarTerms}
-                      suggestions={suggestions}
-                      clearSearch={() => {
-                        setSearchBarTerms([]);
-                      }}
-                      searchChanged={(v) => setSearchBarTerms(v.split(' '))}
-                      placeholder={
-                        discoveryConfig?.features?.search?.searchBar
-                          ?.placeholder ?? 'Search...'
-                      }
-                      label={
-                        discoveryConfig?.features?.search?.searchBar
-                          ?.inputSubtitle
-                      }
-                    />
-                  </Grid.Col>
-                  {enableSearchableTags && (
-                    <Grid.Col span={4}>
-                      <div
-                        className={`flex justify-end items-center ${discoveryConfig?.features?.search?.searchBar?.inputSubtitle ? 'pt-6' : ''}`}
-                      >
+    <DiscoveryProvider
+      discoveryConfig={configuration}
+      selectedTags={selectedTags}
+      setSelectedTags={setSelectedTags}
+      selectedAccessLevels={selectedAccessLevels}
+      setSelectedAccessLevels={setSelectedAccessLevels}
+      enabledAccessLevels={enabledAccessLevels}
+    >
+      <div className="flex flex-col items-center p-4 pb-0 w-full bg-base-lightest">
+        <StudyProvider>
+          <div className="w-full">
+            {configuration.features?.pageTitle &&
+            configuration?.features?.pageTitle.enabled ? (
+              <Title size="xl">{configuration?.features?.pageTitle.text}</Title>
+            ) : null}
+            <div className="flex items-center p-2 mb-4 bg-base-max rounded-lg">
+              {indexSelector}
+              <SummaryStatisticPanel summaries={summaryStatistics} />
+              {enableSearchBar && (
+                <div className="w-3/4 flex flex-col ml-2">
+                  <Grid align="center" gap="sm">
+                    <Grid.Col
+                      span={{ md: enableSearchableTags ? 7 : 10, sm: 12 }}
+                    >
+                      <SearchInputWithSuggestions
+                        searchBarTerms={searchBarTerms}
+                        setSearchBarTerms={setSearchBarTerms}
+                        suggestions={suggestions}
+                        clearSearch={() => {
+                          setSearchBarTerms([]);
+                        }}
+                        searchChanged={(v) => setSearchBarTerms(v.split(' '))}
+                        placeholder={
+                          configuration?.features?.search?.searchBar
+                            ?.placeholder ?? 'Search...'
+                        }
+                        label={
+                          configuration?.features?.search?.searchBar
+                            ?.inputSubtitle
+                        }
+                      />
+                    </Grid.Col>
+                    {enableSearchableTags && (
+                      <Grid.Col span={{ sm: 12, md: 5 }} align="center">
                         <Button
                           onClick={() => setSelectedTags({})}
                           variant="outline"
@@ -194,6 +208,7 @@ const ProjectCenterIndexPanel = ({
                           Reset
                         </Button>
                         <Button
+                          className="mt-1"
                           onClick={() =>
                             setIsDropdownTagViewerOpen((prev) => !prev)
                           }
@@ -208,55 +223,67 @@ const ProjectCenterIndexPanel = ({
                           }
                         >
                           {`${
-                            discoveryConfig?.features?.search?.tagSearchDropdown
+                            configuration?.features?.search?.tagSearchDropdown
                               ?.collapsibleButtonText || 'Tag Panel'
                           }`}
                         </Button>
-                      </div>
-                    </Grid.Col>
+                      </Grid.Col>
+                    )}
+                  </Grid>
+                  {enableSearchInputSelectableFields && (
+                    <SearchInputSelectableFields
+                      searchMode={searchMode}
+                      setSearchMode={setSearchMode}
+                      searchableTextFields={
+                        configuration?.features?.search?.searchBar
+                          ?.searchableTextFields
+                      }
+                      searchableAndSelectableTextFields={
+                        configuration?.features?.search?.searchBar
+                          ?.searchableAndSelectableTextFields
+                      }
+                      setSelectedFieldsForSearchIndexing={
+                        setSelectedFieldsForSearchIndexing
+                      }
+                    />
                   )}
-                  <Grid.Col span={8}>
-                    {enableSearchInputSelectableFields && (
-                      <SearchInputSelectableFields
-                        searchMode={searchMode}
-                        setSearchMode={setSearchMode}
-                        searchableTextFields={
-                          discoveryConfig?.features?.search?.searchBar
-                            ?.searchableTextFields
-                        }
-                        searchableAndSelectableTextFields={
-                          discoveryConfig?.features?.search?.searchBar
-                            ?.searchableAndSelectableTextFields
-                        }
-                        setSelectedFieldsForSearchIndexing={
-                          setSelectedFieldsForSearchIndexing
-                        }
+                  {tagCategoryData && tagCategoryData.length > 0 && (
+                    <div
+                      ref={tagViewerContentRef}
+                      className={`transition-all duration-300 ease-in-out mt-2 ${
+                        isDropdownTagViewerOpen
+                          ? 'max-h-screen opacity-100'
+                          : 'max-h-0 opacity-0'
+                      } overflow-hidden`}
+                      style={{
+                        height:
+                          isDropdownTagViewerOpen && tagViewerContentRef.current
+                            ? `${tagViewerContentRef.current.scrollHeight}px`
+                            : '0px',
+                      }}
+                    >
+                      <DiscoveryDropdownTagViewer
+                        tagCategoryData={tagCategoryData}
                       />
-                    )}
-                    {tagCategoryData && tagCategoryData.length > 0 && (
-                      <Collapse expanded={isDropdownTagViewerOpen}>
-                        <DiscoveryDropdownTagViewer
-                          tagCategoryData={tagCategoryMenus}
-                        />
-                      </Collapse>
-                    )}
-                  </Grid.Col>
-                </Grid>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            <div className="flex justify-start">
+              <div className="w-full" ref={parentDivRef}>
+                <ProjectCenterDisplay
+                  data={data}
+                  studyIdFromWindow={studyIdFromWindow as string}
+                  dataRequestStatus={dataRequestStatus}
+                  setSelection={setSelections}
+                />
               </div>
-            )}
-          </div>
-          <div className="flex justify-start">
-            <div className="w-full" ref={parentDivRef}>
-              <ProjectCenterDisplay
-                data={data}
-                studyIdFromWindow={studyIdFromWindow as string}
-                dataRequestStatus={dataRequestStatus}
-              />
             </div>
           </div>
-        </div>
-      </StudyProvider>
-    </div>
+        </StudyProvider>
+      </div>
+    </DiscoveryProvider>
   );
 };
 

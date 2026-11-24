@@ -5,14 +5,26 @@ import { JSONValue } from '@gen3/core';
 import DiscoveryProvider from '../../../../Discovery/DiscoveryProvider';
 import { DiscoveryIndexConfig } from '../../../../Discovery/types';
 import { discoveryConfigTestTags } from '../../StudyDetailsPanelTestData';
+import { AccessLevel } from '../../../../../utils';
 
 const meta = {
   component: RenderDetailTags as any,
   decorators: [
     (Story) => (
       <DiscoveryProvider
-        discoveryIndexConfig={
+        discoveryConfig={
           discoveryConfigTestTags as unknown as DiscoveryIndexConfig
+        }
+        selectedTags={{}}
+        setSelectedTags={() => {}}
+        selectedAccessLevels={[]}
+        setSelectedAccessLevels={() => null}
+        enabledAccessLevels={
+          new Set([
+            AccessLevel.ACCESSIBLE,
+            AccessLevel.UNACCESSIBLE,
+            AccessLevel.WAITING,
+          ])
         }
       >
         <div className="bg-base-lighter p-4" style={{ minHeight: 120 }}>

@@ -1,10 +1,8 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import type { ReactElement } from 'react';
+import React, { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import {
-  LinkAuthStatus,
-  NavigationButtonProps,
-  NavigationProps,
-} from './types';
+import type { NavigationButtonProps, NavigationProps } from './types';
+import { LinkAuthStatus } from './types';
 import NavigationLogo from './NavigationLogo';
 import NavigationBarButton from './NavigationBarButton';
 import { checkRouteAccess, extractClassName } from './utils';
@@ -77,8 +75,7 @@ const NavigationBar = ({
     classNames,
   );
 
-  const { loggedIn, pending, resources, routesConfig } =
-    useNavigationAuthState();
+  const { loggedIn, pending, mapping, routesConfig } = useNavigationAuthState();
 
   const pathname = usePathname();
   const [current, setCurrent] = useState(pathname);
@@ -90,7 +87,7 @@ const NavigationBar = ({
   const navigationItems = items.map((item, index) => {
     const linkAuthStatus = checkRouteAccess(
       item.href,
-      resources,
+      mapping,
       routesConfig,
       loggedIn,
       pending,

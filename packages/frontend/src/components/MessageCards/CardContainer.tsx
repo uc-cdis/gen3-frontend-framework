@@ -13,8 +13,8 @@ const CardContainer: React.FunctionComponent<CardContainerProps> = ({
   <div className={`flex justify-center pt-2 items-center m-2 ${width ?? ''}`}>
     <Card
       shadow="xs"
-      p="md"
-      className="bg-base-lightest border-2 border-base-lighter"
+      p="sm"
+      className="bg-base-lightest border-1 border-base-lighter"
     >
       <Group align="center" wrap="nowrap">
         {children}

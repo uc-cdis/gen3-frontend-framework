@@ -8,9 +8,15 @@ node_modules
 # testing
 coverage
 
+# jupyterlite
+packages/sampleCommons/.cockle_temp/
+packages/sampleCommons/cockle_wasm_env/
+packages/sampleCommons/cockle-config.json
+packages/sampleCommons/.jupyterlite.doit.db
+packages/sampleCommons/jupyter-workspaces/
+
 # next.js
 packages/sampleCommons/.next/
-packages/sampleCommons/.builds/
 packages/sampleCommons/.builds/
 /out/
 

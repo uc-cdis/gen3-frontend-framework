@@ -1,3 +1,4 @@
+import type { CreateAndExportOutputConfig } from '@gen3/core';
 import { CohortItem, HTTPError } from '@gen3/core';
 import {
   FileItemWithParentDatasetNameAndID,
@@ -35,6 +36,7 @@ export interface DataLibraryActionConfig {
   actionName: string;
   actionFunction?: string; // deprecated
   parameters?: Record<string, unknown>;
+  outputAction?: CreateAndExportOutputConfig['outputAction'];
   itemRules?: ItemRule[];
   groupRules?: GroupRule[];
 }

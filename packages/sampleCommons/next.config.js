@@ -50,7 +50,8 @@ const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
   allowedDevOrigins: ['local.io', '*.local.io'],
-  productionBrowserSourceMaps: true,
+  // Off by default (source maps are ~70MB); set GEN3_SOURCE_MAPS=1 to enable.
+  productionBrowserSourceMaps: process.env.GEN3_SOURCE_MAPS === '1',
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   basePath: basePath,
   logging: {
@@ -119,9 +120,15 @@ const nextConfig = {
     return config;
   },
   async rewrites() {
-    const workspaceApiRewrite = [
+    // Gen3's revproxy sends /api/ to sheepdog on deployed servers, so these
+    // public prefixes map onto the Next.js handlers in pages/api.
+    const publicApiRewrites = [
       {
         source: '/workspace-api/:path*',
+        destination: '/api/:path*',
+      },
+      {
+        source: '/frontend-api/:path*',
         destination: '/api/:path*',
       },
     ];
@@ -130,7 +137,7 @@ const nextConfig = {
         process.env.NEXT_PUBLIC_GEN3_API_TARGET || 'https://localhost';
 
       return [
-        ...workspaceApiRewrite,
+        ...publicApiRewrites,
         { source: '/_status', destination: `${GEN3_TARGET}/_status` },
         { source: '/user/:path*', destination: `${GEN3_TARGET}/user/:path*` },
         {
@@ -187,15 +194,14 @@ const nextConfig = {
           source: '/index/:path*',
           destination: `${GEN3_TARGET}/index/:path*`,
         },
-        { source: '/fhir/:path*',
-          destination: `${GEN3_TARGET}/fhir/:path*` },
+        { source: '/fhir/:path*', destination: `${GEN3_TARGET}/fhir/:path*` },
         {
           source: '/login',
           destination: `${GEN3_TARGET}/login`,
         },
       ];
     } else {
-      return workspaceApiRewrite;
+      return publicApiRewrites;
     }
   },
   async headers() {

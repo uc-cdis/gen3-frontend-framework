@@ -30,6 +30,7 @@ const BACKEND_PROXY_PATHS = [
   'requestor',
   'index',
   'workspace-api',
+  'frontend-api',
 ];
 const MATCH_ALL_EXCLUSIONS = [
   '_next/static',
@@ -164,7 +165,16 @@ function getMatcherFromAuthConfig(authConfig: Record<string, any>) {
   const paths = Object.keys(authConfig?.routes ?? {});
   const normalizedRoutes = paths.map((p) => normalizeRoute(p));
   const excluded = new Set(DEFAULT_EXCLUDED_ROUTES.map(normalizeRoute));
-  return normalizedRoutes.filter((r) => !excluded.has(r));
+  return normalizedRoutes.filter((r) => !excluded.has(r)).map(withSubpaths);
+}
+
+// authz route rules also protect sub-paths (/Workspace covers /Workspace/abc),
+// so the proxy matcher must run on them too. `/:authzRest*` matches zero or
+// more segments, so it also matches the route itself.
+function withSubpaths(route: string) {
+  if (route === '/' || route.endsWith(')') || route.endsWith('*')) return route;
+  if (/\[\.\.\.\w+\]\]?$/.test(route)) return route; // catch-all already covers sub-paths
+  return `${route}/:authzRest*`;
 }
 
 // ✅ Generates the actual Next proxy entry file with literal matcher
@@ -226,7 +236,7 @@ const createMiddlewareRoutes = (
   if (matcher.length === 0) {
     matcher = [`/((?!${MATCH_ALL_EXCLUSIONS.join('|')}).*)`];
   }
-  
+
   // The proxy redirects logged in users away from the Login page, so it must see /Login
   matcher.push(LOGIN_ROUTE);
 

@@ -16,7 +16,7 @@ import { getParamsValueAsString } from '../../../../utils/values';
 import { FaRegCircleCheck as RegisteredStudyIcon } from 'react-icons/fa6';
 import { FiMinusCircle as UnregisteredStudyIcon } from 'react-icons/fi';
 
-const TruncatedStringWithTooltipCellRenderer: CellRendererFunction = (
+export const TruncatedStringWithTooltipCellRenderer: CellRendererFunction = (
   { value }: CellRenderFunctionProps,
   params?: JSONObject,
 ) => {
