@@ -9,9 +9,9 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { Icon } from '@iconify-icon/react';
-import { TierToolbarConfiguration } from '../tiers/types';
+import type { TierToolbarConfiguration } from '../tiers/types';
+import type { CoreState } from '@gen3/core';
 import {
-  CoreState,
   selectJEGActiveWorkspaceId,
   selectJEGActiveWorkspaceStatus,
   selectWorkspaceFullscreen,
@@ -24,7 +24,7 @@ import {
 } from '@gen3/core';
 import CostTracker from '../../components/CostTracker';
 
-import { WorkspaceTier } from '../../types';
+import type { WorkspaceTier } from '../../types';
 import { useMicroContainerReduxContext } from '../../providers/MicroContainerReduxProvider';
 import { useHatcheryOptionsQuery } from '../../core/hatcheryApi';
 
@@ -46,7 +46,13 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
       selectWorkspaceFullscreen(state),
     );
 
-    const { showStatus, showStop, tierLabel, requirePayModel, workspaceAccountManagerTarget } = toolbarConfiguration || {};
+    const {
+      showStop,
+      showWorkspaceName,
+      tierLabel,
+      requirePayModel,
+      workspaceAccountManagerTarget,
+    } = toolbarConfiguration || {};
 
     const coreDispatch = useCoreDispatch();
 
@@ -64,9 +70,12 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
     const activeWorkspaceId = useCoreSelector((state: CoreState) =>
       selectJEGActiveWorkspaceId(state),
     );
-    // only shown when the id exactly matches an option, otherwise show nothing
+    // only shown when enabled with showWorkspaceName in workspaces.json and the id
+    // exactly matches an option, otherwise show nothing
     const activeWorkspaceName =
-      activeWorkspaceId && workspaceStatus !== WorkspaceStatus.NotFound
+      showWorkspaceName &&
+      activeWorkspaceId &&
+      workspaceStatus !== WorkspaceStatus.NotFound
         ? hatcheryOptions?.find((option) => option.id === activeWorkspaceId)
             ?.name
         : undefined;
@@ -74,19 +83,32 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
     const fullscreenLabel = isFullscreen
       ? 'Exit Fullscreen'
       : 'Fullscreen View';
+    const labelListForDisplay: Record<string, string> = {
+      [WorkspaceStatus.Running]: 'Stop Workspace',
+      [WorkspaceStatus.NotFound]: 'Not Running',
+    };
+    const colorsForStates: Record<string, string> = {
+      [WorkspaceStatus.Launching]: 'text-utility-warning',
+      [WorkspaceStatus.Running]: 'text-utility-success',
+      [WorkspaceStatus.Terminating]: 'text-utility-warning',
+      [WorkspaceStatus.Errored]: 'text-utility-error',
+      [WorkspaceStatus.StatusError]: 'text-utility-error',
+      [WorkspaceStatus.LaunchError]: 'text-utility-error',
+      [WorkspaceStatus.TerminateError]: 'text-utility-error',
+    };
+    // use the display label when one is defined for the status, otherwise show the status as is
     const statusLabel =
-      workspaceStatus === WorkspaceStatus.NotFound
-        ? 'Not Running'
-        : (workspaceStatus as string);
+      labelListForDisplay[workspaceStatus as string] ??
+      (workspaceStatus as string);
 
     return (
       <div
         ref={ref}
         role="toolbar"
         aria-label="Workspace toolbar"
-        className="flex items-center justify-between px-4 border-b-2 border-base-lighter pb-4"
+        className="flex items-center justify-between px-4 border-b-2 border-base-lighter"
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 pb-2">
           <ActionIcon
             variant="outline"
             radius="xl"
@@ -114,30 +136,19 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
               >
                 {tierLabel ?? (workspaceTier as string)}
               </Badge>
-              {requirePayModel && (<CostTracker workspaceAccountManagerTarget={workspaceAccountManagerTarget}/>)}
+              {requirePayModel && (
+                <CostTracker
+                  workspaceAccountManagerTarget={workspaceAccountManagerTarget}
+                />
+              )}
             </Group>
           </Stack>
         </div>
         <div className="flex items-center gap-4 mr-8">
-          {showStatus && (
-            <Stack gap={2} role="status" aria-label="Workspace status">
-              <Group gap="xs">
-                <Text size="md" c="base-contrast.4" aria-hidden="true">
-                  Workspace Status:
-                </Text>
-                <Badge
-                  size="md"
-                  radius="md"
-                  aria-live="polite"
-                  aria-atomic="true"
-                >
-                  {statusLabel}
-                </Badge>
-              </Group>
-              <Text size="sm" c="base-contrast.4" className='min-h-4'>
-                {/*activeWorkspaceName ? activeWorkspaceName: ''*/}
-              </Text>
-            </Stack>
+          {activeWorkspaceName && (
+            <div className="text-base-darker text-sm">
+              {activeWorkspaceName}
+            </div>
           )}
           {showStop && (
             <Button
@@ -147,8 +158,6 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
                   ? 'outline'
                   : 'filled'
               }
-              aria-label="Stop workspace"
-              aria-disabled={workspaceStatus !== WorkspaceStatus.Running}
               color={
                 workspaceStatus !== WorkspaceStatus.Running
                   ? 'primary.5'
@@ -163,14 +172,13 @@ const WorkspaceToolbar = forwardRef<HTMLDivElement, WorkspaceToolbarProps>(
                   height={36}
                   aria-hidden="true"
                   className={
-                    workspaceStatus !== WorkspaceStatus.Running
-                      ? 'text-primary-contrast'
-                      : 'text-utility-success'
+                    colorsForStates[workspaceStatus as string] ??
+                    'text-primary-contrast'
                   }
                 />
               }
             >
-              Stop Workspace
+              {statusLabel}
             </Button>
           )}
           <Tooltip label={fullscreenLabel}>
