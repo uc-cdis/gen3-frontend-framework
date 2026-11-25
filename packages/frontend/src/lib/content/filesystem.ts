@@ -16,10 +16,23 @@ export class FilesystemContent implements ContentSourceInterface {
     this.rootPath = rootPath || '';
   }
 
+  /**
+   * Resolve filepath under rootPath, rejecting anything that escapes it
+   * (e.g. "../" sequences coming from request parameters).
+   */
+  private resolveSafe(filepath: string): string {
+    const root = path.resolve(this.rootPath);
+    const fullPath = path.resolve(root, filepath);
+    if (fullPath !== root && !fullPath.startsWith(root + path.sep)) {
+      throw new Error(`Path ${filepath} is outside the content root`);
+    }
+    return fullPath;
+  }
+
   public async get<T extends Record<string, any>>(
     filepath: string,
   ): Promise<T> {
-    const fullPath = path.join(this.rootPath, filepath);
+    const fullPath = this.resolveSafe(filepath);
     let raw: string;
     try {
       raw = fs.readFileSync(fullPath).toString('utf8');
@@ -46,6 +59,15 @@ export class FilesystemContent implements ContentSourceInterface {
       throw new Error(
         `getAllCannot process ${path.join(this.rootPath, filepath)}/${filter}`,
       );
+    }
+  }
+
+  public async exists(filepath: string): Promise<boolean> {
+    try {
+      await fs.promises.access(this.resolveSafe(filepath));
+      return true;
+    } catch {
+      return false;
     }
   }
 }

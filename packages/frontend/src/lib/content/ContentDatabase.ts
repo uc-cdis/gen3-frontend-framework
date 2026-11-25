@@ -29,4 +29,8 @@ export class ContentDatabase {
     //   Array<Promise<T>>
     return this.store.getAll(filepath, filter);
   }
+
+  public async exists(filepath: string): Promise<boolean> {
+    return this.store.exists(filepath);
+  }
 }

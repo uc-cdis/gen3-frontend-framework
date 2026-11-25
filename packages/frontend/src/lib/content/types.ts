@@ -7,6 +7,7 @@ export interface ContentSourceInterface {
     filepath: string,
     filter: string,
   ): Promise<Array<T>>;
+  exists(filepath: string): Promise<boolean>;
 }
 
 interface Gen3Icon {
